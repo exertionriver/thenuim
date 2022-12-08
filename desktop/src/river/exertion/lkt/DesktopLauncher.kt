@@ -8,7 +8,7 @@ object DesktopLauncher {
     fun main(arg: Array<String>) {
         val config = Lwjgl3ApplicationConfiguration()
         config.setForegroundFPS(60)
-        config.setTitle("libKTXTemplate")
+        config.setTitle("koboldCave operating platform")
         Lwjgl3Application(Game(), config)
     }
 }
