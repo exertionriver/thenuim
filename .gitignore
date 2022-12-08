@@ -1,0 +1,10 @@
+.gradle/**
+.idea/**
+build/**
+core/build/**
+android/build/**
+android/libs/**
+android/res/**
+desktop/build/**
+local.properties
+/notes/**
