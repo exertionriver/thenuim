@@ -1,4 +1,4 @@
-package river.exertion.lkt
+package river.exertion.kcop
 
 import android.os.Bundle
 import com.badlogic.gdx.backends.android.AndroidApplication
