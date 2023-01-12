@@ -2,7 +2,8 @@ package river.exertion.kcop
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.files.FileHandle
-import ktx.assets.toAbsoluteFile
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.nio.file.Path
 
 object Util {
@@ -21,5 +22,17 @@ object Util {
             val fullPath = Path.of("").toAbsolutePath().parent.toString() + "/android/assets/$path"
             return FileHandle(fullPath)
         }
+    }
+
+    val json = Json { ignoreUnknownKeys = true }
+
+    inline fun <reified T>loader(fileHandle: FileHandle) : T? {
+        try {
+            val jsonElement = json.parseToJsonElement(fileHandle.readString())
+            return json.decodeFromJsonElement(jsonElement) as T
+        } catch (ex : Exception) {
+            logDebug("loader", ex.toString())
+        }
+        return null
     }
 }

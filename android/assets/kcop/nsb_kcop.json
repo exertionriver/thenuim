@@ -1,3 +1,4 @@
-[
-  {"id" : "asdf", "narrativeText" : "first block", "sequenceId" : 0}
-]
+{"id" : "demo_narrative", "sequenceBlocks" : [
+  {"id" : "demo_block1", "narrativeText" : "first block", "sequenceNumber" : 1},
+  {"id" : "demo_block2", "narrativeText" : "second block", "sequenceNumber" : 2}
+]}

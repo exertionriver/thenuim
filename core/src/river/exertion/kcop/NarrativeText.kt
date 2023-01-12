@@ -1,6 +1,6 @@
 package river.exertion.kcop
 
-interface NarrativePlugin : Plugin {
+interface NarrativeText {
 
     val narrativeText : String
 }

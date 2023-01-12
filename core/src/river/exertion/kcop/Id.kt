@@ -1,6 +1,6 @@
 package river.exertion.kcop
 
-interface Plugin {
+interface Id {
 
     val id : String
 
