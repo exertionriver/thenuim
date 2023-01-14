@@ -1,6 +1,7 @@
 package river.exertion.kcop
 
 import com.badlogic.gdx.graphics.Color
+import kotlin.math.absoluteValue
 
 enum class ColorPalette {
     //helpful: https://www.canva.com/colors/color-wheel/
@@ -25,7 +26,6 @@ enum class ColorPalette {
     Color666 { override fun tag() = "white" },
 
     //extended color approximations
-    //div 255; 0 == 8, 1 == 48, 2 == 88, 3 == 128, 4 == 168, 5 == 208, 6 == 248
     Color122 { override fun tag() = "darkSlateGray" },
     Color222 { override fun tag() = "dimGray" },
     Color233 { override fun tag() = "slateGray" },
@@ -91,15 +91,15 @@ enum class ColorPalette {
     ;
 
     open fun tag() : String = this.name
-    fun color() = Color(colorSettings[rSetting()], colorSettings[gSetting()], colorSettings[bSetting()], defaultAlpha)
-    fun incr() = ColorPalette.of(rSetting(1), gSetting(1), bSetting(1) )
-    fun incrR() = ColorPalette.of(rSetting(1), gSetting(), bSetting() )
-    fun incrG() = ColorPalette.of(rSetting(), gSetting(1), bSetting() )
-    fun incrB() = ColorPalette.of(rSetting(), gSetting(), bSetting(1) )
-    fun decr() = ColorPalette.of(rSetting(-1), gSetting(-1), bSetting(-1) )
-    fun decrR() = ColorPalette.of(rSetting(-1), gSetting(), bSetting() )
-    fun decrG() = ColorPalette.of(rSetting(), gSetting(-1), bSetting() )
-    fun decrB() = ColorPalette.of(rSetting(), gSetting(), bSetting(-1) )
+    fun color() = Color(colorThresholdsFloat[rSetting()], colorThresholdsFloat[gSetting()], colorThresholdsFloat[bSetting()], defaultAlpha)
+    fun incr(by : Int = 1) = ColorPalette.of(rSetting(by), gSetting(by), bSetting(by) )
+    fun incrR(by : Int = 1) = ColorPalette.of(rSetting(by), gSetting(), bSetting() )
+    fun incrG(by : Int = 1) = ColorPalette.of(rSetting(), gSetting(by), bSetting() )
+    fun incrB(by : Int = 1) = ColorPalette.of(rSetting(), gSetting(), bSetting(by) )
+    fun decr(by : Int = 1) = incr(-by)
+    fun decrR(by : Int = 1) = incrR(-by)
+    fun decrG(by : Int = 1) = incrG(-by)
+    fun decrB(by : Int = 1) = incrB(-by)
     fun comp() : ColorPalette {
         val max = maxOf(rSetting(), gSetting(), bSetting())
         val min = minOf(rSetting(), gSetting(), bSetting())
@@ -111,19 +111,9 @@ enum class ColorPalette {
         ColorPalette.of(bSetting(), rSetting(), gSetting()),
     )
     fun spectrum() = listOf(
-        ColorPalette.of(rSetting(-6), gSetting(-6), bSetting(-6)),
-        ColorPalette.of(rSetting(-5), gSetting(-5), bSetting(-5)),
-        ColorPalette.of(rSetting(-4), gSetting(-4), bSetting(-4)),
-        ColorPalette.of(rSetting(-3), gSetting(-3), bSetting(-3)),
-        ColorPalette.of(rSetting(-2), gSetting(-2), bSetting(-2)),
-        ColorPalette.of(rSetting(-1), gSetting(-1), bSetting(-1)),
-        ColorPalette.of(rSetting(), gSetting(), bSetting()),
-        ColorPalette.of(rSetting(1), gSetting(1), bSetting(1)),
-        ColorPalette.of(rSetting(2), gSetting(2), bSetting(2)),
-        ColorPalette.of(rSetting(3), gSetting(3), bSetting(3)),
-        ColorPalette.of(rSetting(4), gSetting(4), bSetting(4)),
-        ColorPalette.of(rSetting(5), gSetting(5), bSetting(5)),
-        ColorPalette.of(rSetting(6), gSetting(6), bSetting(6)),
+        this.decr(6), this.decr(5), this.decr(4), this.decr(3), this.decr(2), this.decr(1),
+        this,
+        this.incr(1), this.incr(2), this.incr(3), this.incr(4), this.incr(5), this.incr(6),
     ).distinct()
 
     fun rSetting(offset : Int = 0) = (this.name.substring(5,6).toInt() + offset).coerceIn(0, 6)
@@ -131,10 +121,19 @@ enum class ColorPalette {
     fun bSetting(offset : Int = 0) = (this.name.substring(7,8).toInt() + offset).coerceIn(0, 6)
 
     companion object {
+        // r, g, b, each 0 - 255
+        fun approxSettings(r : Int, g : Int, b : Int) =
+            listOf(
+                colorThresholdsInt.map { (r - it).absoluteValue }.withIndex().minBy { (_, it) -> it }.index,
+                colorThresholdsInt.map { (g - it).absoluteValue }.withIndex().minBy { (_, it) -> it }.index,
+                colorThresholdsInt.map { (b - it).absoluteValue }.withIndex().minBy { (_, it) -> it }.index,
+            )
+
         fun of(rSetting : Int, gSetting : Int, bSetting : Int) = ColorPalette.values().firstOrNull { it.name == "Color$rSetting$gSetting$bSetting" } ?: Color000
         fun of(tag : String) = ColorPalette.values().firstOrNull { it.tag() == tag } ?: Color000
 
-        //div 255; 0 == 8, 1 == 48, 2 == 88, 3 == 128, 4 == 168, 5 == 208, 6 == 248
-        val colorSettings : List<Float> = listOf(0.0314f, 0.1882f, 0.3451f, 0.502f, 0.6588f, 0.8157f, 0.9725f)
+        val colorThresholdsInt : List<Int> = listOf(8, 48, 88, 128, 168, 208, 248)
+        val colorThresholdsFloat : List<Float> = colorThresholdsInt.map { it / 255f }
         const val defaultAlpha = 1f
-    }}
+    }
+}
