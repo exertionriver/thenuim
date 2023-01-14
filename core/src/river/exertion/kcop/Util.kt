@@ -75,5 +75,8 @@ class ShapeDrawerConfig(val batch: Batch, val baseColor : Color = ColorPalette.o
 fun BitmapFont.drawLabel(batch : Batch, location : Vector2, labelText : String, color : Color, fontSize : Int = 32) {
 
     val labelLayout = GlyphLayout(this, labelText, color, (fontSize * labelText.length).toFloat(), Align.left,true )
-    this.draw(batch, labelLayout, location.x - labelLayout.width / 2 , location.y - labelLayout.height / 2)
+//    this.draw(batch, labelLayout, location.x - labelLayout.width / 2 , location.y - labelLayout.height / 2)
+    this.draw(batch, labelLayout, location.x, location.y)
 }
+
+fun kcopColor(colorTag : String) = ColorPalette.of(colorTag).color()

@@ -9,19 +9,19 @@ class TestNameCreation {
     @Test
     fun testCelestialNameCreation() {
 
-        (0..36).forEach { idx ->
+        (0..36).forEach { _ ->
             println("celestial name (Osh): ${NameTypes.CELESTIAL_OSH.capName()}")
         }
-        (0..36).forEach { idx ->
+        (0..36).forEach { _ ->
             println("celestial name (Ur): ${NameTypes.CELESTIAL_UR.capName()}")
         }
-        (0..36).forEach { idx ->
+        (0..36).forEach { _ ->
             println("celestial name (La): ${NameTypes.CELESTIAL_LA.capName()}")
         }
-        (0..36).forEach { idx ->
+        (0..36).forEach { _ ->
             println("celestial name (Di): ${NameTypes.CELESTIAL_DI.capName()}")
         }
-        (0..36).forEach { idx ->
+        (0..36).forEach { _ ->
             println("below god name (Se): ${NameTypes.CELESTIAL_SE.capName()}")
         }
     }

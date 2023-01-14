@@ -49,6 +49,21 @@ class ColorPaletteSimulator(private val menuBatch: Batch,
             Gdx.input.isKeyJustPressed(Input.Keys.V) -> { baseColor = baseColor.decrB() }
         }
 
+        val w3cColors = ColorPalette.w3cExtGrayBlack()
+
+        menuBatch.use {
+            w3cColors.values.forEachIndexed { index, colorPalette ->
+                drawer.filledRectangle(40f, 400f - (20f * index), 40f, 20f, colorPalette.color())
+            }
+        }
+        menuBatch.use {
+            w3cColors.entries.forEachIndexed { index, colorPaletteEntry ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(60f, 410f - (20f * index)), colorPaletteEntry.key, colorPaletteEntry.value.inv().color())
+            }
+        }
+
+
+        /* spectrum
         menuBatch.use {
             drawer.filledRectangle(100f, 100f, 20f, 20f, baseColor.color())
             drawer.filledRectangle(140f, 100f, 20f, 20f, baseColor.comp().color())
@@ -58,6 +73,7 @@ class ColorPaletteSimulator(private val menuBatch: Batch,
                 drawer.filledRectangle(100f + (40f * index), 50f, 20f, 20f, colorPalette.color())
             }
         }
+*/
         engine.update(delta)
     }
 
