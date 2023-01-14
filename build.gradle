@@ -31,7 +31,9 @@ allprojects {
         gdxControllersVersion = '2.2.1'
         ktxVersion = '1.11.0-rc3'
         kotlinxVersion = '1.6.1'
+        kotlinxSerializationVersion = '1.4.1'
         gltfVersion = '2.0.0-rc.1'
+        shapedrawerVersion = '2.6.0' //https://github.com/earlygrey/shapedrawer
         junitVersion = '5.8.2'
     }
 
@@ -93,7 +95,7 @@ project(":core") {
         useJUnitPlatform()
     }
     dependencies {
-        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
         implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -117,6 +119,7 @@ project(":core") {
         api "io.github.libktx:ktx-vis-style:$ktxVersion"
         implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion"
+        implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
         testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
