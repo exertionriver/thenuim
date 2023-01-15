@@ -245,7 +245,7 @@ enum class ColorPalette {
         const val defaultAlpha = 1f
 
         //w3c standard color lists
-        fun w3cBasicLabels() = listOf(
+        fun w3cBasic() = listOf(
             "black", "blue", "lime", "aqua", "navy", "green", "teal", "maroon",
             "purple", "olive", "gray", "silver", "red", "fuchsia", "yellow", "white",
         ).associateWith { ColorPalette.of(it) }
@@ -302,5 +302,8 @@ enum class ColorPalette {
             "black", "darkSlateGray", "dimGray", "slateGray", "gray", "lightSlateGray", "darkGray", "silver",
             "lightGray"
         ).associateWith { ColorPalette.of(it) }
+
+        fun w3cColors() = listOf(w3cBasic(), w3cExtPink(), w3cExtRed(), w3cExtOrange(), w3cExtYellow(), w3cExtBrown(), w3cExtGreen(),
+            w3cExtPurpleVioletMagenta(), w3cExtBlue(), w3cExtCyan(), w3cExtWhite(), w3cExtGrayBlack())
     }
 }

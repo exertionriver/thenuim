@@ -32,6 +32,27 @@ class ColorPaletteSimulator(private val menuBatch: Batch,
     val drawer = sdc.getDrawer()
 
     var baseColor = ColorPalette.of("darkGray")
+    var colorKindIdx = 0
+    var colorKindMinIdx = 0
+    var colorKindMaxIdx = ColorPalette.w3cColors().size - 1
+    var colorKind = ColorPalette.w3cColors()[colorKindIdx]
+
+    val firstColorColumn = 40f
+    val firstTextColumn = 60f
+    val secondColorColumn = 140f
+    val secondTextColumn = 160f
+    val thirdColorColumn = 240f
+    val thirdTextColumn = 260f
+    val fourthColorColumn = 340f
+    val fourthTextColumn = 360f
+    val fifthColorColumn = 440f
+    val fifthTextColumn = 460f
+
+    val firstColorRow = 400f
+    val firstTextRow = 410f
+
+    val colorSwatchHeight = 20f
+    val colorSwatchWidth = 80f
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -47,33 +68,67 @@ class ColorPaletteSimulator(private val menuBatch: Batch,
             Gdx.input.isKeyJustPressed(Input.Keys.E) -> { baseColor = baseColor.decrR() }
             Gdx.input.isKeyJustPressed(Input.Keys.F) -> { baseColor = baseColor.decrG() }
             Gdx.input.isKeyJustPressed(Input.Keys.V) -> { baseColor = baseColor.decrB() }
-        }
 
-        val w3cColors = ColorPalette.w3cExtGrayBlack()
-
-        menuBatch.use {
-            w3cColors.values.forEachIndexed { index, colorPalette ->
-                drawer.filledRectangle(40f, 400f - (20f * index), 40f, 20f, colorPalette.color())
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
+                if (colorKindIdx == colorKindMinIdx) colorKindIdx = colorKindMaxIdx else colorKindIdx--
+                colorKind = ColorPalette.w3cColors()[colorKindIdx]
             }
-        }
-        menuBatch.use {
-            w3cColors.entries.forEachIndexed { index, colorPaletteEntry ->
-                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(60f, 410f - (20f * index)), colorPaletteEntry.key, colorPaletteEntry.value.inv().color())
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
+                if (colorKindIdx == colorKindMaxIdx) colorKindIdx = colorKindMinIdx else colorKindIdx++
+                colorKind = ColorPalette.w3cColors()[colorKindIdx]
             }
         }
 
-
-        /* spectrum
         menuBatch.use {
-            drawer.filledRectangle(100f, 100f, 20f, 20f, baseColor.color())
-            drawer.filledRectangle(140f, 100f, 20f, 20f, baseColor.comp().color())
-            drawer.filledRectangle(180f, 100f, 20f, 20f, baseColor.triad().first.color())
-            drawer.filledRectangle(220f, 100f, 20f, 20f, baseColor.triad().second.color())
+            colorKind.values.forEachIndexed { index, colorPalette ->
+                drawer.filledRectangle(firstColorColumn, firstColorRow - (colorSwatchHeight * index), colorSwatchWidth, colorSwatchHeight, colorPalette.color())
+            }
+        }
+        menuBatch.use {
+            colorKind.entries.forEachIndexed { index, colorPaletteEntry ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(firstTextColumn, firstTextRow - (colorSwatchHeight * index)), colorPaletteEntry.key, colorPaletteEntry.value.inv().color())
+            }
+        }
+
+        menuBatch.use {
+            drawer.filledRectangle(secondColorColumn, firstColorRow, colorSwatchWidth, colorSwatchHeight, baseColor.color())
+            drawer.filledRectangle(thirdColorColumn, firstColorRow, colorSwatchWidth, colorSwatchHeight, baseColor.comp().color())
+            drawer.filledRectangle(fourthColorColumn, firstColorRow, colorSwatchWidth, colorSwatchHeight, baseColor.triad().first.color())
+            drawer.filledRectangle(fifthColorColumn, firstColorRow, colorSwatchWidth, colorSwatchHeight, baseColor.triad().second.color())
+
             baseColor.spectrum().forEachIndexed { index, colorPalette ->
-                drawer.filledRectangle(100f + (40f * index), 50f, 20f, 20f, colorPalette.color())
+                drawer.filledRectangle(secondColorColumn, firstColorRow - (colorSwatchHeight * (index + 2)), colorSwatchWidth, colorSwatchHeight, colorPalette.color())
+            }
+            baseColor.comp().spectrum().forEachIndexed { index, colorPalette ->
+                drawer.filledRectangle(thirdColorColumn, firstColorRow - (colorSwatchHeight * (index + 2)), colorSwatchWidth, colorSwatchHeight, colorPalette.color())
+            }
+            baseColor.triad().first.spectrum().forEachIndexed { index, colorPalette ->
+                drawer.filledRectangle(fourthColorColumn, firstColorRow - (colorSwatchHeight * (index + 2)), colorSwatchWidth, colorSwatchHeight, colorPalette.color())
+            }
+            baseColor.triad().second.spectrum().forEachIndexed { index, colorPalette ->
+                drawer.filledRectangle(fifthColorColumn, firstColorRow - (colorSwatchHeight * (index + 2)), colorSwatchWidth, colorSwatchHeight, colorPalette.color())
             }
         }
-*/
+
+        menuBatch.use {
+            assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(secondTextColumn, firstTextRow), baseColor.tags()[0], baseColor.inv().color())
+            assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(thirdTextColumn, firstTextRow), baseColor.comp().tags()[0], baseColor.comp().inv().color())
+            assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(fourthTextColumn, firstTextRow), baseColor.triad().first.tags()[0], baseColor.triad().first.inv().color())
+            assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(fifthTextColumn, firstTextRow), baseColor.triad().second.tags()[0], baseColor.triad().second.inv().color())
+
+            baseColor.spectrum().forEachIndexed { index, colorPalette ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(secondTextColumn, firstTextRow - (colorSwatchHeight * (index + 2))), colorPalette.tags()[0], colorPalette.inv().color())
+            }
+            baseColor.comp().spectrum().forEachIndexed { index, colorPalette ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(thirdTextColumn, firstTextRow - (colorSwatchHeight * (index + 2))), colorPalette.tags()[0], colorPalette.inv().color())
+            }
+            baseColor.triad().first.spectrum().forEachIndexed { index, colorPalette ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(fourthTextColumn, firstTextRow - (colorSwatchHeight * (index + 2))), colorPalette.tags()[0], colorPalette.inv().color())
+            }
+            baseColor.triad().second.spectrum().forEachIndexed { index, colorPalette ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(fifthTextColumn, firstTextRow - (colorSwatchHeight * (index + 2))), colorPalette.tags()[0], colorPalette.inv().color())
+            }
+        }
         engine.update(delta)
     }
 

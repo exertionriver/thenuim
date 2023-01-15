@@ -15,5 +15,5 @@ enum class FontAssets(val path: String) {
     fun AssetManager.load(asset: FontAssets) = load<BitmapFont>(asset.path)
     operator fun AssetManager.get(asset: FontAssets) = getAsset<BitmapFont>(asset.path).apply {
         this.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-        this.data.setScale(.4f, .4f) //32 size
+        this.data.setScale(.3f, .3f) //32 size
     }
