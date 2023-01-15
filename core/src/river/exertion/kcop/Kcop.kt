@@ -2,6 +2,7 @@ package river.exertion.kcop
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -14,6 +15,7 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
+import river.exertion.kcop.assets.NarrativeSequenceLoader
 import river.exertion.kcop.simulation.ColorPaletteSimulator
 import river.exertion.kcop.simulation.LayoutSimulator
 import river.exertion.kcop.simulation.Text1dSimulator
@@ -31,6 +33,8 @@ class Kcop : KtxGame<KtxScreen>() {
         val menuStage = Stage(menuViewport, menuBatch)
         val assets = AssetManager()
 
+        assets.setLoader(NarrativeSequence::class.java, NarrativeSequenceLoader(InternalFileHandleResolver()))
+
         context.register {
             bindSingleton(perspectiveCamera)
             bindSingleton(orthoCamera)
@@ -44,7 +48,7 @@ class Kcop : KtxGame<KtxScreen>() {
             addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
 
-        setScreen<LayoutSimulator>()
+        setScreen<Text1dSimulator>()
 
     }
 
