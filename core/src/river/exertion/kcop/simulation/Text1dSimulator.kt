@@ -12,6 +12,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import ktx.scene2d.*
 import river.exertion.kcop.ColorPalette
+import river.exertion.kcop.ShapeDrawerConfig
 import river.exertion.kcop.assets.FontAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
@@ -33,7 +34,6 @@ class Text1dSimulator(private val menuBatch: Batch,
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
 
         menuBatch.use {
-            assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(200f, 200f), "test123", ColorPalette.of("blue").color())
         }
         engine.update(delta)
     }

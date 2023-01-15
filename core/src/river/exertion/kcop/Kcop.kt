@@ -15,6 +15,7 @@ import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.simulation.ColorPaletteSimulator
+import river.exertion.kcop.simulation.LayoutSimulator
 import river.exertion.kcop.simulation.Text1dSimulator
 
 class Kcop : KtxGame<KtxScreen>() {
@@ -37,17 +38,18 @@ class Kcop : KtxGame<KtxScreen>() {
             bindSingleton(gameBatch)
             bindSingleton(menuStage)
             bindSingleton(assets)
-            addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
 
+            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(LayoutSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
 
-        setScreen<ColorPaletteSimulator>()
+        setScreen<LayoutSimulator>()
 
     }
 
     companion object {
-        val initViewportWidth = 1024F
-        val initViewportHeight = 576F
+        val initViewportWidth = 1280F
+        val initViewportHeight = 720F
     }
 }
