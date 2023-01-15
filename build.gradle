@@ -20,9 +20,9 @@ allprojects {
     apply plugin: "idea"
     apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 
-    version = '1.0'
+    version = '0.1'
     ext {
-        appName = "koboldCave operating platform"
+        appName = "koboldCave Operating Platform"
         gdxVersion = '1.11.0'
         roboVMVersion = '2.3.16'
         box2DLightsVersion = '1.5'

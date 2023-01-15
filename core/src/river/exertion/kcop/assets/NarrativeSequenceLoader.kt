@@ -5,11 +5,7 @@ import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.NarrativeSequence
@@ -19,7 +15,7 @@ class NarrativeSequenceLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<NarrativeSequence?, NarrativeSequenceLoader.NarrativeSequenceParameter?>(resolver) {
 
     val json = Json { ignoreUnknownKeys = true }
-    var narrativeSequence: NarrativeSequence? = null
+    lateinit var rawData: String
 
     override fun getDependencies(fileName: String?, file: FileHandle?, parameter: NarrativeSequenceParameter?): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
         return null
@@ -30,9 +26,10 @@ class NarrativeSequenceLoader(resolver: FileHandleResolver?) :
 
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): NarrativeSequence? {
         try {
-            val jsonElement = json.parseToJsonElement(file.readString())
+            rawData = file.readString()
+            val jsonElement = json.parseToJsonElement(rawData)
             val narrativeSequence = json.decodeFromJsonElement(jsonElement) as NarrativeSequence
-            if (parameter != null && !parameter.init) {} else narrativeSequence.init()
+            if (parameter == null || parameter.init) narrativeSequence.init()
             return narrativeSequence
         } catch (ex : Exception) {
             Util.logDebug("loader", ex.toString())
