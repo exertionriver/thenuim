@@ -12,6 +12,7 @@ import ktx.app.KtxScreen
 import ktx.graphics.use
 import ktx.scene2d.*
 import river.exertion.kcop.ColorPalette
+import river.exertion.kcop.Layout
 import river.exertion.kcop.ShapeDrawerConfig
 import river.exertion.kcop.assets.FontAssets
 import river.exertion.kcop.assets.get
@@ -30,26 +31,7 @@ class LayoutSimulator(private val menuBatch: Batch,
     val sdc = ShapeDrawerConfig(menuBatch)
     val drawer = sdc.getDrawer()
 
-    val firstWidth = 21 * menuCamera.viewportWidth / 34f
-    val firstHeight = 21 * menuCamera.viewportHeight / 21f
-
-    val secondWidth = 13 * menuCamera.viewportWidth / 34f
-    val secondHeight = 13 * menuCamera.viewportHeight / 21f
-
-    val thirdWidth = 8 * menuCamera.viewportWidth / 34f
-    val thirdHeight = 8 * menuCamera.viewportHeight / 21f
-
-    val fourthWidth = 5 * menuCamera.viewportWidth / 34f
-    val fourthHeight = 5 * menuCamera.viewportHeight / 21f
-
-    val fifthWidth = 3 * menuCamera.viewportWidth / 34f
-    val fifthHeight = 3 * menuCamera.viewportHeight / 21f
-
-    val sixthWidth = 2 * menuCamera.viewportWidth / 34f
-    val sixthHeight = 2 * menuCamera.viewportHeight / 21f
-
-    val seventhWidth = menuCamera.viewportWidth / 34f
-    val seventhHeight = menuCamera.viewportHeight / 21f
+    val layout = Layout(menuCamera.viewportWidth, menuCamera.viewportHeight)
 
     val firstColor = ColorPalette.Color402
     val secondColor = ColorPalette.Color635
@@ -60,15 +42,25 @@ class LayoutSimulator(private val menuBatch: Batch,
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
 
         menuBatch.use {
-            drawer.filledRectangle(0f, 0f, firstWidth, firstHeight, firstColor.color())
-            drawer.filledRectangle(firstWidth, thirdHeight, secondWidth, secondHeight, firstColor.comp().color())
-            drawer.filledRectangle(firstWidth + fourthWidth, 0f, thirdWidth, thirdHeight, firstColor.triad().first.color())
-            drawer.filledRectangle(firstWidth, 0f, fourthWidth, fourthHeight, firstColor.triad().second.color())
-            drawer.filledRectangle(firstWidth, fourthHeight, fifthWidth, fifthHeight, secondColor.color())
-            drawer.filledRectangle(firstWidth + fifthWidth, fourthHeight + seventhHeight, sixthWidth, sixthHeight, secondColor.comp().color())
-            drawer.filledRectangle(firstWidth + fifthWidth + seventhWidth, fourthHeight, seventhWidth, seventhHeight, secondColor.triad().first.color())
-            drawer.filledRectangle(firstWidth + fifthWidth, fourthHeight, seventhWidth, seventhHeight, secondColor.triad().second.color())
+            drawer.filledRectangle(layout.displayViewRect(), firstColor.color())
+            drawer.filledRectangle(layout.textViewRect(), firstColor.comp().color())
+            drawer.filledRectangle(layout.logViewRect(), firstColor.triad().first.color())
+            drawer.filledRectangle(layout.menuViewRect(), firstColor.triad().second.color())
+            drawer.filledRectangle(layout.promptsViewRect(), secondColor.color())
+            drawer.filledRectangle(layout.inputsViewRect(), secondColor.comp().color())
+            drawer.filledRectangle(layout.aiViewRect(), secondColor.triad().first.color())
+            drawer.filledRectangle(layout.pauseViewRect(), secondColor.triad().second.color())
         }
+
+        menuBatch.use {
+            (layout.textViewFirstRow().toInt() downTo layout.textViewLastRow().toInt() step layout.textViewRowHeight().toInt()).forEach { row ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(layout.textViewFirstCol(), row - layout.textViewRowHeight()), "text$row", secondColor.comp().inv().color())
+            }
+            (layout.logViewFirstRow().toInt() downTo layout.logViewLastRow().toInt() step layout.logViewRowHeight().toInt()).forEach { row ->
+                assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(layout.logViewFirstCol(),row - layout.logViewRowHeight()), "log$row", secondColor.triad().first.inv().color())
+            }
+        }
+
         engine.update(delta)
     }
 

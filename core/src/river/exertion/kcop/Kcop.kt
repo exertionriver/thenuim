@@ -48,7 +48,7 @@ class Kcop : KtxGame<KtxScreen>() {
             addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
 
-        setScreen<Text1dSimulator>()
+        setScreen<ColorPaletteSimulator>()
 
     }
 

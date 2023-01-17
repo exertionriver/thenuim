@@ -49,6 +49,7 @@ enum class ColorPalette {
     Color160, Color161, Color162, Color163, Color164, Color165, Color166,
 
     Color203 { override fun tags() = listOf("indigo") },
+    Color211 { override fun tags() = listOf("taupe") },
     Color213 { override fun tags() = listOf("darkSlateBlue") },
     Color221 { override fun tags() = listOf("darkOliveGreen") },
     Color222 { override fun tags() = listOf("dimGray") },
@@ -61,7 +62,7 @@ enum class ColorPalette {
     Color255 { override fun tags() = listOf("mediumTurquoise") },
 
     Color200, Color201, Color202, Color204, Color205, Color206,
-    Color210, Color211, Color212, Color214, Color215, Color216,
+    Color210, Color212, Color214, Color215, Color216,
     Color220, Color223, Color224, Color226,
     Color230, Color232, Color233, Color235, Color236,
     Color240, Color241, Color242, Color243, Color245,
@@ -125,6 +126,7 @@ enum class ColorPalette {
     Color542 { override fun tags() = listOf("darkKhaki") },
     Color543 { override fun tags() = listOf("tan", "burlywood") },
     Color545 { override fun tags() = listOf("plum") },
+    Color546 { override fun tags() = listOf("mauve") },
     Color555 { override fun tags() = listOf("silver", "lightGray", "thistle") },
     Color556 { override fun tags() = listOf("lightCyan") },
 
@@ -132,7 +134,7 @@ enum class ColorPalette {
     Color510, Color511, Color512, Color513, Color514, Color515, Color516,
     Color520, Color523, Color524, Color525, Color526,
     Color530, Color532, Color534, Color536,
-    Color540, Color544, Color546,
+    Color540, Color544,
     Color550, Color551, Color552, Color553, Color554,
     Color560, Color561, Color562, Color563, Color564, Color565, Color566,
 

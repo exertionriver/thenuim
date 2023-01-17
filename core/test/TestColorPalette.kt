@@ -2,8 +2,20 @@ import org.junit.jupiter.api.Test
 import river.exertion.kcop.ColorPalette
 import river.exertion.kcop.NarrativeSequence
 import river.exertion.kcop.Util
+import kotlin.math.pow
+import kotlin.test.assertEquals
 
 class TestColorPalette {
+
+    @Test
+    fun testColorPaletteSize() {
+        val cpCalcSize = ColorPalette.colorThresholdsInt.size.toFloat().pow(3).toInt()
+        val cpMeasureSize = ColorPalette.values().size
+        println("calc cp size :$cpCalcSize")
+        println("measure cp size :$cpMeasureSize")
+
+        assertEquals(cpCalcSize, cpMeasureSize)
+    }
 
     @Test
     fun testColorPalette() {
@@ -59,8 +71,7 @@ class TestColorPalette {
         println("Bisque :" + ColorPalette.approxSettings(255, 228, 196))
         println("BlanchedAlmond :" + ColorPalette.approxSettings(255, 235, 205))
         println("Cornsilk :" + ColorPalette.approxSettings(255, 248, 220))
-
-
+        println("Taupe :" + ColorPalette.approxSettings(72, 60, 50)) //https://www.canva.com/colors/color-meanings/taupe/
 
         println("Indigo :" + ColorPalette.approxSettings(75, 0, 130))
         println("Purple :" + ColorPalette.approxSettings(128, 0, 128))
@@ -80,6 +91,7 @@ class TestColorPalette {
         println("Plum :" + ColorPalette.approxSettings(221, 160, 221))
         println("Thistle :" + ColorPalette.approxSettings(216, 191, 216))
         println("Lavender :" + ColorPalette.approxSettings(230, 230, 250))
+        println("Mauve :" + ColorPalette.approxSettings(224, 176, 255)) //https://www.canva.com/colors/color-meanings/mauve/
 
         println("MidnightBlue :" + ColorPalette.approxSettings(25, 25, 112))
         println("Navy :" + ColorPalette.approxSettings(0, 0, 128))
@@ -109,8 +121,6 @@ class TestColorPalette {
         println("Aquamarine :" + ColorPalette.approxSettings(127, 255, 212))
         println("PaleTurquoise :" + ColorPalette.approxSettings(175, 238, 238))
         println("LightCyan :" + ColorPalette.approxSettings(224, 255, 255))
-
-
 
         println("DarkGreen :" + ColorPalette.approxSettings(0, 100, 0))
         println("Green :" + ColorPalette.approxSettings(0, 128, 0))
