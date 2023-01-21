@@ -64,9 +64,7 @@ class ShapeDrawerConfig(val batch: Batch, val baseColor : Color = ColorPalette.o
         shapeDrawer = ShapeDrawer(this.batch, textureRegion)
     }
 
-    fun getDrawer() = shapeDrawer
-
-    fun disposeShapeDrawerConfig() {
+    fun dispose() {
         this.texture.dispose()
         this.pixmap.dispose()
     }

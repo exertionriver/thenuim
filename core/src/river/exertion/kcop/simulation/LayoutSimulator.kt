@@ -29,7 +29,7 @@ class LayoutSimulator(private val menuBatch: Batch,
     val engine = PooledEngine().apply { SystemManager.init(this) }
     val observer = Observer.instantiate(engine)
     val sdc = ShapeDrawerConfig(menuBatch)
-    val drawer = sdc.getDrawer()
+    val drawer = sdc.shapeDrawer
 
     val layout = Layout(menuCamera.viewportWidth, menuCamera.viewportHeight)
 
