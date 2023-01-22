@@ -1,6 +1,5 @@
-package river.exertion.kcop.simulation
+package river.exertion.kcop.simulation.colorPalette
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.assets.AssetManager
@@ -15,19 +14,14 @@ import river.exertion.kcop.*
 import river.exertion.kcop.assets.FontAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
-import river.exertion.kcop.system.SystemManager
 
 
-class ColorPaletteSimulator(private val menuBatch: Batch,
+class ColorPaletteSimulator(private val batch: Batch,
                             private val assets: AssetManager,
-                            private val menuStage: Stage,
-                            private val menuCamera: OrthographicCamera) : KtxScreen {
+                            private val stage: Stage,
+                            private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val engine = PooledEngine().apply { SystemManager.init(this) }
-
-    val cpLayout = ColorPaletteLayout(menuCamera.viewportWidth, menuCamera.viewportHeight)
-
-    val stage = Stage()
+    val cpLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -62,7 +56,7 @@ class ColorPaletteSimulator(private val menuBatch: Batch,
         Gdx.input.inputProcessor = stage
 
         cpLayout.bitmapFont = assets[FontAssets.OpenSansRegular]
-        cpLayout.batch = menuBatch
+        cpLayout.batch = batch
 
         stage.addActor(cpLayout.createSampleSwatchesCtrl())
         stage.addActor(cpLayout.createBaseSwatchesCtrl())
@@ -78,8 +72,8 @@ class ColorPaletteSimulator(private val menuBatch: Batch,
     }
 
     override fun resize(width: Int, height: Int) {
-        menuCamera.viewportWidth = width.toFloat()
-        menuCamera.viewportHeight = height.toFloat()
+        orthoCamera.viewportWidth = width.toFloat()
+        orthoCamera.viewportHeight = height.toFloat()
     }
 
     override fun dispose() {

@@ -1,4 +1,4 @@
-package river.exertion.kcop
+package river.exertion.kcop.system.colorPalette
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
@@ -195,27 +195,27 @@ enum class ColorPalette {
 
     open fun tags() : List<String> = listOf(this.name)
     fun color() = Color(colorThresholdsFloat[rSetting()], colorThresholdsFloat[gSetting()], colorThresholdsFloat[bSetting()], defaultAlpha)
-    fun incr(by : Int = 1) = ColorPalette.of(rSetting(by), gSetting(by), bSetting(by) )
-    fun incrR(by : Int = 1) = ColorPalette.of(rSetting(by), gSetting(), bSetting() )
-    fun incrG(by : Int = 1) = ColorPalette.of(rSetting(), gSetting(by), bSetting() )
-    fun incrB(by : Int = 1) = ColorPalette.of(rSetting(), gSetting(), bSetting(by) )
+    fun incr(by : Int = 1) = of(rSetting(by), gSetting(by), bSetting(by) )
+    fun incrR(by : Int = 1) = of(rSetting(by), gSetting(), bSetting() )
+    fun incrG(by : Int = 1) = of(rSetting(), gSetting(by), bSetting() )
+    fun incrB(by : Int = 1) = of(rSetting(), gSetting(), bSetting(by) )
     fun decr(by : Int = 1) = incr(-by)
     fun decrR(by : Int = 1) = incrR(-by)
     fun decrG(by : Int = 1) = incrG(-by)
     fun decrB(by : Int = 1) = incrB(-by)
     fun inv() : ColorPalette {
-        return ColorPalette.of(colorThresholdsInt.size - 1 - rSetting(), colorThresholdsInt.size - 1 - gSetting(), colorThresholdsInt.size - 1 - bSetting())
+        return of(colorThresholdsInt.size - 1 - rSetting(), colorThresholdsInt.size - 1 - gSetting(), colorThresholdsInt.size - 1 - bSetting())
     }
     fun comp() : ColorPalette {
         val max = maxOf(rSetting(), gSetting(), bSetting())
         val min = minOf(rSetting(), gSetting(), bSetting())
         val range = max + min
-        return ColorPalette.of(range - rSetting(), range - gSetting(), range - bSetting())
+        return of(range - rSetting(), range - gSetting(), range - bSetting())
     }
 
     fun triad() = Pair(
-        ColorPalette.of(gSetting(), bSetting(), rSetting()),
-        ColorPalette.of(bSetting(), rSetting(), gSetting()),
+        of(gSetting(), bSetting(), rSetting()),
+        of(bSetting(), rSetting(), gSetting()),
     )
 
     fun spectrum() = listOf(
@@ -267,62 +267,64 @@ enum class ColorPalette {
         fun w3cBasic() = listOf(
             "black", "blue", "lime", "aqua", "navy", "green", "teal", "maroon",
             "purple", "olive", "gray", "silver", "red", "fuchsia", "yellow", "white",
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtPink() = listOf(
             "mediumVioletRed", "deepPink", "paleVioletRed", "hotPink", "lightPink", "pink",
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtRed() = listOf(
             "darkRed", "red", "fireBrick", "crimson", "indianRed", "lightCoral", "salmon", "darkSalmon",
             "lightSalmon"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtOrange() = listOf(
             "orangeRed", "tomato", "darkOrange", "coral", "orange"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtYellow() = listOf(
             "darkKhaki", "gold", "khaki", "peachPuff", "yellow", "paleGoldenrod", "moccasin", "lightYellow"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtBrown() = listOf(
             "maroon", "brown", "saddleBrown", "sienna", "chocolate", "darkGoldenrod", "peru", "rosyBrown",
             "goldenrod", "sandyBrown", "tan", "burlywood", "wheat", "bisque", "blanchedAlmond"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtGreen() = listOf(
             "darkGreen", "green", "darkOliveGreen", "forestGreen", "seaGreen", "olive", "oliveDrab", "mediumSeaGreen",
             "limeGreen", "lime", "springGreen", "mediumSpringGreen", "darkSeaGreen", "mediumAquamarine", "yellowGreen",
             "lawnGreen", "chartreuse", "lightGreen", "greenYellow", "paleGreen"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtPurpleVioletMagenta() = listOf(
             "indigo", "purple", "darkMagenta", "darkViolet", "darkSlateBlue", "blueViolet", "darkOrchid", "fuchsia",
             "magenta", "slateBlue", "mediumSlateBlue", "mediumOrchid", "mediumPurple", "orchid", "violet",
             "plum", "thistle"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtBlue() = listOf(
             "midnightBlue", "navy", "darkBlue", "mediumBlue", "blue", "royalBlue", "steelBlue", "dodgerBlue",
             "deepSkyBlue", "cornflowerBlue", "skyBlue", "lightSkyBlue", "lightSteelBlue", "lightBlue", "powderBlue",
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtCyan() = listOf(
             "teal", "darkCyan", "lightSeaGreen", "cadetBlue", "darkTurquoise", "mediumTurquoise", "turquoise", "aqua",
             "cyan", "aquamarine", "paleTurquoise", "lightCyan"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtWhite() = listOf(
             "antiqueWhite", "beige", "seashell", "ivory", "white"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
         fun w3cExtGrayBlack() = listOf(
             "black", "darkSlateGray", "dimGray", "slateGray", "gray", "lightSlateGray", "darkGray", "silver",
             "lightGray"
-        ).associateWith { ColorPalette.of(it) }
+        ).associateWith { of(it) }
 
-        fun w3cColors() = listOf(w3cBasic(), w3cExtPink(), w3cExtRed(), w3cExtOrange(), w3cExtYellow(), w3cExtBrown(), w3cExtGreen(),
-            w3cExtPurpleVioletMagenta(), w3cExtBlue(), w3cExtCyan(), w3cExtWhite(), w3cExtGrayBlack())
+        fun w3cColors() = listOf(
+            w3cBasic(), w3cExtPink(), w3cExtRed(), w3cExtOrange(), w3cExtYellow(), w3cExtBrown(), w3cExtGreen(),
+            w3cExtPurpleVioletMagenta(), w3cExtBlue(), w3cExtCyan(), w3cExtWhite(), w3cExtGrayBlack()
+        )
     }
 }

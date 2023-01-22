@@ -1,4 +1,4 @@
-package river.exertion.kcop
+package river.exertion.kcop.simulation.colorPalette
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -8,14 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import kotlin.reflect.jvm.javaMethod
 
-
-class ColorSwatches(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) {
+class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
 
     var swatchEntries: Map<String, ColorPalette> = mapOf()
-
-    var table = Table()
     val sdcList = mutableListOf<ShapeDrawerConfig>()
 
     var bitmapFont : BitmapFont? = null
@@ -27,13 +28,13 @@ class ColorSwatches(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth:
     fun tablePosY() = topY - swatchHeight * (swatchEntries.size - 1)
 
     fun clearTable(heightOverride : Float = tableHeight(), posYOverride : Float = tablePosY()) {
-        table.clearChildren()
+        this.clearChildren()
 
         sdcList.forEach { it.dispose() }
         sdcList.clear()
 
-        table.setSize(tableWidth(), heightOverride)
-        table.setPosition(tablePosX(), posYOverride)
+        this.setSize(tableWidth(), heightOverride)
+        this.setPosition(tablePosX(), posYOverride)
 
 //        table.debug()
     }
@@ -79,7 +80,7 @@ class ColorSwatches(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth:
 
         stack.add(swatchImg)
         stack.add(swatchLabel)
-        table.add(stack)
-        table.row()
+        this.add(stack)
+        this.row()
     }
 }

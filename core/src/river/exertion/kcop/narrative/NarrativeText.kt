@@ -1,4 +1,4 @@
-package river.exertion.kcop
+package river.exertion.kcop.narrative
 
 interface NarrativeText {
 

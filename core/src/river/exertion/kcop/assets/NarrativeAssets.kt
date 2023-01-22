@@ -1,17 +1,9 @@
 package river.exertion.kcop.assets
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import kotlinx.serialization.json.decodeFromJsonElement
-import ktx.assets.Asset
 import ktx.assets.getAsset
 import ktx.assets.load
-import river.exertion.kcop.NarrativeSequence
-import river.exertion.kcop.Util
-import java.io.InputStream
+import river.exertion.kcop.narrative.NarrativeSequence
 
 enum class NarrativeAssets(val path: String) {
     KCopTest("kcop/narrative/nsb_kcop.json")

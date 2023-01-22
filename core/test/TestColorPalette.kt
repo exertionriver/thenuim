@@ -1,7 +1,5 @@
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.ColorPalette
-import river.exertion.kcop.NarrativeSequence
-import river.exertion.kcop.Util
+import river.exertion.kcop.system.colorPalette.ColorPalette
 import kotlin.math.pow
 import kotlin.test.assertEquals
 

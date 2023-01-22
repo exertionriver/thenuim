@@ -1,6 +1,5 @@
-package river.exertion.kcop.simulation
+package river.exertion.kcop.simulation.text1d
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.assets.AssetManager
@@ -17,16 +16,13 @@ import river.exertion.kcop.assets.FontAssets
 import river.exertion.kcop.assets.NarrativeAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
-import river.exertion.kcop.system.SystemManager
-import river.exertion.kcop.system.entity.Observer
+import river.exertion.kcop.system.colorPalette.ColorPalette
 
-class Text1dSimulator(private val menuBatch: Batch,
+class Text1dSimulator(private val batch: Batch,
                       private val assets: AssetManager,
-                      private val menuStage: Stage,
-                      private val menuCamera: OrthographicCamera) : KtxScreen {
+                      private val stage: Stage,
+                      private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val engine = PooledEngine().apply { SystemManager.init(this) }
-    val observer = Observer.instantiate(engine)
     val textColor = ColorPalette.of("skyBlue")
 
     @Suppress("NewApi")
@@ -39,12 +35,11 @@ class Text1dSimulator(private val menuBatch: Batch,
             Gdx.input.isKeyJustPressed(Input.Keys.UP) -> { assets[NarrativeAssets.KCopTest].prev() }
         }
 
-        menuBatch.use {
-            assets[FontAssets.OpenSansRegular].drawLabel(menuBatch, Vector2(100f, 400f),
+/*        batch.use {
+            assets[FontAssets.OpenSansRegular].drawLabel(batch, Vector2(100f, 400f),
                 assets[NarrativeAssets.KCopTest].currentText(), textColor.color())
         }
-        engine.update(delta)
-    }
+*/    }
 
     override fun hide() {
     }
@@ -62,8 +57,8 @@ class Text1dSimulator(private val menuBatch: Batch,
     }
 
     override fun resize(width: Int, height: Int) {
-        menuCamera.viewportWidth = width.toFloat()
-        menuCamera.viewportHeight = height.toFloat()
+        orthoCamera.viewportWidth = width.toFloat()
+        orthoCamera.viewportHeight = height.toFloat()
     }
 
     override fun dispose() {

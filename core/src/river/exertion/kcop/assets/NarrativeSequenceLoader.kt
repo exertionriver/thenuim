@@ -8,7 +8,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import river.exertion.kcop.NarrativeSequence
+import river.exertion.kcop.narrative.NarrativeSequence
 import river.exertion.kcop.Util
 
 class NarrativeSequenceLoader(resolver: FileHandleResolver?) :

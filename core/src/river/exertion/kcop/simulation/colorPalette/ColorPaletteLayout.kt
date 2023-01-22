@@ -1,52 +1,49 @@
-package river.exertion.kcop
+package river.exertion.kcop.simulation.colorPalette
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
+import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
+import river.exertion.kcop.system.layout.LayoutView
 import kotlin.reflect.jvm.javaMethod
 
-class ColorPaletteLayout(override var width : Float, override var height : Float) : Layout(width, height), Telegraph {
-
-    var baseColorName = "darkGray"
-    var baseColor = ColorPalette.of(baseColorName)
+class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
 
     var bitmapFont : BitmapFont? = null
     var batch : Batch? = null
+
+    var baseColorName = "darkGray"
+    var baseColor = ColorPalette.of(baseColorName)
 
     var sampleSwatchesIdx = 0
     var sampleSwatchesMinIdx = 0
     var sampleSwatchesMaxIdx = ColorPalette.w3cColors().size - 1
 
-    var sampleSwatches = ColorSwatches(firstColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var baseSwatches = ColorSwatches(secondColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var compSwatches = ColorSwatches(thirdColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var triadFirstSwatches = ColorSwatches(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var triadSecondSwatches = ColorSwatches(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var sampleSwatchesCtrl = ColorSwatchesCtrl(firstColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var baseSwatchesCtrl = ColorSwatchesCtrl(secondColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var compSwatchesCtrl = ColorSwatchesCtrl(thirdColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var triadFirstSwatchesCtrl = ColorSwatchesCtrl(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var triadSecondSwatchesCtrl = ColorSwatchesCtrl(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
 
     init {
         MessageChannel.COLOR_PALETTE_BRIDGE.enableReceive(this)
     }
 
-    fun colorColumnWidth() = fifthWidth() + seventhWidth() / 2
+    fun colorColumnWidth() = LayoutView.fifthWidth(width) + LayoutView.seventhWidth(width) / 2
 
-    fun firstColorColumn() = seventhWidth()
+    fun firstColorColumn() = LayoutView.seventhWidth(width)
     fun secondColorColumn() = firstColorColumn() + colorColumnWidth()
     fun thirdColorColumn() = secondColorColumn() + colorColumnWidth()
     fun fourthColorColumn() = thirdColorColumn() + colorColumnWidth()
     fun fifthColorColumn() = fourthColorColumn() + colorColumnWidth()
 
-    fun firstTextColumn() = firstColorColumn() + seventhWidth() / 2
-    fun secondTextColumn() = firstTextColumn() + colorColumnWidth()
-    fun thirdTextColumn() = secondTextColumn() + colorColumnWidth()
-    fun fourthTextColumn() = thirdTextColumn() + colorColumnWidth()
-    fun fifthTextColumn() = fourthTextColumn() + colorColumnWidth()
+    fun colorRowHeight() = LayoutView.seventhHeight(height)
 
-    fun colorRowHeight() = seventhHeight()
-
-    fun firstColorRow() = firstHeight() - colorRowHeight()
-    fun firstTextRow() = firstHeight() - colorRowHeight() / 2
+    fun firstColorRow() = LayoutView.firstHeight(height) - colorRowHeight()
 
     fun colorSwatchHeight() = colorRowHeight()
     fun colorSwatchWidth() = colorColumnWidth()
@@ -55,17 +52,17 @@ class ColorPaletteLayout(override var width : Float, override var height : Float
         if (bitmapFont == null) throw Exception("${::createSampleSwatches.javaMethod?.name}: bitmapFont needs to be set")
         if (batch == null) throw Exception("${::createSampleSwatches.javaMethod?.name}: batch needs to be set")
 
-        if (sampleSwatches.bitmapFont == null) sampleSwatches.bitmapFont = bitmapFont
-        if (sampleSwatches.batch == null) sampleSwatches.batch = batch
+        if (sampleSwatchesCtrl.bitmapFont == null) sampleSwatchesCtrl.bitmapFont = bitmapFont
+        if (sampleSwatchesCtrl.batch == null) sampleSwatchesCtrl.batch = batch
 
-        sampleSwatches.swatchEntries = ColorPalette.w3cColors()[sampleSwatchesIdx]
-        sampleSwatches.create()
+        sampleSwatchesCtrl.swatchEntries = ColorPalette.w3cColors()[sampleSwatchesIdx]
+        sampleSwatchesCtrl.create()
     }
 
     fun createSampleSwatchesCtrl() : Actor {
         createSampleSwatches()
 
-        return sampleSwatches.table
+        return sampleSwatchesCtrl
     }
 
     fun colorSamplePrev() {
@@ -80,7 +77,7 @@ class ColorPaletteLayout(override var width : Float, override var height : Float
         createSampleSwatches()
     }
 
-    private fun createSpectrumSwatches(swatches : ColorSwatches, colorPalette : ColorPalette, colorNameOverride : String? = null)  {
+    private fun createSpectrumSwatches(swatches : ColorSwatchesCtrl, colorPalette : ColorPalette, colorNameOverride : String? = null)  {
         if (bitmapFont == null) throw Exception("${::createSpectrumSwatches.javaMethod?.name}: bitmapFont needs to be set")
         if (batch == null) throw Exception("${::createSpectrumSwatches.javaMethod?.name}: batch needs to be set")
 
@@ -100,29 +97,29 @@ class ColorPaletteLayout(override var width : Float, override var height : Float
         createTriadSecondSwatches()
     }
 
-    private fun createBaseSwatches() = createSpectrumSwatches(baseSwatches, baseColor, baseColorName)
-    private fun createCompSwatches() = createSpectrumSwatches(compSwatches, baseColor.comp())
-    private fun createTriadFirstSwatches() = createSpectrumSwatches(triadFirstSwatches, baseColor.triad().first)
-    private fun createTriadSecondSwatches() = createSpectrumSwatches(triadSecondSwatches, baseColor.triad().second)
+    private fun createBaseSwatches() = createSpectrumSwatches(baseSwatchesCtrl, baseColor, baseColorName)
+    private fun createCompSwatches() = createSpectrumSwatches(compSwatchesCtrl, baseColor.comp())
+    private fun createTriadFirstSwatches() = createSpectrumSwatches(triadFirstSwatchesCtrl, baseColor.triad().first)
+    private fun createTriadSecondSwatches() = createSpectrumSwatches(triadSecondSwatchesCtrl, baseColor.triad().second)
 
     fun createBaseSwatchesCtrl() : Actor {
         createBaseSwatches()
-        return baseSwatches.table
+        return baseSwatchesCtrl
     }
 
     fun createCompSwatchesCtrl() : Actor {
         createCompSwatches()
-        return compSwatches.table
+        return compSwatchesCtrl
     }
 
     fun createTriadFirstSwatchesCtrl() : Actor {
         createTriadFirstSwatches()
-        return triadFirstSwatches.table
+        return triadFirstSwatchesCtrl
     }
 
     fun createTriadSecondSwatchesCtrl() : Actor {
         createTriadSecondSwatches()
-        return triadSecondSwatches.table
+        return triadSecondSwatchesCtrl
     }
 
     private fun setColorBase(colorPalette: ColorPalette) {
@@ -150,7 +147,6 @@ class ColorPaletteLayout(override var width : Float, override var height : Float
 
             recreateSpectrumSwatches()
         }
-
         return true
     }
 }

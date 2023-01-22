@@ -1,6 +1,5 @@
 package river.exertion.kcop
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -9,16 +8,16 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.assets.NarrativeSequenceLoader
-import river.exertion.kcop.simulation.ColorPaletteSimulator
-import river.exertion.kcop.simulation.LayoutSimulator
-import river.exertion.kcop.simulation.Text1dSimulator
+import river.exertion.kcop.narrative.NarrativeSequence
+import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
+import river.exertion.kcop.simulation.layout.LayoutSimulator
+import river.exertion.kcop.simulation.text1d.Text1dSimulator
 
 class Kcop : KtxGame<KtxScreen>() {
 
@@ -48,7 +47,7 @@ class Kcop : KtxGame<KtxScreen>() {
             addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
 
-        setScreen<ColorPaletteSimulator>()
+        setScreen<LayoutSimulator>()
 
     }
 
