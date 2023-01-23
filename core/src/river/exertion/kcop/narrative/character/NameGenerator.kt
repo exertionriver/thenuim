@@ -1,6 +1,5 @@
-package river.exertion.kcop.narrative
+package river.exertion.kcop.narrative.character
 
-import java.util.*
 import kotlin.random.Random
 
 object NameGenerator {
@@ -13,7 +12,9 @@ object NameGenerator {
         listOf("ez", "es"),
     )
     fun filterOutSyllableShuffle(idx : Int) = commonSyllables.filter {it != commonSyllables[idx]}.shuffled(rnd)
-    fun innerShuffle(syllablePairs : List<List<String>>) = syllablePairs[0].shuffled(rnd)[0] + syllablePairs[1].shuffled(rnd)[0] + syllablePairs[2].shuffled(rnd)[0] + syllablePairs[3].shuffled(rnd)[0]
+    fun innerShuffle(syllablePairs : List<List<String>>) = syllablePairs[0].shuffled(rnd)[0] + syllablePairs[1].shuffled(
+        rnd
+    )[0] + syllablePairs[2].shuffled(rnd)[0] + syllablePairs[3].shuffled(rnd)[0]
 
     val commonVowels = mutableListOf("o", "u", "a", "i", "e")
     val commonConsonants = mutableListOf("y", "dz", "dj", "ch", "sz", "s", "h", "p", "ng", "b", "g", "m", "k", "w","zh", "f", "sh", "v", "l", "t", "r", "th", "n","d", "z","s")

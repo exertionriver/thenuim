@@ -1,0 +1,30 @@
+{"id" : "demo_narrative", "navigationBlocks" : [
+  {"id" : "demo_block1", "narrativeText" : "first block", "sequenceNumber" : 1, "prompts" : [
+    { "id" : "first_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptSequenceNumber" : 2},
+    { "id" : "first_prompt_b", "promptText" : "(J)ump", "promptKey" : "J", "promptSequenceNumber" : 5}
+  ]},
+  {"id" : "demo_block2", "narrativeText" : "second block", "sequenceNumber" : 2, "prompts" : [
+    { "id" : "second_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptSequenceNumber" : 3},
+    { "id" : "second_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptSequenceNumber" : 1},
+    { "id" : "second_prompt_c", "promptText" : "(J)ump", "promptKey" : "J", "promptSequenceNumber" : 6}
+  ]},
+  {"id" : "demo_block3", "narrativeText" : "third block", "sequenceNumber" : 3, "prompts" : [
+    { "id" : "third_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptSequenceNumber" : 4},
+    { "id" : "third_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptSequenceNumber" : 2},
+    { "id" : "third_prompt_c", "promptText" : "(C)ycle", "promptKey" : "C", "promptSequenceNumber" : 3}
+  ]},
+  {"id" : "demo_block4", "narrativeText" : "fourth block", "sequenceNumber" : 4, "prompts" : [
+    { "id" : "fourth_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptSequenceNumber" : 5},
+    { "id" : "fourth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptSequenceNumber" : 3},
+    { "id" : "fourth_prompt_c", "promptText" : "(C)ycle", "promptKey" : "C", "promptSequenceNumber" : 4}
+  ]},
+  {"id" : "demo_block5", "narrativeText" : "fifth block", "sequenceNumber" : 5, "prompts" : [
+    { "id" : "fifth_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptSequenceNumber" : 6},
+    { "id" : "fifth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptSequenceNumber" : 4},
+    { "id" : "fifth_prompt_c", "promptText" : "Jump (B)ack", "promptKey" : "B", "promptSequenceNumber" : 1}
+  ]},
+  {"id" : "demo_block6", "narrativeText" : "sixth block", "sequenceNumber" : 6, "prompts" : [
+    { "id" : "sixth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptSequenceNumber" : 5},
+    { "id" : "sixth_prompt_c", "promptText" : "Jump (B)ack", "promptKey" : "B", "promptSequenceNumber" : 2}
+  ]}
+]}

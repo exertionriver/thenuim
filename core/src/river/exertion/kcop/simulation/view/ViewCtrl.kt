@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.layout
+package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -9,14 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
-import river.exertion.kcop.system.layout.LayoutView
+import river.exertion.kcop.system.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 
-class LayoutViewCtrl(val layoutView : LayoutView, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
+class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
 
     var sdc : ShapeDrawerConfig? = null
     var bitmapFont : BitmapFont? = null
@@ -24,7 +22,7 @@ class LayoutViewCtrl(val layoutView : LayoutView, var screenWidth: Float = 50f, 
 
     var backgroundColor : ColorPalette? = null
 
-    fun viewRect() = layoutView.viewRect(screenWidth, screenHeight)
+    fun viewRect() = viewType.viewRect(screenWidth, screenHeight)
 
     fun tableWidth() = viewRect().width
     fun tableHeight() = viewRect().height
@@ -34,8 +32,12 @@ class LayoutViewCtrl(val layoutView : LayoutView, var screenWidth: Float = 50f, 
     fun clearTable() {
         this.clearChildren()
 
+        if (sdc != null) { sdc!!.dispose(); sdc = null }
+
         this.setSize(tableWidth(), tableHeight())
         this.setPosition(tablePosX(), tablePosY())
+
+        this.debug()
     }
 
     fun create() {
@@ -50,11 +52,11 @@ class LayoutViewCtrl(val layoutView : LayoutView, var screenWidth: Float = 50f, 
 
             val backgroundImg = Image(sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) })
 
-            val viewLabel = Label(layoutView.name, Label.LabelStyle(bitmapFont, backgroundColor!!.label().color()))
+            val viewLabel = Label(viewType.name, Label.LabelStyle(bitmapFont, backgroundColor!!.label().color()))
             viewLabel.setAlignment(Align.center)
 
             stack.onClick {
-                println("layout View:${layoutView.name}")
+                println("layout View:${viewType.name}")
                 println("x:${Gdx.input.getX()}, y:${Gdx.input.getY()}")
             }
 

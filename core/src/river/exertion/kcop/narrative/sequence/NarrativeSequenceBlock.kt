@@ -1,6 +1,7 @@
-package river.exertion.kcop.narrative
+package river.exertion.kcop.narrative.sequence
 
 import kotlinx.serialization.Serializable
+import river.exertion.kcop.narrative.NarrativeText
 import river.exertion.kcop.system.Id
 
 @Serializable

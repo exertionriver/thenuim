@@ -5,10 +5,11 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
-import river.exertion.kcop.system.layout.LayoutView
+import river.exertion.kcop.system.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 
 class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
@@ -33,34 +34,30 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.COLOR_PALETTE_BRIDGE.enableReceive(this)
     }
 
-    fun colorColumnWidth() = LayoutView.fifthWidth(width) + LayoutView.seventhWidth(width) / 2
+    fun colorColumnWidth() = ViewType.fifthWidth(width) + ViewType.seventhWidth(width) / 2
 
-    fun firstColorColumn() = LayoutView.seventhWidth(width)
+    fun firstColorColumn() = ViewType.seventhWidth(width)
     fun secondColorColumn() = firstColorColumn() + colorColumnWidth()
     fun thirdColorColumn() = secondColorColumn() + colorColumnWidth()
     fun fourthColorColumn() = thirdColorColumn() + colorColumnWidth()
     fun fifthColorColumn() = fourthColorColumn() + colorColumnWidth()
 
-    fun colorRowHeight() = LayoutView.seventhHeight(height)
+    fun colorRowHeight() = ViewType.seventhHeight(height)
 
-    fun firstColorRow() = LayoutView.firstHeight(height) - colorRowHeight()
+    fun firstColorRow() = ViewType.firstHeight(height) - colorRowHeight()
 
     fun colorSwatchHeight() = colorRowHeight()
     fun colorSwatchWidth() = colorColumnWidth()
 
-    private fun createSampleSwatches() {
-        if (bitmapFont == null) throw Exception("${::createSampleSwatches.javaMethod?.name}: bitmapFont needs to be set")
-        if (batch == null) throw Exception("${::createSampleSwatches.javaMethod?.name}: batch needs to be set")
+    fun createSampleSwatchesCtrl() : Table {
+        if (bitmapFont == null) throw Exception("${::createSampleSwatchesCtrl.javaMethod?.name}: bitmapFont needs to be set")
+        if (batch == null) throw Exception("${::createSampleSwatchesCtrl.javaMethod?.name}: batch needs to be set")
 
         if (sampleSwatchesCtrl.bitmapFont == null) sampleSwatchesCtrl.bitmapFont = bitmapFont
         if (sampleSwatchesCtrl.batch == null) sampleSwatchesCtrl.batch = batch
 
         sampleSwatchesCtrl.swatchEntries = ColorPalette.w3cColors()[sampleSwatchesIdx]
         sampleSwatchesCtrl.create()
-    }
-
-    fun createSampleSwatchesCtrl() : Actor {
-        createSampleSwatches()
 
         return sampleSwatchesCtrl
     }
@@ -68,59 +65,41 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     fun colorSamplePrev() {
         if (sampleSwatchesIdx == sampleSwatchesMinIdx) sampleSwatchesIdx = sampleSwatchesMaxIdx else sampleSwatchesIdx--
 
-        createSampleSwatches()
+        createSampleSwatchesCtrl()
     }
 
     fun colorSampleNext() {
         if (sampleSwatchesIdx == sampleSwatchesMaxIdx) sampleSwatchesIdx = sampleSwatchesMinIdx else sampleSwatchesIdx++
 
-        createSampleSwatches()
+        createSampleSwatchesCtrl()
     }
 
-    private fun createSpectrumSwatches(swatches : ColorSwatchesCtrl, colorPalette : ColorPalette, colorNameOverride : String? = null)  {
-        if (bitmapFont == null) throw Exception("${::createSpectrumSwatches.javaMethod?.name}: bitmapFont needs to be set")
-        if (batch == null) throw Exception("${::createSpectrumSwatches.javaMethod?.name}: batch needs to be set")
+    private fun createSpectrumSwatchesCtrl(swatchesCtrl : ColorSwatchesCtrl, colorPalette : ColorPalette, colorNameOverride : String? = null) : Table {
+        if (bitmapFont == null) throw Exception("${::createSpectrumSwatchesCtrl.javaMethod?.name}: bitmapFont needs to be set")
+        if (batch == null) throw Exception("${::createSpectrumSwatchesCtrl.javaMethod?.name}: batch needs to be set")
 
-        if (swatches.bitmapFont == null) swatches.bitmapFont = bitmapFont
-        if (swatches.batch == null) swatches.batch = batch
+        if (swatchesCtrl.bitmapFont == null) swatchesCtrl.bitmapFont = bitmapFont
+        if (swatchesCtrl.batch == null) swatchesCtrl.batch = batch
 
         val colorName = colorNameOverride ?: colorPalette.tags()[0]
 
-        swatches.swatchEntries = colorPalette.labelledSpectrum(colorName)
-        swatches.createWithHeader(colorName, colorPalette)
+        swatchesCtrl.swatchEntries = colorPalette.labelledSpectrum(colorName)
+        swatchesCtrl.createWithHeader(colorName, colorPalette)
+
+        return swatchesCtrl
     }
 
     private fun recreateSpectrumSwatches() {
-        createBaseSwatches()
-        createCompSwatches()
-        createTriadFirstSwatches()
-        createTriadSecondSwatches()
+        createBaseSwatchesCtrl()
+        createCompSwatchesCtrl()
+        createTriadFirstSwatchesCtrl()
+        createTriadSecondSwatchesCtrl()
     }
 
-    private fun createBaseSwatches() = createSpectrumSwatches(baseSwatchesCtrl, baseColor, baseColorName)
-    private fun createCompSwatches() = createSpectrumSwatches(compSwatchesCtrl, baseColor.comp())
-    private fun createTriadFirstSwatches() = createSpectrumSwatches(triadFirstSwatchesCtrl, baseColor.triad().first)
-    private fun createTriadSecondSwatches() = createSpectrumSwatches(triadSecondSwatchesCtrl, baseColor.triad().second)
-
-    fun createBaseSwatchesCtrl() : Actor {
-        createBaseSwatches()
-        return baseSwatchesCtrl
-    }
-
-    fun createCompSwatchesCtrl() : Actor {
-        createCompSwatches()
-        return compSwatchesCtrl
-    }
-
-    fun createTriadFirstSwatchesCtrl() : Actor {
-        createTriadFirstSwatches()
-        return triadFirstSwatchesCtrl
-    }
-
-    fun createTriadSecondSwatchesCtrl() : Actor {
-        createTriadSecondSwatches()
-        return triadSecondSwatchesCtrl
-    }
+    fun createBaseSwatchesCtrl() = createSpectrumSwatchesCtrl(baseSwatchesCtrl, baseColor, baseColorName)
+    fun createCompSwatchesCtrl() = createSpectrumSwatchesCtrl(compSwatchesCtrl, baseColor.comp())
+    fun createTriadFirstSwatchesCtrl() = createSpectrumSwatchesCtrl(triadFirstSwatchesCtrl, baseColor.triad().first)
+    fun createTriadSecondSwatchesCtrl() = createSpectrumSwatchesCtrl(triadSecondSwatchesCtrl, baseColor.triad().second)
 
     private fun setColorBase(colorPalette: ColorPalette) {
         baseColor = colorPalette

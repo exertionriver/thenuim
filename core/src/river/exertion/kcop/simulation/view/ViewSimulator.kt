@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.layout
+package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
@@ -12,12 +12,12 @@ import river.exertion.kcop.assets.FontAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
 
-class LayoutSimulator(private val batch: Batch,
-                      private val assets: AssetManager,
-                      private val stage: Stage,
-                      private val orthoCamera: OrthographicCamera) : KtxScreen {
+class ViewSimulator(private val batch: Batch,
+                    private val assets: AssetManager,
+                    private val stage: Stage,
+                    private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val layout = Layout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {

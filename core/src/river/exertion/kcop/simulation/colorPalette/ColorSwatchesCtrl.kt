@@ -36,7 +36,7 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
         this.setSize(tableWidth(), heightOverride)
         this.setPosition(tablePosX(), posYOverride)
 
-//        table.debug()
+        this.debug()
     }
 
     fun create() {

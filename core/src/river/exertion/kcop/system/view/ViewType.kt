@@ -1,8 +1,8 @@
-package river.exertion.kcop.system.layout
+package river.exertion.kcop.system.view
 
 import com.badlogic.gdx.math.Rectangle
 
-enum class LayoutView {
+enum class ViewType {
 
     DISPLAY { override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(0f, 0f, firstWidth(screenWidth), firstHeight(screenHeight)) },
     TEXT { override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), thirdHeight(screenHeight), secondWidth(screenWidth), secondHeight(screenHeight)) },

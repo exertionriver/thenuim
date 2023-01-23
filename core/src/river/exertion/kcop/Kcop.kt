@@ -13,10 +13,12 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
+import river.exertion.kcop.assets.NarrativeNavigationLoader
 import river.exertion.kcop.assets.NarrativeSequenceLoader
-import river.exertion.kcop.narrative.NarrativeSequence
+import river.exertion.kcop.narrative.navigation.NarrativeNavigation
+import river.exertion.kcop.narrative.sequence.NarrativeSequence
 import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
-import river.exertion.kcop.simulation.layout.LayoutSimulator
+import river.exertion.kcop.simulation.view.ViewSimulator
 import river.exertion.kcop.simulation.text1d.Text1dSimulator
 
 class Kcop : KtxGame<KtxScreen>() {
@@ -33,6 +35,7 @@ class Kcop : KtxGame<KtxScreen>() {
         val assets = AssetManager()
 
         assets.setLoader(NarrativeSequence::class.java, NarrativeSequenceLoader(InternalFileHandleResolver()))
+        assets.setLoader(NarrativeNavigation::class.java, NarrativeNavigationLoader(InternalFileHandleResolver()))
 
         context.register {
             bindSingleton(perspectiveCamera)
@@ -43,11 +46,11 @@ class Kcop : KtxGame<KtxScreen>() {
             bindSingleton(assets)
 
             addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(LayoutSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
             addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
 
-        setScreen<LayoutSimulator>()
+        setScreen<Text1dSimulator>()
 
     }
 

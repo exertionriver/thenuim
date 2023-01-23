@@ -1,8 +1,5 @@
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.narrative.NameGenerator
-import river.exertion.kcop.narrative.NameTypes
-import java.util.*
-import kotlin.random.Random
+import river.exertion.kcop.narrative.character.NameTypes
 
 class TestNameCreation {
 

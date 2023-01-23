@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.narrative.NarrativeSequence
+import river.exertion.kcop.narrative.sequence.NarrativeSequence
 import river.exertion.kcop.Util
 
 class TestBlockLoad {

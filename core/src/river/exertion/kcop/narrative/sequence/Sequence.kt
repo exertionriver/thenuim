@@ -1,4 +1,4 @@
-package river.exertion.kcop.narrative
+package river.exertion.kcop.narrative.sequence
 
 interface Sequence {
 
