@@ -1,7 +1,20 @@
 # kcop
 koboldCave Operating Platform
 
-v0.1 - json-loading narrative assets, quantized color palette, initial layout
+<b>v0.2 - narrative sequence and CYOA-style navigation, clickable color palette, specifying layout areas</b>
+
+JSON-driven Narrative 'sequence' and 'navigation' (JSON shown) :
+
+https://user-images.githubusercontent.com/13192685/216484069-a1685d19-3d57-41ac-8bee-413b28940afa.mp4
+
+Clickable Color Palette:
+
+https://user-images.githubusercontent.com/13192685/216483969-238e2478-b068-4308-910d-b04894919163.mp4
+
+Labelled layout areas:
+![kcop0_2_layout](https://user-images.githubusercontent.com/13192685/216483815-e14f6b94-bb29-46cc-b8dd-434366d5c456.png)
+
+<b>v0.1 - JSON-loading narrative assets, quantized color palette, initial layout</b>
 
 Rendering and navigating narrative asset:
 
