@@ -18,6 +18,12 @@ data class NarrativeNavigation(
         currentSequenceNumber = navigationBlocks.firstOrNull { it.sequenceNumber == nextIdx }?.sequenceNumber ?: currentSequenceNumber
     }
 
-    fun currentText() = navigationBlocks.firstOrNull { it.sequenceNumber == currentSequenceNumber }?.narrativeText ?: "<narrativeText not found at currentSequenceNumber>"
+    fun next(promptKey : String) {
+        currentSequenceNumber = navigationBlocks.firstOrNull { it.sequenceNumber == currentSequenceNumber }?.prompts?.firstOrNull { it.promptKey.toString() == promptKey }?.promptSequenceNumber ?: currentSequenceNumber
+    }
+
+    fun currentText() = navigationBlocks.firstOrNull { it.sequenceNumber == currentSequenceNumber }?.narrativeText ?: "<narrativeText not found at ($id, $currentSequenceNumber)>"
+
+    fun currentPrompts() = navigationBlocks.firstOrNull { it.sequenceNumber == currentSequenceNumber }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found at ($id, $currentSequenceNumber)>")
 
 }

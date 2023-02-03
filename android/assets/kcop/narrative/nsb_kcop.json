@@ -1,4 +1,4 @@
 {"id" : "demo_narrative", "sequenceBlocks" : [
-  {"id" : "demo_block1", "narrativeText" : "first block", "sequenceNumber" : 1},
-  {"id" : "demo_block2", "narrativeText" : "second block", "sequenceNumber" : 2}
+  {"id" : "demo_block1", "narrativeText" : "first seq block", "sequenceNumber" : 1},
+  {"id" : "demo_block2", "narrativeText" : "second seq block", "sequenceNumber" : 2}
 ]}

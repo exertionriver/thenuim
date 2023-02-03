@@ -3,12 +3,16 @@ package river.exertion.kcop.simulation.text1d
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import ktx.actors.onKey
+import ktx.actors.onKeyDown
+import ktx.actors.onKeyEvent
 import river.exertion.kcop.narrative.navigation.NarrativeNavigation
 import river.exertion.kcop.narrative.sequence.NarrativeSequence
 import river.exertion.kcop.system.ShapeDrawerConfig
@@ -17,7 +21,7 @@ import river.exertion.kcop.system.text1d.Text1dType
 import river.exertion.kcop.system.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 
-class Text1dCtrl(val text1dType: Text1dType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
+class Text1dCtrl(var text1dType: Text1dType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
 
     var sdc : ShapeDrawerConfig? = null
     var bitmapFont : BitmapFont? = null
@@ -37,6 +41,7 @@ class Text1dCtrl(val text1dType: Text1dType, var screenWidth: Float = 50f, var s
 
     fun clearTable(heightOverride : Float = tableHeight(), posYOverride : Float = tablePosY()) {
         this.clearChildren()
+        this.clearListeners()
 
         if (sdc != null) { sdc!!.dispose(); sdc = null }
 
@@ -49,21 +54,35 @@ class Text1dCtrl(val text1dType: Text1dType, var screenWidth: Float = 50f, var s
     fun create() {
         clearTable()
 
+        this.top()
+
         if (textColor != null) {
             if (bitmapFont == null) throw Exception("${::create.javaMethod?.name}: bitmapFont needs to be set")
             if (batch == null) throw Exception("${::create.javaMethod?.name}: batch needs to be set")
-            if (sdc == null) sdc = ShapeDrawerConfig(batch!!, textColor!!.color())
+            if (sdc == null) sdc = ShapeDrawerConfig(batch!!, textColor!!.comp().color())
 
-//            val stack = Stack()
+            if (this.text1dType == Text1dType.SEQUENCE) {
+                val viewLabel = Label(text1dSequence!!.currentText(), Label.LabelStyle(bitmapFont, textColor!!.label().color()))
+                this.add(viewLabel).growX().left().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
+            } else {
+                val viewLabel = Label(text1dNavigation!!.currentText(), Label.LabelStyle(bitmapFont, textColor!!.label().color()))
+                this.add(viewLabel).growX().left().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
 
-//            val backgroundImg = Image(sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) })
+                val promptsMaxIdx = text1dNavigation!!.currentPrompts().size - 1
 
-            val viewLabel = Label(text1dSequence!!.currentText(), Label.LabelStyle(bitmapFont, textColor!!.label().color()))
-            viewLabel.setAlignment(Align.left)
+                text1dNavigation!!.currentPrompts().forEachIndexed { idx, prompt ->
+                    this.row()
+                    val promptLabel = Label(prompt, Label.LabelStyle(bitmapFont, textColor!!.label().color()))
 
-//            stack.add(viewLabel)
+                    if (idx < promptsMaxIdx)
+                        this.add(promptLabel).growX().left().padLeft(ViewType.padWidth(width) * 2).padRight(ViewType.padWidth(width))
+                    else
+                        this.add(promptLabel).growX().left().padLeft(ViewType.padWidth(width) * 2).padRight(ViewType.padWidth(width)).padBottom(ViewType.padHeight(height))
+                }
+            }
 
-            this.add(viewLabel)
+
+
         }
     }
 }

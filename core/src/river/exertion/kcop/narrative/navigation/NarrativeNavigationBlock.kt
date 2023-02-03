@@ -11,5 +11,4 @@ data class NarrativeNavigationBlock(
     override val sequenceNumber: Long = 0L,
     val prompts : MutableList<NarrativeNavigationPrompt> = mutableListOf(),
     override val id: String = ""
-) : Id, Sequence, NarrativeText {
-}
+) : Id, Sequence, NarrativeText

@@ -1,5 +1,6 @@
 package river.exertion.kcop.narrative.sequence
 
+import com.badlogic.gdx.Input
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.system.Id
 
@@ -22,6 +23,13 @@ data class NarrativeSequence(
         currentSequenceNumber = sequenceBlocks.filter { it.sequenceNumber < currentSequenceNumber }.maxOfOrNull { it.sequenceNumber } ?: currentSequenceNumber
     }
 
-    fun currentText() = sequenceBlocks.firstOrNull { it.sequenceNumber == currentSequenceNumber }?.narrativeText ?: "<narrativeText not found at currentSequenceNumber>"
+    fun next(promptKey : String) {
+        when (promptKey) {
+            Input.Keys.toString(Input.Keys.UP) -> prev()
+            Input.Keys.toString(Input.Keys.DOWN) -> next()
+        }
+    }
+
+    fun currentText() = sequenceBlocks.firstOrNull { it.sequenceNumber == currentSequenceNumber }?.narrativeText ?: "<narrativeText not found at ($id, $currentSequenceNumber)>"
 
 }

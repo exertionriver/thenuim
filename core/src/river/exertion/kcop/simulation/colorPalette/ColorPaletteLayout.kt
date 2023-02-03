@@ -34,7 +34,7 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.COLOR_PALETTE_BRIDGE.enableReceive(this)
     }
 
-    fun colorColumnWidth() = ViewType.fifthWidth(width) + ViewType.seventhWidth(width) / 2
+    fun colorColumnWidth() = ViewType.fifthWidth(width) + ViewType.padWidth(width)
 
     fun firstColorColumn() = ViewType.seventhWidth(width)
     fun secondColorColumn() = firstColorColumn() + colorColumnWidth()

@@ -3,13 +3,15 @@ package river.exertion.kcop.system
 import com.badlogic.gdx.ai.msg.MessageManager
 import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
+import river.exertion.kcop.system.text1d.Text1dMessage
 import river.exertion.kcop.system.view.ViewMessage
 import kotlin.reflect.KClass
 
 enum class MessageChannel {
 
     COLOR_PALETTE_BRIDGE { override val messageClass = ColorPaletteMessage::class },
-    LAYOUT_BRIDGE { override val messageClass = ViewMessage::class }
+    LAYOUT_BRIDGE { override val messageClass = ViewMessage::class },
+    TEXT1D_BRIDGE { override val messageClass = Text1dMessage::class }
     ;
 
     fun id() = this.ordinal

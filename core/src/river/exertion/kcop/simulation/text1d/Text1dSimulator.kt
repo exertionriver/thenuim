@@ -2,20 +2,17 @@ package river.exertion.kcop.simulation.text1d
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g3d.*
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
-import ktx.graphics.use
 import ktx.scene2d.*
 import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
-import river.exertion.kcop.narrative.navigation.NarrativeNavigation
-import river.exertion.kcop.simulation.colorPalette.ColorPaletteLayout
-import river.exertion.kcop.system.colorPalette.ColorPalette
+
 
 class Text1dSimulator(private val batch: Batch,
                       private val assets: AssetManager,
@@ -33,10 +30,8 @@ class Text1dSimulator(private val batch: Batch,
         stage.draw()
 
         when {
-            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { t1Layout.text1dType.next() }
-            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { t1Layout.text1dType.next() }
-            Gdx.input.isKeyJustPressed(Input.Keys.DOWN) -> { t1Layout.text1dType.next() }
-            Gdx.input.isKeyJustPressed(Input.Keys.UP) -> { t1Layout.text1dType.next() }
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { t1Layout.nextType() }
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { t1Layout.prevType() }
         }
     }
 
@@ -50,7 +45,10 @@ class Text1dSimulator(private val batch: Batch,
 
         assets.finishLoading()
 
-        Gdx.input.inputProcessor = stage
+        val multiplexer = InputMultiplexer()
+        multiplexer.addProcessor(stage)
+        multiplexer.addProcessor(Text1dInputProcessor())
+        Gdx.input.inputProcessor = multiplexer
 
         t1Layout.bitmapFont = assets[FontAssets.OpenSansRegular]
         t1Layout.batch = batch

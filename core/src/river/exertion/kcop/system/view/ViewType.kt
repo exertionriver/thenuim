@@ -36,6 +36,9 @@ enum class ViewType {
 
         fun seventhWidth(width : Float) = width / 34f
         fun seventhHeight(height : Float) = height / 21f
+
+        fun padWidth(width: Float) = seventhWidth(width) / 2
+        fun padHeight(height: Float) = seventhHeight(height) / 2
     }
 
 }
