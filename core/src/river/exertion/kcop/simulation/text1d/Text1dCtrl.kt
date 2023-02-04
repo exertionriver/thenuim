@@ -1,18 +1,9 @@
 package river.exertion.kcop.simulation.text1d
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
-import ktx.actors.onClick
-import ktx.actors.onKey
-import ktx.actors.onKeyDown
-import ktx.actors.onKeyEvent
 import river.exertion.kcop.narrative.navigation.NarrativeNavigation
 import river.exertion.kcop.narrative.sequence.NarrativeSequence
 import river.exertion.kcop.system.ShapeDrawerConfig
