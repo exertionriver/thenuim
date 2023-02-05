@@ -40,17 +40,14 @@ class ViewSimulator(private val batch: Batch,
 
         Gdx.input.inputProcessor = ViewInputProcessor()
 
-        layout.bitmapFont = assets[FontAssets.OpenSansRegular]
-        layout.batch = batch
-
-        stage.addActor(layout.createDisplayViewCtrl())
-        stage.addActor(layout.createTextViewCtrl())
-        stage.addActor(layout.createLogViewCtrl())
-        stage.addActor(layout.createMenuViewCtrl())
-        stage.addActor(layout.createPromptsViewCtrl())
-        stage.addActor(layout.createInputsViewCtrl(assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl())
-        stage.addActor(layout.createPauseViewCtrl())
+        stage.addActor(layout.createDisplayViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createTextViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createLogViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createMenuViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createPromptsViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createInputsViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createAiViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createPauseViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
     }
 
     override fun pause() {

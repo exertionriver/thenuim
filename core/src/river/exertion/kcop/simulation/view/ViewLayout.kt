@@ -12,9 +12,6 @@ import river.exertion.kcop.system.view.ViewType
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
-    var bitmapFont : BitmapFont? = null
-    var batch : Batch? = null
-
     var displayViewCtrl = ViewCtrl(ViewType.DISPLAY, width, height)
     var textViewCtrl = ViewCtrl(ViewType.TEXT, width, height)
     var logViewCtrl = ViewCtrl(ViewType.LOG, width, height)
@@ -29,30 +26,27 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
     }
 
-    private fun createViewCtrl(layoutViewCtrl : ViewCtrl) : Table {
-        if (layoutViewCtrl.bitmapFont == null) layoutViewCtrl.bitmapFont = bitmapFont
-        if (layoutViewCtrl.batch == null) layoutViewCtrl.batch = batch
-
-        layoutViewCtrl.create()
-
+    private fun createViewCtrl(layoutViewCtrl : ViewCtrl, batch : Batch, bitmapFont : BitmapFont) : Table {
+        layoutViewCtrl.initCreate(bitmapFont, batch)
         return layoutViewCtrl
     }
 
-    fun createDisplayViewCtrl() = createViewCtrl(displayViewCtrl)
-    fun createTextViewCtrl() = createViewCtrl(textViewCtrl)
-    fun createLogViewCtrl() = createViewCtrl(logViewCtrl)
-    fun createMenuViewCtrl() = createViewCtrl(menuViewCtrl)
-    fun createPromptsViewCtrl() = createViewCtrl(promptsViewCtrl)
-    fun createInputsViewCtrl(clickImage : Texture, keyPressImage : Texture, keyUpImage : Texture) : InputViewCtrl {
-        createViewCtrl(inputsViewCtrl)
+    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(displayViewCtrl, batch, bitmapFont)
+    fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(textViewCtrl, batch, bitmapFont)
+    fun createLogViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(logViewCtrl, batch, bitmapFont)
+    fun createMenuViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(menuViewCtrl, batch, bitmapFont)
+    fun createPromptsViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(promptsViewCtrl, batch, bitmapFont)
+    fun createInputsViewCtrl(batch : Batch, bitmapFont : BitmapFont, clickImage : Texture, keyPressImage : Texture, keyUpImage : Texture) : InputViewCtrl {
         inputsViewCtrl.clickImage = clickImage
         inputsViewCtrl.keyPressImage = keyPressImage
         inputsViewCtrl.keyUpImage = keyUpImage
 
+        inputsViewCtrl.initCreate(bitmapFont, batch)
+
         return inputsViewCtrl
     }
-    fun createAiViewCtrl() = createViewCtrl(aiViewCtrl)
-    fun createPauseViewCtrl() = createViewCtrl(pauseViewCtrl)
+    fun createAiViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(aiViewCtrl, batch, bitmapFont)
+    fun createPauseViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(pauseViewCtrl, batch, bitmapFont)
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if ( (msg != null) && (MessageChannel.INPUT_VIEW_BRIDGE.isType(msg.message) ) ) {
@@ -68,7 +62,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     inputsViewCtrl.touchEvent(inputMessage.getScreenX(), inputMessage.getScreenY(), inputMessage.getButton())
                 }
             }
-            inputsViewCtrl.create()
+            inputsViewCtrl.recreate()
         }
         return true
     }

@@ -32,20 +32,32 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
         this.clearChildren()
         this.clearListeners()
 
-        if (sdc != null) { sdc!!.dispose(); sdc = null }
-
         this.setSize(tableWidth(), tableHeight())
         this.setPosition(tablePosX(), tablePosY())
-
-        if (bitmapFont == null) throw Exception("${::clearTable.javaMethod?.name}: bitmapFont needs to be set")
-        if (batch == null) throw Exception("${::clearTable.javaMethod?.name}: batch needs to be set")
-        if (sdc == null) sdc = ShapeDrawerConfig(batch!!, backgroundColor.color())
 
         this.debug()
     }
 
-    open fun create() {
+    fun recreate() {
+        if (this.bitmapFont == null) throw Exception("${::recreate.javaMethod?.name}: bitmapFont needs to be set")
+        if (this.batch == null) throw Exception("${::recreate.javaMethod?.name}: batch needs to be set")
+
         clearTable()
+
+        build(this.bitmapFont!!, this.batch!!)
+    }
+
+    fun initCreate(bitmapFont: BitmapFont, batch: Batch) {
+        if (this.batch == null) this.batch = batch
+        if (this.bitmapFont == null) this.bitmapFont = bitmapFont
+        if (this.sdc == null) this.sdc = ShapeDrawerConfig(batch, backgroundColor.color())
+
+        clearTable()
+
+        build(bitmapFont, batch)
+    }
+
+    open fun build(bitmapFont: BitmapFont, batch: Batch) {
 
         val stack = Stack()
 
@@ -63,5 +75,9 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
         stack.add(viewLabel)
 
         this.add(stack)
+    }
+
+    fun dispose() {
+        if (sdc != null) { sdc!!.dispose(); sdc = null }
     }
 }

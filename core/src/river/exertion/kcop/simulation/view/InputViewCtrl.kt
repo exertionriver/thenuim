@@ -1,7 +1,8 @@
 package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
@@ -48,26 +49,31 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
 
     fun touchText() = "$currentButton ($currentClickX,$currentClickY)"
 
-    override fun create() {
-        if (currentImage != null) {
-            clearTable()
+    fun textTable(bitmapFont: BitmapFont) : Table {
 
-            val stack = Stack()
+        val innerTable = Table()
 
-            stack.add(Image(sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) }))
+        innerTable.add(Label(keyText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).expandY()
 
-            val innerTable = Table()
+        innerTable.row()
 
-            innerTable.add(Label(keyText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).expandY()
+        if (isTouchEvent()) innerTable.add(Label(touchText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-            innerTable.row()
+        innerTable.debug()
 
-            if (isTouchEvent()) innerTable.add(Label(touchText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
+        return innerTable
+    }
 
-            innerTable.debug()
-            stack.add(innerTable)
+    override fun build(bitmapFont: BitmapFont, batch: Batch) {
+        val backgroundImg = Image(sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) })
 
-            this.add(stack)
+        if ( (currentImage != null) && (isTouchEvent() || isKeyEvent()) ) {
+            this.add(Stack().apply {
+                this.add(backgroundImg)
+                this.add(textTable(bitmapFont))
+            } )
+        } else {
+            this.add(backgroundImg)
         }
     }
 }
