@@ -9,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.assets.FontAssets
+import river.exertion.kcop.assets.TextureAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
+import river.exertion.kcop.system.view.ViewInputProcessor
 
 class ViewSimulator(private val batch: Batch,
                     private val assets: AssetManager,
@@ -33,9 +35,10 @@ class ViewSimulator(private val batch: Batch,
 
     override fun show() {
         FontAssets.values().forEach { assets.load(it) }
+        TextureAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
-        Gdx.input.inputProcessor = stage
+        Gdx.input.inputProcessor = ViewInputProcessor()
 
         layout.bitmapFont = assets[FontAssets.OpenSansRegular]
         layout.batch = batch
@@ -45,7 +48,7 @@ class ViewSimulator(private val batch: Batch,
         stage.addActor(layout.createLogViewCtrl())
         stage.addActor(layout.createMenuViewCtrl())
         stage.addActor(layout.createPromptsViewCtrl())
-        stage.addActor(layout.createInputsViewCtrl())
+        stage.addActor(layout.createInputsViewCtrl(assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createAiViewCtrl())
         stage.addActor(layout.createPauseViewCtrl())
     }

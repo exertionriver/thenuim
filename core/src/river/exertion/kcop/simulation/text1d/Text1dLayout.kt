@@ -55,13 +55,13 @@ class Text1dLayout(var width : Float, var height : Float) : Telegraph {
     fun prevType() { text1dType = text1dType.prev(); createTextBlockCtrl() }
 
     override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
+        if ( (msg != null) && (MessageChannel.TEXT1D_BRIDGE.isType(msg.message) ) ) {
             val text1dMessage : Text1dMessage = MessageChannel.TEXT1D_BRIDGE.receiveMessage(msg.extraInfo)
 
             if (text1dType == Text1dType.SEQUENCE)
-                text1dSequence!!.next(text1dMessage.key)
+                text1dSequence?.next(text1dMessage.key)
             else
-                text1dNavigation!!.next(text1dMessage.key)
+                text1dNavigation?.next(text1dMessage.key)
 
             createTextBlockCtrl()
         }

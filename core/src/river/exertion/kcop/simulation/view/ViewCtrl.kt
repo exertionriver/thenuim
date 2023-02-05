@@ -30,6 +30,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
 
     fun clearTable() {
         this.clearChildren()
+        this.clearListeners()
 
         if (sdc != null) { sdc!!.dispose(); sdc = null }
 

@@ -18,6 +18,7 @@ enum class MessageChannel {
     ;
 
     fun id() = this.ordinal
+    fun isType(messageId : Int) = this.ordinal == messageId
     abstract val messageClass : KClass<*>
     fun send(sender: Telegraph?, message : Any) = if (this.messageClass.isInstance(message)) MessageManager.getInstance().dispatchMessage(sender, this.id(), message) else throw Exception("send:$this requires ${this.messageClass}, found ${message::class}")
     fun enableReceive(receiver: Telegraph?) = MessageManager.getInstance().addListener(receiver, this.id())

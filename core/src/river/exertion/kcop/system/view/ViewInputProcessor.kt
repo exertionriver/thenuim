@@ -7,10 +7,11 @@ import river.exertion.kcop.system.text1d.Text1dMessage
 import kotlin.reflect.jvm.javaMethod
 
 class ViewInputProcessor : InputProcessor {
+
     override fun keyDown(keycode: Int): Boolean {
-        MessageChannel.TEXT1D_BRIDGE.send(null, Text1dMessage(Input.Keys.toString(keycode)))
+//        MessageChannel.TEXT1D_BRIDGE.send(null, Text1dMessage(Input.Keys.toString(keycode)))
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::keyDown.javaMethod!!.name,
+            event = InputViewMessage.KeyDownEvent,
             eventParams = mapOf(InputViewMessage.KeycodeStrKey to Input.Keys.toString(keycode)))
         )
         return true
@@ -18,7 +19,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun keyUp(keycode: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::keyUp.javaMethod!!.name,
+            event = InputViewMessage.KeyUpEvent,
             eventParams = mapOf(InputViewMessage.KeycodeStrKey to Input.Keys.toString(keycode)))
         )
         return true
@@ -26,7 +27,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun keyTyped(character: Char): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::keyTyped.javaMethod!!.name,
+            event = InputViewMessage.KeyTypedEvent,
             eventParams = mapOf(InputViewMessage.CharacterKey to character))
         )
         return true
@@ -34,7 +35,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::touchDown.javaMethod!!.name,
+            event = InputViewMessage.TouchDownEvent,
             eventParams = mapOf(
                 InputViewMessage.ScreenXKey to screenX,
                 InputViewMessage.ScreenYKey to screenY,
@@ -47,7 +48,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::touchUp.javaMethod!!.name,
+            event = InputViewMessage.TouchUpEvent,
             eventParams = mapOf(
                 InputViewMessage.ScreenXKey to screenX,
                 InputViewMessage.ScreenYKey to screenY,
@@ -60,7 +61,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::touchDragged.javaMethod!!.name,
+            event = InputViewMessage.TouchDraggedEvent,
             eventParams = mapOf(
                 InputViewMessage.ScreenXKey to screenX,
                 InputViewMessage.ScreenYKey to screenY,
@@ -72,7 +73,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::mouseMoved.javaMethod!!.name,
+            event = InputViewMessage.MouseMovedEvent,
             eventParams = mapOf(
                 InputViewMessage.ScreenXKey to screenX,
                 InputViewMessage.ScreenYKey to screenY)
@@ -83,7 +84,7 @@ class ViewInputProcessor : InputProcessor {
 
     override fun scrolled(amountX: Float, amountY: Float): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = ::scrolled.javaMethod!!.name,
+            event = InputViewMessage.ScrolledEvent,
             eventParams = mapOf(
                 InputViewMessage.AmountXKey to amountX,
                 InputViewMessage.AmountYKey to amountY)

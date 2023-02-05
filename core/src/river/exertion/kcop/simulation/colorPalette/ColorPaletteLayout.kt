@@ -118,7 +118,7 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
     override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
+        if ( (msg != null) && (MessageChannel.COLOR_PALETTE_BRIDGE.isType(msg.message) ) ) {
             val colorPaletteMessage : ColorPaletteMessage = MessageChannel.COLOR_PALETTE_BRIDGE.receiveMessage(msg.extraInfo)
 
             baseColor = colorPaletteMessage.colorPalette
