@@ -65,15 +65,14 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        val backgroundImg = Image(sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) })
 
         if ( (currentImage != null) && (isTouchEvent() || isKeyEvent()) ) {
             this.add(Stack().apply {
-                this.add(backgroundImg)
+                this.add(backgroundColorImg(batch))
                 this.add(textTable(bitmapFont))
             } )
         } else {
-            this.add(backgroundImg)
+            this.add(backgroundColorImg(batch))
         }
     }
 }

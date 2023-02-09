@@ -9,7 +9,6 @@ import ktx.ashley.mapperFor
 import ktx.ashley.with
 import river.exertion.kcop.system.SystemManager
 import river.exertion.kcop.system.component.TimeComponent
-import river.exertion.kcop.system.component.PositionComponent
 
 class Observer : Component {
 
@@ -25,7 +24,7 @@ class Observer : Component {
 
     var components = mutableListOf(
         TimeComponent(),
-        PositionComponent()
+//        PositionComponent()
     )
 
     companion object {
@@ -39,7 +38,7 @@ class Observer : Component {
                 with<Observer>()
             }.apply { this[mapper]?.initialize(this) }
 
-            SystemManager.logDebug (this.javaClass.name, "${getFor(newObserver)!!.entityName} instantiated! @ ${TimeComponent.getFor(newObserver)!!.timeActive()}")
+            SystemManager.logDebug (this::javaClass.name, "${getFor(newObserver)!!.entityName} instantiated! @ ${TimeComponent.getFor(newObserver)!!.activeTime()}")
             return newObserver
         }
     }

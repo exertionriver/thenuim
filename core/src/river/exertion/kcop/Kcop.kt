@@ -1,5 +1,7 @@
 package river.exertion.kcop
 
+import com.badlogic.gdx.Application.LOG_DEBUG
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -49,6 +51,7 @@ class Kcop : KtxGame<KtxScreen>() {
             addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
             addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
+//        Gdx.app.logLevel = LOG_DEBUG
 
         setScreen<ViewSimulator>()
 

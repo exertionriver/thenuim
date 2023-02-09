@@ -3,6 +3,7 @@ package river.exertion.kcop.simulation.view
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
@@ -20,13 +21,20 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     var bitmapFont : BitmapFont? = null
     var batch : Batch? = null
 
-    var backgroundColor : ColorPalette = viewType.defaultColor()
     fun viewRect() = viewType.viewRect(screenWidth, screenHeight)
 
     fun tableWidth() = viewRect().width
     fun tableHeight() = viewRect().height
     fun tablePosX() = viewRect().x
     fun tablePosY() = viewRect().y
+
+    var backgroundColor : ColorPalette = viewType.defaultColor()
+    fun backgroundColorTexture(batch : Batch) : TextureRegion {
+        if (this.sdc == null) this.sdc = ShapeDrawerConfig(batch, backgroundColor.color())
+
+        return sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) }
+    }
+    fun backgroundColorImg(batch : Batch) : Image = Image(backgroundColorTexture(batch))
 
     fun clearTable() {
         this.clearChildren()
@@ -50,7 +58,6 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     fun initCreate(bitmapFont: BitmapFont, batch: Batch) {
         if (this.batch == null) this.batch = batch
         if (this.bitmapFont == null) this.bitmapFont = bitmapFont
-        if (this.sdc == null) this.sdc = ShapeDrawerConfig(batch, backgroundColor.color())
 
         clearTable()
 
@@ -61,8 +68,6 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
 
         val stack = Stack()
 
-        val backgroundImg = Image(sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) })
-
         val viewLabel = Label(viewType.name, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
         viewLabel.setAlignment(Align.center)
 
@@ -71,7 +76,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
             println("x:${Gdx.input.getX()}, y:${Gdx.input.getY()}")
         }
 
-        stack.add(backgroundImg)
+        stack.add(backgroundColorImg(batch))
         stack.add(viewLabel)
 
         this.add(stack)

@@ -8,7 +8,6 @@ import ktx.ashley.mapperFor
 class PositionComponent(positionStart : Vector3 = Vector3(0f, 0f, 0f)) : Component {
 
     var positionActive = positionStart
-
     fun positionActive() = positionActive
 
     companion object {

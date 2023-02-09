@@ -1,38 +1,27 @@
 package river.exertion.kcop.system.view
 
-data class InputViewMessage(val targetView : ViewType = ViewType.INPUTS, val event : String, val eventParams : Map<String, Any>) {
+data class InputViewMessage(val targetView : ViewType = ViewType.INPUTS, val event : InputViewMessageEvent, val eventParams : Map<InputViewMessageParam, Any>) {
 
-    fun getKeyStr() : String = eventParams[KeycodeStrKey]?.toString() ?: eventParams[CharacterKey]?.toString() ?: ""
+    fun getKeyStr(): String =
+        eventParams[InputViewMessageParam.KeycodeStrKey]?.toString() ?: eventParams[InputViewMessageParam.CharacterKey]?.toString() ?: ""
 
-    fun getScreenX() : Int = eventParams[ScreenXKey]?.toString()?.toInt() ?: 0
+    fun getScreenX(): Int = eventParams[InputViewMessageParam.ScreenXKey]?.toString()?.toInt() ?: 0
 
-    fun getScreenY() : Int = eventParams[ScreenYKey]?.toString()?.toInt() ?: 0
+    fun getScreenY(): Int = eventParams[InputViewMessageParam.ScreenYKey]?.toString()?.toInt() ?: 0
 
-    fun getButton() : Int = eventParams[ButtonKey]?.toString()?.toInt() ?: 0
+    fun getButton(): Int = eventParams[InputViewMessageParam.ButtonKey]?.toString()?.toInt() ?: 0
+}
 
-    companion object {
-        fun isPressEvent(event : String) = listOf(KeyDownEvent, TouchDownEvent).contains(event)
-        fun isReleaseEvent(event : String) = listOf(KeyUpEvent, TouchUpEvent).contains(event)
+enum class InputViewMessageEvent {
+    KeyDownEvent, KeyUpEvent, KeyTypedEvent, TouchDownEvent, TouchUpEvent, TouchDraggedEvent, MouseMovedEvent, ScrolledEvent;
 
-        fun isKeyEvent(event : String) = listOf(KeyDownEvent, KeyUpEvent, KeyTypedEvent).contains(event)
-        fun isTouchEvent(event : String) = listOf(TouchDownEvent, TouchUpEvent, TouchDraggedEvent).contains(event)
+    fun isPressEvent() = listOf(KeyDownEvent, TouchDownEvent).contains(this)
+    fun isReleaseEvent() = listOf(KeyUpEvent, TouchUpEvent).contains(this)
 
-        const val KeyDownEvent = "keyDown"
-        const val KeyUpEvent = "keyUp"
-        const val KeyTypedEvent = "keyTyped"
-        const val TouchDownEvent = "touchDown"
-        const val TouchUpEvent = "touchUp"
-        const val TouchDraggedEvent = "touchDragged"
-        const val MouseMovedEvent = "mouseMoved"
-        const val ScrolledEvent = "scrolled"
+    fun isKeyEvent() = listOf(KeyDownEvent, KeyUpEvent, KeyTypedEvent).contains(this)
+    fun isTouchEvent() = listOf(TouchDownEvent, TouchUpEvent, TouchDraggedEvent).contains(this)
+}
 
-        const val KeycodeStrKey = "keycodeStr"
-        const val CharacterKey = "character"
-        const val ScreenXKey = "screenX"
-        const val ScreenYKey = "screenY"
-        const val PointerKey = "pointer"
-        const val ButtonKey = "button"
-        const val AmountXKey = "amountX"
-        const val AmountYKey = "amountY"
-    }
+enum class InputViewMessageParam {
+    KeycodeStrKey, CharacterKey, ScreenXKey, ScreenYKey, PointerKey, ButtonKey, AmountXKey, AmountYKey
 }

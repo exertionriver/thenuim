@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.system.text1d.Text1dMessage
 import river.exertion.kcop.system.view.InputViewMessage
+import river.exertion.kcop.system.view.LogViewMessage
 import river.exertion.kcop.system.view.ViewMessage
 import kotlin.reflect.KClass
 
@@ -14,7 +15,7 @@ enum class MessageChannel {
     LAYOUT_BRIDGE { override val messageClass = ViewMessage::class },
     TEXT1D_BRIDGE { override val messageClass = Text1dMessage::class },
     INPUT_VIEW_BRIDGE { override val messageClass = InputViewMessage::class },
-    LOG_VIEW_BRIDGE { override val messageClass = ViewMessage::class },
+    LOG_VIEW_BRIDGE { override val messageClass = LogViewMessage::class },
     ;
 
     fun id() = this.ordinal

@@ -1,6 +1,8 @@
 package river.exertion.kcop.simulation.view
 
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -12,7 +14,10 @@ import river.exertion.kcop.assets.FontAssets
 import river.exertion.kcop.assets.TextureAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
+import river.exertion.kcop.system.SystemManager
+import river.exertion.kcop.system.entity.Observer
 import river.exertion.kcop.system.view.ViewInputProcessor
+
 
 class ViewSimulator(private val batch: Batch,
                     private val assets: AssetManager,
@@ -21,6 +26,9 @@ class ViewSimulator(private val batch: Batch,
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
+    val engine = PooledEngine().apply { SystemManager.init(this) }
+    val observer = Observer.instantiate(engine)
+
     @Suppress("NewApi")
     override fun render(delta: Float) {
 
@@ -28,6 +36,8 @@ class ViewSimulator(private val batch: Batch,
 
         stage.act(Gdx.graphics.deltaTime)
         stage.draw()
+
+        engine.update(delta)
     }
 
     override fun hide() {
@@ -38,11 +48,14 @@ class ViewSimulator(private val batch: Batch,
         TextureAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
-        Gdx.input.inputProcessor = ViewInputProcessor()
+        val inputMultiplexer = InputMultiplexer()
+        inputMultiplexer.addProcessor(stage)
+        inputMultiplexer.addProcessor(ViewInputProcessor())
+        Gdx.input.inputProcessor = inputMultiplexer
 
         stage.addActor(layout.createDisplayViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
         stage.addActor(layout.createTextViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createLogViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createLogViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createMenuViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
         stage.addActor(layout.createPromptsViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
         stage.addActor(layout.createInputsViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
@@ -63,5 +76,6 @@ class ViewSimulator(private val batch: Batch,
 
     override fun dispose() {
         assets.dispose()
+        layout.dispose()
     }
 }
