@@ -22,8 +22,8 @@ class TimeComponent(val startTime : Long = TimeUtils.millis()) : Component {
     private fun immersionTimeSeconds() = TimeUtils.timeSinceMillis(startTime) / 1000f
 
     private fun immersionTimeHoursStr() = immersionTimeHours().toInt().toString().padStart(2, '0')
-    private fun immersionTimeMinutesStr() = immersionTimeMinutes().toInt().toString().padStart(2, '0')
-    private fun immersionTimeSecondsStr() = immersionTimeSeconds().toInt().toString().padStart(2, '0')
+    private fun immersionTimeMinutesStr() = (immersionTimeMinutes().toInt() % 60).toString().padStart(2, '0')
+    private fun immersionTimeSecondsStr() = (immersionTimeSeconds().toInt() % 60).toString().padStart(2, '0')
 
     fun immersionTime() = "${immersionTimeHoursStr()}:${immersionTimeMinutesStr()}:${immersionTimeSecondsStr()}"
 

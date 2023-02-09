@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.*
 import river.exertion.kcop.system.view.ViewType
+import kotlin.reflect.jvm.javaMethod
 
 
 class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.LOG, screenWidth, screenHeight) {
@@ -24,11 +25,9 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
     var vScrollTexture : Texture? = null
     var vScrollKnobTexture : Texture? = null
 
-    fun isLog() = !currentLog.isNullOrEmpty()
+    private lateinit var scrollPane : ScrollPane
 
-    fun saveScroll() {
-        val asdf = (this.children[1] as ScrollPane).scrollY
-    }
+    fun isLog() = !currentLog.isNullOrEmpty()
 
     fun addLog(logEntry : String) {
         if (currentLog == null) currentLog = mutableListOf()
@@ -50,10 +49,19 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         innerTable.add(Label(immersionTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padRight(this.tableWidth() / 6)
         innerTable.add(Label(localTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padLeft(this.tableWidth() / 6)
 
-        innerTable.top()
         innerTable.debug()
 
         return innerTable
+    }
+
+    fun rebuildTextTimeReadout() {
+        if (this.bitmapFont == null) throw Exception("${::recreate.javaMethod?.name}: bitmapFont needs to be set")
+        if (this.batch == null) throw Exception("${::recreate.javaMethod?.name}: batch needs to be set")
+
+        this.clearChildren()
+        this.add(textTimeReadout(this.bitmapFont!!))
+        this.row()
+        this.add(scrollPane)
     }
 
     fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
@@ -83,6 +91,8 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
             //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
             this.layout()
         }
+
+        this.scrollPane = scrollPane
 
         return scrollPane
     }

@@ -76,14 +76,22 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-
                     when (logMessage.messageType) {
-                        LogViewMessageType.LogEntry -> {logViewCtrl.addLog(logMessage.message); logViewCtrl.saveScroll(); logViewCtrl.recreate()}
-                        LogViewMessageType.ImmersionTime -> logViewCtrl.updateImmersionTime(logMessage.message)
-                        LogViewMessageType.LocalTime -> logViewCtrl.updateLocalTime(logMessage.message)
+                        LogViewMessageType.LogEntry -> {
+                            logViewCtrl.addLog(logMessage.message)
+                            logViewCtrl.recreate()
+                        }
+                        LogViewMessageType.ImmersionTime -> {
+                            logViewCtrl.updateImmersionTime(logMessage.message)
+                            logViewCtrl.rebuildTextTimeReadout()
+                        }
+                        LogViewMessageType.LocalTime -> {
+                            logViewCtrl.updateLocalTime(logMessage.message)
+                            logViewCtrl.rebuildTextTimeReadout()
+                        }
                     }
 
-                    logViewCtrl.recreate()
+
                 }
             }
         }

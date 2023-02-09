@@ -49,8 +49,8 @@ class ViewSimulator(private val batch: Batch,
         assets.finishLoading()
 
         val inputMultiplexer = InputMultiplexer()
-        inputMultiplexer.addProcessor(stage)
         inputMultiplexer.addProcessor(ViewInputProcessor())
+        inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
         stage.addActor(layout.createDisplayViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
