@@ -1,6 +1,10 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.3 - displaying mouseclick and keypress inputs, capturing scroll log, tracking immersion and local time timers, pause button for immersion timer</b>
+
+https://user-images.githubusercontent.com/13192685/217976532-1aa4c79b-d106-4c19-9810-701c3c708277.mp4
+
 <b>v0.2 - narrative sequence and CYOA-style navigation, clickable color palette, specifying layout areas</b>
 
 JSON-driven Narrative 'sequence' and 'navigation' (JSON shown) :
