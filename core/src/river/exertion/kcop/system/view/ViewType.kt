@@ -17,15 +17,15 @@ enum class ViewType {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fourthWidth(screenWidth), 0f, thirdWidth(screenWidth), thirdHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor.triad().first
     },
-    MENU {
+    STATUS {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), 0f, fourthWidth(screenWidth), fourthHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor.triad().second
     },
-    PROMPTS {
+    MENU {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), fourthHeight(screenHeight), fifthWidth(screenWidth), fifthHeight(screenHeight))
         override fun defaultColor() = secondDefaultColor
     },
-    INPUTS {
+    INPUT {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fifthWidth(screenWidth), fourthHeight(screenHeight) + seventhHeight(screenHeight), sixthWidth(screenWidth), sixthHeight(screenHeight))
         override fun defaultColor() = secondDefaultColor.comp()
     },

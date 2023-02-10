@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -42,7 +43,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         localTimeStr = newLocalTimeStr
     }
 
-    fun textTimeReadout(bitmapFont: BitmapFont) : Table {
+    fun textTimeReadout(bitmapFont: BitmapFont, batch: Batch) : Stack {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
 
@@ -51,7 +52,12 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
 
         innerTable.debug()
 
-        return innerTable
+        val returnStack = Stack().apply {
+            this.add(backgroundColorImg(batch))
+            this.add(innerTable)
+        }
+
+        return returnStack
     }
 
     fun rebuildTextTimeReadout() {
@@ -59,7 +65,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         if (this.batch == null) throw Exception("${::recreate.javaMethod?.name}: batch needs to be set")
 
         this.clearChildren()
-        this.add(textTimeReadout(this.bitmapFont!!))
+        this.add(textTimeReadout(this.bitmapFont!!, this.batch!!)).height(30f)
         this.row()
         this.add(scrollPane)
     }
@@ -98,7 +104,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(textTimeReadout(bitmapFont) )
+        this.add(textTimeReadout(bitmapFont, batch) ).height(30f)
         this.row()
         this.add(textScrollPane(bitmapFont, batch) )
     }

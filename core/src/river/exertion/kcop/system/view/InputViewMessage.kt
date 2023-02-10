@@ -1,6 +1,6 @@
 package river.exertion.kcop.system.view
 
-data class InputViewMessage(val targetView : ViewType = ViewType.INPUTS, val event : InputViewMessageEvent, val eventParams : Map<InputViewMessageParam, Any>) {
+data class InputViewMessage(val targetView : ViewType = ViewType.INPUT, val event : InputViewMessageEvent, val eventParams : Map<InputViewMessageParam, Any>) {
 
     fun getKeyStr(): String =
         eventParams[InputViewMessageParam.KeycodeStrKey]?.toString() ?: eventParams[InputViewMessageParam.CharacterKey]?.toString() ?: ""

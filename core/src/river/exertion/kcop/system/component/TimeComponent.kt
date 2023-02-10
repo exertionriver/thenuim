@@ -5,27 +5,18 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.TimeUtils
 import ktx.ashley.mapperFor
 import java.time.LocalDateTime
-import java.util.Calendar
+import java.util.*
 
 @Suppress("NewApi")
-class TimeComponent(val startTime : Long = TimeUtils.millis()) : Component {
+class TimeComponent(startTime : Long = TimeUtils.millis()) : Component {
 
     fun irlTime() = Calendar.getInstance()
 
-    val activeTime = startTime
     var renderTime = 0f
 
-    fun activeTime() = TimeUtils.timeSinceMillis(activeTime) / 1000f
+    private val immersionTime = ImmersionTime(startTime)
 
-    private fun immersionTimeHours() = TimeUtils.timeSinceMillis(startTime) / (1000f * 60f * 60f)
-    private fun immersionTimeMinutes() = TimeUtils.timeSinceMillis(startTime) / (1000f * 60f)
-    private fun immersionTimeSeconds() = TimeUtils.timeSinceMillis(startTime) / 1000f
-
-    private fun immersionTimeHoursStr() = immersionTimeHours().toInt().toString().padStart(2, '0')
-    private fun immersionTimeMinutesStr() = (immersionTimeMinutes().toInt() % 60).toString().padStart(2, '0')
-    private fun immersionTimeSecondsStr() = (immersionTimeSeconds().toInt() % 60).toString().padStart(2, '0')
-
-    fun immersionTime() = "${immersionTimeHoursStr()}:${immersionTimeMinutesStr()}:${immersionTimeSecondsStr()}"
+    fun immersionTime() = immersionTime.immersionTime()
 
     private fun localDateTime() = LocalDateTime.of(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH), irlTime().get(Calendar.DAY_OF_MONTH),
         irlTime().get(Calendar.HOUR_OF_DAY), irlTime().get(Calendar.MINUTE), irlTime().get(Calendar.SECOND))

@@ -38,7 +38,7 @@ class Observer : Component {
                 with<Observer>()
             }.apply { this[mapper]?.initialize(this) }
 
-            SystemManager.logDebug (this::javaClass.name, "${getFor(newObserver)!!.entityName} instantiated! @ ${TimeComponent.getFor(newObserver)!!.activeTime()}")
+            SystemManager.logDebug (this::javaClass.name, "${getFor(newObserver)!!.entityName} instantiated! @ ${TimeComponent.getFor(newObserver)!!.immersionTime()}")
             return newObserver
         }
     }

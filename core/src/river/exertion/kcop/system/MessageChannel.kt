@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.msg.MessageManager
 import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.system.text1d.Text1dMessage
+import river.exertion.kcop.system.view.ImmersionTimeMessage
 import river.exertion.kcop.system.view.InputViewMessage
 import river.exertion.kcop.system.view.LogViewMessage
 import river.exertion.kcop.system.view.ViewMessage
@@ -16,6 +17,7 @@ enum class MessageChannel {
     TEXT1D_BRIDGE { override val messageClass = Text1dMessage::class },
     INPUT_VIEW_BRIDGE { override val messageClass = InputViewMessage::class },
     LOG_VIEW_BRIDGE { override val messageClass = LogViewMessage::class },
+    IMMERSION_TIME_BRIDGE { override val messageClass = ImmersionTimeMessage::class },
     ;
 
     fun id() = this.ordinal

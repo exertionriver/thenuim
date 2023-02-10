@@ -60,7 +60,7 @@ class ViewSimulator(private val batch: Batch,
         stage.addActor(layout.createPromptsViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
         stage.addActor(layout.createInputsViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createAiViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createPauseViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
+        stage.addActor(layout.createPauseViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
     }
 
     override fun pause() {
