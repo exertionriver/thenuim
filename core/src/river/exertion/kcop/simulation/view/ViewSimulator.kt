@@ -72,6 +72,7 @@ class ViewSimulator(private val batch: Batch,
     override fun resize(width: Int, height: Int) {
         orthoCamera.viewportWidth = width.toFloat()
         orthoCamera.viewportHeight = height.toFloat()
+        stage.viewport.update(width, height)
     }
 
     override fun dispose() {

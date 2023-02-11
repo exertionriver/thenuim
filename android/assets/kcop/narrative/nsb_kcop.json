@@ -1,4 +1,8 @@
-{"id" : "demo_narrative", "sequenceBlocks" : [
-  {"id" : "demo_block1", "narrativeText" : "first seq block", "sequenceNumber" : 1},
-  {"id" : "demo_block2", "narrativeText" : "second seq block", "sequenceNumber" : 2}
+{"id" : "demo_narrative", "narrativeBlocks" : [
+  {"id" : "demo_block1", "narrativeText" : "first seq block"},
+  {"id" : "demo_block2", "narrativeText" : "second seq block"},
+  {"id" : "demo_block3", "narrativeText" : "third seq block"},
+  {"id" : "demo_block4", "narrativeText" : "fourth seq block"},
+  {"id" : "demo_block5", "narrativeText" : "fifth seq block"},
+  {"id" : "demo_block6", "narrativeText" : "sixth seq block"}
 ]}

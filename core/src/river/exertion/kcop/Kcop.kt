@@ -1,7 +1,5 @@
 package river.exertion.kcop
 
-import com.badlogic.gdx.Application.LOG_DEBUG
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -15,10 +13,8 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
-import river.exertion.kcop.assets.NarrativeNavigationLoader
-import river.exertion.kcop.assets.NarrativeSequenceLoader
-import river.exertion.kcop.narrative.navigation.NarrativeNavigation
-import river.exertion.kcop.narrative.sequence.NarrativeSequence
+import river.exertion.kcop.assets.NarrativeAssetLoader
+import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
 import river.exertion.kcop.simulation.view.ViewSimulator
 import river.exertion.kcop.simulation.text1d.Text1dSimulator
@@ -36,8 +32,7 @@ class Kcop : KtxGame<KtxScreen>() {
         val menuStage = Stage(menuViewport, menuBatch)
         val assets = AssetManager()
 
-        assets.setLoader(NarrativeSequence::class.java, NarrativeSequenceLoader(InternalFileHandleResolver()))
-        assets.setLoader(NarrativeNavigation::class.java, NarrativeNavigationLoader(InternalFileHandleResolver()))
+        assets.setLoader(Narrative::class.java, NarrativeAssetLoader(InternalFileHandleResolver()))
 
         context.register {
             bindSingleton(perspectiveCamera)
@@ -53,7 +48,7 @@ class Kcop : KtxGame<KtxScreen>() {
         }
 //        Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<ViewSimulator>()
+        setScreen<Text1dSimulator>()
 
     }
 

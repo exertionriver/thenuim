@@ -30,8 +30,8 @@ class Text1dSimulator(private val batch: Batch,
         stage.draw()
 
         when {
-            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { t1Layout.nextType() }
-            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { t1Layout.prevType() }
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { t1Layout.prevNarrativeIdx() }
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { t1Layout.nextNarrativeIdx() }
         }
     }
 
@@ -40,9 +40,7 @@ class Text1dSimulator(private val batch: Batch,
 
     override fun show() {
         FontAssets.values().forEach { assets.load(it) }
-        NarrativeSequenceAssets.values().forEach { assets.load(it) }
-        NarrativeNavigationAssets.values().forEach { assets.load(it) }
-
+        NarrativeAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         val multiplexer = InputMultiplexer()
@@ -52,8 +50,10 @@ class Text1dSimulator(private val batch: Batch,
 
         t1Layout.bitmapFont = assets[FontAssets.OpenSansRegular]
         t1Layout.batch = batch
-        t1Layout.text1dSequence = assets[NarrativeSequenceAssets.KCopTest]
-        t1Layout.text1dNavigation = assets[NarrativeNavigationAssets.KCopTest]
+        t1Layout.text1dNarratives = mutableListOf(
+            assets[NarrativeAssets.NarrativeTest],
+            assets[NarrativeAssets.NarrativeNavigationTest]
+        )
 
         stage.addActor(t1Layout.createTextBlockCtrl())
 
@@ -68,6 +68,7 @@ class Text1dSimulator(private val batch: Batch,
     override fun resize(width: Int, height: Int) {
         orthoCamera.viewportWidth = width.toFloat()
         orthoCamera.viewportHeight = height.toFloat()
+        stage.viewport.update(width, height)
     }
 
     override fun dispose() {

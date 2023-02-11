@@ -4,22 +4,20 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.narrative.navigation.NarrativeNavigation
-import river.exertion.kcop.narrative.sequence.NarrativeSequence
+import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.text1d.Text1dType
 import river.exertion.kcop.system.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 
-class Text1dCtrl(var text1dType: Text1dType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
+class Text1dCtrl(var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
 
     var sdc : ShapeDrawerConfig? = null
     var bitmapFont : BitmapFont? = null
     var batch : Batch? = null
 
-    var text1dSequence : NarrativeSequence? = null
-    var text1dNavigation : NarrativeNavigation? = null
+    var text1dNarrative : Narrative? = null
 
     var textColor : ColorPalette? = null
 
@@ -52,28 +50,20 @@ class Text1dCtrl(var text1dType: Text1dType, var screenWidth: Float = 50f, var s
             if (batch == null) throw Exception("${::create.javaMethod?.name}: batch needs to be set")
             if (sdc == null) sdc = ShapeDrawerConfig(batch!!, textColor!!.comp().color())
 
-            if (this.text1dType == Text1dType.SEQUENCE) {
-                val viewLabel = Label(text1dSequence!!.currentText(), Label.LabelStyle(bitmapFont, textColor!!.label().color()))
-                this.add(viewLabel).growX().left().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
-            } else {
-                val viewLabel = Label(text1dNavigation!!.currentText(), Label.LabelStyle(bitmapFont, textColor!!.label().color()))
-                this.add(viewLabel).growX().left().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
+            val viewLabel = Label(text1dNarrative!!.currentText(), Label.LabelStyle(bitmapFont, textColor!!.label().color()))
+            this.add(viewLabel).growX().left().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
 
-                val promptsMaxIdx = text1dNavigation!!.currentPrompts().size - 1
+            val promptsMaxIdx = text1dNarrative!!.currentPrompts().size - 1
 
-                text1dNavigation!!.currentPrompts().forEachIndexed { idx, prompt ->
-                    this.row()
-                    val promptLabel = Label(prompt, Label.LabelStyle(bitmapFont, textColor!!.label().color()))
+            text1dNarrative!!.currentPrompts().forEachIndexed { idx, prompt ->
+                this.row()
+                val promptLabel = Label(prompt, Label.LabelStyle(bitmapFont, textColor!!.label().color()))
 
-                    if (idx < promptsMaxIdx)
-                        this.add(promptLabel).growX().left().padLeft(ViewType.padWidth(width) * 2).padRight(ViewType.padWidth(width))
-                    else
-                        this.add(promptLabel).growX().left().padLeft(ViewType.padWidth(width) * 2).padRight(ViewType.padWidth(width)).padBottom(ViewType.padHeight(height))
-                }
+                if (idx < promptsMaxIdx)
+                    this.add(promptLabel).growX().left().padLeft(ViewType.padWidth(width) * 2).padRight(ViewType.padWidth(width))
+                else
+                    this.add(promptLabel).growX().left().padLeft(ViewType.padWidth(width) * 2).padRight(ViewType.padWidth(width)).padBottom(ViewType.padHeight(height))
             }
-
-
-
         }
     }
 }
