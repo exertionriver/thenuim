@@ -19,8 +19,8 @@ class TimeSystem : IntervalIteratingSystem(allOf(TimeComponent::class).get(), 1f
         TimeComponent.getFor(entity)!!.renderTime += this.interval
         val timeComponent = TimeComponent.getFor(entity)!!
 
-        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(ViewType.LOG, LogViewMessageType.LocalTime, timeComponent.localTime()))
-        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(ViewType.LOG, LogViewMessageType.ImmersionTime, timeComponent.immersionTime()))
+        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LocalTime, timeComponent.localTime()))
+        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.ImmersionTime, timeComponent.immersionTime()))
 
 //        SystemManager.logDebug(this.javaClass.name, "${this.interval} passed, timeActive: ${TimeComponent.getFor(entity)!!.timeActive()}, timeRender: ${TimeComponent.getFor(entity)!!.timeRender()}")
         SystemManager.logDebug(this.javaClass.name, "immersionTime: ${timeComponent.immersionTime()}, localTime:${timeComponent.localTime()}" )

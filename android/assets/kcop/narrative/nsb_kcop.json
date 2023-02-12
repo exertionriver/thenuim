@@ -1,8 +1,10 @@
 {"id" : "demo_narrative", "narrativeBlocks" : [
-  {"id" : "demo_block1", "narrativeText" : "first seq block"},
-  {"id" : "demo_block2", "narrativeText" : "second seq block"},
-  {"id" : "demo_block3", "narrativeText" : "third seq block"},
-  {"id" : "demo_block4", "narrativeText" : "fourth seq block"},
-  {"id" : "demo_block5", "narrativeText" : "fifth seq block"},
-  {"id" : "demo_block6", "narrativeText" : "sixth seq block"}
+  {"id" : "demo_block1", "narrativeText" : ["first seq block\nsecond line"]},
+  {"id" : "demo_block2", "narrativeText" : [
+    "seq block testing wrapping the text view\nin the simulation wrapping of the text view in the simulation ",
+    "multi-line text in to JSON file"]},
+  {"id" : "demo_block3", "narrativeText" : ["t\ne\ns\nt\ni\nn\ng\n s\nc\nr\no\nl\nl"]},
+  {"id" : "demo_block4", "narrativeText" : ["fourth seq block"]},
+  {"id" : "demo_block5", "narrativeText" : ["fifth seq block"]},
+  {"id" : "demo_block6", "narrativeText" : ["sixth seq block"]}
 ]}

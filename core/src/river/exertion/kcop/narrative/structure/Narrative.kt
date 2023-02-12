@@ -24,11 +24,11 @@ data class Narrative(
 
     fun isSequential() : Boolean = promptBlocks.isEmpty()
 
-    fun currentText() = narrativeBlocks.firstOrNull { it.id == currentId }?.narrativeText ?: "<narrativeText not found for '$id' at '$currentId'>"
+    fun currentText() = narrativeBlocks.firstOrNull { it.id == currentId }?.toTextString() ?: "<narrativeText not found for '$id' at '$currentId'>"
 
     fun currentPrompts() : List<String> =
         if (isSequential()) {
-            listOf("(↑)Prev", "(↓)Next")
+            listOf("(↑) Prev", "(↓) Next")
         } else {
             promptBlocks.firstOrNull { it.narrativeBlockId == currentId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$id' at '$currentId')>")
         }

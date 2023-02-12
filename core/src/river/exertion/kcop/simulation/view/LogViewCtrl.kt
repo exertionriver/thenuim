@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import ktx.actors.*
 import river.exertion.kcop.system.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 
@@ -61,8 +60,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
     }
 
     fun rebuildTextTimeReadout() {
-        if (this.bitmapFont == null) throw Exception("${::recreate.javaMethod?.name}: bitmapFont needs to be set")
-        if (this.batch == null) throw Exception("${::recreate.javaMethod?.name}: batch needs to be set")
+        if (!isInitialized) throw Exception("${::rebuildTextTimeReadout.javaMethod?.name}: view needs to be initialized with " + ::initCreate.javaMethod?.name)
 
         this.clearChildren()
         this.add(textTimeReadout(this.bitmapFont!!, this.batch!!)).height(30f)

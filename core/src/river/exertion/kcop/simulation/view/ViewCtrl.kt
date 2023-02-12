@@ -21,6 +21,8 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     var bitmapFont : BitmapFont? = null
     var batch : Batch? = null
 
+    var isInitialized = false
+
     fun viewRect() = viewType.viewRect(screenWidth, screenHeight)
 
     fun tableWidth() = viewRect().width
@@ -47,8 +49,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     }
 
     fun recreate() {
-        if (this.bitmapFont == null) throw Exception("${::recreate.javaMethod?.name}: bitmapFont needs to be set")
-        if (this.batch == null) throw Exception("${::recreate.javaMethod?.name}: batch needs to be set")
+        if (!isInitialized) throw Exception("${::recreate.javaMethod?.name}: view needs to be initialized with " + ::initCreate.javaMethod?.name)
 
         clearTable()
 
@@ -58,6 +59,8 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     fun initCreate(bitmapFont: BitmapFont, batch: Batch) {
         if (this.batch == null) this.batch = batch
         if (this.bitmapFont == null) this.bitmapFont = bitmapFont
+
+        isInitialized = true
 
         clearTable()
 

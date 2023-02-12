@@ -3,12 +3,8 @@ package river.exertion.kcop.simulation.view
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.system.MessageChannel
@@ -35,7 +31,7 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
         val innerButton = Button(buttonStyle)
 
         innerButton.onClick {
-            MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(null, ViewMessage.TogglePause))
+            MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.PAUSE, ViewMessage.TogglePause))
         }
 
         return innerButton

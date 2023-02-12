@@ -7,7 +7,9 @@ import river.exertion.kcop.system.MessageChannel
 class ViewInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
-        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(ViewType.LOG, LogViewMessageType.LogEntry, "keyDown event:${Input.Keys.toString(keycode)}"))
+        MessageChannel.TEXT_VIEW_BRIDGE.send(null, ViewMessage(ViewType.TEXT, Input.Keys.toString(keycode)))
+
+        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "keyDown event:${Input.Keys.toString(keycode)}"))
 
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
             event = InputViewMessageEvent.KeyDownEvent,

@@ -6,6 +6,8 @@ import river.exertion.kcop.Id
 @Serializable
 data class NarrativeBlock(
     override var id: String = "",
-    val narrativeText: String = "",
+    val narrativeText: MutableList<String> = mutableListOf(),
     val sequenceNumber: Long = 0L
-) : Id()
+) : Id() {
+    fun toTextString(): String = narrativeText.reduce { acc, s -> acc.plus(s) }
+}

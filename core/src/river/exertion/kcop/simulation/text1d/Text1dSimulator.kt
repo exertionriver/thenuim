@@ -1,5 +1,6 @@
 package river.exertion.kcop.simulation.text1d
 
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
@@ -12,6 +13,10 @@ import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
+import river.exertion.kcop.simulation.view.ViewLayout
+import river.exertion.kcop.system.SystemManager
+import river.exertion.kcop.system.entity.Observer
+import river.exertion.kcop.system.view.ViewInputProcessor
 
 
 class Text1dSimulator(private val batch: Batch,
@@ -19,7 +24,10 @@ class Text1dSimulator(private val batch: Batch,
                       private val stage: Stage,
                       private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val t1Layout = Text1dLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+
+    val engine = PooledEngine().apply { SystemManager.init(this) }
+    val observer = Observer.instantiate(engine)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -29,9 +37,11 @@ class Text1dSimulator(private val batch: Batch,
         stage.act(Gdx.graphics.deltaTime)
         stage.draw()
 
+        engine.update(delta)
+
         when {
-            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { t1Layout.prevNarrativeIdx() }
-            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { t1Layout.nextNarrativeIdx() }
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { layout.prevNarrativeIdx() }
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { layout.nextNarrativeIdx() }
         }
     }
 
@@ -41,21 +51,21 @@ class Text1dSimulator(private val batch: Batch,
     override fun show() {
 //        BitmapFontAssets.values().forEach { assets.load(it) }
         FreeTypeFontAssets.values().forEach { assets.load(it) }
+        TextureAssets.values().forEach { assets.load(it) }
         NarrativeAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         val multiplexer = InputMultiplexer()
+        multiplexer.addProcessor(ViewInputProcessor())
         multiplexer.addProcessor(stage)
-        multiplexer.addProcessor(Text1dInputProcessor())
         Gdx.input.inputProcessor = multiplexer
 
-        t1Layout.bitmapFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        t1Layout.batch = batch
-        t1Layout.text1dNarratives = mutableListOf(
+        val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        stage.addActor(layout.createTextViewCtrl(batch, font, listOf(
             assets[NarrativeAssets.NarrativeTest],
             assets[NarrativeAssets.NarrativeNavigationTest]
-        )
-        stage.addActor(t1Layout.createTextBlockCtrl())
+        ), assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
 
     }
 

@@ -53,7 +53,7 @@ class ViewSimulator(private val batch: Batch,
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         stage.addActor(layout.createDisplayViewCtrl(batch, font))
-        stage.addActor(layout.createTextViewCtrl(batch, font))
+        stage.addActor(layout.createTextViewCtrl(batch, font, listOf(), assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createMenuViewCtrl(batch, font))
         stage.addActor(layout.createPromptsViewCtrl(batch, font))

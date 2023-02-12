@@ -55,7 +55,7 @@ class Kcop : KtxGame<KtxScreen>() {
         }
 //        Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<ViewSimulator>()
+        setScreen<Text1dSimulator>()
 
     }
 

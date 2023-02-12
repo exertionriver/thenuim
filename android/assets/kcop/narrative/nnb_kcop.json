@@ -1,10 +1,10 @@
 {"id" : "demo_cyoa_narrative", "narrativeBlocks" : [
-    {"id" : "demo_block1", "narrativeText" : "first nav block"},
-    {"id" : "demo_block2", "narrativeText" : "second nav block"},
-    {"id" : "demo_block3", "narrativeText" : "third nav block"},
-    {"id" : "demo_block4", "narrativeText" : "fourth nav block"},
-    {"id" : "demo_block5", "narrativeText" : "fifth nav block"},
-    {"id" : "demo_block6", "narrativeText" : "sixth nav block"}
+    {"id" : "demo_block1", "narrativeText" : ["first nav block"]},
+    {"id" : "demo_block2", "narrativeText" : ["second nav block"]},
+    {"id" : "demo_block3", "narrativeText" : ["third nav block"]},
+    {"id" : "demo_block4", "narrativeText" : ["fourth nav block"]},
+    {"id" : "demo_block5", "narrativeText" : ["fifth nav block"]},
+    {"id" : "demo_block6", "narrativeText" : ["sixth nav block"]}
   ], "promptBlocks" : [
     { "narrativeBlockId" : "demo_block1", "prompts" : [
       { "id" : "first_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block2"},

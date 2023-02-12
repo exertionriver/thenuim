@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.text1d.Text1dType
 import river.exertion.kcop.system.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 

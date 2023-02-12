@@ -13,14 +13,14 @@ enum class SimulationState : State<ViewLayout> {
         override fun update(viewLayout : ViewLayout) {
             viewLayout.stateMachine.changeState(PAUSED)
             MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimeMessage(PAUSED))
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(ViewType.LOG, LogViewMessageType.LogEntry, "immersion state: paused"))
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "immersion state: paused"))
         }
     },
     PAUSED {
         override fun update(viewLayout : ViewLayout) {
             viewLayout.stateMachine.changeState(RUNNING)
             MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimeMessage(RUNNING))
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(ViewType.LOG, LogViewMessageType.LogEntry, "immersion state: running"))
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "immersion state: running"))
         }
     }
     ;
