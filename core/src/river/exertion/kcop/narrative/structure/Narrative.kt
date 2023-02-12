@@ -45,4 +45,7 @@ data class Narrative(
         }
     }
 
+    fun prev() { currentId = narrativeBlocks[seqPrevIdx()].id }
+
+    fun next() { currentId = narrativeBlocks[seqNextIdx()].id }
 }

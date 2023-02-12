@@ -5,7 +5,11 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.graphics.g3d.ModelBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -32,7 +36,10 @@ class Kcop : KtxGame<KtxScreen>() {
         val menuStage = Stage(menuViewport, menuBatch)
         val assets = AssetManager()
 
-        assets.setLoader(Narrative::class.java, NarrativeAssetLoader(InternalFileHandleResolver()))
+        val ifhr = InternalFileHandleResolver()
+        assets.setLoader(Narrative::class.java, NarrativeAssetLoader(ifhr))
+        assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(ifhr))
+        assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(ifhr))
 
         context.register {
             bindSingleton(perspectiveCamera)
@@ -48,7 +55,7 @@ class Kcop : KtxGame<KtxScreen>() {
         }
 //        Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<Text1dSimulator>()
+        setScreen<ViewSimulator>()
 
     }
 

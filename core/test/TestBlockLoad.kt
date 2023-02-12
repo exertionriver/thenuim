@@ -10,8 +10,8 @@ class TestBlockLoad {
 
         if (narrative != null) {
             println(narrative.id)
-            println(narrative.sequenceBlocks[0].narrativeText)
-            println(narrative.sequenceBlocks[1].narrativeText)
+            println(narrative.narrativeBlocks[0].narrativeText)
+            println(narrative.narrativeBlocks[1].narrativeText)
 
             narrative.init()
             println(narrative.currentText())

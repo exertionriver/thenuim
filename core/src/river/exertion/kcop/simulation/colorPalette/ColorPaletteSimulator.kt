@@ -11,7 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.*
-import river.exertion.kcop.assets.FontAssets
+import river.exertion.kcop.assets.BitmapFontAssets
+import river.exertion.kcop.assets.FreeTypeFontAssets
 import river.exertion.kcop.assets.get
 import river.exertion.kcop.assets.load
 
@@ -50,12 +51,13 @@ class ColorPaletteSimulator(private val batch: Batch,
     }
 
     override fun show() {
-        FontAssets.values().forEach { assets.load(it) }
+//        BitmapFontAssets.values().forEach { assets.load(it) }
+        FreeTypeFontAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         Gdx.input.inputProcessor = stage
 
-        cpLayout.bitmapFont = assets[FontAssets.OpenSansRegular]
+        cpLayout.bitmapFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         cpLayout.batch = batch
 
         stage.addActor(cpLayout.createSampleSwatchesCtrl())

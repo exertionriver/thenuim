@@ -39,7 +39,8 @@ class Text1dSimulator(private val batch: Batch,
     }
 
     override fun show() {
-        FontAssets.values().forEach { assets.load(it) }
+//        BitmapFontAssets.values().forEach { assets.load(it) }
+        FreeTypeFontAssets.values().forEach { assets.load(it) }
         NarrativeAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
@@ -48,13 +49,12 @@ class Text1dSimulator(private val batch: Batch,
         multiplexer.addProcessor(Text1dInputProcessor())
         Gdx.input.inputProcessor = multiplexer
 
-        t1Layout.bitmapFont = assets[FontAssets.OpenSansRegular]
+        t1Layout.bitmapFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         t1Layout.batch = batch
         t1Layout.text1dNarratives = mutableListOf(
             assets[NarrativeAssets.NarrativeTest],
             assets[NarrativeAssets.NarrativeNavigationTest]
         )
-
         stage.addActor(t1Layout.createTextBlockCtrl())
 
     }

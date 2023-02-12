@@ -10,10 +10,7 @@ import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import ktx.scene2d.*
-import river.exertion.kcop.assets.FontAssets
-import river.exertion.kcop.assets.TextureAssets
-import river.exertion.kcop.assets.get
-import river.exertion.kcop.assets.load
+import river.exertion.kcop.assets.*
 import river.exertion.kcop.system.SystemManager
 import river.exertion.kcop.system.entity.Observer
 import river.exertion.kcop.system.view.ViewInputProcessor
@@ -44,7 +41,8 @@ class ViewSimulator(private val batch: Batch,
     }
 
     override fun show() {
-        FontAssets.values().forEach { assets.load(it) }
+//        BitmapFontAssets.values().forEach { assets.load(it) }
+        FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
@@ -53,14 +51,15 @@ class ViewSimulator(private val batch: Batch,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        stage.addActor(layout.createDisplayViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createTextViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createLogViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createMenuViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createPromptsViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createInputsViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(batch, assets[FontAssets.OpenSansRegular]))
-        stage.addActor(layout.createPauseViewCtrl(batch, assets[FontAssets.OpenSansRegular], assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        stage.addActor(layout.createDisplayViewCtrl(batch, font))
+        stage.addActor(layout.createTextViewCtrl(batch, font))
+        stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
+        stage.addActor(layout.createMenuViewCtrl(batch, font))
+        stage.addActor(layout.createPromptsViewCtrl(batch, font))
+        stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createAiViewCtrl(batch, font))
+        stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
     }
 
     override fun pause() {
