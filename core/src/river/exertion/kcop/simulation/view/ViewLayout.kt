@@ -48,8 +48,11 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
         textViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
-        textViewCtrl.currentText = textNarratives[textNarrativesIdx].currentText()
-        textViewCtrl.currentPrompts = textNarratives[textNarrativesIdx].currentPrompts()
+        if (isTextNarratives()) {
+            textViewCtrl.currentText = textNarratives[textNarrativesIdx].currentText()
+            textViewCtrl.currentPrompts = textNarratives[textNarrativesIdx].currentPrompts()
+        }
+
         textViewCtrl.initCreate(bitmapFont, batch)
 
         return textViewCtrl

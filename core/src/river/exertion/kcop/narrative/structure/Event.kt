@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 import river.exertion.kcop.Id
 
 @Serializable
-data class NarrativePrompt(
+data class Event(
     override var id: String = "",
-    val promptText: String = "",
-    val promptKey: Char,
-    val promptNextId: String = ""
+    val immersionTime: String = "",
+    val event: String = "",
+    val param: String = ""
 ) : Id()

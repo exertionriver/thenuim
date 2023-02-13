@@ -59,7 +59,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
         return scrollPane
     }
 
-    fun promptPane(bitmapFont : BitmapFont, batch : Batch) : Stack {
+    fun promptPane(bitmapFont : BitmapFont) : Table {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
 
@@ -67,7 +67,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
             currentPrompts!!.forEach { entry ->
                 val logLabel = Label(entry, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
                 logLabel.wrap = true
-                innerTable.add(logLabel).growX()
+                innerTable.add(logLabel).grow()
                 innerTable.row()
             }
         }
@@ -75,17 +75,18 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
         innerTable.top()
         innerTable.debug()
 
-        val returnStack = Stack().apply {
-            this.add(backgroundColorImg(batch))
-            this.add(innerTable)
-        }
-
-        return returnStack
+        return innerTable
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(textScrollPane(bitmapFont, batch))
-        this.row()
-        this.add(promptPane(bitmapFont, batch))
+
+        this.add(Stack().apply {
+            this.add(backgroundColorImg(batch))
+            this.add(Table().apply {
+                this.add(textScrollPane(bitmapFont, batch))
+                this.row()
+                this.add(promptPane(bitmapFont)).growX()
+            })
+        })
     }
 }

@@ -8,7 +8,9 @@ import river.exertion.kcop.Id
 data class Narrative(
     override var id: String,
     val narrativeBlocks : MutableList<NarrativeBlock> = mutableListOf(),
-    val promptBlocks : MutableList<NarrativePromptBlock> = mutableListOf()
+    val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
+    val eventBlocks : MutableList<EventBlock> = mutableListOf(),
+    val timelineEvents : MutableList<Event> = mutableListOf()
 ) : Id() {
     var currentId = ""
 

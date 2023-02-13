@@ -3,7 +3,7 @@ package river.exertion.kcop.narrative.structure
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NarrativePromptBlock(
+data class PromptBlock(
     val narrativeBlockId : String = "",
-    val prompts : MutableList<NarrativePrompt> = mutableListOf()
+    val prompts : MutableList<Prompt> = mutableListOf()
 )

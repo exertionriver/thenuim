@@ -63,9 +63,11 @@ class Text1dSimulator(private val batch: Batch,
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         stage.addActor(layout.createTextViewCtrl(batch, font, listOf(
             assets[NarrativeAssets.NarrativeTest],
-            assets[NarrativeAssets.NarrativeNavigationTest]
+            assets[NarrativeAssets.NarrativeNavigationTest],
+            assets[NarrativeAssets.NarrativeTimelineTest]
         ), assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
+        stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
     }
 
