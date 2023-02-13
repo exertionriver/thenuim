@@ -42,7 +42,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         localTimeStr = newLocalTimeStr
     }
 
-    fun textTimeReadout(bitmapFont: BitmapFont, batch: Batch) : Stack {
+    fun textTimeReadout(bitmapFont: BitmapFont, batch: Batch) : Table {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
 
@@ -51,21 +51,22 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
 
         innerTable.debug()
 
-        val returnStack = Stack().apply {
-            this.add(backgroundColorImg(batch))
-            this.add(innerTable)
-        }
-
-        return returnStack
+        return innerTable
     }
 
     fun rebuildTextTimeReadout() {
         if (!isInitialized) throw Exception("${::rebuildTextTimeReadout.javaMethod?.name}: view needs to be initialized with " + ::initCreate.javaMethod?.name)
 
         this.clearChildren()
-        this.add(textTimeReadout(this.bitmapFont!!, this.batch!!)).height(30f)
-        this.row()
-        this.add(scrollPane)
+
+        this.add(Stack().apply {
+            this.add(backgroundColorImg(this@LogViewCtrl.batch!!))
+            this.add(Table().apply {
+                this.add(textTimeReadout(this@LogViewCtrl.bitmapFont!!, this@LogViewCtrl.batch!!))
+                this.row()
+                this.add(scrollPane)
+            })
+        })
     }
 
     fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
@@ -102,8 +103,14 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(textTimeReadout(bitmapFont, batch) ).height(30f)
-        this.row()
-        this.add(textScrollPane(bitmapFont, batch) )
+
+        this.add(Stack().apply {
+            this.add(backgroundColorImg(batch))
+            this.add(Table().apply {
+                this.add(textTimeReadout(bitmapFont, batch))
+                this.row()
+                this.add(textScrollPane(bitmapFont, batch))
+            })
+        })
     }
 }
