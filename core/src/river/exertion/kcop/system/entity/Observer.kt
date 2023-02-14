@@ -7,10 +7,13 @@ import ktx.ashley.entity
 import ktx.ashley.get
 import ktx.ashley.mapperFor
 import ktx.ashley.with
+import river.exertion.kcop.Id
 import river.exertion.kcop.system.SystemManager
-import river.exertion.kcop.system.component.TimeComponent
+import river.exertion.kcop.system.component.IRLTimeComponent
+import river.exertion.kcop.system.component.ImmersionTimerComponent
+import river.exertion.kcop.system.immersionTimer.ImmersionTimerState
 
-class Observer : Component {
+class Observer : Component, Id() {
 
     var entityName = "observer"
 
@@ -23,8 +26,8 @@ class Observer : Component {
     }
 
     var components = mutableListOf(
-        TimeComponent(),
-//        PositionComponent()
+        IRLTimeComponent(),
+        ImmersionTimerComponent(startState = ImmersionTimerState.RUNNING)
     )
 
     companion object {
@@ -38,7 +41,7 @@ class Observer : Component {
                 with<Observer>()
             }.apply { this[mapper]?.initialize(this) }
 
-            SystemManager.logDebug (this::javaClass.name, "${getFor(newObserver)!!.entityName} instantiated! @ ${TimeComponent.getFor(newObserver)!!.immersionTime()}")
+            SystemManager.logDebug (::instantiate.javaClass.name, "${getFor(newObserver)!!.entityName} instantiated! @ ${IRLTimeComponent.getFor(newObserver)!!.localTime()}")
             return newObserver
         }
     }

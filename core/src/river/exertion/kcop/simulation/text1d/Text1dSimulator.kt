@@ -1,5 +1,6 @@
 package river.exertion.kcop.simulation.text1d
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
@@ -15,7 +16,9 @@ import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.SystemManager
-import river.exertion.kcop.system.entity.Observer
+import river.exertion.kcop.system.component.ImmersionTimerComponent
+import river.exertion.kcop.system.component.NarrativeComponent
+import river.exertion.kcop.system.entity.NarrativeEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -27,7 +30,9 @@ class Text1dSimulator(private val batch: Batch,
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
     val engine = PooledEngine().apply { SystemManager.init(this) }
-    val observer = Observer.instantiate(engine)
+
+    var narrativesIdx = 0
+    lateinit var narratives : MutableList<Entity>
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -40,8 +45,28 @@ class Text1dSimulator(private val batch: Batch,
         engine.update(delta)
 
         when {
-            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { layout.prevNarrativeIdx() }
-            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { layout.nextNarrativeIdx() }
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
+                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = false
+                narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
+
+                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = true
+
+                layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.id
+                layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.id
+                layout.currentNarrativeId = NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrative!!.id
+                layout.isPaused = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isPaused()
+            }
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
+                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = false
+                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narratives.size - 1)
+
+                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = true
+
+                layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.id
+                layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.id
+                layout.currentNarrativeId = NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrative!!.id
+                layout.isPaused = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isPaused()
+            }
         }
     }
 
@@ -55,20 +80,29 @@ class Text1dSimulator(private val batch: Batch,
         NarrativeAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
+        narratives = mutableListOf(
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest]),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest])
+        )
+
         val multiplexer = InputMultiplexer()
         multiplexer.addProcessor(ViewInputProcessor())
         multiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = multiplexer
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        stage.addActor(layout.createTextViewCtrl(batch, font, listOf(
-            assets[NarrativeAssets.NarrativeTest],
-            assets[NarrativeAssets.NarrativeNavigationTest],
-            assets[NarrativeAssets.NarrativeTimelineTest]
-        ), assets[TextureAssets.KoboldA]))
+
+        NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = true
+
+        stage.addActor(layout.createTextViewCtrl(batch, font, NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrative!!.id, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
+        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.id
+        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.id
+
+        layout.isPaused = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isPaused()
     }
 
     override fun pause() {

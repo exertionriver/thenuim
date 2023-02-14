@@ -2,7 +2,6 @@ package river.exertion.kcop.simulation.view
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
@@ -13,7 +12,9 @@ import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.system.SystemManager
+import river.exertion.kcop.system.component.ImmersionTimerComponent
 import river.exertion.kcop.system.entity.Observer
+import river.exertion.kcop.system.immersionTimer.ImmersionTimerState
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -54,13 +55,18 @@ class ViewSimulator(private val batch: Batch,
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         stage.addActor(layout.createDisplayViewCtrl(batch, font))
-        stage.addActor(layout.createTextViewCtrl(batch, font, listOf(), assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createTextViewCtrl(batch, font, null, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createMenuViewCtrl(batch, font))
         stage.addActor(layout.createPromptsViewCtrl(batch, font))
         stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createAiViewCtrl(batch, font))
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+
+        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.instImmersionTimer.id
+        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.id
+
+        layout.isPaused = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.isPaused()
     }
 
     override fun pause() {

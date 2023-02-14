@@ -19,7 +19,8 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
 
     var currentLog : MutableList<String>? = null
 
-    var immersionTimeStr = "00:00:00"
+    var instImmersionTimeStr = "00:00:00"
+    var cumlImmersionTimeStr = "00:00:00"
     var localTimeStr = "00:00:00"
 
     var vScrollTexture : Texture? = null
@@ -34,20 +35,25 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         currentLog!!.add(logEntry)
     }
 
-    fun updateImmersionTime(newImmersionTimeStr : String) {
-        immersionTimeStr = newImmersionTimeStr
+    fun updateInstImmersionTime(newImmersionTimeStr : String) {
+        instImmersionTimeStr = newImmersionTimeStr
+    }
+
+    fun updateCumlImmersionTime(newImmersionTimeStr : String) {
+        cumlImmersionTimeStr = newImmersionTimeStr
     }
 
     fun updateLocalTime(newLocalTimeStr : String) {
         localTimeStr = newLocalTimeStr
     }
 
-    fun textTimeReadout(bitmapFont: BitmapFont, batch: Batch) : Table {
+    fun textTimeReadout(bitmapFont: BitmapFont) : Table {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
 
-        innerTable.add(Label(immersionTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padRight(this.tableWidth() / 6)
-        innerTable.add(Label(localTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padLeft(this.tableWidth() / 6)
+        innerTable.add(Label(instImmersionTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padRight(this.tableWidth() / 9)
+        innerTable.add(Label(cumlImmersionTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padLeft(this.tableWidth() / 9).padRight(this.tableWidth() / 9)
+        innerTable.add(Label(localTimeStr, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).padLeft(this.tableWidth() / 9)
 
         innerTable.debug()
 
@@ -62,7 +68,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         this.add(Stack().apply {
             this.add(backgroundColorImg(this@LogViewCtrl.batch!!))
             this.add(Table().apply {
-                this.add(textTimeReadout(this@LogViewCtrl.bitmapFont!!, this@LogViewCtrl.batch!!))
+                this.add(textTimeReadout(this@LogViewCtrl.bitmapFont!!))
                 this.row()
                 this.add(scrollPane)
             })
@@ -107,7 +113,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         this.add(Stack().apply {
             this.add(backgroundColorImg(batch))
             this.add(Table().apply {
-                this.add(textTimeReadout(bitmapFont, batch))
+                this.add(textTimeReadout(bitmapFont))
                 this.row()
                 this.add(textScrollPane(bitmapFont, batch))
             })

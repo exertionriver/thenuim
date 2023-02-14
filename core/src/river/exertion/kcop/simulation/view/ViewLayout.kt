@@ -1,6 +1,6 @@
 package river.exertion.kcop.simulation.view
 
-import com.badlogic.gdx.ai.fsm.DefaultStateMachine
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.narrative.structure.Narrative
-import river.exertion.kcop.simulation.SimulationState
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.view.*
 
@@ -23,19 +22,18 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var aiViewCtrl = ViewCtrl(ViewType.AI, width, height)
     var pauseViewCtrl = PauseViewCtrl(width, height)
 
-    var textNarrativesIdx = 0
-    var textNarratives : List<Narrative>? = null
-
-    fun isTextNarratives() = !textNarratives.isNullOrEmpty()
+    var currentNarrativeId : String? = null
+    var currentInstImmersionTimerId : String? = null
+    var currentCumlImmersionTimerId : String? = null
+    var isPaused = false
 
     init {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.enableReceive(this)
     }
-
-    val stateMachine = DefaultStateMachine(this, SimulationState.RUNNING)
 
     private fun createViewCtrl(layoutViewCtrl : ViewCtrl, batch : Batch, bitmapFont : BitmapFont) : Table {
         layoutViewCtrl.initCreate(bitmapFont, batch)
@@ -43,15 +41,10 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     }
 
     fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(displayViewCtrl, batch, bitmapFont)
-    fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont, textNarratives : List<Narrative>, vScrollKnobImage : Texture) : TextViewCtrl {
-        this.textNarratives = textNarratives
-
+    fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont, narrativeId: String?, vScrollKnobImage : Texture) : TextViewCtrl {
         textViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
-        if (isTextNarratives()) {
-            textViewCtrl.currentText = textNarratives[textNarrativesIdx].currentText()
-            textViewCtrl.currentPrompts = textNarratives[textNarrativesIdx].currentPrompts()
-        }
+        this.currentNarrativeId = narrativeId
 
         textViewCtrl.initCreate(bitmapFont, batch)
 
@@ -87,24 +80,6 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         return pauseViewCtrl
     }
 
-    fun prevNarrativeIdx() {
-        if (isTextNarratives()) {
-            textNarrativesIdx = (textNarrativesIdx - 1).coerceAtLeast(0)
-            textViewCtrl.currentText = textNarratives!![textNarrativesIdx].currentText()
-            textViewCtrl.currentPrompts = textNarratives!![textNarrativesIdx].currentPrompts()
-            textViewCtrl.recreate()
-        }
-    }
-
-    fun nextNarrativeIdx() {
-        if (isTextNarratives()) {
-            textNarrativesIdx = (textNarrativesIdx + 1).coerceAtMost(textNarratives!!.size - 1)
-            textViewCtrl.currentText = textNarratives!![textNarrativesIdx].currentText()
-            textViewCtrl.currentPrompts = textNarratives!![textNarrativesIdx].currentPrompts()
-            textViewCtrl.recreate()
-        }
-    }
-
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
@@ -131,9 +106,17 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                             logViewCtrl.addLog(logMessage.message)
                             if (logViewCtrl.isInitialized) logViewCtrl.recreate()
                         }
-                        LogViewMessageType.ImmersionTime -> {
-                            logViewCtrl.updateImmersionTime(logMessage.message)
-                            if (logViewCtrl.isInitialized) logViewCtrl.rebuildTextTimeReadout()
+                        LogViewMessageType.InstImmersionTime -> {
+                            if ( (logMessage.param != null) && (logMessage.param == this.currentInstImmersionTimerId) ) {
+                                logViewCtrl.updateInstImmersionTime(logMessage.message)
+                                if (logViewCtrl.isInitialized) logViewCtrl.rebuildTextTimeReadout()
+                            }
+                        }
+                        LogViewMessageType.CumlImmersionTime -> {
+                            if ( (logMessage.param != null) && (logMessage.param == this.currentCumlImmersionTimerId) ) {
+                                logViewCtrl.updateCumlImmersionTime(logMessage.message)
+                                if (logViewCtrl.isInitialized) logViewCtrl.rebuildTextTimeReadout()
+                            }
                         }
                         LogViewMessageType.LocalTime -> {
                             logViewCtrl.updateLocalTime(logMessage.message)
@@ -145,19 +128,26 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     val viewMessage: ViewMessage = MessageChannel.LAYOUT_BRIDGE.receiveMessage(msg.extraInfo)
 
                     if ((viewMessage.targetView == ViewType.PAUSE) && (viewMessage.messageContent == ViewMessage.TogglePause)) {
-                        this.stateMachine.update()
+                        this.isPaused = !this.isPaused
+                        MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentInstImmersionTimerId, null) )
+                        MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentCumlImmersionTimerId, null) )
                     }
                 }
                 (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) -> {
-                    val viewMessage: ViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+                    val textViewMessage: TextViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if ( (viewMessage.targetView == ViewType.TEXT) && isTextNarratives() ) {
-                        textNarratives!![textNarrativesIdx].next(viewMessage.messageContent)
-                        textViewCtrl.currentText = textNarratives!![textNarrativesIdx].currentText()
-                        textViewCtrl.currentPrompts = textNarratives!![textNarrativesIdx].currentPrompts()
+                    if ( textViewMessage.param == this.currentNarrativeId ) {
+                        textViewCtrl.currentText = textViewMessage.narrativeText
+                        textViewCtrl.currentPrompts = textViewMessage.prompts
                         if (textViewCtrl.isInitialized) textViewCtrl.recreate()
                     }
                 }
+                (MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {
+                    val promptMessage: ViewMessage = MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.receiveMessage(msg.extraInfo)
+
+                    if (!isPaused) MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
+                }
+
             }
         }
         return true

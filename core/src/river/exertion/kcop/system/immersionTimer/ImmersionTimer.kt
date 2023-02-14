@@ -1,20 +1,23 @@
-package river.exertion.kcop.system.component
+package river.exertion.kcop.system.immersionTimer
 
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.utils.TimeUtils
-import river.exertion.kcop.simulation.SimulationState
+import river.exertion.kcop.Id
 import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.view.ImmersionTimeMessage
 
-class ImmersionTime(val startTime : Long = TimeUtils.millis()) : Telegraph {
+class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Id(), Telegraph {
 
-    init {
-        MessageChannel.IMMERSION_TIME_BRIDGE.enableReceive(this)
-    }
+    val stateMachine = DefaultStateMachine(this, startState)
 
     var timePausedAt : Long = 0
     var pausedTime : Long = 0
+
+    init {
+        MessageChannel.IMMERSION_TIME_BRIDGE.enableReceive(this)
+        if (startState == ImmersionTimerState.PAUSED) timePausedAt = startTime //init timer in paused mode
+    }
 
     private fun pausedTime() = if (timePausedAt > 0) TimeUtils.timeSinceMillis(timePausedAt) + pausedTime else pausedTime
 
@@ -30,19 +33,24 @@ class ImmersionTime(val startTime : Long = TimeUtils.millis()) : Telegraph {
 
     fun immersionTime() = "${immersionTimeHoursStr()}:${immersionTimeMinutesStr()}:${immersionTimeSecondsStr()}"
 
+    fun isPaused() = stateMachine.currentState == ImmersionTimerState.PAUSED
+
+    fun restart() {
+        startTime = TimeUtils.millis()
+        timePausedAt = 0
+        pausedTime = 0
+    }
+
+    fun pauserTimer() {
+        timePausedAt = TimeUtils.millis()
+    }
+
+    fun restartTimer() {
+        pausedTime += TimeUtils.timeSinceMillis(timePausedAt)
+        timePausedAt = 0
+    }
+
     override fun handleMessage(msg: Telegram?): Boolean {
-        if ((msg != null) && (MessageChannel.IMMERSION_TIME_BRIDGE.isType(msg.message))) {
-            val immersionTimeMessage : ImmersionTimeMessage = MessageChannel.IMMERSION_TIME_BRIDGE.receiveMessage(msg.extraInfo)
-
-            if (immersionTimeMessage.toState == SimulationState.PAUSED) {
-                timePausedAt = TimeUtils.millis()
-            }
-            if (immersionTimeMessage.toState == SimulationState.RUNNING) {
-                pausedTime += TimeUtils.timeSinceMillis(timePausedAt)
-                timePausedAt = 0
-            }
-        }
-
-        return true
+        return this.stateMachine.currentState.onMessage(this, msg)
     }
 }
