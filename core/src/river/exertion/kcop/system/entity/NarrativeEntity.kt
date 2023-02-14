@@ -28,7 +28,7 @@ class NarrativeEntity : Component, Id()  {
 
     //overall narrative timeline
     var components = mutableListOf(
-        ImmersionTimerComponent(startState = ImmersionTimerState.RUNNING),
+        ImmersionTimerComponent(startState = ImmersionTimerState.PAUSED),
         NarrativeComponent()
     )
 

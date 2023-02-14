@@ -17,6 +17,8 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
     var pauseDownImage : Texture? = null
     var pauseCheckedImage : Texture? = null
 
+    var isChecked = false
+
     fun clickButton() : Button {
 
         var buttonStyle = ButtonStyle()
@@ -30,6 +32,8 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
 
         val innerButton = Button(buttonStyle)
 
+        innerButton.isChecked = isChecked
+        
         innerButton.onClick {
             MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.PAUSE, ViewMessage.TogglePause))
         }

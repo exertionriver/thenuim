@@ -25,7 +25,6 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var currentNarrativeId : String? = null
     var currentInstImmersionTimerId : String? = null
     var currentCumlImmersionTimerId : String? = null
-    var isPaused = false
 
     init {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
@@ -33,6 +32,14 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.enableReceive(this)
+    }
+
+    fun setPaused(paused: Boolean) {
+        if (pauseViewCtrl.isInitialized) {
+            pauseViewCtrl.isChecked = paused
+
+            pauseViewCtrl.recreate()
+        }
     }
 
     private fun createViewCtrl(layoutViewCtrl : ViewCtrl, batch : Batch, bitmapFont : BitmapFont) : Table {
@@ -128,7 +135,6 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     val viewMessage: ViewMessage = MessageChannel.LAYOUT_BRIDGE.receiveMessage(msg.extraInfo)
 
                     if ((viewMessage.targetView == ViewType.PAUSE) && (viewMessage.messageContent == ViewMessage.TogglePause)) {
-                        this.isPaused = !this.isPaused
                         MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentInstImmersionTimerId, null) )
                         MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentCumlImmersionTimerId, null) )
                     }
@@ -145,7 +151,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {
                     val promptMessage: ViewMessage = MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.receiveMessage(msg.extraInfo)
 
-                    if (!isPaused) MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
+                    if (!pauseViewCtrl.isChecked) MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
                 }
 
             }

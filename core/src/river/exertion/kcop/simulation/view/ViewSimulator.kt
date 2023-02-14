@@ -66,7 +66,7 @@ class ViewSimulator(private val batch: Batch,
         layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.instImmersionTimer.id
         layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.id
 
-        layout.isPaused = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.isPaused()
+        layout.setPaused( ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.isPaused() )
     }
 
     override fun pause() {

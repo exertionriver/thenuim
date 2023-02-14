@@ -33,19 +33,26 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
 
     fun immersionTime() = "${immersionTimeHoursStr()}:${immersionTimeMinutesStr()}:${immersionTimeSecondsStr()}"
 
-    fun isPaused() = stateMachine.currentState == ImmersionTimerState.PAUSED
+    fun isNotStarted() = ( stateMachine.currentState == ImmersionTimerState.PAUSED ) && ( activeTime().toInt() == 0 )
 
-    fun restart() {
+    fun isPaused() = ( stateMachine.currentState == ImmersionTimerState.PAUSED ) && ( activeTime() > 0 )
+
+    fun beginTimer() {
+        stateMachine.changeState(ImmersionTimerState.RUNNING)
+        resetTimer()
+    }
+
+    fun resetTimer() {
         startTime = TimeUtils.millis()
         timePausedAt = 0
         pausedTime = 0
     }
 
-    fun pauserTimer() {
+    fun pauseTimer() {
         timePausedAt = TimeUtils.millis()
     }
 
-    fun restartTimer() {
+    fun resumeTimer() {
         pausedTime += TimeUtils.timeSinceMillis(timePausedAt)
         timePausedAt = 0
     }
