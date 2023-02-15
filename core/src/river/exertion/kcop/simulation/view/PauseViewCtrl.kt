@@ -32,9 +32,11 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
 
         val innerButton = Button(buttonStyle)
 
-        innerButton.isChecked = isChecked
-        
+        //override from ctrl
+        innerButton.isChecked = this@PauseViewCtrl.isChecked
+
         innerButton.onClick {
+            this@PauseViewCtrl.isChecked = !this@PauseViewCtrl.isChecked
             MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.PAUSE, ViewMessage.TogglePause))
         }
 

@@ -9,26 +9,38 @@ import ktx.ashley.mapperFor
 import ktx.ashley.with
 import river.exertion.kcop.Id
 import river.exertion.kcop.narrative.structure.Narrative
+import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.SystemManager
 import river.exertion.kcop.system.component.ImmersionTimerComponent
 import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerState
+import river.exertion.kcop.system.view.LogViewMessage
+import river.exertion.kcop.system.view.LogViewMessageType
 
 class NarrativeEntity : Component, Id()  {
 
     var entityName = "narrative"
+    lateinit var entity : Entity
 
-    fun initialize(entity: Entity, initName : String = entityName) {
-        entityName = initName
+    var isActive = false
+    var isInitialized = false
+
+    fun initialize(entity: Entity, narrative : Narrative, initName : String = entityName) {
+        this.entity = entity
+        this.entityName = initName
 
         components.forEach {
             if (!entity.components.contains(it) ) entity.add(it)
         }
+
+        NarrativeComponent.getFor(entity)!!.narrative = narrative
+        NarrativeComponent.getFor(entity)!!.initTimers()
+
+        isInitialized = true
     }
 
     //overall narrative timeline
     var components = mutableListOf(
-        ImmersionTimerComponent(startState = ImmersionTimerState.PAUSED),
         NarrativeComponent()
     )
 
@@ -41,12 +53,9 @@ class NarrativeEntity : Component, Id()  {
         fun instantiate(engine: PooledEngine, narrative : Narrative) : Entity {
             val newNarrative = engine.entity {
                 with<NarrativeEntity>()
-            }.apply { this[mapper]?.initialize(this) }
+            }.apply { this[mapper]?.initialize(this, narrative) }
 
-            NarrativeComponent.getFor(newNarrative)!!.narrative = narrative
-            NarrativeComponent.getFor(newNarrative)!!.initTimers()
-
-            SystemManager.logDebug (::instantiate.javaClass.name, "${getFor(newNarrative)!!.entityName} instantiated! @ ${ImmersionTimerComponent.getFor(newNarrative)!!.instImmersionTimer.immersionTime()}")
+            SystemManager.logDebug (::instantiate.javaClass.name, "${getFor(newNarrative)!!.entityName} instantiated!")
             return newNarrative
         }
     }

@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.component.ImmersionTimerComponent
+import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.view.*
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
@@ -25,6 +27,8 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var currentNarrativeId : String? = null
     var currentInstImmersionTimerId : String? = null
     var currentCumlImmersionTimerId : String? = null
+    var currentInstBlockTimerId : String? = null
+    var currentCumlBlockTimerId : String? = null
 
     init {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
@@ -34,24 +38,14 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.enableReceive(this)
     }
 
-    fun setPaused(paused: Boolean) {
-        if (pauseViewCtrl.isInitialized) {
-            pauseViewCtrl.isChecked = paused
-
-            pauseViewCtrl.recreate()
-        }
-    }
-
     private fun createViewCtrl(layoutViewCtrl : ViewCtrl, batch : Batch, bitmapFont : BitmapFont) : Table {
         layoutViewCtrl.initCreate(bitmapFont, batch)
         return layoutViewCtrl
     }
 
     fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(displayViewCtrl, batch, bitmapFont)
-    fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont, narrativeId: String?, vScrollKnobImage : Texture) : TextViewCtrl {
+    fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont, vScrollKnobImage : Texture) : TextViewCtrl {
         textViewCtrl.vScrollKnobTexture = vScrollKnobImage
-
-        this.currentNarrativeId = narrativeId
 
         textViewCtrl.initCreate(bitmapFont, batch)
 
@@ -85,6 +79,15 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         pauseViewCtrl.initCreate(bitmapFont, batch)
 
         return pauseViewCtrl
+    }
+
+    fun resetNarrative(instImmersionTimerId : String, cumlImmersionTimerId : String, instBlockTimerId : String, cumlBlockTimerId : String,
+                       narrativeId : String) {
+        currentInstImmersionTimerId = instImmersionTimerId
+        currentCumlImmersionTimerId = cumlImmersionTimerId
+        currentInstBlockTimerId = instBlockTimerId
+        currentCumlBlockTimerId = cumlBlockTimerId
+        currentNarrativeId = narrativeId
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -137,6 +140,14 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     if ((viewMessage.targetView == ViewType.PAUSE) && (viewMessage.messageContent == ViewMessage.TogglePause)) {
                         MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentInstImmersionTimerId, null) )
                         MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentCumlImmersionTimerId, null) )
+                        MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentInstBlockTimerId, null) )
+                        MessageChannel.IMMERSION_TIME_BRIDGE.send(null, ImmersionTimerMessage(this.currentCumlBlockTimerId, null) )
+                    }
+                    if ( (viewMessage.targetView == ViewType.LOG) && (viewMessage.messageContent == ViewMessage.BlockInstTimer) ) {
+                        this.currentInstBlockTimerId = viewMessage.param
+                    }
+                    if ( (viewMessage.targetView == ViewType.LOG) && (viewMessage.messageContent == ViewMessage.BlockCumlTimer) ) {
+                        this.currentCumlBlockTimerId = viewMessage.param
                     }
                 }
                 (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) -> {
@@ -151,7 +162,9 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {
                     val promptMessage: ViewMessage = MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.receiveMessage(msg.extraInfo)
 
-                    if (!pauseViewCtrl.isChecked) MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
+                    if (!pauseViewCtrl.isChecked) {
+                        MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
+                    }
                 }
 
             }

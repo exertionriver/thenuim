@@ -55,7 +55,7 @@ class ViewSimulator(private val batch: Batch,
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         stage.addActor(layout.createDisplayViewCtrl(batch, font))
-        stage.addActor(layout.createTextViewCtrl(batch, font, null, assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createMenuViewCtrl(batch, font))
         stage.addActor(layout.createPromptsViewCtrl(batch, font))
@@ -65,8 +65,6 @@ class ViewSimulator(private val batch: Batch,
 
         layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.instImmersionTimer.id
         layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.id
-
-        layout.setPaused( ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.isPaused() )
     }
 
     override fun pause() {

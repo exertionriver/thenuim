@@ -35,6 +35,8 @@ data class Narrative(
             promptBlocks.firstOrNull { it.narrativeBlockId == currentId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$id' at '$currentId')>")
         }
 
+    fun currentEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == currentId }
+
     fun next(promptKey : String) {
         currentId = if (isSequential()) {
             when (promptKey) {

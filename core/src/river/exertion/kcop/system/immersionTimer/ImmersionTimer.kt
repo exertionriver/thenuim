@@ -43,21 +43,36 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
     }
 
     fun resetTimer() {
+        if (stateMachine.currentState != ImmersionTimerState.RUNNING) stateMachine.changeState(ImmersionTimerState.RUNNING)
         startTime = TimeUtils.millis()
         timePausedAt = 0
         pausedTime = 0
     }
 
     fun pauseTimer() {
+        if (stateMachine.currentState != ImmersionTimerState.PAUSED) stateMachine.changeState(ImmersionTimerState.PAUSED)
         timePausedAt = TimeUtils.millis()
     }
 
     fun resumeTimer() {
+        if (stateMachine.currentState != ImmersionTimerState.RUNNING) stateMachine.changeState(ImmersionTimerState.RUNNING)
         pausedTime += TimeUtils.timeSinceMillis(timePausedAt)
         timePausedAt = 0
     }
 
+    fun onOrPast(timeString : String) : Boolean {
+        return immersionTimeSeconds() >= inSeconds(timeString)
+    }
+
     override fun handleMessage(msg: Telegram?): Boolean {
         return this.stateMachine.currentState.onMessage(this, msg)
+    }
+
+    companion object {
+
+        fun inSeconds(timeString : String) : Int {
+            val timeSplit = timeString.split(":")
+            return timeSplit[0].toInt() * 3600 + timeSplit[1].toInt() * 60 + timeSplit[2].toInt()
+        }
     }
 }

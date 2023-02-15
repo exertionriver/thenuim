@@ -46,36 +46,40 @@ class Text1dSimulator(private val batch: Batch,
 
         when {
             Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
-                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = false
+                val prevNarrativesIdx = narrativesIdx
                 narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
+                if (prevNarrativesIdx != narrativesIdx) {
+                    NarrativeComponent.getFor(narratives[prevNarrativesIdx])!!.inactivate()
+                    NarrativeComponent.getFor(narratives[narrativesIdx])!!.activate()
 
-                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = true
-                if (ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.isNotStarted()) {
-                    ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.beginTimer()
+                    layout.resetNarrative(
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instNarrativeTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlNarrativeTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instBlockTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlBlockTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrativeId()
+                    )
+                    layout.pauseViewCtrl.isChecked = false
+                    layout.pauseViewCtrl.recreate()
                 }
-                if (ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isNotStarted()) {
-                    ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.beginTimer()
-                }
-                layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.id
-                layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.id
-                layout.currentNarrativeId = NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrative!!.id
-                layout.setPaused( ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isPaused() )
             }
             Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
-                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = false
+                val prevNarrativesIdx = narrativesIdx
                 narrativesIdx = (narrativesIdx + 1).coerceAtMost(narratives.size - 1)
+                if (prevNarrativesIdx != narrativesIdx) {
+                    NarrativeComponent.getFor(narratives[prevNarrativesIdx])!!.inactivate()
+                    NarrativeComponent.getFor(narratives[narrativesIdx])!!.activate()
 
-                NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = true
-                if (ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.isNotStarted()) {
-                    ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.beginTimer()
+                    layout.resetNarrative(
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instNarrativeTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlNarrativeTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instBlockTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlBlockTimerId(),
+                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrativeId()
+                    )
+                    layout.pauseViewCtrl.isChecked = false
+                    layout.pauseViewCtrl.recreate()
                 }
-                if (ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isNotStarted()) {
-                    ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.beginTimer()
-                }
-                layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.id
-                layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.id
-                layout.currentNarrativeId = NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrative!!.id
-                layout.setPaused( ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isPaused() )
             }
         }
     }
@@ -103,18 +107,20 @@ class Text1dSimulator(private val batch: Batch,
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
 
-        stage.addActor(layout.createTextViewCtrl(batch, font, NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrative!!.id, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.id
-        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.id
+        NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 
-        layout.setPaused( ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.isPaused() )
+        layout.resetNarrative(
+            NarrativeComponent.getFor(narratives[narrativesIdx])!!.instNarrativeTimerId(),
+            NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlNarrativeTimerId(),
+            NarrativeComponent.getFor(narratives[narrativesIdx])!!.instBlockTimerId(),
+            NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlBlockTimerId(),
+            NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrativeId()
+        )
 
-        NarrativeComponent.getFor(narratives[narrativesIdx])!!.isActive = true
-        ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.instImmersionTimer.beginTimer()
-        ImmersionTimerComponent.getFor(narratives[narrativesIdx])!!.cumlImmersionTimer.beginTimer()
+        stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
     }
 
     override fun pause() {
