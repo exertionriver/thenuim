@@ -7,8 +7,6 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.mapperFor
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.view.LogViewMessage
-import river.exertion.kcop.system.view.LogViewMessageType
 import river.exertion.kcop.system.view.ViewMessage
 import river.exertion.kcop.system.view.ViewType
 
@@ -18,6 +16,7 @@ class NarrativeComponent : Component, Telegraph {
 
     val narrativeImmersionTimer = ImmersionTimerComponent()
     var blockImmersionTimers : MutableMap<String, ImmersionTimerComponent> = mutableMapOf()
+    var flags : MutableList<String> = mutableListOf()
 
     var isActive = false //ie., is the current simulation
     var isInitialized = false
@@ -25,11 +24,12 @@ class NarrativeComponent : Component, Telegraph {
     fun isPaused() = narrativeImmersionTimer.cumlImmersionTimer.isPaused()
 
     fun narrativeId() = narrative?.id ?: ""
-    fun narrativeBlockId() = narrative?.currentId ?: ""
+    fun narrativeCurrBlockId() = narrative?.currentId ?: ""
+    fun narrativePrevBlockId() = narrative?.previousId ?: ""
     fun instNarrativeTimerId() = narrativeImmersionTimer.instImmersionTimer.id
     fun cumlNarrativeTimerId() = narrativeImmersionTimer.cumlImmersionTimer.id
-    fun instBlockTimerId() = blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.id ?: ""
-    fun cumlBlockTimerId() = blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.id ?: ""
+    fun instBlockTimerId() = blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.id ?: ""
+    fun cumlBlockTimerId() = blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.id ?: ""
 
     init {
         MessageChannel.NARRATIVE_PROMPT_BRIDGE.enableReceive(this)
@@ -40,6 +40,7 @@ class NarrativeComponent : Component, Telegraph {
             narrative!!.narrativeBlocks.forEach { narrativeBlock ->
                 blockImmersionTimers[narrativeBlock.id] = ImmersionTimerComponent()
             }
+
             isInitialized = true
         }
     }
@@ -51,8 +52,8 @@ class NarrativeComponent : Component, Telegraph {
             narrativeImmersionTimer.cumlImmersionTimer.beginTimer()
             narrativeImmersionTimer.instImmersionTimer.beginTimer()
 
-            blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.beginTimer()
-            blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.beginTimer()
+            blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.beginTimer()
+            blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.beginTimer()
         }
     }
 
@@ -63,8 +64,8 @@ class NarrativeComponent : Component, Telegraph {
             narrativeImmersionTimer.cumlImmersionTimer.resumeTimer()
             narrativeImmersionTimer.instImmersionTimer.resetTimer()
 
-            blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.resumeTimer()
-            blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.resetTimer()
+            blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
+            blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
         }
     }
 
@@ -74,32 +75,32 @@ class NarrativeComponent : Component, Telegraph {
             narrativeImmersionTimer.cumlImmersionTimer.pauseTimer()
             narrativeImmersionTimer.instImmersionTimer.pauseTimer()
 
-            blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.pauseTimer()
-            blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.pauseTimer()
+            blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.pauseTimer()
+            blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()
         }
     }
 
     //active is assumed
     fun next(keypress : String) {
         if (isInitialized) {
-            val prevBlockId = narrativeBlockId()
+            val possiblePrevBlockId = narrativeCurrBlockId()
             narrative!!.next(keypress)
 
             //switch timers to new block
-            if (prevBlockId != narrativeBlockId()) {
-                blockImmersionTimers[prevBlockId]?.cumlImmersionTimer?.pauseTimer()
-                blockImmersionTimers[prevBlockId]?.instImmersionTimer?.pauseTimer()
+            if (possiblePrevBlockId != narrativeCurrBlockId()) {
+                blockImmersionTimers[narrativePrevBlockId()]?.cumlImmersionTimer?.pauseTimer()
+                blockImmersionTimers[narrativePrevBlockId()]?.instImmersionTimer?.pauseTimer()
 
-                if (blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.isNotStarted() == true) {
-                    blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.beginTimer()
+                if (blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.isNotStarted() == true) {
+                    blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.beginTimer()
                 } else {
-                    blockImmersionTimers[narrativeBlockId()]?.cumlImmersionTimer?.resumeTimer()
+                    blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
                 }
 
-                if (blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.isNotStarted() == true) {
-                    blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.beginTimer()
+                if (blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.isNotStarted() == true) {
+                    blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.beginTimer()
                 } else {
-                    blockImmersionTimers[narrativeBlockId()]?.instImmersionTimer?.resetTimer()
+                    blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
                 }
             }
             MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.LOG, ViewMessage.BlockInstTimer, instBlockTimerId()))

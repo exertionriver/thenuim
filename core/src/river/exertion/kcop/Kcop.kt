@@ -1,5 +1,7 @@
 package river.exertion.kcop
 
+import com.badlogic.gdx.Application.LOG_DEBUG
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -17,6 +19,7 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
+import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.assets.NarrativeAssetLoader
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
@@ -37,7 +40,7 @@ class Kcop : KtxGame<KtxScreen>() {
         val assets = AssetManager()
 
         val ifhr = InternalFileHandleResolver()
-        assets.setLoader(Narrative::class.java, NarrativeAssetLoader(ifhr))
+        assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(ifhr))
         assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(ifhr))
         assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(ifhr))
 
@@ -53,7 +56,7 @@ class Kcop : KtxGame<KtxScreen>() {
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
             addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
         }
-//        Gdx.app.logLevel = LOG_DEBUG
+        Gdx.app.logLevel = LOG_DEBUG
 
         setScreen<Text1dSimulator>()
 

@@ -12,7 +12,7 @@ import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.Util
 
 class NarrativeAssetLoader(resolver: FileHandleResolver?) :
-    AsynchronousAssetLoader<Narrative?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {
+    AsynchronousAssetLoader<NarrativeAsset?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {
 
     val json = Json { ignoreUnknownKeys = true }
     lateinit var rawData: String
@@ -24,20 +24,47 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?) {
     }
 
-    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): Narrative? {
+    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): NarrativeAsset {
         try {
             rawData = file.readString()
             val jsonElement = json.parseToJsonElement(rawData)
             val narrative = json.decodeFromJsonElement(jsonElement) as Narrative
             if (parameter == null || parameter.init) narrative.init()
-            return narrative
+
+            val returnNarrativeAsset = NarrativeAsset(narrative)
+
+            narrative.timelineEventBlocks.forEach { timelineEventBlock ->
+                timelineEventBlock.timelineEvents.forEach { timelineEvent ->
+                if ( !timelineEvent.validateFields() ) {
+                    returnNarrativeAsset.status = "${narrative.id} not loaded"
+                    if (returnNarrativeAsset.statusDetail == null)
+                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.event} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
+                    else
+                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.event} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
+                    }
+                }
+            }
+
+            narrative.timelineEvents.forEach { timelineEvent ->
+                if ( !timelineEvent.validateFields() ) {
+                    returnNarrativeAsset.status = "${narrative.id} not loaded"
+                    if (returnNarrativeAsset.statusDetail == null)
+                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.event} in <timelineEvents> for ${narrative.id}"
+                    else
+                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.event} in <timelineEvents> for ${narrative.id}"
+                }
+            }
+            return returnNarrativeAsset
+
         } catch (ex : Exception) {
-            Util.logDebug("loader", ex.toString())
+            return NarrativeAsset().apply {
+                this.status = "not loaded"
+                this.statusDetail = ex.message
+            }
         }
-        return null
     }
 
-    class NarrativeSequenceParameter : AssetLoaderParameters<Narrative?>() {
+    class NarrativeSequenceParameter : AssetLoaderParameters<NarrativeAsset?>() {
         /** initializes narrative sequence by default */
         var init = true
     }

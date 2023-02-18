@@ -11,5 +11,8 @@ enum class NarrativeAssets(val path: String) {
     NarrativeTimelineTest("kcop/narrative/ntb_kcop.json")
 }
 
-fun AssetManager.load(asset: NarrativeAssets) = load<Narrative>(asset.path)
-operator fun AssetManager.get(asset: NarrativeAssets) = getAsset<Narrative>(asset.path)
+fun AssetManager.load(asset: NarrativeAssets) = load<NarrativeAsset>(asset.path)
+operator fun AssetManager.get(asset: NarrativeAssets) = getAsset<NarrativeAsset>(asset.path).also {
+    if (it.status != null) println ("Asset Status: ${it.status}")
+    if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
+}

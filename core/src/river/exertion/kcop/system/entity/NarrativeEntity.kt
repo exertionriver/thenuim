@@ -25,7 +25,7 @@ class NarrativeEntity : Component, Id()  {
     var isActive = false
     var isInitialized = false
 
-    fun initialize(entity: Entity, narrative : Narrative, initName : String = entityName) {
+    fun initialize(entity: Entity, narrative : Narrative?, initName : String = entityName) {
         this.entity = entity
         this.entityName = initName
 
@@ -50,7 +50,7 @@ class NarrativeEntity : Component, Id()  {
         fun has(entity : Entity) : Boolean { return entity.components.firstOrNull{ it is NarrativeEntity } != null }
         fun getFor(entity : Entity) : NarrativeEntity? = if (has(entity)) entity.components.first { it is NarrativeEntity } as NarrativeEntity else null
 
-        fun instantiate(engine: PooledEngine, narrative : Narrative) : Entity {
+        fun instantiate(engine: PooledEngine, narrative : Narrative?) : Entity {
             val newNarrative = engine.entity {
                 with<NarrativeEntity>()
             }.apply { this[mapper]?.initialize(this, narrative) }

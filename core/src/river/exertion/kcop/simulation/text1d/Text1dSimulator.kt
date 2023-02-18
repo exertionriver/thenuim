@@ -95,9 +95,9 @@ class Text1dSimulator(private val batch: Batch,
         assets.finishLoading()
 
         narratives = mutableListOf(
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest]),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest])
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest].narrative),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest].narrative),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest].narrative)
         )
 
         val multiplexer = InputMultiplexer()
@@ -109,6 +109,7 @@ class Text1dSimulator(private val batch: Batch,
 
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 
