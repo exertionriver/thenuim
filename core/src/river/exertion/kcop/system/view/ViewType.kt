@@ -46,26 +46,28 @@ enum class ViewType {
     val secondDefaultColor = ColorPalette.Color635
 
     companion object {
-        fun firstWidth(width : Float) = 21 * width / 34f
-        fun firstHeight(height : Float) = 21 * height / 21f
+        val widths = listOf(34, 21, 13, 8, 5, 3, 2, 1)
 
-        fun secondWidth(width : Float) = 13 * width / 34f
-        fun secondHeight(height : Float) = 13 * height / 21f
+        fun firstWidth(width : Float) = widths[1] * width / widths[0]
+        fun firstHeight(height : Float) = widths[1] * height / widths[1]
 
-        fun thirdWidth(width : Float) = 8 * width / 34f
-        fun thirdHeight(height : Float) = 8 * height / 21f
+        fun secondWidth(width : Float) = widths[2] * width / widths[0]
+        fun secondHeight(height : Float) = widths[2] * height / widths[1]
 
-        fun fourthWidth(width : Float) = 5 * width / 34f
-        fun fourthHeight(height : Float) = 5 * height / 21f
+        fun thirdWidth(width : Float) = widths[3] * width / widths[0]
+        fun thirdHeight(height : Float) = widths[3] * height / widths[1]
 
-        fun fifthWidth(width : Float) = 3 * width / 34f
-        fun fifthHeight(height : Float) = 3 * height / 21f
+        fun fourthWidth(width : Float) = widths[4] * width / widths[0]
+        fun fourthHeight(height : Float) = widths[4] * height / widths[1]
 
-        fun sixthWidth(width : Float) = 2 * width / 34f
-        fun sixthHeight(height : Float) = 2 * height / 21f
+        fun fifthWidth(width : Float) = widths[5] * width / widths[0]
+        fun fifthHeight(height : Float) = widths[5] * height / widths[1]
 
-        fun seventhWidth(width : Float) = width / 34f
-        fun seventhHeight(height : Float) = height / 21f
+        fun sixthWidth(width : Float) = widths[6] * width / widths[0]
+        fun sixthHeight(height : Float) = widths[6] * height / widths[1]
+
+        fun seventhWidth(width : Float) = widths[7] * width / widths[0]
+        fun seventhHeight(height : Float) = widths[7] * height / widths[1]
 
         fun padWidth(width: Float) = seventhWidth(width) / 2
         fun padHeight(height: Float) = seventhHeight(height) / 2

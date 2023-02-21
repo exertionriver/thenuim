@@ -15,7 +15,7 @@ import river.exertion.kcop.system.view.*
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
-    var displayViewCtrl = ViewCtrl(ViewType.DISPLAY, width, height)
+    var displayViewCtrl = DisplayViewCtrl(width, height)
     var textViewCtrl = TextViewCtrl(width, height)
     var logViewCtrl = LogViewCtrl(width, height)
     var statusViewCtrl = ViewCtrl(ViewType.STATUS, width, height)

@@ -36,6 +36,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
 
         return sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) }
     }
+
     fun backgroundColorImg(batch : Batch) : Image = Image(backgroundColorTexture(batch))
 
     fun clearTable() {
