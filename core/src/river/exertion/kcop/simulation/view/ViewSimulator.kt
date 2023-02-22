@@ -54,7 +54,7 @@ class ViewSimulator(private val batch: Batch,
         Gdx.input.inputProcessor = inputMultiplexer
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        stage.addActor(layout.createDisplayViewCtrl(batch, font))
+        stage.addActor(layout.createDisplayViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC], assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createMenuViewCtrl(batch, font))

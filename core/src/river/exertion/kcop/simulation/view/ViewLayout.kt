@@ -43,7 +43,17 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         return layoutViewCtrl
     }
 
-    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(displayViewCtrl, batch, bitmapFont)
+    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont, largeImage : Texture, mediumImage : Texture, smallImage : Texture, tinyImage : Texture) : DisplayViewCtrl {
+        displayViewCtrl.largeImage = largeImage
+        displayViewCtrl.mediumImage = mediumImage
+        displayViewCtrl.smallImage = smallImage
+        displayViewCtrl.tinyImage = tinyImage
+
+        displayViewCtrl.initCreate(bitmapFont, batch)
+
+        return displayViewCtrl
+    }
+
     fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont, vScrollKnobImage : Texture) : TextViewCtrl {
         textViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
