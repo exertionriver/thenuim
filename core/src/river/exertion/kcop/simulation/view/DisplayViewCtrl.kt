@@ -24,6 +24,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     var smallImage : Texture? = null
     var tinyImage : Texture? = null
 
+    var layoutView = false
+
     //used for panes large
     val imgIdx = listOf(2, 4, 12, 16)
 
@@ -46,6 +48,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     fun buildTables(bitmapFont: BitmapFont, batch: Batch) : Table {
 
         val innerTable = Table()
+
+        panes.clear()
 
         DisplayViewPane.values().forEach { displayViewPane ->
             when (displayViewPane.ordinal) {
@@ -70,22 +74,24 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
                     Stack().apply {
                         this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, ColorPalette.of("black"))) })
                     })
-                imgIdx[3] -> if (tinyImage != null) {
-                    panes.add(
+                imgIdx[3] -> if (tinyImage != null) panes.add(
                     Stack().apply {
                         this.add(Table().apply { this.add(Image(TextureRegionDrawable(TextureRegion(tinyImage)))).size(displayViewPane.width(screenWidth), displayViewPane.height(screenHeight))})
-                    }) }else panes.add (
+                    }) else panes.add (
                     Stack().apply {
                         this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, ColorPalette.of("black"))) })
                     })
-                else -> panes.add(
+                else -> if (layoutView) panes.add(
                     Stack().apply {
                         this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, null)) })
                         this.add(Label(displayViewPane.ordinal.toString(), Label.LabelStyle(bitmapFont, displayViewPane.defaultColor().label().color())))
+                    }) else panes.add (
+                    Stack().apply {
+                        this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, ColorPalette.of("black"))) })
                     })
+                }
             }
 
-        }
 
         val tlSpiral0 = Table()
         tlSpiral0.add(panes[30]).fill()

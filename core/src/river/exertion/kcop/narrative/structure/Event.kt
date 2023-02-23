@@ -1,7 +1,6 @@
 package river.exertion.kcop.narrative.structure
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.Id
 
 @Serializable
 data class Event(
@@ -22,7 +21,11 @@ data class Event(
         LOG { override fun label() = "log"},
         TEXT {override fun label() = "text"},
         SET_FLAG { override fun label() = "setFlag"},
-        GET_FLAG {override fun label() = "getFlag"}
+        GET_FLAG {override fun label() = "getFlag"},
+        SHOW_IMAGE_LARGE {override fun label() = "showImageLarge"},
+        SHOW_IMAGE_MEDIUM {override fun label() = "showImageMedium"},
+        SHOW_IMAGE_SMALL {override fun label() = "showImageSmall"},
+        SHOW_IMAGE_TINY {override fun label() = "showImageTiny"}
         ;
         abstract fun label() : String
 

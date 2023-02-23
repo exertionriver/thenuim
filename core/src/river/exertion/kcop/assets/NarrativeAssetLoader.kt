@@ -6,10 +6,11 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.narrative.structure.Narrative
-import river.exertion.kcop.Util
+import ktx.assets.load
 
 class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<NarrativeAsset?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {
@@ -32,6 +33,14 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             if (parameter == null || parameter.init) narrative.init()
 
             val returnNarrativeAsset = NarrativeAsset(narrative)
+
+            narrative.eventBlocks.forEach { eventBlock ->
+                eventBlock.events.forEach { event ->
+                    if (event.event.contains("showImage") && !narrative.textures.keys.contains(event.param)) {
+                        narrative.textures[event.param] = manager.load(event.param)
+                    }
+                }
+            }
 
             narrative.timelineEventBlocks.forEach { timelineEventBlock ->
                 timelineEventBlock.timelineEvents.forEach { timelineEvent ->

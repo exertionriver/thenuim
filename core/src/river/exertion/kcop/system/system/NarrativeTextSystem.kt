@@ -8,9 +8,7 @@ import river.exertion.kcop.narrative.structure.TimelineEvent
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
-import river.exertion.kcop.system.view.LogViewMessage
-import river.exertion.kcop.system.view.LogViewMessageType
-import river.exertion.kcop.system.view.TextViewMessage
+import river.exertion.kcop.system.view.*
 
 class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::class).get(), 1/10f) {
 
@@ -47,9 +45,29 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
                 }
             }
 
+            var showImages = false
+
             narrativeComponent.narrative!!.currentEventBlock()?.events?.filter {
                 it.trigger == "onEntry"
             }?.forEach { event ->
+                if (event.event() == Event.EventType.SHOW_IMAGE_LARGE) {
+                    if ( narrativeComponent.narrative!!.textures.keys.contains(event.param) ) {
+                        showImages = true
+                        MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_LARGE, narrativeComponent.narrative!!.textures[event.param]!!.asset))
+                    }
+                }
+                if (event.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
+                    if ( narrativeComponent.narrative!!.textures.keys.contains(event.param) ) {
+                        showImages = true
+                        MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_MEDIUM, narrativeComponent.narrative!!.textures[event.param]!!.asset))
+                    }
+                }
+                if (event.event() == Event.EventType.SHOW_IMAGE_SMALL) {
+                    if ( narrativeComponent.narrative!!.textures.keys.contains(event.param) ) {
+                        showImages = true
+                        MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_SMALL, narrativeComponent.narrative!!.textures[event.param]!!.asset))
+                    }
+                }
                 if (event.event() == Event.EventType.SET_FLAG) {
                     if ( !narrativeComponent.flags.contains(event.param) ) {
                         NarrativeComponent.getFor(entity)!!.flags.add(event.param)
@@ -105,6 +123,9 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
             val text = "${narrativeComponent.narrative!!.currentText()}${eventText}\nblock inst time:[$blockInstTime]\nblock cuml time:[${blockCuml?.immersionTime()}]"
 
+            if (!showImages) {
+         //       MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_CLEAR, null))
+            }
 
 
             MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(text, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))

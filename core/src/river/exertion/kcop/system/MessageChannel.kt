@@ -10,6 +10,7 @@ enum class MessageChannel {
 
     COLOR_PALETTE_BRIDGE { override val messageClass = ColorPaletteMessage::class },
     LAYOUT_BRIDGE { override val messageClass = ViewMessage::class },
+    DISPLAY_VIEW_BRIDGE { override val messageClass = DisplayViewMessage::class },
     TEXT_VIEW_BRIDGE { override val messageClass = TextViewMessage::class },
     INPUT_VIEW_BRIDGE { override val messageClass = InputViewMessage::class },
     LOG_VIEW_BRIDGE { override val messageClass = LogViewMessage::class },

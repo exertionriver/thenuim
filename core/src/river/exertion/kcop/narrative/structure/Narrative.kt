@@ -1,7 +1,10 @@
 package river.exertion.kcop.narrative.structure
 
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import ktx.assets.Asset
 import river.exertion.kcop.Id
 
 @Serializable
@@ -14,8 +17,14 @@ data class Narrative(
     val timelineEventBlocks : MutableList<TimelineEventBlock> = mutableListOf(),
     ) : Id() {
 
+    @Transient
     var currentId = ""
+
+    @Transient
     var previousId = ""
+
+    @Transient
+    var textures : MutableMap<String, Asset<Texture>> = mutableMapOf()
 
     fun init() {
         currentId = narrativeBlocks.firstOrNull()?.id ?: currentId

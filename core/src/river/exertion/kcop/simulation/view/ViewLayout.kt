@@ -32,6 +32,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
     init {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
@@ -43,7 +44,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         return layoutViewCtrl
     }
 
-    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont, largeImage : Texture, mediumImage : Texture, smallImage : Texture, tinyImage : Texture) : DisplayViewCtrl {
+    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont, largeImage : Texture? = null, mediumImage : Texture? = null, smallImage : Texture? = null, tinyImage : Texture? = null) : DisplayViewCtrl {
         displayViewCtrl.largeImage = largeImage
         displayViewCtrl.mediumImage = mediumImage
         displayViewCtrl.smallImage = smallImage
@@ -176,7 +177,23 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
                     }
                 }
+                (MessageChannel.DISPLAY_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val displayViewMessage: DisplayViewMessage = MessageChannel.DISPLAY_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
+                    when (displayViewMessage.messageType) {
+                        DisplayViewMessageType.IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewMessage.texture
+                        DisplayViewMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.mediumImage = displayViewMessage.texture
+                        DisplayViewMessageType.IMAGE_SMALL -> this.displayViewCtrl.smallImage = displayViewMessage.texture
+                        DisplayViewMessageType.IMAGE_CLEAR -> {
+                            this.displayViewCtrl.largeImage = null
+                            this.displayViewCtrl.mediumImage = null
+                            this.displayViewCtrl.smallImage = null
+                            this.displayViewCtrl.tinyImage = null
+                        }
+                    }
+
+                    this.displayViewCtrl.recreate()
+                }
             }
         }
         return true

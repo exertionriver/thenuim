@@ -7,4 +7,14 @@
   {"id" : "demo_block4", "narrativeText" : ["fourth seq block"]},
   {"id" : "demo_block5", "narrativeText" : ["fifth seq block"]},
   {"id" : "demo_block6", "narrativeText" : ["sixth seq block"]}
+], "eventBlocks" : [
+  { "narrativeBlockId" : "demo_block2", "events" : [
+    { "id" : "optional_id", "trigger" : "onEntry", "event" : "showImageLarge", "param" : "images/kobold64.png" }
+  ]},
+  { "narrativeBlockId" : "demo_block4", "events" : [
+    { "event" : "showImageMedium", "trigger" : "onEntry", "param" : "images/kobold64b.png" }
+  ]},
+  { "narrativeBlockId" : "demo_block6", "events" : [
+    { "event" : "showImageSmall", "trigger" : "onEntry", "param" : "images/kobold64c.png" }
+  ]}
 ]}
