@@ -1,6 +1,12 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.5 - initial display view layout, narrative driven image, sound, and music triggers</b>
+
+![kcop0_5_initial_display_view](https://user-images.githubusercontent.com/13192685/221042024-d8b84d2f-75d6-4ec3-9e56-d220e1df8695.png)
+
+https://user-images.githubusercontent.com/13192685/221042053-6747cc6f-3b7a-421a-a243-10fd3c8e3406.mp4
+
 <b>v0.4 - implementing font load from .ttf, refactoring narrative to support timed events, implementing block and narrative timers</b>
 
 https://user-images.githubusercontent.com/13192685/218899200-865a5908-5aec-40d0-961d-47a02815e636.mp4
