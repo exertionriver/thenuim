@@ -1,16 +1,13 @@
 package river.exertion.kcop.simulation.view
 
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.component.ImmersionTimerComponent
-import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.view.*
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
@@ -29,10 +26,13 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var currentCumlImmersionTimerId : String? = null
     var currentInstBlockTimerId : String? = null
     var currentCumlBlockTimerId : String? = null
+    var currentMusic : Music? = null
+    var currentSound : Music? = null
 
     init {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
-        MessageChannel.DISPLAY_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.enableReceive(this)
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
@@ -177,14 +177,14 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         MessageChannel.NARRATIVE_PROMPT_BRIDGE.send(null, promptMessage)
                     }
                 }
-                (MessageChannel.DISPLAY_VIEW_BRIDGE.isType(msg.message) ) -> {
-                    val displayViewMessage: DisplayViewMessage = MessageChannel.DISPLAY_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.isType(msg.message) ) -> {
+                    val displayViewTextureMessage: DisplayViewTextureMessage = MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    when (displayViewMessage.messageType) {
-                        DisplayViewMessageType.IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewMessage.texture
-                        DisplayViewMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.mediumImage = displayViewMessage.texture
-                        DisplayViewMessageType.IMAGE_SMALL -> this.displayViewCtrl.smallImage = displayViewMessage.texture
-                        DisplayViewMessageType.IMAGE_CLEAR -> {
+                    when (displayViewTextureMessage.messageType) {
+                        DisplayViewTextureMessageType.IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.mediumImage = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.IMAGE_SMALL -> this.displayViewCtrl.smallImage = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.IMAGE_CLEAR -> {
                             this.displayViewCtrl.largeImage = null
                             this.displayViewCtrl.mediumImage = null
                             this.displayViewCtrl.smallImage = null
@@ -193,6 +193,28 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     }
 
                     this.displayViewCtrl.recreate()
+                }
+                (MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.isType(msg.message) ) -> {
+                    val displayViewAudioMessage: DisplayViewAudioMessage = MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    when (displayViewAudioMessage.messageType) {
+                        DisplayViewAudioMessageType.PLAY_MUSIC -> {
+                            if (displayViewAudioMessage.music != currentMusic) {
+                                currentMusic?.stop()
+                                currentMusic = displayViewAudioMessage.music
+                                currentMusic?.isLooping = true
+                                currentMusic?.play()
+                            }
+                        }
+                        DisplayViewAudioMessageType.PLAY_SOUND -> {
+                            if (displayViewAudioMessage.music != currentSound) {
+                                currentSound = displayViewAudioMessage.music
+                                currentSound?.isLooping = false
+                                currentSound?.play()
+                            }
+                        }
+                        DisplayViewAudioMessageType.STOP_MUSIC -> currentMusic?.stop()
+                    }
                 }
             }
         }

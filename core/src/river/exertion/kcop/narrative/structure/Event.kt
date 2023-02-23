@@ -25,12 +25,16 @@ data class Event(
         SHOW_IMAGE_LARGE {override fun label() = "showImageLarge"},
         SHOW_IMAGE_MEDIUM {override fun label() = "showImageMedium"},
         SHOW_IMAGE_SMALL {override fun label() = "showImageSmall"},
-        SHOW_IMAGE_TINY {override fun label() = "showImageTiny"}
+        SHOW_IMAGE_TINY {override fun label() = "showImageTiny"},
+        PLAY_SOUND {override fun label() = "playSound"},
+        PLAY_MUSIC {override fun label() = "playMusic"}
         ;
         abstract fun label() : String
 
         companion object {
             fun isEventType(event : String) = values().firstOrNull { it.label() == event } != null
+            fun isImageEvent(event : String) = listOf(SHOW_IMAGE_LARGE.label(), SHOW_IMAGE_MEDIUM.label(), SHOW_IMAGE_SMALL.label(), SHOW_IMAGE_TINY.label()).contains(event)
+            fun isAudioEvent(event : String) = listOf(PLAY_SOUND.label(), PLAY_MUSIC.label()).contains(event)
         }
     }
 }

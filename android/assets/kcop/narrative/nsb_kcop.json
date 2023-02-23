@@ -11,10 +11,17 @@
   { "narrativeBlockId" : "demo_block2", "events" : [
     { "id" : "optional_id", "trigger" : "onEntry", "event" : "showImageLarge", "param" : "images/kobold64.png" }
   ]},
+  { "narrativeBlockId" : "demo_block3", "events" : [
+    { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/navajo_clip.wav" }
+  ]},
   { "narrativeBlockId" : "demo_block4", "events" : [
     { "event" : "showImageMedium", "trigger" : "onEntry", "param" : "images/kobold64b.png" }
   ]},
+  { "narrativeBlockId" : "demo_block5", "events" : [
+    { "event" : "playSound", "trigger" : "onEntry", "param" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
+  ]},
   { "narrativeBlockId" : "demo_block6", "events" : [
-    { "event" : "showImageSmall", "trigger" : "onEntry", "param" : "images/kobold64c.png" }
+    { "event" : "showImageSmall", "trigger" : "onEntry", "param" : "images/kobold64c.png" },
+    { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/mystery_clip.wav" }
   ]}
 ]}

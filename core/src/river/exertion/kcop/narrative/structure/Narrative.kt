@@ -1,6 +1,8 @@
 package river.exertion.kcop.narrative.structure
 
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -25,6 +27,13 @@ data class Narrative(
 
     @Transient
     var textures : MutableMap<String, Asset<Texture>> = mutableMapOf()
+
+    @Transient
+    var sounds : MutableMap<String, Asset<Music>> = mutableMapOf()
+
+    @Transient
+    var music : MutableMap<String, Asset<Music>> = mutableMapOf()
+
 
     fun init() {
         currentId = narrativeBlocks.firstOrNull()?.id ?: currentId

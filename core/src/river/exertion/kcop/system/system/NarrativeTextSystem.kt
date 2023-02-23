@@ -25,75 +25,110 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             //eventBlocks
             narrativeComponent.narrative!!.previousEventBlock()?.events?.filter {
                 it.trigger == "onExit"
-            }?.forEach { event ->
-                if (event.event() == Event.EventType.SET_FLAG) {
-                    if ( !narrativeComponent.flags.contains(event.param) ) {
-                        NarrativeComponent.getFor(entity)!!.flags.add(event.param)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${event.param}") )
+            }?.forEach { previousEvent ->
+                if (previousEvent.event() == Event.EventType.SET_FLAG) {
+                    if ( !narrativeComponent.flags.contains(previousEvent.param) ) {
+                        NarrativeComponent.getFor(entity)!!.flags.add(previousEvent.param)
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${previousEvent.param}") )
                     }
                 }
-                if (event.event() == Event.EventType.GET_FLAG) {
-                    if ( narrativeComponent.flags.contains(event.param) ) {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${event.param}, unsetting") )
-                        NarrativeComponent.getFor(entity)!!.flags.remove(event.param)
+                if (previousEvent.event() == Event.EventType.GET_FLAG) {
+                    if ( narrativeComponent.flags.contains(previousEvent.param) ) {
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${previousEvent.param}, unsetting") )
+                        NarrativeComponent.getFor(entity)!!.flags.remove(previousEvent.param)
                     }
                 }
-                if (event.event() == Event.EventType.TEXT) eventText += "\n${event.param}"
-                if (event.event() == Event.EventType.LOG) {
-                    MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, event.param) )
-                    NarrativeComponent.getFor(entity)!!.narrative!!.eventBlocks.firstOrNull { it.narrativeBlockId == narrativeComponent.narrativePrevBlockId() }?.events?.remove(event)
+                if (previousEvent.event() == Event.EventType.TEXT) eventText += "\n${previousEvent.param}"
+                if (previousEvent.event() == Event.EventType.LOG) {
+                    MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, previousEvent.param) )
+                    NarrativeComponent.getFor(entity)!!.narrative!!.eventBlocks.firstOrNull { it.narrativeBlockId == narrativeComponent.narrativePrevBlockId() }?.events?.remove(previousEvent)
                 }
             }
 
-            var showImages = false
+            //stop past image display
+            narrativeComponent.narrative!!.previousEventBlock()?.events?.filter {
+                Event.EventType.isImageEvent(it.event)
+            }?.forEach { previousEvent ->
+                if (previousEvent.event() == Event.EventType.SHOW_IMAGE_LARGE) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_LARGE } == null) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_LARGE, null))
+                    }
+                }
+                if (previousEvent.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_MEDIUM } == null) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_MEDIUM, null))
+                    }
+                }
+                if (previousEvent.event() == Event.EventType.SHOW_IMAGE_SMALL) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_SMALL } == null) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_SMALL, null))
+                    }
+                }
+            }
+
+            //stop past audio
+            narrativeComponent.narrative!!.previousEventBlock()?.events?.filter {
+                Event.EventType.isAudioEvent(it.event)
+            }?.forEach { previousEvent ->
+                if (previousEvent.event() == Event.EventType.PLAY_MUSIC) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.PLAY_MUSIC } == null) {
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_MUSIC, null))
+                    }
+                }
+                if (previousEvent.event() == Event.EventType.PLAY_SOUND) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.PLAY_SOUND } == null) {
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_SOUND, null))
+                    }
+                }
+            }
+
 
             narrativeComponent.narrative!!.currentEventBlock()?.events?.filter {
                 it.trigger == "onEntry"
-            }?.forEach { event ->
-                if (event.event() == Event.EventType.SHOW_IMAGE_LARGE) {
-                    if ( narrativeComponent.narrative!!.textures.keys.contains(event.param) ) {
-                        showImages = true
-                        MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_LARGE, narrativeComponent.narrative!!.textures[event.param]!!.asset))
+            }?.forEach { currentEvent ->
+                if (currentEvent.event() == Event.EventType.PLAY_MUSIC) {
+                    if ( narrativeComponent.narrative!!.music.keys.contains(currentEvent.param) ) {
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_MUSIC, narrativeComponent.narrative!!.music[currentEvent.param]!!.asset))
                     }
                 }
-                if (event.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
-                    if ( narrativeComponent.narrative!!.textures.keys.contains(event.param) ) {
-                        showImages = true
-                        MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_MEDIUM, narrativeComponent.narrative!!.textures[event.param]!!.asset))
+                if (currentEvent.event() == Event.EventType.PLAY_SOUND) {
+                    if ( narrativeComponent.narrative!!.sounds.keys.contains(currentEvent.param) ) {
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_SOUND, narrativeComponent.narrative!!.sounds[currentEvent.param]!!.asset))
                     }
                 }
-                if (event.event() == Event.EventType.SHOW_IMAGE_SMALL) {
-                    if ( narrativeComponent.narrative!!.textures.keys.contains(event.param) ) {
-                        showImages = true
-                        MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_SMALL, narrativeComponent.narrative!!.textures[event.param]!!.asset))
+                if (currentEvent.event() == Event.EventType.SHOW_IMAGE_LARGE) {
+                    if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_LARGE, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
                     }
                 }
-                if (event.event() == Event.EventType.SET_FLAG) {
-                    if ( !narrativeComponent.flags.contains(event.param) ) {
-                        NarrativeComponent.getFor(entity)!!.flags.add(event.param)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${event.param}") )
+                if (currentEvent.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
+                    if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_MEDIUM, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
                     }
                 }
-                if (event.event() == Event.EventType.GET_FLAG) {
-                    if ( narrativeComponent.flags.contains(event.param) ) {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${event.param}, unsetting") )
-                        NarrativeComponent.getFor(entity)!!.flags.remove(event.param)
+                if (currentEvent.event() == Event.EventType.SHOW_IMAGE_SMALL) {
+                    if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_SMALL, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
                     }
                 }
-                if (event.event() == Event.EventType.TEXT) eventText += "\n${event.param}"
-                if (event.event() == Event.EventType.LOG) {
-                    MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, event.param) )
-                    NarrativeComponent.getFor(entity)!!.narrative!!.eventBlocks.firstOrNull { it.narrativeBlockId == narrativeComponent.narrativeCurrBlockId() }?.events?.remove(event)
+                if (currentEvent.event() == Event.EventType.SET_FLAG) {
+                    if ( !narrativeComponent.flags.contains(currentEvent.param) ) {
+                        NarrativeComponent.getFor(entity)!!.flags.add(currentEvent.param)
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${currentEvent.param}") )
+                    }
+                }
+                if (currentEvent.event() == Event.EventType.GET_FLAG) {
+                    if ( narrativeComponent.flags.contains(currentEvent.param) ) {
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${currentEvent.param}, unsetting") )
+                        NarrativeComponent.getFor(entity)!!.flags.remove(currentEvent.param)
+                    }
+                }
+                if (currentEvent.event() == Event.EventType.TEXT) eventText += "\n${currentEvent.param}"
+                if (currentEvent.event() == Event.EventType.LOG) {
+                    MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, currentEvent.param) )
+                    NarrativeComponent.getFor(entity)!!.narrative!!.eventBlocks.firstOrNull { it.narrativeBlockId == narrativeComponent.narrativeCurrBlockId() }?.events?.remove(currentEvent)
                 }
             }
-            /*
-                        { "narrativeBlockId" : "demo_block4", "events" : [
-                            { "event" : "text", "trigger" : "onEntry", "param" : "entered demo_block4" },
-                            { "event" : "log", "trigger" : "onEntry", "param" : "entered demo_block4" },
-                            { "event" : "getFlag", "trigger" : "onEntry", "param" : "demo_block2" },
-                            { "event" : "setFlag", "trigger" : "onExit", "param" : "demo_block4" }
-                            ]},
-            */
 
             //timelineEventBlocks
             narrativeComponent.narrative!!.currentTimelineEventBlock()?.timelineEvents?.filter {
@@ -122,11 +157,6 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             }
 
             val text = "${narrativeComponent.narrative!!.currentText()}${eventText}\nblock inst time:[$blockInstTime]\nblock cuml time:[${blockCuml?.immersionTime()}]"
-
-            if (!showImages) {
-         //       MessageChannel.DISPLAY_VIEW_BRIDGE.send(null, DisplayViewMessage(DisplayViewMessageType.IMAGE_CLEAR, null))
-            }
-
 
             MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(text, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
         }
