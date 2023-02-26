@@ -4,18 +4,12 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.kcop.simulation.view.DisplayViewPane
 import river.exertion.kcop.system.ShapeDrawerConfig
-import river.exertion.kcop.system.colorPalette.ColorPalette
-import kotlin.math.roundToInt
 
-class DVLGoldenRatio(var screenWidth: Float = 50f, var screenHeight: Float = 50f) : DisplayViewLayout {
+class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
 
     override var layoutMode = true
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
@@ -69,49 +63,6 @@ class DVLGoldenRatio(var screenWidth: Float = 50f, var screenHeight: Float = 50f
         panes[33] = DisplayViewPane.UNIT_BY_UNIT
 
         return panes
-    }
-
-    //used for panes large
-    override fun paneColorTexture(batch : Batch, pane : MutableMap.MutableEntry<Int, DisplayViewPane>, overrideColor : ColorPalette?) : TextureRegion {
-
-        val paneColor = overrideColor ?: ColorPalette.of("black")
-
-        if (sdcMap[pane.key] != null) sdcMap[pane.key]!!.dispose()
-
-        sdcMap[pane.key] = ShapeDrawerConfig(batch, paneColor.color())
-
-        return sdcMap[pane.key]!!.textureRegion.apply {this.setRegion(0, 0,
-            pane.value.width(screenWidth).roundToInt() + (paneRefiners[pane.key]?.x ?: 0f).toInt(),
-            pane.value.height(screenHeight).roundToInt() + (paneRefiners[pane.key]?.y ?: 0f).toInt())
-        }
-    }
-
-    override fun buildPaneCtrls(bitmapFont: BitmapFont, batch: Batch) : MutableMap<Int, Stack> {
-
-    val paneCtrls : MutableMap<Int, Stack> = mutableMapOf()
-
-    definePanes().entries.sortedBy { it.key }.forEach { displayViewPane ->
-        paneCtrls[displayViewPane.key] =
-            Stack().apply {
-                if (layoutMode) { //random color
-                    this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, ColorPalette.randomW3cBasic())) })
-                } else if (paneTextures[displayViewPane.key] != null) { //image present
-                    this.add(Table().apply { this.add(Image(TextureRegionDrawable(TextureRegion(paneTextures[displayViewPane.key])))).size(
-                        displayViewPane.value.width(this@DVLGoldenRatio.screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f).toInt(),
-                        displayViewPane.value.height(this@DVLGoldenRatio.screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f).toInt())
-                    })
-                    if (paneTextureMaskAlpha[displayViewPane.key] != null) {
-                        this.add(Table().apply { this.add(Image(TextureRegionDrawable(TextureRegion(Texture(maskPixmap.apply { this.setAlpha(paneTextureMaskAlpha[displayViewPane.key]); this.fill() }))))).size(
-                            displayViewPane.value.width(this@DVLGoldenRatio.screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f).toInt(),
-                            displayViewPane.value.height(this@DVLGoldenRatio.screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f).toInt(),)})
-                    }
-                } else { //background black
-                    this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, null)) })
-                }
-            }
-        }
-
-        return paneCtrls
     }
 
     override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch) : Table {
