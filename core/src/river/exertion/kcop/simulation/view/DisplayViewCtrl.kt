@@ -1,5 +1,6 @@
 package river.exertion.kcop.simulation.view
 
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -19,7 +20,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
 
     val panes : MutableList<Stack> = mutableListOf()
     var fullImage : Texture? = null
+    var maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
     var largeImage : Texture? = null
+    var largeImageIsFading = false
+    var largeImageMaskAlpha = 1f
     var mediumImage : Texture? = null
     var smallImage : Texture? = null
     var tinyImage : Texture? = null
@@ -45,6 +49,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
             sdc!!.textureRegion.apply {this.setRegion(0, 0, pane.width(screenWidth).roundToInt(), pane.height(screenHeight).roundToInt()) }
     }
 
+    fun Pixmap.setAlpha(alpha : Float) {
+        this.setColor(ColorPalette.of("black").color().r, ColorPalette.of("black").color().g, ColorPalette.of("black").color().b, alpha)
+        this.fill()
+    }
+
     fun buildTables(bitmapFont: BitmapFont, batch: Batch) : Table {
 
         val innerTable = Table()
@@ -56,6 +65,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
                 imgIdx[0] -> if (largeImage != null) panes.add(
                     Stack().apply {
                         this.add(Table().apply { this.add(Image(TextureRegionDrawable(TextureRegion(largeImage)))).size(displayViewPane.width(screenWidth), displayViewPane.height(screenHeight))})
+                        this.add(Table().apply { this.add(Image(TextureRegionDrawable(TextureRegion(Texture(maskPixmap.apply { this.setAlpha(largeImageMaskAlpha) }))))).size(displayViewPane.width(screenWidth), displayViewPane.height(screenHeight))})
                     }) else panes.add (
                     Stack().apply {
                         this.add(Table().apply { this.background = TextureRegionDrawable(paneColorTexture(batch, displayViewPane, ColorPalette.of("black"))) })
@@ -236,5 +246,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
 
         this.add(stack)
 
+    }
+
+    override fun dispose() {
+        maskPixmap.dispose()
+        super.dispose()
     }
 }

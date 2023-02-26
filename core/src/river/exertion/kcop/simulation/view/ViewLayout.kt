@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.view.*
@@ -193,6 +194,40 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
                     when (displayViewTextureMessage.messageType) {
                         DisplayViewTextureMessageType.IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.FADE_IMAGE_LARGE_IN -> {
+                            if (this.displayViewCtrl.largeImage != displayViewTextureMessage.texture && !this.displayViewCtrl.largeImageIsFading) {
+                                this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
+                                this.displayViewCtrl.largeImageIsFading = true
+                                this.displayViewCtrl.largeImageMaskAlpha = 1f
+                                Timer.schedule(object : Timer.Task() {
+                                    override fun run() {
+                                        if (this@ViewLayout.displayViewCtrl.largeImageMaskAlpha >= .1) this@ViewLayout.displayViewCtrl.largeImageMaskAlpha -= .1f
+                                        else {
+                                            this@ViewLayout.displayViewCtrl.largeImageIsFading = false
+                                            this.cancel()
+                                        }
+                                        this@ViewLayout.displayViewCtrl.recreate()
+                                    }
+                                }, 0f, .05f)
+                            }
+                        }
+                        DisplayViewTextureMessageType.FADE_IMAGE_LARGE_OUT -> {
+                            if (this.displayViewCtrl.largeImage != displayViewTextureMessage.texture && !this.displayViewCtrl.largeImageIsFading) {
+                                this.displayViewCtrl.largeImageIsFading = true
+                                Timer.schedule(object : Timer.Task() {
+                                    override fun run() {
+                                        if (this@ViewLayout.displayViewCtrl.largeImageMaskAlpha <= .9) this@ViewLayout.displayViewCtrl.largeImageMaskAlpha += .1f
+                                        else {
+                                            this@ViewLayout.displayViewCtrl.largeImage = displayViewTextureMessage.texture
+                                            this@ViewLayout.displayViewCtrl.largeImageIsFading = false
+                                            this.cancel()
+                                        }
+                                        this@ViewLayout.displayViewCtrl.recreate()
+                                    }
+                                }, 0f, .05f)
+                            }
+                        }
+                        DisplayViewTextureMessageType.CROSSFADE_IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
                         DisplayViewTextureMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.mediumImage = displayViewTextureMessage.texture
                         DisplayViewTextureMessageType.IMAGE_SMALL -> this.displayViewCtrl.smallImage = displayViewTextureMessage.texture
                         DisplayViewTextureMessageType.IMAGE_CLEAR -> {
@@ -209,11 +244,71 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     val displayViewAudioMessage: DisplayViewAudioMessage = MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (displayViewAudioMessage.messageType) {
+                        DisplayViewAudioMessageType.FADE_MUSIC_OUT -> {
+                            //https://stackoverflow.com/questions/35744181/libgdx-how-to-get-sfx-to-fade-out
+                            Timer.schedule(object : Timer.Task() {
+                                override fun run() {
+                                    if ( (currentMusic?.volume ?: 0f) >= .1) currentMusic?.volume = currentMusic?.volume?.minus(.1f) ?: 0f
+                                    else {
+                                        currentMusic?.stop()
+                                        currentMusic = null
+                                        this.cancel()
+                                    }
+                                }
+                            }, 0f, .3f)
+                        }
+                        DisplayViewAudioMessageType.FADE_MUSIC_IN -> {
+                            if (displayViewAudioMessage.music != currentMusic) {
+                                currentMusic?.stop()
+                                currentMusic = displayViewAudioMessage.music
+                                currentMusic?.isLooping = true
+                                currentMusic?.volume = 0f
+                                currentMusic?.play()
+
+                                Timer.schedule(object : Timer.Task() {
+                                    override fun run() {
+                                        if ( (currentMusic?.volume ?: 1f) <= .9) currentMusic?.volume = currentMusic?.volume?.plus(.1f) ?: 1f
+                                        else {
+                                            this.cancel()
+                                        }
+                                    }
+                                }, 0f, .3f)
+                            }
+                        }
+                        DisplayViewAudioMessageType.CROSS_FADE_MUSIC -> {
+                            if (displayViewAudioMessage.music != currentMusic) {
+                                //fade current music out
+                                val prevMusic = currentMusic
+                                Timer.schedule(object : Timer.Task() {
+                                    override fun run() {
+                                        if ( (prevMusic?.volume ?: 0f) >= .1) prevMusic?.volume = prevMusic?.volume?.minus(.1f) ?: 0f
+                                        else {
+                                            prevMusic?.stop()
+                                            this.cancel()
+                                        }
+                                    }
+                                }, 0f, .3f)
+                                currentMusic = displayViewAudioMessage.music
+                                currentMusic?.isLooping = true
+                                currentMusic?.volume = 0f
+                                currentMusic?.play()
+
+                                Timer.schedule(object : Timer.Task() {
+                                    override fun run() {
+                                        if ( (currentMusic?.volume ?: 1f) <= .9) currentMusic?.volume = currentMusic?.volume?.plus(.1f) ?: 1f
+                                        else {
+                                            this.cancel()
+                                        }
+                                    }
+                                }, 0f, .3f)
+                            }
+                        }
                         DisplayViewAudioMessageType.PLAY_MUSIC -> {
                             if (displayViewAudioMessage.music != currentMusic) {
                                 currentMusic?.stop()
                                 currentMusic = displayViewAudioMessage.music
                                 currentMusic?.isLooping = true
+                                currentMusic?.volume = 1f
                                 currentMusic?.play()
                             }
                         }
@@ -221,6 +316,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                             if (displayViewAudioMessage.music != currentSound) {
                                 currentSound = displayViewAudioMessage.music
                                 currentSound?.isLooping = false
+                                currentSound?.volume = 1f
                                 currentSound?.play()
                             }
                         }

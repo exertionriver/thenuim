@@ -6,5 +6,5 @@ data class DisplayViewAudioMessage(val messageType : DisplayViewAudioMessageType
 
 //sound is music played once
 enum class DisplayViewAudioMessageType {
-    PLAY_SOUND, PLAY_MUSIC, STOP_MUSIC
+    PLAY_SOUND, PLAY_MUSIC, STOP_MUSIC, FADE_MUSIC_OUT, FADE_MUSIC_IN, CROSS_FADE_MUSIC
 }

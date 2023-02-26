@@ -86,7 +86,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
         this.add(stack)
     }
 
-    fun dispose() {
+    open fun dispose() {
         if (sdc != null) { sdc!!.dispose(); sdc = null }
     }
 }

@@ -15,13 +15,11 @@
     { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/navajo_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block4", "events" : [
-    { "event" : "showImageMedium", "trigger" : "onEntry", "param" : "images/kobold64b.png" }
-  ]},
-  { "narrativeBlockId" : "demo_block5", "events" : [
-    { "event" : "playSound", "trigger" : "onEntry", "param" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
+    { "event" : "showImageMedium", "trigger" : "onEntry", "param" : "images/kobold64b.png" },
+    { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/mystery_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block6", "events" : [
     { "event" : "showImageSmall", "trigger" : "onEntry", "param" : "images/kobold64c.png" },
-    { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/mystery_clip.wav" }
+    { "event" : "playSound", "trigger" : "onEntry", "param" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
   ]}
 ]}

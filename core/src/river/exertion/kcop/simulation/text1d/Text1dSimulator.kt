@@ -118,5 +118,6 @@ class Text1dSimulator(private val batch: Batch,
 
     override fun dispose() {
         assets.dispose()
+        layout.dispose()
     }
 }

@@ -51,7 +51,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             }?.forEach { previousEvent ->
                 if (previousEvent.event() == Event.EventType.SHOW_IMAGE_LARGE) {
                     if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_LARGE } == null) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_LARGE, null))
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.FADE_IMAGE_LARGE_OUT, null))
                     }
                 }
                 if (previousEvent.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
@@ -72,7 +72,10 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             }?.forEach { previousEvent ->
                 if (previousEvent.event() == Event.EventType.PLAY_MUSIC) {
                     if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.PLAY_MUSIC } == null) {
-                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_MUSIC, null))
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.FADE_MUSIC_OUT, null))
+                    } else {
+                        val newMusic = narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.PLAY_MUSIC }!!
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.CROSS_FADE_MUSIC, narrativeComponent.narrative!!.music[newMusic.param]!!.asset))
                     }
                 }
                 if (previousEvent.event() == Event.EventType.PLAY_SOUND) {
@@ -88,7 +91,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             }?.forEach { currentEvent ->
                 if (currentEvent.event() == Event.EventType.PLAY_MUSIC) {
                     if ( narrativeComponent.narrative!!.music.keys.contains(currentEvent.param) ) {
-                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_MUSIC, narrativeComponent.narrative!!.music[currentEvent.param]!!.asset))
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.FADE_MUSIC_IN, narrativeComponent.narrative!!.music[currentEvent.param]!!.asset))
                     }
                 }
                 if (currentEvent.event() == Event.EventType.PLAY_SOUND) {
@@ -98,7 +101,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
                 }
                 if (currentEvent.event() == Event.EventType.SHOW_IMAGE_LARGE) {
                     if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_LARGE, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.FADE_IMAGE_LARGE_IN, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
                     }
                 }
                 if (currentEvent.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
