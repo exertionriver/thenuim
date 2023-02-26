@@ -15,6 +15,7 @@ enum class MessageChannel {
     TEXT_VIEW_BRIDGE { override val messageClass = TextViewMessage::class },
     INPUT_VIEW_BRIDGE { override val messageClass = InputViewMessage::class },
     LOG_VIEW_BRIDGE { override val messageClass = LogViewMessage::class },
+    STATUS_VIEW_BRIDGE { override val messageClass = StatusViewMessage::class },
     IMMERSION_TIME_BRIDGE { override val messageClass = ImmersionTimerMessage::class },
     NARRATIVE_PROMPT_BRIDGE { override val messageClass = ViewMessage::class },
     NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE { override val messageClass = ViewMessage::class }

@@ -7,6 +7,8 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.mapperFor
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.view.StatusViewMessage
+import river.exertion.kcop.system.view.StatusViewMessageType
 import river.exertion.kcop.system.view.ViewMessage
 import river.exertion.kcop.system.view.ViewType
 
@@ -20,6 +22,8 @@ class NarrativeComponent : Component, Telegraph {
 
     var isActive = false //ie., is the current simulation
     var isInitialized = false
+
+    lateinit var sequentialStatusKey : String
 
     fun isPaused() = narrativeImmersionTimer.cumlImmersionTimer.isPaused()
 
@@ -35,11 +39,16 @@ class NarrativeComponent : Component, Telegraph {
         MessageChannel.NARRATIVE_PROMPT_BRIDGE.enableReceive(this)
     }
 
+    fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)
+
     fun initTimers() {
         if (narrative != null) {
             narrative!!.narrativeBlocks.forEach { narrativeBlock ->
                 blockImmersionTimers[narrativeBlock.id] = ImmersionTimerComponent()
             }
+
+            sequentialStatusKey = "progress(${narrativeId().subSequence(0, 3)})"
+            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey, 0f))
 
             isInitialized = true
         }
@@ -54,6 +63,8 @@ class NarrativeComponent : Component, Telegraph {
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.beginTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.beginTimer()
+
+            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
         }
     }
 
@@ -66,6 +77,8 @@ class NarrativeComponent : Component, Telegraph {
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
+
+            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
         }
     }
 
@@ -77,6 +90,8 @@ class NarrativeComponent : Component, Telegraph {
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.pauseTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()
+
+            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
         }
     }
 
@@ -105,6 +120,8 @@ class NarrativeComponent : Component, Telegraph {
             }
             MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.LOG, ViewMessage.BlockInstTimer, instBlockTimerId()))
             MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.LOG, ViewMessage.BlockCumlTimer, cumlBlockTimerId()))
+
+            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
         }
     }
 

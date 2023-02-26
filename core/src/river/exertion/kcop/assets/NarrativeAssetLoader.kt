@@ -30,7 +30,6 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             rawData = file.readString()
             val jsonElement = json.parseToJsonElement(rawData)
             val narrative = json.decodeFromJsonElement(jsonElement) as Narrative
-            if (parameter == null || parameter.init) narrative.init()
 
             val returnNarrativeAsset = NarrativeAsset(narrative)
 
@@ -79,8 +78,5 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
         }
     }
 
-    class NarrativeSequenceParameter : AssetLoaderParameters<NarrativeAsset?>() {
-        /** initializes narrative sequence by default */
-        var init = true
-    }
+    class NarrativeSequenceParameter : AssetLoaderParameters<NarrativeAsset?>()
 }

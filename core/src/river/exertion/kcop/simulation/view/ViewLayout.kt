@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.view.*
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
@@ -15,7 +16,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var displayViewCtrl = DisplayViewCtrl(width, height)
     var textViewCtrl = TextViewCtrl(width, height)
     var logViewCtrl = LogViewCtrl(width, height)
-    var statusViewCtrl = ViewCtrl(ViewType.STATUS, width, height)
+    var statusViewCtrl = StatusViewCtrl(width, height)
     var menuViewCtrl = ViewCtrl(ViewType.MENU, width, height)
     var inputsViewCtrl = InputViewCtrl(width, height)
     var aiViewCtrl = ViewCtrl(ViewType.AI, width, height)
@@ -36,6 +37,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.enableReceive(this)
     }
 
@@ -70,7 +72,14 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
         return logViewCtrl
     }
-    fun createMenuViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(statusViewCtrl, batch, bitmapFont)
+    fun createStatusViewCtrl(batch : Batch, bitmapFont : BitmapFont, vScrollKnobImage : Texture) : StatusViewCtrl {
+        statusViewCtrl.vScrollKnobTexture = vScrollKnobImage
+
+        statusViewCtrl.initCreate(bitmapFont, batch)
+
+        return statusViewCtrl
+    }
+
     fun createPromptsViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(menuViewCtrl, batch, bitmapFont)
     fun createInputsViewCtrl(batch : Batch, bitmapFont : BitmapFont, clickImage : Texture, keyPressImage : Texture, keyUpImage : Texture) : InputViewCtrl {
         inputsViewCtrl.clickImage = clickImage
@@ -92,13 +101,15 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         return pauseViewCtrl
     }
 
-    fun resetNarrative(instImmersionTimerId : String, cumlImmersionTimerId : String, instBlockTimerId : String, cumlBlockTimerId : String,
-                       narrativeId : String) {
-        currentInstImmersionTimerId = instImmersionTimerId
-        currentCumlImmersionTimerId = cumlImmersionTimerId
-        currentInstBlockTimerId = instBlockTimerId
-        currentCumlBlockTimerId = cumlBlockTimerId
-        currentNarrativeId = narrativeId
+    fun resetNarrative(narrativeComponent: NarrativeComponent) {
+        currentInstImmersionTimerId = narrativeComponent.instNarrativeTimerId()
+        currentCumlImmersionTimerId = narrativeComponent.cumlNarrativeTimerId()
+        currentInstBlockTimerId = narrativeComponent.instBlockTimerId()
+        currentCumlBlockTimerId = narrativeComponent.cumlBlockTimerId()
+        currentNarrativeId = narrativeComponent.narrativeId()
+
+        pauseViewCtrl.isChecked = false
+        pauseViewCtrl.recreate()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -215,6 +226,22 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         }
                         DisplayViewAudioMessageType.STOP_MUSIC -> currentMusic?.stop()
                     }
+                }
+                (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val statusViewMessage: StatusViewMessage = MessageChannel.STATUS_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    when (statusViewMessage.messageType) {
+                        StatusViewMessageType.ADD_STATUS -> {
+                            this.statusViewCtrl.statuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
+                        }
+                        StatusViewMessageType.REMOVE_STATUS -> {
+                            this.statusViewCtrl.statuses.remove(statusViewMessage.statusKey)
+                        }
+                        StatusViewMessageType.UPDATE_STATUS -> {
+                            this.statusViewCtrl.statuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
+                        }
+                    }
+                    this.statusViewCtrl.recreate()
                 }
             }
         }

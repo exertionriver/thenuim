@@ -2,7 +2,6 @@ package river.exertion.kcop.narrative.structure
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -41,6 +40,8 @@ data class Narrative(
     }
 
     fun currentIdx() = narrativeBlocks.indexOf(narrativeBlocks.firstOrNull { it.id == currentId } ?: narrativeBlocks[0])
+
+    fun previousIdx() = narrativeBlocks.indexOf(narrativeBlocks.firstOrNull { it.id == previousId } ?: narrativeBlocks[0])
 
     fun seqPrevIdx() = (currentIdx() - 1).coerceAtLeast(0)
 

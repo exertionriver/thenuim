@@ -52,15 +52,7 @@ class Text1dSimulator(private val batch: Batch,
                     NarrativeComponent.getFor(narratives[prevNarrativesIdx])!!.inactivate()
                     NarrativeComponent.getFor(narratives[narrativesIdx])!!.activate()
 
-                    layout.resetNarrative(
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instNarrativeTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlNarrativeTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instBlockTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlBlockTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrativeId()
-                    )
-                    layout.pauseViewCtrl.isChecked = false
-                    layout.pauseViewCtrl.recreate()
+                    layout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
                 }
             }
             Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
@@ -70,15 +62,7 @@ class Text1dSimulator(private val batch: Batch,
                     NarrativeComponent.getFor(narratives[prevNarrativesIdx])!!.inactivate()
                     NarrativeComponent.getFor(narratives[narrativesIdx])!!.activate()
 
-                    layout.resetNarrative(
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instNarrativeTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlNarrativeTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.instBlockTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlBlockTimerId(),
-                        NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrativeId()
-                    )
-                    layout.pauseViewCtrl.isChecked = false
-                    layout.pauseViewCtrl.recreate()
+                    layout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
                 }
             }
         }
@@ -94,12 +78,6 @@ class Text1dSimulator(private val batch: Batch,
         NarrativeAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
-        narratives = mutableListOf(
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest].narrative),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest].narrative),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest].narrative)
-        )
-
         val multiplexer = InputMultiplexer()
         multiplexer.addProcessor(ViewInputProcessor())
         multiplexer.addProcessor(stage)
@@ -111,16 +89,17 @@ class Text1dSimulator(private val batch: Batch,
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createDisplayViewCtrl(batch, font) )
+        stage.addActor(layout.createStatusViewCtrl(batch, font, assets[TextureAssets.KoboldA]) )
+
+        narratives = mutableListOf(
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest]),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest])
+        )
 
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 
-        layout.resetNarrative(
-            NarrativeComponent.getFor(narratives[narrativesIdx])!!.instNarrativeTimerId(),
-            NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlNarrativeTimerId(),
-            NarrativeComponent.getFor(narratives[narrativesIdx])!!.instBlockTimerId(),
-            NarrativeComponent.getFor(narratives[narrativesIdx])!!.cumlBlockTimerId(),
-            NarrativeComponent.getFor(narratives[narrativesIdx])!!.narrativeId()
-        )
+        layout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
 
         stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
     }
