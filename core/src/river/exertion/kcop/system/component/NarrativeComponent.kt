@@ -10,7 +10,7 @@ import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.view.StatusViewMessage
 import river.exertion.kcop.system.view.StatusViewMessageType
 import river.exertion.kcop.system.view.ViewMessage
-import river.exertion.kcop.system.view.ViewType
+import river.exertion.kcop.simulation.view.ViewType
 
 class NarrativeComponent : Component, Telegraph {
 

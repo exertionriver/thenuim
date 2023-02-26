@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.view
+package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.math.Rectangle
 import river.exertion.kcop.system.colorPalette.ColorPalette

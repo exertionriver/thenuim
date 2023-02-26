@@ -48,10 +48,10 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     }
 
     fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont, largeImage : Texture? = null, mediumImage : Texture? = null, smallImage : Texture? = null, tinyImage : Texture? = null) : DisplayViewCtrl {
-        displayViewCtrl.largeImage = largeImage
-        displayViewCtrl.mediumImage = mediumImage
-        displayViewCtrl.smallImage = smallImage
-        displayViewCtrl.tinyImage = tinyImage
+        displayViewCtrl.displayViewLayouts[0].paneTextures[2] = largeImage
+        displayViewCtrl.displayViewLayouts[0].paneTextures[4] = mediumImage
+        displayViewCtrl.displayViewLayouts[0].paneTextures[12] = smallImage
+        displayViewCtrl.displayViewLayouts[0].paneTextures[16] = tinyImage
 
         displayViewCtrl.initCreate(bitmapFont, batch)
 
@@ -193,17 +193,19 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     val displayViewTextureMessage: DisplayViewTextureMessage = MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (displayViewTextureMessage.messageType) {
-                        DisplayViewTextureMessageType.IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.IMAGE_LARGE -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
                         DisplayViewTextureMessageType.FADE_IMAGE_LARGE_IN -> {
-                            if (this.displayViewCtrl.largeImage != displayViewTextureMessage.texture && !this.displayViewCtrl.largeImageIsFading) {
-                                this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
-                                this.displayViewCtrl.largeImageIsFading = true
-                                this.displayViewCtrl.largeImageMaskAlpha = 1f
+                            if (this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] != displayViewTextureMessage.texture && !this.displayViewCtrl.imageIsFading) {
+                                this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
+                                this.displayViewCtrl.imageIsFading = true
+                                this.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2] = 1f
                                 Timer.schedule(object : Timer.Task() {
                                     override fun run() {
-                                        if (this@ViewLayout.displayViewCtrl.largeImageMaskAlpha >= .1) this@ViewLayout.displayViewCtrl.largeImageMaskAlpha -= .1f
+                                        if (this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! >= .1)
+                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2] =
+                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! - .1f
                                         else {
-                                            this@ViewLayout.displayViewCtrl.largeImageIsFading = false
+                                            this@ViewLayout.displayViewCtrl.imageIsFading = false
                                             this.cancel()
                                         }
                                         this@ViewLayout.displayViewCtrl.recreate()
@@ -212,14 +214,16 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                             }
                         }
                         DisplayViewTextureMessageType.FADE_IMAGE_LARGE_OUT -> {
-                            if (this.displayViewCtrl.largeImage != displayViewTextureMessage.texture && !this.displayViewCtrl.largeImageIsFading) {
-                                this.displayViewCtrl.largeImageIsFading = true
+                            if (this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] != displayViewTextureMessage.texture && !this.displayViewCtrl.imageIsFading) {
+                                this.displayViewCtrl.imageIsFading = true
                                 Timer.schedule(object : Timer.Task() {
                                     override fun run() {
-                                        if (this@ViewLayout.displayViewCtrl.largeImageMaskAlpha <= .9) this@ViewLayout.displayViewCtrl.largeImageMaskAlpha += .1f
+                                        if (this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! <= .9)
+                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2] =
+                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! + .1f
                                         else {
-                                            this@ViewLayout.displayViewCtrl.largeImage = displayViewTextureMessage.texture
-                                            this@ViewLayout.displayViewCtrl.largeImageIsFading = false
+                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
+                                            this@ViewLayout.displayViewCtrl.imageIsFading = false
                                             this.cancel()
                                         }
                                         this@ViewLayout.displayViewCtrl.recreate()
@@ -227,14 +231,14 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                                 }, 0f, .05f)
                             }
                         }
-                        DisplayViewTextureMessageType.CROSSFADE_IMAGE_LARGE -> this.displayViewCtrl.largeImage = displayViewTextureMessage.texture
-                        DisplayViewTextureMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.mediumImage = displayViewTextureMessage.texture
-                        DisplayViewTextureMessageType.IMAGE_SMALL -> this.displayViewCtrl.smallImage = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.CROSSFADE_IMAGE_LARGE -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[4] = displayViewTextureMessage.texture
+                        DisplayViewTextureMessageType.IMAGE_SMALL -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[12] = displayViewTextureMessage.texture
                         DisplayViewTextureMessageType.IMAGE_CLEAR -> {
-                            this.displayViewCtrl.largeImage = null
-                            this.displayViewCtrl.mediumImage = null
-                            this.displayViewCtrl.smallImage = null
-                            this.displayViewCtrl.tinyImage = null
+                            displayViewCtrl.displayViewLayouts[0].paneTextures[2] = null
+                            displayViewCtrl.displayViewLayouts[0].paneTextures[4] = null
+                            displayViewCtrl.displayViewLayouts[0].paneTextures[12] = null
+                            displayViewCtrl.displayViewLayouts[0].paneTextures[16] = null
                         }
                     }
 

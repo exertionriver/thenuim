@@ -2,6 +2,7 @@ package river.exertion.kcop.system.view
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
+import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.MessageChannel
 
 class ViewInputProcessor : InputProcessor {

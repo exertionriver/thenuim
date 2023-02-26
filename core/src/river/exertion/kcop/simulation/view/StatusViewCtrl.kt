@@ -12,14 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import ktx.actors.*
-import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.view.DisplayViewPane
-import river.exertion.kcop.system.view.ViewType
 import kotlin.math.roundToInt
-import kotlin.reflect.jvm.javaMethod
 
 
 class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.STATUS, screenWidth, screenHeight) {
@@ -42,7 +37,8 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : View
 
     fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(
+            ViewType.padHeight(height))
 
         statuses.forEach {
             val barStack = Stack()

@@ -11,10 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import ktx.actors.*
-import river.exertion.kcop.narrative.structure.Narrative
-import river.exertion.kcop.system.view.ViewType
-import kotlin.reflect.jvm.javaMethod
 
 
 class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.TEXT, screenWidth, screenHeight) {
@@ -31,7 +27,8 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
 
     fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(
+            ViewType.padHeight(height))
 
         if (isText()) {
             val textLabel = Label(currentText, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
@@ -61,7 +58,8 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
 
     fun promptPane(bitmapFont : BitmapFont) : Table {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(
+            ViewType.padHeight(height))
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->

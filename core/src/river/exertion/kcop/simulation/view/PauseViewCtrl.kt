@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.view.ViewMessage
-import river.exertion.kcop.system.view.ViewType
 
 class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.PAUSE, screenWidth, screenHeight) {
 

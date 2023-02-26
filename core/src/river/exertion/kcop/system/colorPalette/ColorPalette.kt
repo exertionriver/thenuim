@@ -3,6 +3,7 @@ package river.exertion.kcop.system.colorPalette
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import kotlin.math.absoluteValue
+import kotlin.random.Random
 
 enum class ColorPalette {
     //color approximations for https://en.wikipedia.org/wiki/Web_colors
@@ -262,6 +263,8 @@ enum class ColorPalette {
         val colorThresholdsInt : List<Int> = listOf(8, 48, 88, 128, 168, 208, 248)
         val colorThresholdsFloat : List<Float> = colorThresholdsInt.map { it / 255f }
         const val defaultAlpha = 1f
+
+        fun randomW3cBasic() = w3cBasic().values.random()
 
         //w3c standard color lists
         fun w3cBasic() = listOf(
