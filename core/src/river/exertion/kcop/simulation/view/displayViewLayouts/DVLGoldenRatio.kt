@@ -17,6 +17,8 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
     override val paneTextureMaskAlpha : MutableMap<Int, Float?> = mutableMapOf()
+    override val paneImageFading : MutableMap<Int, Boolean?> = mutableMapOf()
+
     override val paneRefiners : MutableMap<Int, Vector2?> = mutableMapOf(
         16 to Vector2(1f, 0f),
         28 to Vector2(0f, 1f),

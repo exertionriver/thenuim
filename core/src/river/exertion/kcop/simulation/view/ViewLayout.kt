@@ -28,8 +28,6 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var currentCumlImmersionTimerId : String? = null
     var currentInstBlockTimerId : String? = null
     var currentCumlBlockTimerId : String? = null
-    var currentMusic : Music? = null
-    var currentSound : Music? = null
 
     init {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
@@ -193,53 +191,11 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     val displayViewTextureMessage: DisplayViewTextureMessage = MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (displayViewTextureMessage.messageType) {
-                        DisplayViewTextureMessageType.IMAGE_LARGE -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
-                        DisplayViewTextureMessageType.FADE_IMAGE_LARGE_IN -> {
-                            if (this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] != displayViewTextureMessage.texture && !this.displayViewCtrl.imageIsFading) {
-                                this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
-                                this.displayViewCtrl.imageIsFading = true
-                                this.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2] = 1f
-                                Timer.schedule(object : Timer.Task() {
-                                    override fun run() {
-                                        if (this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! >= .1)
-                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2] =
-                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! - .1f
-                                        else {
-                                            this@ViewLayout.displayViewCtrl.imageIsFading = false
-                                            this.cancel()
-                                        }
-                                        this@ViewLayout.displayViewCtrl.recreate()
-                                    }
-                                }, 0f, .05f)
-                            }
-                        }
-                        DisplayViewTextureMessageType.FADE_IMAGE_LARGE_OUT -> {
-                            if (this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] != displayViewTextureMessage.texture && !this.displayViewCtrl.imageIsFading) {
-                                this.displayViewCtrl.imageIsFading = true
-                                Timer.schedule(object : Timer.Task() {
-                                    override fun run() {
-                                        if (this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! <= .9)
-                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2] =
-                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextureMaskAlpha[2]!! + .1f
-                                        else {
-                                            this@ViewLayout.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
-                                            this@ViewLayout.displayViewCtrl.imageIsFading = false
-                                            this.cancel()
-                                        }
-                                        this@ViewLayout.displayViewCtrl.recreate()
-                                    }
-                                }, 0f, .05f)
-                            }
-                        }
-                        DisplayViewTextureMessageType.CROSSFADE_IMAGE_LARGE -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[2] = displayViewTextureMessage.texture
-                        DisplayViewTextureMessageType.IMAGE_MEDIUM -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[4] = displayViewTextureMessage.texture
-                        DisplayViewTextureMessageType.IMAGE_SMALL -> this.displayViewCtrl.displayViewLayouts[0].paneTextures[12] = displayViewTextureMessage.texture
-                        DisplayViewTextureMessageType.IMAGE_CLEAR -> {
-                            displayViewCtrl.displayViewLayouts[0].paneTextures[2] = null
-                            displayViewCtrl.displayViewLayouts[0].paneTextures[4] = null
-                            displayViewCtrl.displayViewLayouts[0].paneTextures[12] = null
-                            displayViewCtrl.displayViewLayouts[0].paneTextures[16] = null
-                        }
+                        DisplayViewTextureMessageType.SHOW_IMAGE -> this.displayViewCtrl.showImage(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessageType.FADE_IMAGE_IN -> this.displayViewCtrl.fadeImageIn(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessageType.FADE_IMAGE_OUT -> this.displayViewCtrl.fadeImageOut(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessageType.CROSSFADE_IMAGE -> this.displayViewCtrl.crossFadeImage(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessageType.CLEAR_ALL -> this.displayViewCtrl.clearImages()
                     }
 
                     this.displayViewCtrl.recreate()
@@ -248,83 +204,12 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                     val displayViewAudioMessage: DisplayViewAudioMessage = MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (displayViewAudioMessage.messageType) {
-                        DisplayViewAudioMessageType.FADE_MUSIC_OUT -> {
-                            //https://stackoverflow.com/questions/35744181/libgdx-how-to-get-sfx-to-fade-out
-                            Timer.schedule(object : Timer.Task() {
-                                override fun run() {
-                                    if ( (currentMusic?.volume ?: 0f) >= .1) currentMusic?.volume = currentMusic?.volume?.minus(.1f) ?: 0f
-                                    else {
-                                        currentMusic?.stop()
-                                        currentMusic = null
-                                        this.cancel()
-                                    }
-                                }
-                            }, 0f, .3f)
-                        }
-                        DisplayViewAudioMessageType.FADE_MUSIC_IN -> {
-                            if (displayViewAudioMessage.music != currentMusic) {
-                                currentMusic?.stop()
-                                currentMusic = displayViewAudioMessage.music
-                                currentMusic?.isLooping = true
-                                currentMusic?.volume = 0f
-                                currentMusic?.play()
-
-                                Timer.schedule(object : Timer.Task() {
-                                    override fun run() {
-                                        if ( (currentMusic?.volume ?: 1f) <= .9) currentMusic?.volume = currentMusic?.volume?.plus(.1f) ?: 1f
-                                        else {
-                                            this.cancel()
-                                        }
-                                    }
-                                }, 0f, .3f)
-                            }
-                        }
-                        DisplayViewAudioMessageType.CROSS_FADE_MUSIC -> {
-                            if (displayViewAudioMessage.music != currentMusic) {
-                                //fade current music out
-                                val prevMusic = currentMusic
-                                Timer.schedule(object : Timer.Task() {
-                                    override fun run() {
-                                        if ( (prevMusic?.volume ?: 0f) >= .1) prevMusic?.volume = prevMusic?.volume?.minus(.1f) ?: 0f
-                                        else {
-                                            prevMusic?.stop()
-                                            this.cancel()
-                                        }
-                                    }
-                                }, 0f, .3f)
-                                currentMusic = displayViewAudioMessage.music
-                                currentMusic?.isLooping = true
-                                currentMusic?.volume = 0f
-                                currentMusic?.play()
-
-                                Timer.schedule(object : Timer.Task() {
-                                    override fun run() {
-                                        if ( (currentMusic?.volume ?: 1f) <= .9) currentMusic?.volume = currentMusic?.volume?.plus(.1f) ?: 1f
-                                        else {
-                                            this.cancel()
-                                        }
-                                    }
-                                }, 0f, .3f)
-                            }
-                        }
-                        DisplayViewAudioMessageType.PLAY_MUSIC -> {
-                            if (displayViewAudioMessage.music != currentMusic) {
-                                currentMusic?.stop()
-                                currentMusic = displayViewAudioMessage.music
-                                currentMusic?.isLooping = true
-                                currentMusic?.volume = 1f
-                                currentMusic?.play()
-                            }
-                        }
-                        DisplayViewAudioMessageType.PLAY_SOUND -> {
-                            if (displayViewAudioMessage.music != currentSound) {
-                                currentSound = displayViewAudioMessage.music
-                                currentSound?.isLooping = false
-                                currentSound?.volume = 1f
-                                currentSound?.play()
-                            }
-                        }
-                        DisplayViewAudioMessageType.STOP_MUSIC -> currentMusic?.stop()
+                        DisplayViewAudioMessageType.FADE_MUSIC_OUT -> displayViewCtrl.fadeMusicOut()
+                        DisplayViewAudioMessageType.FADE_MUSIC_IN -> displayViewCtrl.fadeMusicIn(displayViewAudioMessage.music)
+                        DisplayViewAudioMessageType.CROSS_FADE_MUSIC -> displayViewCtrl.crossFadeMusic(displayViewAudioMessage.music)
+                        DisplayViewAudioMessageType.PLAY_MUSIC -> displayViewCtrl.playMusic(displayViewAudioMessage.music)
+                        DisplayViewAudioMessageType.PLAY_SOUND -> displayViewCtrl.playSound(displayViewAudioMessage.music)
+                        DisplayViewAudioMessageType.STOP_MUSIC -> displayViewCtrl.stopMusic()
                     }
                 }
                 (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {

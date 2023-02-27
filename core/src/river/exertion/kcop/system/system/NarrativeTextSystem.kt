@@ -49,19 +49,20 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             narrativeComponent.narrative!!.previousEventBlock()?.events?.filter {
                 Event.EventType.isImageEvent(it.event)
             }?.forEach { previousEvent ->
-                if (previousEvent.event() == Event.EventType.SHOW_IMAGE_LARGE) {
-                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_LARGE } == null) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.FADE_IMAGE_LARGE_OUT, null))
+                val currentImageEventInSamePane = narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { Event.EventType.isImageEvent(it.event) && (it.param2 == previousEvent.param2) }
+
+                if (previousEvent.event() == Event.EventType.SHOW_IMAGE) {
+                    if ( currentImageEventInSamePane == null) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.SHOW_IMAGE, previousEvent.param2.toInt(), null))
+                    } else {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.CROSSFADE_IMAGE, previousEvent.param2.toInt(), narrativeComponent.narrative!!.textures[currentImageEventInSamePane.param]!!.asset))
                     }
                 }
-                if (previousEvent.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
-                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_MEDIUM } == null) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_MEDIUM, null))
-                    }
-                }
-                if (previousEvent.event() == Event.EventType.SHOW_IMAGE_SMALL) {
-                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.SHOW_IMAGE_SMALL } == null) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_SMALL, null))
+                if (previousEvent.event() == Event.EventType.FADE_IMAGE) {
+                    if ( currentImageEventInSamePane == null) {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.FADE_IMAGE_OUT, previousEvent.param2.toInt(), null))
+                    } else {
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.CROSSFADE_IMAGE, previousEvent.param2.toInt(), narrativeComponent.narrative!!.textures[currentImageEventInSamePane.param]!!.asset))
                     }
                 }
             }
@@ -70,12 +71,17 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             narrativeComponent.narrative!!.previousEventBlock()?.events?.filter {
                 Event.EventType.isAudioEvent(it.event)
             }?.forEach { previousEvent ->
-                if (previousEvent.event() == Event.EventType.PLAY_MUSIC) {
-                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.PLAY_MUSIC } == null) {
+                if (previousEvent.event() == Event.EventType.FADE_MUSIC) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { Event.EventType.isAudioEvent(it.event) } == null) {
                         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.FADE_MUSIC_OUT, null))
                     } else {
-                        val newMusic = narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { it.event() == Event.EventType.PLAY_MUSIC }!!
+                        val newMusic = narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { Event.EventType.isAudioEvent(it.event) }!!
                         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.CROSS_FADE_MUSIC, narrativeComponent.narrative!!.music[newMusic.param]!!.asset))
+                    }
+                }
+                if (previousEvent.event() == Event.EventType.PLAY_MUSIC) {
+                    if ( narrativeComponent.narrative!!.currentEventBlock()?.events?.firstOrNull { Event.EventType.isAudioEvent(it.event) } == null) {
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.STOP_MUSIC, null))
                     }
                 }
                 if (previousEvent.event() == Event.EventType.PLAY_SOUND) {
@@ -91,6 +97,11 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             }?.forEach { currentEvent ->
                 if (currentEvent.event() == Event.EventType.PLAY_MUSIC) {
                     if ( narrativeComponent.narrative!!.music.keys.contains(currentEvent.param) ) {
+                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_MUSIC, narrativeComponent.narrative!!.music[currentEvent.param]!!.asset))
+                    }
+                }
+                if (currentEvent.event() == Event.EventType.FADE_MUSIC) {
+                    if ( narrativeComponent.narrative!!.music.keys.contains(currentEvent.param) ) {
                         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.FADE_MUSIC_IN, narrativeComponent.narrative!!.music[currentEvent.param]!!.asset))
                     }
                 }
@@ -99,19 +110,14 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
                         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(DisplayViewAudioMessageType.PLAY_SOUND, narrativeComponent.narrative!!.sounds[currentEvent.param]!!.asset))
                     }
                 }
-                if (currentEvent.event() == Event.EventType.SHOW_IMAGE_LARGE) {
+                if (currentEvent.event() == Event.EventType.FADE_IMAGE) {
                     if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.FADE_IMAGE_LARGE_IN, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.FADE_IMAGE_IN, currentEvent.param2.toInt(), narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
                     }
                 }
-                if (currentEvent.event() == Event.EventType.SHOW_IMAGE_MEDIUM) {
+                if (currentEvent.event() == Event.EventType.SHOW_IMAGE) {
                     if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_MEDIUM, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
-                    }
-                }
-                if (currentEvent.event() == Event.EventType.SHOW_IMAGE_SMALL) {
-                    if ( narrativeComponent.narrative!!.textures.keys.contains(currentEvent.param) ) {
-                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.IMAGE_SMALL, narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
+                        MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.SHOW_IMAGE, currentEvent.param2.toInt(), narrativeComponent.narrative!!.textures[currentEvent.param]!!.asset))
                     }
                 }
                 if (currentEvent.event() == Event.EventType.SET_FLAG) {

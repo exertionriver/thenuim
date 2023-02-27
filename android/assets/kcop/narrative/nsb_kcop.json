@@ -9,17 +9,21 @@
   {"id" : "demo_block6", "narrativeText" : ["sixth seq block"]}
 ], "eventBlocks" : [
   { "narrativeBlockId" : "demo_block2", "events" : [
-    { "id" : "optional_id", "trigger" : "onEntry", "event" : "showImageLarge", "param" : "images/kobold64.png" }
+    { "id" : "optional_id", "trigger" : "onEntry", "event" : "showImage", "param" : "images/kobold64.png", "param2" : "2" }
   ]},
   { "narrativeBlockId" : "demo_block3", "events" : [
     { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/navajo_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block4", "events" : [
-    { "event" : "showImageMedium", "trigger" : "onEntry", "param" : "images/kobold64b.png" },
-    { "event" : "playMusic", "trigger" : "onEntry", "param" : "music/mystery_clip.wav" }
+    { "event" : "fadeImage", "trigger" : "onEntry", "param" : "images/kobold64b.png", "param2" : "4" },
+    { "event" : "fadeMusic", "trigger" : "onEntry", "param" : "music/mystery_clip.wav" }
+  ]},
+  { "narrativeBlockId" : "demo_block5", "events" : [
+    { "event" : "fadeImage", "trigger" : "onEntry", "param" : "images/kobold64b.png", "param2" : "12" }
   ]},
   { "narrativeBlockId" : "demo_block6", "events" : [
-    { "event" : "showImageSmall", "trigger" : "onEntry", "param" : "images/kobold64c.png" },
+    { "event" : "fadeImage", "trigger" : "onEntry", "param" : "images/kobold64.png", "param2" : "12" },
+    { "event" : "showImage", "trigger" : "onEntry", "param" : "images/kobold64c.png", "param2" : "16" },
     { "event" : "playSound", "trigger" : "onEntry", "param" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
   ]}
 ]}

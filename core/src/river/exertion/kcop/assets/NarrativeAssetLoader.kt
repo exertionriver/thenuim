@@ -35,13 +35,13 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
 
             narrative.eventBlocks.forEach { eventBlock ->
                 eventBlock.events.forEach { event ->
-                    if (event.event.contains("showImage") && !narrative.textures.keys.contains(event.param)) {
+                    if (event.event.contains("Image") && !narrative.textures.keys.contains(event.param)) {
                         narrative.textures[event.param] = manager.load(event.param)
                     }
-                    if (event.event.contains("playSound") && !narrative.sounds.keys.contains(event.param)) {
+                    if (event.event.contains("Sound") && !narrative.sounds.keys.contains(event.param)) {
                         narrative.sounds[event.param] = manager.load(event.param)
                     }
-                    if (event.event.contains("playMusic") && !narrative.music.keys.contains(event.param)) {
+                    if (event.event.contains("Music") && !narrative.music.keys.contains(event.param)) {
                         narrative.music[event.param] = manager.load(event.param)
                     }
                 }
