@@ -12,7 +12,7 @@ object DesktopLauncher {
     @JvmStatic
     fun main(arg: Array<String>) {
         val config = Lwjgl3ApplicationConfiguration().apply {
-            this.setTitle("koboldCave Operating Platform (kcop) v0.6")
+            this.setTitle("koboldCave Operating Platform (kcop) v0.7")
             this.setWindowedMode(windowWidth, windowHeight)
             this.setForegroundFPS(60)
             setBackBufferConfig(8, 8, 8, 8, 24, 0, 8)

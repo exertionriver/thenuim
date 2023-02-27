@@ -88,7 +88,7 @@ class Text1dSimulator(private val batch: Batch,
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createDisplayViewCtrl(batch, font) )
+        stage.addActor(layout.createDisplayViewCtrl(batch, assets[FreeTypeFontAssets.Immortal]) )
         stage.addActor(layout.createStatusViewCtrl(batch, font, assets[TextureAssets.KoboldA]) )
 
         layout.displayViewCtrl.displayViewLayouts[0].layoutMode = false
