@@ -5,6 +5,8 @@ koboldCave Operating Platform
 
 https://user-images.githubusercontent.com/13192685/221450100-daeeb454-7513-48f4-be1f-2313e93f9d40.mp4
 
+---
+
 <b>v0.5 - initial display view layout, narrative-driven image, sound, and music triggers</b>
 
 ![kcop0_5_initial_display_view](https://user-images.githubusercontent.com/13192685/221042024-d8b84d2f-75d6-4ec3-9e56-d220e1df8695.png)
