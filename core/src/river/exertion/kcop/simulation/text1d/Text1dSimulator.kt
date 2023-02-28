@@ -91,13 +91,11 @@ class Text1dSimulator(private val batch: Batch,
         stage.addActor(layout.createDisplayViewCtrl(batch, assets[FreeTypeFontAssets.Immortal]) )
         stage.addActor(layout.createStatusViewCtrl(batch, font, assets[TextureAssets.KoboldA]) )
 
-        layout.displayViewCtrl.displayViewLayouts[0].layoutMode = false
-        layout.displayViewCtrl.recreate()
-
         narratives = mutableListOf(
             NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),
             NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest]),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest])
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest]),
+            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeLayoutTest])
         )
 
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()

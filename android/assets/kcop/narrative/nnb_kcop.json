@@ -1,4 +1,4 @@
-{"id" : "cyoa_narrative", "narrativeBlocks" : [
+{"id" : "cyoa_narrative", "layoutTag" : "goldenRatioLayout", "narrativeBlocks" : [
     {"id" : "demo_block1", "narrativeText" : ["first nav block"]},
     {"id" : "demo_block2", "narrativeText" : ["second nav block"]},
     {"id" : "demo_block3", "narrativeText" : ["third nav block"]},

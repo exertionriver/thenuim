@@ -167,7 +167,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
             val text = "${narrativeComponent.narrative!!.currentText()}${eventText}\nblock inst time:[$blockInstTime]\nblock cuml time:[${blockCuml?.immersionTime()}]"
 
-            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(text, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
+            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(text, narrativeComponent.narrative!!.currentDisplayText(), narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
         }
 
 //        SystemManager.logDebug(this.javaClass.name, "${this.interval} passed, timeActive: ${TimeComponent.getFor(entity)!!.timeActive()}, timeRender: ${TimeComponent.getFor(entity)!!.timeRender()}")

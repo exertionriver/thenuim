@@ -45,11 +45,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         return layoutViewCtrl
     }
 
-    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont, largeImage : Texture? = null, mediumImage : Texture? = null, smallImage : Texture? = null, tinyImage : Texture? = null) : DisplayViewCtrl {
-        displayViewCtrl.displayViewLayouts[0].paneTextures[2] = largeImage
-        displayViewCtrl.displayViewLayouts[0].paneTextures[4] = mediumImage
-        displayViewCtrl.displayViewLayouts[0].paneTextures[12] = smallImage
-        displayViewCtrl.displayViewLayouts[0].paneTextures[16] = tinyImage
+    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont) : DisplayViewCtrl {
 
         displayViewCtrl.initCreate(bitmapFont, batch)
 
@@ -106,6 +102,10 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         currentInstBlockTimerId = narrativeComponent.instBlockTimerId()
         currentCumlBlockTimerId = narrativeComponent.cumlBlockTimerId()
         currentNarrativeId = narrativeComponent.narrativeId()
+
+        displayViewCtrl.setLayoutIdxByTag(narrativeComponent.narrative!!.layoutTag)
+        displayViewCtrl.setCurrentLayoutMode(false)
+        displayViewCtrl.recreate()
 
         pauseViewCtrl.isChecked = false
         pauseViewCtrl.recreate()
@@ -178,6 +178,9 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         textViewCtrl.currentText = textViewMessage.narrativeText
                         textViewCtrl.currentPrompts = textViewMessage.prompts
                         if (textViewCtrl.isInitialized) textViewCtrl.recreate()
+
+                        displayViewCtrl.setCurrentText(textViewMessage.displayText)
+                        if (displayViewCtrl.isInitialized) displayViewCtrl.recreate()
                     }
                 }
                 (MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {

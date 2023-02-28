@@ -11,6 +11,7 @@ import river.exertion.kcop.Id
 @Serializable
 data class Narrative(
     override var id: String,
+    val layoutTag : String,
     val narrativeBlocks : MutableList<NarrativeBlock> = mutableListOf(),
     val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
     val eventBlocks : MutableList<EventBlock> = mutableListOf(),
@@ -49,7 +50,9 @@ data class Narrative(
 
     fun isSequential() : Boolean = promptBlocks.isEmpty()
 
-    fun currentText() = narrativeBlocks.firstOrNull { it.id == currentId }?.toTextString() ?: "<narrativeText not found for '$id' at '$currentId'>"
+    fun currentText() = narrativeBlocks.firstOrNull { it.id == currentId }?.toTextString() ?: ""
+
+    fun currentDisplayText() = narrativeBlocks.firstOrNull { it.id == currentId }?.toDisplayString() ?: ""
 
     fun currentPrompts() : List<String> =
         if (isSequential()) {

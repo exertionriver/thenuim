@@ -18,6 +18,4 @@ val bfp = BitmapFontParameter().apply {
 }
 
 fun AssetManager.load(asset: BitmapFontAssets) = load<BitmapFont>(asset.path, bfp)
-operator fun AssetManager.get(asset: BitmapFontAssets) = getAsset<BitmapFont>(asset.path).apply {
-    this.data.setScale(.4f, .4f) //32 size
-}
+operator fun AssetManager.get(asset: BitmapFontAssets) = getAsset<BitmapFont>(asset.path)

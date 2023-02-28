@@ -54,7 +54,7 @@ class ViewSimulator(private val batch: Batch,
         Gdx.input.inputProcessor = inputMultiplexer
 
         val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        stage.addActor(layout.createDisplayViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC], assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createDisplayViewCtrl(batch, assets[FreeTypeFontAssets.Immortal]))
         stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
         stage.addActor(layout.createStatusViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
@@ -62,6 +62,9 @@ class ViewSimulator(private val batch: Batch,
         stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createAiViewCtrl(batch, font))
         stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+
+        layout.displayViewCtrl.currentLayoutIdx = 0
+        layout.displayViewCtrl.recreate()
 
         layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.instImmersionTimer.id
         layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.id

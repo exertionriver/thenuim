@@ -2,6 +2,8 @@ package river.exertion.kcop.simulation.view
 
 enum class DisplayViewPane {
 
+    // MEDIUM through TINY are best for font
+
     // FULL
 
     FULL_BY_FULL {

@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Timer
+import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -15,10 +15,23 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
 
     var displayViewLayouts : MutableList<DisplayViewLayout> = mutableListOf(
-        DVLGoldenRatio(screenWidth, screenHeight)
+        DVLGoldenRatio(screenWidth, screenHeight),
+        DVLBasicPictureNarrative(screenWidth, screenHeight),
     )
 
     var currentLayoutIdx = 0
+    fun setLayoutIdxByTag(tag : String) {
+        currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
+    }
+
+    fun setCurrentLayoutMode(layoutMode : Boolean) {
+        displayViewLayouts[currentLayoutIdx].layoutMode = layoutMode
+    }
+
+    fun setCurrentText(text : String) {
+        displayViewLayouts[currentLayoutIdx].currentText = text
+    }
+
     var currentMusic : Music? = null
     var currentSound : Music? = null
 
@@ -166,13 +179,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        bitmapFont.data.setScale(.44f)
-        this.add(
-            Stack().apply {
-                this.add(displayViewLayouts[0].buildPaneTable(bitmapFont, batch))
-                this.add(Label("Testing immortal font", Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color())))
-            })
-
+        this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch))
     }
 
     override fun dispose() {

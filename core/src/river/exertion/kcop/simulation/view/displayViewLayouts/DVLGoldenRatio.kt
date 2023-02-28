@@ -11,8 +11,12 @@ import river.exertion.kcop.system.ShapeDrawerConfig
 
 class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
 
+    override val tag = "goldenRatioLayout"
+
     override var layoutMode = true
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
+
+    override var currentText = ""
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
@@ -66,6 +70,9 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
 
         return panes
     }
+
+    override fun imagePanes() : List<Int> = definePanes().keys.toList()
+    override fun textPanes() : List<Int> = listOf()
 
     override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch) : Table {
 

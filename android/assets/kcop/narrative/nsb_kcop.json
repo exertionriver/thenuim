@@ -1,4 +1,4 @@
-{"id" : "seq_narrative", "narrativeBlocks" : [
+{"id" : "seq_narrative", "layoutTag" : "goldenRatioLayout", "narrativeBlocks" : [
   {"id" : "demo_block1", "narrativeText" : ["first seq block\nsecond line"]},
   {"id" : "demo_block2", "narrativeText" : [
     "seq block testing wrapping the text view\nin the simulation wrapping of the text view in the simulation ",
