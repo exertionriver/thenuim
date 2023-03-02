@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view
+package river.exertion.kcop.simulation
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
@@ -11,10 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.assets.*
+import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.SystemManager
 import river.exertion.kcop.system.component.ImmersionTimerComponent
-import river.exertion.kcop.system.entity.Observer
-import river.exertion.kcop.system.immersionTimer.ImmersionTimerState
+import river.exertion.kcop.system.entity.ProfileEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -24,9 +24,7 @@ class ViewSimulator(private val batch: Batch,
                     private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-
     val engine = PooledEngine().apply { SystemManager.init(this) }
-    val observer = Observer.instantiate(engine)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -43,7 +41,6 @@ class ViewSimulator(private val batch: Batch,
     }
 
     override fun show() {
-//        BitmapFontAssets.values().forEach { assets.load(it) }
         FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
@@ -53,21 +50,21 @@ class ViewSimulator(private val batch: Batch,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        stage.addActor(layout.createDisplayViewCtrl(batch, assets[FreeTypeFontAssets.Immortal]))
-        stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createStatusViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createPromptsViewCtrl(batch, font))
-        stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(batch, font))
-        stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        val textFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        val displayFont = assets[FreeTypeFontAssets.Immortal]
+
+        stage.addActor(layout.createDisplayViewCtrl(batch, displayFont))
+        stage.addActor(layout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createLogViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
+        stage.addActor(layout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createPromptsViewCtrl(batch, textFont))
+        stage.addActor(layout.createInputsViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createAiViewCtrl(batch, textFont))
+        stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
         layout.displayViewCtrl.currentLayoutIdx = 0
+        layout.displayViewCtrl.setCurrentLayoutMode(false)
         layout.displayViewCtrl.recreate()
-
-        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.instImmersionTimer.id
-        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(observer)!!.cumlImmersionTimer.id
     }
 
     override fun pause() {

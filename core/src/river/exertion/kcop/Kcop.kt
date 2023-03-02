@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -21,10 +22,10 @@ import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.assets.NarrativeAssetLoader
-import river.exertion.kcop.narrative.structure.Narrative
-import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
-import river.exertion.kcop.simulation.view.ViewSimulator
-import river.exertion.kcop.simulation.text1d.Text1dSimulator
+import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.assets.ProfileAssetLoader
+import river.exertion.kcop.simulation.NarrativeSimulator
+import river.exertion.kcop.simulation.ViewSimulator
 
 class Kcop : KtxGame<KtxScreen>() {
 
@@ -38,6 +39,9 @@ class Kcop : KtxGame<KtxScreen>() {
         val menuBatch = PolygonSpriteBatch()
         val menuStage = Stage(menuViewport, menuBatch)
         val assets = AssetManager()
+
+        val lfhr = LocalFileHandleResolver()
+        assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
 
         val ifhr = InternalFileHandleResolver()
         assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(ifhr))
@@ -54,11 +58,11 @@ class Kcop : KtxGame<KtxScreen>() {
 
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(Text1dSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
         Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<Text1dSimulator>()
+        setScreen<NarrativeSimulator>()
 
     }
 

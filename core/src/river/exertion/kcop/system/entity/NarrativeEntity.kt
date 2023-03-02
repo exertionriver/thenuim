@@ -26,9 +26,9 @@ class NarrativeEntity : Component, Id()  {
 
     var isInitialized = false
 
-    fun initialize(entity: Entity, narrative : Narrative?, initName : String = entityName) {
+    fun initialize(entity: Entity, narrative : Narrative?) {
         this.entity = entity
-        this.entityName = initName
+        this.entityName = this.entityName + (narrative?.id ?: "")
 
         components.forEach {
             if (!entity.components.contains(it) ) entity.add(it)

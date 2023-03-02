@@ -10,26 +10,27 @@ import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.view.LogViewMessage
 import river.exertion.kcop.system.view.LogViewMessageType
 
-class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class, NarrativeComponent::class).get(), 1/10f) {
+class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class, NarrativeComponent::class).get(), 1/60f) {
 
     override fun processEntity(entity: Entity) {
 
         val immersionTimerComponent = ImmersionTimerComponent.getFor(entity)
         val irlTimeComponent = IRLTimeComponent.getFor(entity)
-        val narrativeTimeComponent = NarrativeComponent.getFor(entity)?.narrativeImmersionTimer
+        val narrativeTimeComponent = NarrativeComponent.getFor(entity)
 
         if (irlTimeComponent != null) {
             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LocalTime, irlTimeComponent.localTime()))
         }
 
-        if (immersionTimerComponent != null) {
+//      for when narrative is not loaded
+/*        if (immersionTimerComponent != null) {
             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.InstImmersionTime, immersionTimerComponent.instImmersionTimer.immersionTime(), immersionTimerComponent.instImmersionTimer.id) )
             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.CumlImmersionTime, immersionTimerComponent.cumlImmersionTimer.immersionTime(), immersionTimerComponent.cumlImmersionTimer.id) )
         }
-
+*/
         if (narrativeTimeComponent != null) {
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.InstImmersionTime, narrativeTimeComponent.instImmersionTimer.immersionTime(), narrativeTimeComponent.instImmersionTimer.id) )
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.CumlImmersionTime, narrativeTimeComponent.cumlImmersionTimer.immersionTime(), narrativeTimeComponent.cumlImmersionTimer.id) )
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.InstImmersionTime, narrativeTimeComponent.narrativeImmersionTimer.instImmersionTimer.immersionTime(), narrativeTimeComponent.narrativeImmersionTimer.instImmersionTimer.id) )
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.CumlImmersionTime, narrativeTimeComponent.narrativeImmersionTimer.cumlImmersionTimer.immersionTime(), narrativeTimeComponent.narrativeImmersionTimer.cumlImmersionTimer.id) )
         }
 
 //        SystemManager.logDebug(this.javaClass.name, "${this.interval} passed, timeActive: ${TimeComponent.getFor(entity)!!.timeActive()}, timeRender: ${TimeComponent.getFor(entity)!!.timeRender()}")

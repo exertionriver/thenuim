@@ -24,7 +24,7 @@ object Util {
         }
     }
 
-    val json = Json { ignoreUnknownKeys = true }
+    val json = Json { ignoreUnknownKeys = true; prettyPrint = true; isLenient = false }
 
     inline fun <reified T>loader(fileHandle: FileHandle) : T? {
         try {

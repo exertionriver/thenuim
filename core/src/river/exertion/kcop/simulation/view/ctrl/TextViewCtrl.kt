@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view
+package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import river.exertion.kcop.simulation.view.ViewType
 
 
 class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.TEXT, screenWidth, screenHeight) {
@@ -27,8 +28,13 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
 
     fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(
-            ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
+            ViewType.padHeight(
+                height
+            )
+        ).padBottom(
+            ViewType.padHeight(height)
+        )
 
         if (isText()) {
             val textLabel = Label(currentText, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
@@ -58,8 +64,13 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
 
     fun promptPane(bitmapFont : BitmapFont) : Table {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(
-            ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
+            ViewType.padHeight(
+                height
+            )
+        ).padBottom(
+            ViewType.padHeight(height)
+        )
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
@@ -85,6 +96,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
                 this.row()
                 this.add(promptPane(bitmapFont)).growX()
             })
-        })
+        }).size(this.tableWidth(), this.tableHeight())
+        this.clip()
     }
 }

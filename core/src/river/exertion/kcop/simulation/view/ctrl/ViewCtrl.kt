@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view
+package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import kotlin.reflect.jvm.javaMethod
@@ -33,7 +34,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     fun backgroundColorTexture(batch : Batch) : TextureRegion {
         if (this.sdc == null) this.sdc = ShapeDrawerConfig(batch, backgroundColor.color())
 
-        return sdc!!.textureRegion.apply {this.setRegion(tablePosX().toInt(), tablePosY().toInt(), tableWidth().toInt(), tableHeight().toInt()) }
+        return sdc!!.textureRegion.apply {this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1) }
     }
 
     fun backgroundColorImg(batch : Batch) : Image = Image(backgroundColorTexture(batch))
@@ -44,8 +45,6 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
 
         this.setSize(tableWidth(), tableHeight())
         this.setPosition(tablePosX(), tablePosY())
-
-        this.debug()
     }
 
     fun recreate() {
@@ -82,7 +81,8 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
         stack.add(backgroundColorImg(batch))
         stack.add(viewLabel)
 
-        this.add(stack)
+        this.add(stack).size(this.tableWidth(), this.tableHeight())
+        this.clip()
     }
 
     open fun dispose() {

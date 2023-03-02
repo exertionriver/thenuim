@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.text1d
+package river.exertion.kcop.simulation
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
@@ -16,19 +16,19 @@ import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.SystemManager
-import river.exertion.kcop.system.component.ImmersionTimerComponent
 import river.exertion.kcop.system.component.NarrativeComponent
+import river.exertion.kcop.system.component.ProfileComponent
 import river.exertion.kcop.system.entity.NarrativeEntity
+import river.exertion.kcop.system.entity.ProfileEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
-class Text1dSimulator(private val batch: Batch,
-                      private val assets: AssetManager,
-                      private val stage: Stage,
-                      private val orthoCamera: OrthographicCamera) : KtxScreen {
+class NarrativeSimulator(private val batch: Batch,
+                         private val assets: AssetManager,
+                         private val stage: Stage,
+                         private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-
+    val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
     val engine = PooledEngine().apply { SystemManager.init(this) }
 
     var narrativesIdx = 0
@@ -52,7 +52,7 @@ class Text1dSimulator(private val batch: Batch,
                     NarrativeComponent.getFor(narratives[prevNarrativesIdx])!!.inactivate()
                     NarrativeComponent.getFor(narratives[narrativesIdx])!!.activate()
 
-                    layout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
+                    viewLayout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
                 }
             }
             Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
@@ -62,7 +62,7 @@ class Text1dSimulator(private val batch: Batch,
                     NarrativeComponent.getFor(narratives[prevNarrativesIdx])!!.inactivate()
                     NarrativeComponent.getFor(narratives[narrativesIdx])!!.activate()
 
-                    layout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
+                    viewLayout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
                 }
             }
         }
@@ -72,10 +72,10 @@ class Text1dSimulator(private val batch: Batch,
     }
 
     override fun show() {
-//        BitmapFontAssets.values().forEach { assets.load(it) }
         FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
         NarrativeAssets.values().forEach { assets.load(it) }
+        ProfileAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         val multiplexer = InputMultiplexer()
@@ -83,13 +83,14 @@ class Text1dSimulator(private val batch: Batch,
         multiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = multiplexer
 
-        val font = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        val textFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        val displayFont = assets[FreeTypeFontAssets.Immortal]
 
-        stage.addActor(layout.createLogViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createPauseViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createInputsViewCtrl(batch, font, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createDisplayViewCtrl(batch, assets[FreeTypeFontAssets.Immortal]) )
-        stage.addActor(layout.createStatusViewCtrl(batch, font, assets[TextureAssets.KoboldA]) )
+        stage.addActor(viewLayout.createLogViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
+        stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createInputsViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createDisplayViewCtrl(batch, displayFont ) )
+        stage.addActor(viewLayout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]) )
 
         narratives = mutableListOf(
             NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),
@@ -100,9 +101,9 @@ class Text1dSimulator(private val batch: Batch,
 
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 
-        layout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
+        viewLayout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
 
-        stage.addActor(layout.createTextViewCtrl(batch, font, assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
     }
 
     override fun pause() {
@@ -119,6 +120,6 @@ class Text1dSimulator(private val batch: Batch,
 
     override fun dispose() {
         assets.dispose()
-        layout.dispose()
+        viewLayout.dispose()
     }
 }

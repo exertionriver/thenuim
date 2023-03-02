@@ -2,14 +2,14 @@ package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Timer
+import river.exertion.kcop.simulation.view.ctrl.*
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.component.NarrativeComponent
+import river.exertion.kcop.system.profile.Status
 import river.exertion.kcop.system.view.*
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
@@ -111,6 +111,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         pauseViewCtrl.recreate()
     }
 
+    @Suppress("NewApi")
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
@@ -220,13 +221,13 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
                     when (statusViewMessage.messageType) {
                         StatusViewMessageType.ADD_STATUS -> {
-                            this.statusViewCtrl.statuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
+                            this.statusViewCtrl.statuses.add(Status(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
                         }
                         StatusViewMessageType.REMOVE_STATUS -> {
-                            this.statusViewCtrl.statuses.remove(statusViewMessage.statusKey)
+                            this.statusViewCtrl.statuses.removeIf { it.key == statusViewMessage.statusKey }
                         }
                         StatusViewMessageType.UPDATE_STATUS -> {
-                            this.statusViewCtrl.statuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
+                            this.statusViewCtrl.statuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
                         }
                     }
                     this.statusViewCtrl.recreate()

@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view
+package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -12,14 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.profile.Status
 import kotlin.math.roundToInt
 
 
 class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.STATUS, screenWidth, screenHeight) {
 
-    val statuses : MutableMap<String, Float> = mutableMapOf()
+    val statuses : MutableList<Status> = mutableListOf()
 
     var vScrollKnobTexture : Texture? = null
 
@@ -32,13 +34,19 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : View
         else
             this.sdc = ShapeDrawerConfig(batch, overrideColor.color())
 
-        return sdc!!.textureRegion.apply {this.setRegion(0, 0, ViewType.padWidth(screenWidth).roundToInt(), ViewType.padHeight(screenHeight).roundToInt()) }
+        return sdc!!.textureRegion.apply {this.setRegion(0, 0, ViewType.padWidth(screenWidth)
+            .roundToInt(), ViewType.padHeight(screenHeight).roundToInt()) }
     }
 
     fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(
-            ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
+            ViewType.padHeight(
+                height
+            )
+        ).padBottom(
+            ViewType.padHeight(height)
+        )
 
         statuses.forEach {
             val barStack = Stack()
@@ -79,6 +87,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : View
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(textScrollPane(bitmapFont, batch)).grow()
+        this.add(textScrollPane(bitmapFont, batch)).size(this.tableWidth(), this.tableHeight())
+        this.clip()
     }
 }

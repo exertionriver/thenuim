@@ -29,6 +29,9 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
     override val paneImageFading : MutableMap<Int, Boolean?> = mutableMapOf()
 
     override val paneRefiners : MutableMap<Int, Vector2?> = mutableMapOf(
+        0 to Vector2(1f, 0f),
+        1 to Vector2(3f, 0f),
+        2 to Vector2(4f, 1f)
     )
 
     override fun definePanes() : MutableMap<Int, DisplayViewPane> {
@@ -54,13 +57,13 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         val innerTable = Table()
 
         val tlRow0 = Table()
-        tlRow0.add(panes[0]).fill()
-        tlRow0.add(panes[1]).fill()
+        tlRow0.add(panes[0])
+        tlRow0.add(panes[1])
 
         val tlFull = Table()
-        tlFull.add(tlRow0).fill()
+        tlFull.add(tlRow0)
         tlFull.row()
-        tlFull.add(panes[2]).fill()
+        tlFull.add(panes[2])
 
         innerTable.add(tlFull)
         innerTable.validate()

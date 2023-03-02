@@ -11,10 +11,7 @@ class PositionComponent(positionStart : Vector3 = Vector3(0f, 0f, 0f)) : Compone
     fun positionActive() = positionActive
 
     companion object {
-        val mapper = mapperFor<PositionComponent>()
-
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is PositionComponent } != null
         fun getFor(entity : Entity) : PositionComponent? = if (has(entity)) entity.components.first { it is PositionComponent } as PositionComponent else null
-
     }
 }

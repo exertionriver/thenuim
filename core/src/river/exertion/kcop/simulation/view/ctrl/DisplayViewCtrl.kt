@@ -1,16 +1,14 @@
-package river.exertion.kcop.simulation.view
+package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.utils.Timer
+import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
-import river.exertion.kcop.system.colorPalette.ColorPalette
 
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
 
@@ -179,7 +177,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch))
+        this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch)).size(this.tableWidth(), this.tableHeight())
+        this.clip()
     }
 
     override fun dispose() {
