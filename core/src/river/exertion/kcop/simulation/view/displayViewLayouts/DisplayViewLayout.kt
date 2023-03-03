@@ -39,6 +39,8 @@ interface DisplayViewLayout {
     val paneRefiners : MutableMap<Int, Vector2?>
     val paneImageFading : MutableMap<Int, Boolean?>
 
+    //TODO: flag for enabling / disabling text continuation across adjacency
+
     fun adjacencyPaneRows() : MutableMap<Int, Int?> //key is textPanes Idx
     fun adjacencyTopPadOffset() : MutableMap<Int, Int?> //key is panes Idx; used with extra rows to give the impression of continuous text between panes
 

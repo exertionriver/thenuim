@@ -62,8 +62,8 @@ class ViewSimulator(private val batch: Batch,
         stage.addActor(layout.createAiViewCtrl(batch, textFont))
         stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        layout.displayViewCtrl.currentLayoutIdx = 0
-        layout.displayViewCtrl.setCurrentLayoutMode(false)
+        layout.displayViewCtrl.currentLayoutIdx = 1
+        layout.displayViewCtrl.setCurrentLayoutMode(true)
         layout.displayViewCtrl.recreate()
     }
 
