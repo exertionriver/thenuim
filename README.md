@@ -1,6 +1,18 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.7 - clean up of golden ratio layout, creation of text panes layout, text continuation between panes, asset-driven font size for display text</b>
+
+![kcop0_7a_grlayout](https://user-images.githubusercontent.com/13192685/222736734-1179f588-f15c-4e6d-aee4-324ab5ab5fb3.png)
+
+![kcop0_7b_image_text_layout](https://user-images.githubusercontent.com/13192685/222736828-42069a50-476c-4b6c-ba69-2f5dbe751444.png)
+
+![kcop0_7c_asset](https://user-images.githubusercontent.com/13192685/222736854-7db2b96c-5700-48d1-ab3d-eef5c7cb8e89.png)
+
+https://user-images.githubusercontent.com/13192685/222736876-b075b7d7-07dc-4026-82e8-766b38ec30e2.mp4
+
+---
+
 <b>v0.6 - display view layout interface, image and music fade in / out, music cross-fade, narrative asset-driven fade, status view with narrative completion bar</b>
 
 https://user-images.githubusercontent.com/13192685/221450100-daeeb454-7513-48f4-be1f-2313e93f9d40.mp4
