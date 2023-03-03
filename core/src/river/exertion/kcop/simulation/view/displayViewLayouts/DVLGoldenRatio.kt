@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.DisplayViewPane
 import river.exertion.kcop.system.ShapeDrawerConfig
 
@@ -17,6 +18,7 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
 
     override var currentText = ""
+    override var currentFontSize = FontSize.TEXT
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
@@ -43,6 +45,9 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
         19 to Vector2(0f, 1f),
         21 to Vector2(0f, 1f),
     )
+
+    override fun adjacencyPaneRows() : MutableMap<Int, Int?> = mutableMapOf()
+    override fun adjacencyTopPadOffset() : MutableMap<Int, Int?> = mutableMapOf()
 
     override fun definePanes() : MutableMap<Int, DisplayViewPane> {
         val panes : MutableMap<Int, DisplayViewPane> = mutableMapOf()

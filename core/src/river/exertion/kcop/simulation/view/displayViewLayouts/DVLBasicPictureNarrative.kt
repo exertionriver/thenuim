@@ -5,14 +5,10 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
-import river.exertion.kcop.assets.FreeTypeFontAssets
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.DisplayViewPane
-import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.ShapeDrawerConfig
-import river.exertion.kcop.system.colorPalette.ColorPalette
 
 class DVLBasicPictureNarrative(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
 
@@ -22,6 +18,7 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
 
     override var currentText = ""
+    override var currentFontSize = FontSize.TEXT
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
@@ -33,6 +30,22 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         1 to Vector2(3f, 0f),
         2 to Vector2(4f, 1f)
     )
+
+    override fun adjacencyPaneRows() : MutableMap<Int, Int?> = mutableMapOf(
+    when (currentFontSize) {
+        FontSize.SMALL -> 0 to 2
+        FontSize.MEDIUM -> 0 to 1
+        FontSize.LARGE -> 0 to 1
+        else -> 0 to 0
+    })
+
+    override fun adjacencyTopPadOffset() : MutableMap<Int, Int?> = mutableMapOf(
+    when (currentFontSize) {
+        FontSize.SMALL -> 2 to -9
+        FontSize.MEDIUM -> 2 to -15
+        FontSize.LARGE -> 2 to 7
+        else -> 2 to 0
+    })
 
     override fun definePanes() : MutableMap<Int, DisplayViewPane> {
         val panes : MutableMap<Int, DisplayViewPane> = mutableMapOf()

@@ -5,18 +5,24 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter
 import ktx.assets.getAsset
-import river.exertion.kcop.assets.FreeTypeFontAssets.Companion.textScale
 
 enum class FreeTypeFontAssets(val path: String) {
     NotoSansSymbolsSemiBold("fonts/notoSansSymbols/static/NotoSansSymbols-SemiBold.ttf"), //https://fonts.google.com/noto/specimen/Noto+Sans+Symbols
     Immortal("fonts/immortal/IMMORTAL.ttf")  //https://www.1001freefonts.com/fantasy-fonts.php
+}
+
+enum class FontSize {
+    TEXT {override fun fontScale() = .28f; override fun fontTag() = "text"},
+    SMALL {override fun fontScale() = .41f; override fun fontTag() = "small"},
+    MEDIUM {override fun fontScale() = .55f; override fun fontTag() = "medium"},
+    LARGE {override fun fontScale() = .68f; override fun fontTag() = "large"}
     ;
+    abstract fun fontScale() : Float
+    abstract fun fontTag() : String
+
     companion object {
-        const val fontSize = 48
-        const val textScale = .28f
-        const val smallScale = .41f
-        const val mediumScale = .55f
-        const val largeScale = .68f
+        const val baseFontSize = 48
+        fun byTag(tag : String?) = values().firstOrNull { it.fontTag() == tag } ?: TEXT
     }
 }
 
@@ -26,8 +32,8 @@ fun AssetManager.load(asset: FreeTypeFontAssets) = load(asset.path, BitmapFont::
     this.fontParameters.minFilter = Texture.TextureFilter.Linear
     this.fontParameters.magFilter = Texture.TextureFilter.Linear
     this.fontParameters.characters = this.fontParameters.characters + "↑" + "↓"
-    this.fontParameters.size = FreeTypeFontAssets.fontSize
+    this.fontParameters.size = FontSize.baseFontSize
     this.fontFileName = asset.path
 })
 
-operator fun AssetManager.get(asset: FreeTypeFontAssets) = getAsset<BitmapFont>(asset.path).apply { this.data.setScale(textScale) }
+operator fun AssetManager.get(asset: FreeTypeFontAssets) = getAsset<BitmapFont>(asset.path).apply { this.data.setScale(FontSize.TEXT.fontScale()) }

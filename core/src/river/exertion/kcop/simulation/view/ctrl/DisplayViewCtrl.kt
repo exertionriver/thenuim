@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.utils.Timer
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
@@ -28,6 +29,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
 
     fun setCurrentText(text : String) {
         displayViewLayouts[currentLayoutIdx].currentText = text
+    }
+
+    fun setCurrentFontSize(fontSize : FontSize) {
+        displayViewLayouts[currentLayoutIdx].currentFontSize = fontSize
     }
 
     var currentMusic : Music? = null

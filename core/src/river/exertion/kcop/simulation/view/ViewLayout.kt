@@ -181,6 +181,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         if (textViewCtrl.isInitialized) textViewCtrl.recreate()
 
                         displayViewCtrl.setCurrentText(textViewMessage.displayText)
+                        displayViewCtrl.setCurrentFontSize(textViewMessage.displayFontSize)
                         if (displayViewCtrl.isInitialized) displayViewCtrl.recreate()
                     }
                 }

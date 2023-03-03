@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.assets.FreeTypeFontAssets
 import river.exertion.kcop.simulation.view.DisplayViewPane
 import river.exertion.kcop.simulation.view.ViewType
@@ -31,11 +32,17 @@ interface DisplayViewLayout {
     val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
 
     var currentText : String
+    var currentFontSize : FontSize
 
     val paneTextures : MutableMap<Int, Texture?>
     val paneTextureMaskAlpha : MutableMap<Int, Float?>
     val paneRefiners : MutableMap<Int, Vector2?>
     val paneImageFading : MutableMap<Int, Boolean?>
+
+    fun adjacencyPaneRows() : MutableMap<Int, Int?> //key is textPanes Idx
+    fun adjacencyTopPadOffset() : MutableMap<Int, Int?> //key is panes Idx; used with extra rows to give the impression of continuous text between panes
+
+//    var subsequentDVPTextOffset : Int
 
     fun definePanes() : MutableMap<Int, DisplayViewPane>
     fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch) : Table
@@ -63,7 +70,7 @@ interface DisplayViewLayout {
     }
 
     fun paneText(bitmapFont : BitmapFont) : MutableMap<Int, String?> {
-        bitmapFont.data.setScale(FreeTypeFontAssets.largeScale)
+        bitmapFont.data.setScale(currentFontSize.fontScale())
 
         val returnMap : MutableMap<Int, String?> = mutableMapOf()
 
@@ -72,19 +79,20 @@ interface DisplayViewLayout {
         val panes = definePanes()
         var textParsed = false
 
-        var currentTextRemaining = currentText.trim()
+        var currentTextRemaining = currentText
         var currentDVPIdx = 0
 
         val textDVPs = textPanes().associateWith { panes[it] }
         var dvpText = currentTextRemaining
 
-//        val extraRow = 3
+        var extraRow = 0
 
         while (!textParsed) {
             var paneParsed = false
 
             val dvpPaneHeight = (textDVPs.values.toList()[currentDVPIdx]!!.height(screenHeight) - 2 * ViewType.padHeight(screenHeight))
             var dvpRows = 0
+            extraRow = adjacencyPaneRows()[currentDVPIdx] ?: 0
 
             while (!paneParsed && !textParsed) {
                 var rowParsed = false
@@ -92,9 +100,9 @@ interface DisplayViewLayout {
                 while (!rowParsed) {
                     val dvpRowWidth = (textDVPs.values.toList()[currentDVPIdx]!!.width(screenWidth) - 2 * ViewType.padWidth(screenWidth))
 
-                    val textLabel = Label(dvpText, Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
+                    var textLabel = Label(dvpText, Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
 
-                    //          dvpDimensions += extraRow * textLabel.height * (textDVPs.values.toList()[currentDVPIdx]!!.width(screenWidth) - 2 * ViewType.padWidth(screenWidth)) * smallWhitespaceFactor
+                    val dvpPaneModHeight = dvpPaneHeight + extraRow * textLabel.height
 
                     val textLabelSize = textLabel.width //* textLabel.height
 
@@ -102,11 +110,19 @@ interface DisplayViewLayout {
                         val lastSpaceIdx = dvpText.lastIndexOf(" ")
                         dvpText = dvpText.substring(0, lastSpaceIdx)
                     } else {
-                        currentTextRemaining = currentTextRemaining.substring(dvpText.length, currentTextRemaining.length).trim()
+
+                        if (dvpText.contains("\n") ) {
+                            dvpText = dvpText.substring(0, dvpText.indexOf("\n"))
+                            //recalc text label, removing \n
+                            textLabel = Label(dvpText, Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
+                            currentTextRemaining = currentTextRemaining.substring(dvpText.length + 1, currentTextRemaining.length)
+                        } else {
+                            currentTextRemaining = currentTextRemaining.substring(dvpText.length, currentTextRemaining.length)
+                        }
 
                         rowParsed = true
                         dvpRows++
-                        if ((dvpRows * textLabel.height) > dvpPaneHeight) paneParsed = true
+                        if ((dvpRows * textLabel.height) > dvpPaneModHeight) paneParsed = true
 
                         if (currentTextRemaining.isEmpty()) {
                             textParsed = true
@@ -118,9 +134,9 @@ interface DisplayViewLayout {
                         }
 
                         if (returnMap[textDVPs.keys.toList()[currentDVPIdx]] == null) {
-                            returnMap[textDVPs.keys.toList()[currentDVPIdx]] = dvpText + "\n"
+                            returnMap[textDVPs.keys.toList()[currentDVPIdx]] = dvpText.trim() + "\n"
                         } else {
-                            returnMap[textDVPs.keys.toList()[currentDVPIdx]] += dvpText + "\n"
+                            returnMap[textDVPs.keys.toList()[currentDVPIdx]] += dvpText.trim() + "\n"
                         }
 
                         dvpText = currentTextRemaining
@@ -138,7 +154,7 @@ interface DisplayViewLayout {
     fun buildPaneCtrls(bitmapFont: BitmapFont, batch: Batch) : MutableMap<Int, Stack> {
 
         val paneCtrls : MutableMap<Int, Stack> = mutableMapOf()
-        val paneText = paneText(bitmapFont)
+        val paneText = if (currentText.isNotBlank()) paneText(bitmapFont) else mutableMapOf()
 
         definePanes().entries.sortedBy { it.key }.forEach { displayViewPane ->
             paneCtrls[displayViewPane.key] =
@@ -146,7 +162,7 @@ interface DisplayViewLayout {
                     if (layoutMode) { //fill each pane with random color
                         val randomColor = ColorPalette.randomW3cBasic()
                         val label = displayViewPane.key.toString() + if (textPanes().contains(displayViewPane.key)) ":T" else if (imagePanes().contains(displayViewPane.key)) ":I" else ""
-                        bitmapFont.data.setScale(FreeTypeFontAssets.textScale)
+                        bitmapFont.data.setScale(FontSize.TEXT.fontScale())
                         val innerTableBg = Table()
                         innerTableBg.add(Image(TextureRegionDrawable(paneColorTexture(batch, displayViewPane, randomColor)))).size(
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
@@ -176,12 +192,13 @@ interface DisplayViewLayout {
                             contentRendered = true
                         }
                         if (paneText[displayViewPane.key] != null) { //text present
-                            bitmapFont.data.setScale(FreeTypeFontAssets.largeScale)
+                            bitmapFont.data.setScale(currentFontSize.fontScale())
                             val textLabel = Label(paneText[displayViewPane.key], Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color())).apply { this.setAlignment(Align.topLeft) }
                             textLabel.setAlignment(Align.topLeft)
                             textLabel.debug()
-                            val textTable = Table().padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth)).padBottom(
-                            ViewType.padHeight(screenHeight)).padTop(ViewType.padHeight(screenHeight))
+                            val textTable = Table().padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
+                                .padBottom(ViewType.padHeight(screenHeight) - (adjacencyTopPadOffset()[displayViewPane.key] ?: 0))
+                                .padTop(ViewType.padHeight(screenHeight) + (adjacencyTopPadOffset()[displayViewPane.key] ?: 0))
                             textTable.top()
                             textTable.debug()
                             textTable.add(textLabel).size(

@@ -27,6 +27,8 @@ class NarrativeComponent : Component, Telegraph {
 
     fun isPaused() = narrativeImmersionTimer.cumlImmersionTimer.isPaused()
 
+    var changed = false
+
     fun narrativeId() = narrative?.id ?: ""
     fun narrativeCurrBlockId() = narrative?.currentId ?: ""
     fun narrativePrevBlockId() = narrative?.previousId ?: ""
@@ -51,6 +53,7 @@ class NarrativeComponent : Component, Telegraph {
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey, 0f))
 
             isInitialized = true
+            changed = true
         }
     }
 
@@ -65,6 +68,7 @@ class NarrativeComponent : Component, Telegraph {
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.beginTimer()
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
+            changed = true
         }
     }
 
@@ -79,6 +83,7 @@ class NarrativeComponent : Component, Telegraph {
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
+            changed = true
         }
     }
 
@@ -92,6 +97,7 @@ class NarrativeComponent : Component, Telegraph {
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
+            changed = true
         }
     }
 
@@ -122,6 +128,8 @@ class NarrativeComponent : Component, Telegraph {
             MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.LOG, ViewMessage.BlockCumlTimer, cumlBlockTimerId()))
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey, seqNarrativeProgress()))
+
+            changed = true
         }
     }
 

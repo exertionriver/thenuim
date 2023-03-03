@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import ktx.assets.Asset
 import river.exertion.kcop.Id
+import river.exertion.kcop.assets.FontSize
 
 @Serializable
 data class Narrative(
@@ -40,9 +41,13 @@ data class Narrative(
         previousId = currentId
     }
 
-    fun currentIdx() = narrativeBlocks.indexOf(narrativeBlocks.firstOrNull { it.id == currentId } ?: narrativeBlocks[0])
+    fun currentBlock() = narrativeBlocks.firstOrNull { it.id == currentId }
 
-    fun previousIdx() = narrativeBlocks.indexOf(narrativeBlocks.firstOrNull { it.id == previousId } ?: narrativeBlocks[0])
+    fun previousBlock() = narrativeBlocks.firstOrNull { it.id == previousId }
+
+    fun currentIdx() = narrativeBlocks.indexOf(currentBlock() ?: narrativeBlocks[0])
+
+    fun previousIdx() = narrativeBlocks.indexOf(previousBlock() ?: narrativeBlocks[0])
 
     fun seqPrevIdx() = (currentIdx() - 1).coerceAtLeast(0)
 
@@ -50,9 +55,11 @@ data class Narrative(
 
     fun isSequential() : Boolean = promptBlocks.isEmpty()
 
-    fun currentText() = narrativeBlocks.firstOrNull { it.id == currentId }?.toTextString() ?: ""
+    fun currentText() = currentBlock()?.toTextString() ?: ""
 
-    fun currentDisplayText() = narrativeBlocks.firstOrNull { it.id == currentId }?.toDisplayString() ?: ""
+    fun currentDisplayText() = currentBlock()?.toDisplayString() ?: ""
+
+    fun currentFontSize() = FontSize.byTag(currentBlock()?.fontSize)
 
     fun currentPrompts() : List<String> =
         if (isSequential()) {
