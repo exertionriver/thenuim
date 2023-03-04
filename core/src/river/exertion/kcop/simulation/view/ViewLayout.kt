@@ -5,7 +5,10 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.TextureAssets
+import river.exertion.kcop.assets.get
 import river.exertion.kcop.simulation.view.ctrl.*
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.component.NarrativeComponent
@@ -18,7 +21,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var textViewCtrl = TextViewCtrl(width, height)
     var logViewCtrl = LogViewCtrl(width, height)
     var statusViewCtrl = StatusViewCtrl(width, height)
-    var menuViewCtrl = ViewCtrl(ViewType.MENU, width, height)
+    var menuViewCtrl = MenuViewCtrl(width, height)
     var inputsViewCtrl = InputViewCtrl(width, height)
     var aiViewCtrl = ViewCtrl(ViewType.AI, width, height)
     var pauseViewCtrl = PauseViewCtrl(width, height)
@@ -33,6 +36,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.LAYOUT_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
@@ -75,7 +79,19 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         return statusViewCtrl
     }
 
-    fun createPromptsViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(menuViewCtrl, batch, bitmapFont)
+    fun createMenuViewCtrl(batch : Batch, bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage : Texture) : MenuViewCtrl {
+
+        (0..5).forEach {
+            menuViewCtrl.menuUpImage[it] = upImage
+            menuViewCtrl.menuDownImage[it] = downImage
+            menuViewCtrl.menuCheckedImage[it] = checkedImage
+        }
+
+        menuViewCtrl.initCreate(bitmapFont, batch)
+
+        return menuViewCtrl
+    }
+
     fun createInputsViewCtrl(batch : Batch, bitmapFont : BitmapFont, clickImage : Texture, keyPressImage : Texture, keyUpImage : Texture) : InputViewCtrl {
         inputsViewCtrl.clickImage = clickImage
         inputsViewCtrl.keyPressImage = keyPressImage
@@ -216,6 +232,16 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         DisplayViewAudioMessageType.PLAY_SOUND -> displayViewCtrl.playSound(displayViewAudioMessage.music)
                         DisplayViewAudioMessageType.STOP_MUSIC -> displayViewCtrl.stopMusic()
                     }
+                }
+                (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
+                    val displayViewMenuMessage: DisplayViewMenuMessage = MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    if (displayViewMenuMessage.menuIdx == 0) displayViewCtrl.menuOpen = menuViewCtrl.isChecked[0] == true
+                    if (displayViewMenuMessage.menuIdx == 1) displayViewCtrl.setCurrentLayoutMode(menuViewCtrl.isChecked[1] == false)
+                    if (displayViewMenuMessage.menuIdx == 2) displayViewCtrl.currentLayoutIdx = if (displayViewCtrl.currentLayoutIdx < displayViewCtrl.displayViewLayouts.size - 1) displayViewCtrl.currentLayoutIdx + 1 else 0
+                    if (displayViewMenuMessage.menuIdx == 3) displayViewCtrl.currentMenuIdx = if (displayViewCtrl.currentMenuIdx < displayViewCtrl.displayViewMenus.size - 1) displayViewCtrl.currentMenuIdx + 1 else 0
+
+                    this.displayViewCtrl.recreate()
                 }
                 (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val statusViewMessage: StatusViewMessage = MessageChannel.STATUS_VIEW_BRIDGE.receiveMessage(msg.extraInfo)

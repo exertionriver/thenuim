@@ -12,6 +12,7 @@ enum class MessageChannel {
     LAYOUT_BRIDGE { override val messageClass = ViewMessage::class },
     DISPLAY_VIEW_TEXTURE_BRIDGE { override val messageClass = DisplayViewTextureMessage::class },
     DISPLAY_VIEW_AUDIO_BRIDGE { override val messageClass = DisplayViewAudioMessage::class },
+    DISPLAY_VIEW_MENU_BRIDGE { override val messageClass = DisplayViewMenuMessage::class },
     TEXT_VIEW_BRIDGE { override val messageClass = TextViewMessage::class },
     INPUT_VIEW_BRIDGE { override val messageClass = InputViewMessage::class },
     LOG_VIEW_BRIDGE { override val messageClass = LogViewMessage::class },

@@ -56,7 +56,6 @@ interface DisplayViewLayout {
         this.fill()
     }
 
-    //used for panes large
     fun paneColorTexture(batch : Batch, pane : MutableMap.MutableEntry<Int, DisplayViewPane>, overrideColor : ColorPalette?) : TextureRegion {
 
         val paneColor = overrideColor ?: ColorPalette.of("black")

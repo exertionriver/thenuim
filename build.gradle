@@ -20,7 +20,7 @@ allprojects {
     apply plugin: "idea"
     apply plugin: "org.jetbrains.kotlin.plugin.serialization"
 
-    version = 'v0.7'
+    version = 'v0.8'
     ext {
         appName = "koboldCave Operating Platform (kcop)"
         gdxVersion = '1.11.0'

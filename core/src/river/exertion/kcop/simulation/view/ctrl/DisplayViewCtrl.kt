@@ -4,12 +4,16 @@ import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.scenes.scene2d.ui.Stack
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
+import river.exertion.kcop.simulation.view.displayViewMenus.DisplayViewMenu
+import river.exertion.kcop.simulation.view.displayViewMenus.MainMenu
 
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
 
@@ -18,11 +22,19 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
         DVLBasicPictureNarrative(screenWidth, screenHeight),
     )
 
+    var displayViewMenus : MutableList<DisplayViewMenu> = mutableListOf(
+        MainMenu(screenWidth, screenHeight)
+    )
+
+    var menuOpen = false
+    var currentMenuIdx = 0
+
     var currentLayoutIdx = 0
     fun setLayoutIdxByTag(tag : String) {
         currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
     }
 
+    //to do: put these three in Display View
     fun setCurrentLayoutMode(layoutMode : Boolean) {
         displayViewLayouts[currentLayoutIdx].layoutMode = layoutMode
     }
@@ -182,7 +194,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch)).size(this.tableWidth(), this.tableHeight())
+        this.add(
+            Stack().apply {
+                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch))
+                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].getMenu(batch))
+            }).size(this.tableWidth(), this.tableHeight())
+
         this.clip()
     }
 
