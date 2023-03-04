@@ -14,11 +14,7 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
 
     override val tag = "goldenRatioLayout"
 
-    override var layoutMode = true
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
-
-    override var currentText = ""
-    override var currentFontSize = FontSize.TEXT
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
@@ -46,8 +42,8 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
         21 to Vector2(0f, 1f),
     )
 
-    override fun adjacencyPaneRows() : MutableMap<Int, Int?> = mutableMapOf()
-    override fun adjacencyTopPadOffset() : MutableMap<Int, Int?> = mutableMapOf()
+    override fun adjacencyPaneRows(currentFontSize: FontSize) : MutableMap<Int, Int?> = mutableMapOf()
+    override fun adjacencyTopPadOffset(currentFontSize: FontSize) : MutableMap<Int, Int?> = mutableMapOf()
 
     override fun definePanes() : MutableMap<Int, DisplayViewPane> {
         val panes : MutableMap<Int, DisplayViewPane> = mutableMapOf()
@@ -93,9 +89,9 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
     override fun imagePanes() : List<Int> = definePanes().keys.toList()
     override fun textPanes() : List<Int> = listOf()
 
-    override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch) : Table {
+    override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch, layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table {
 
-        val panes = buildPaneCtrls(bitmapFont, batch)
+        val panes = buildPaneCtrls(bitmapFont, batch, layoutMode, currentText, currentFontSize)
 
         val innerTable = Table()
 

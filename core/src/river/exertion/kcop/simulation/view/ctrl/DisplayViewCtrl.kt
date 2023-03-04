@@ -28,23 +28,14 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
 
     var menuOpen = false
     var currentMenuIdx = 0
-
     var currentLayoutIdx = 0
+
+    var currentLayoutMode = false
+    var currentText = ""
+    var currentFontSize = FontSize.SMALL
+
     fun setLayoutIdxByTag(tag : String) {
         currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
-    }
-
-    //to do: put these three in Display View
-    fun setCurrentLayoutMode(layoutMode : Boolean) {
-        displayViewLayouts[currentLayoutIdx].layoutMode = layoutMode
-    }
-
-    fun setCurrentText(text : String) {
-        displayViewLayouts[currentLayoutIdx].currentText = text
-    }
-
-    fun setCurrentFontSize(fontSize : FontSize) {
-        displayViewLayouts[currentLayoutIdx].currentFontSize = fontSize
     }
 
     var currentMusic : Music? = null
@@ -196,7 +187,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
         this.add(
             Stack().apply {
-                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch))
+                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch, currentLayoutMode, currentText, currentFontSize))
                 if (menuOpen) this.add(displayViewMenus[currentMenuIdx].getMenu(batch))
             }).size(this.tableWidth(), this.tableHeight())
 

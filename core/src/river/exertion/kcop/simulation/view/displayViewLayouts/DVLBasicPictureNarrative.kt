@@ -14,11 +14,7 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
 
     override val tag = "basicPictureNarrative"
 
-    override var layoutMode = true
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
-
-    override var currentText = ""
-    override var currentFontSize = FontSize.TEXT
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
@@ -31,7 +27,7 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         2 to Vector2(4f, 1f)
     )
 
-    override fun adjacencyPaneRows() : MutableMap<Int, Int?> = mutableMapOf(
+    override fun adjacencyPaneRows(currentFontSize: FontSize) : MutableMap<Int, Int?> = mutableMapOf(
     when (currentFontSize) {
         FontSize.SMALL -> 0 to 2
         FontSize.MEDIUM -> 0 to 1
@@ -39,7 +35,7 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         else -> 0 to 0
     })
 
-    override fun adjacencyTopPadOffset() : MutableMap<Int, Int?> = mutableMapOf(
+    override fun adjacencyTopPadOffset(currentFontSize: FontSize) : MutableMap<Int, Int?> = mutableMapOf(
     when (currentFontSize) {
         FontSize.SMALL -> 2 to -9
         FontSize.MEDIUM -> 2 to -15
@@ -63,9 +59,9 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
     override fun imagePanes() : List<Int> = listOf(0)
     override fun textPanes() : List<Int> = listOf(1, 2)
 
-    override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch) : Table {
+    override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch, layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table {
 
-        val panes = buildPaneCtrls(bitmapFont, batch)
+        val panes = buildPaneCtrls(bitmapFont, batch, layoutMode, currentText, currentFontSize)
 
         val innerTable = Table()
 

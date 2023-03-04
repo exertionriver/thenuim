@@ -120,7 +120,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         currentNarrativeId = narrativeComponent.narrativeId()
 
         displayViewCtrl.setLayoutIdxByTag(narrativeComponent.narrative!!.layoutTag)
-        displayViewCtrl.setCurrentLayoutMode(false)
+        displayViewCtrl.currentLayoutMode = false
         displayViewCtrl.recreate()
 
         pauseViewCtrl.isChecked = false
@@ -196,8 +196,8 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         textViewCtrl.currentPrompts = textViewMessage.prompts
                         if (textViewCtrl.isInitialized) textViewCtrl.recreate()
 
-                        displayViewCtrl.setCurrentText(textViewMessage.displayText)
-                        displayViewCtrl.setCurrentFontSize(textViewMessage.displayFontSize)
+                        displayViewCtrl.currentText = textViewMessage.displayText
+                        displayViewCtrl.currentFontSize = textViewMessage.displayFontSize
                         if (displayViewCtrl.isInitialized) displayViewCtrl.recreate()
                     }
                 }
@@ -236,8 +236,8 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage: DisplayViewMenuMessage = MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if (displayViewMenuMessage.menuIdx == 0) displayViewCtrl.menuOpen = menuViewCtrl.isChecked[0] == true
-                    if (displayViewMenuMessage.menuIdx == 1) displayViewCtrl.setCurrentLayoutMode(menuViewCtrl.isChecked[1] == false)
+                    if (displayViewMenuMessage.menuIdx == 0) displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)
+                    if (displayViewMenuMessage.menuIdx == 1) displayViewCtrl.currentLayoutMode = (menuViewCtrl.isChecked[1] == true)
                     if (displayViewMenuMessage.menuIdx == 2) displayViewCtrl.currentLayoutIdx = if (displayViewCtrl.currentLayoutIdx < displayViewCtrl.displayViewLayouts.size - 1) displayViewCtrl.currentLayoutIdx + 1 else 0
                     if (displayViewMenuMessage.menuIdx == 3) displayViewCtrl.currentMenuIdx = if (displayViewCtrl.currentMenuIdx < displayViewCtrl.displayViewMenus.size - 1) displayViewCtrl.currentMenuIdx + 1 else 0
 

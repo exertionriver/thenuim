@@ -27,12 +27,8 @@ interface DisplayViewLayout {
     var screenWidth : Float
     var screenHeight : Float
 
-    var layoutMode : Boolean
     val maskPixmap : Pixmap
     val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
-
-    var currentText : String
-    var currentFontSize : FontSize
 
     val paneTextures : MutableMap<Int, Texture?>
     val paneTextureMaskAlpha : MutableMap<Int, Float?>
@@ -41,13 +37,13 @@ interface DisplayViewLayout {
 
     //TODO: flag for enabling / disabling text continuation across adjacency
 
-    fun adjacencyPaneRows() : MutableMap<Int, Int?> //key is textPanes Idx
-    fun adjacencyTopPadOffset() : MutableMap<Int, Int?> //key is panes Idx; used with extra rows to give the impression of continuous text between panes
+    fun adjacencyPaneRows(currentFontSize: FontSize) : MutableMap<Int, Int?> //key is textPanes Idx
+    fun adjacencyTopPadOffset(currentFontSize: FontSize) : MutableMap<Int, Int?> //key is panes Idx; used with extra rows to give the impression of continuous text between panes
 
 //    var subsequentDVPTextOffset : Int
 
     fun definePanes() : MutableMap<Int, DisplayViewPane>
-    fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch) : Table
+    fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch, layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table
     fun imagePanes() : List<Int>
     fun textPanes() : List<Int>
 
@@ -70,7 +66,7 @@ interface DisplayViewLayout {
         }
     }
 
-    fun paneText(bitmapFont : BitmapFont) : MutableMap<Int, String?> {
+    fun paneText(bitmapFont : BitmapFont, currentText: String, currentFontSize: FontSize) : MutableMap<Int, String?> {
         bitmapFont.data.setScale(currentFontSize.fontScale())
 
         val returnMap : MutableMap<Int, String?> = mutableMapOf()
@@ -93,7 +89,7 @@ interface DisplayViewLayout {
 
             val dvpPaneHeight = (textDVPs.values.toList()[currentDVPIdx]!!.height(screenHeight) - 2 * ViewType.padHeight(screenHeight))
             var dvpRows = 0
-            extraRow = adjacencyPaneRows()[currentDVPIdx] ?: 0
+            extraRow = adjacencyPaneRows(currentFontSize)[currentDVPIdx] ?: 0
 
             while (!paneParsed && !textParsed) {
                 var rowParsed = false
@@ -152,10 +148,10 @@ interface DisplayViewLayout {
         return returnMap
     }
 
-    fun buildPaneCtrls(bitmapFont: BitmapFont, batch: Batch) : MutableMap<Int, Stack> {
+    fun buildPaneCtrls(bitmapFont: BitmapFont, batch: Batch, layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : MutableMap<Int, Stack> {
 
         val paneCtrls : MutableMap<Int, Stack> = mutableMapOf()
-        val paneText = if (currentText.isNotBlank()) paneText(bitmapFont) else mutableMapOf()
+        val paneText = if (currentText.isNotBlank()) paneText(bitmapFont, currentText, currentFontSize) else mutableMapOf()
 
         definePanes().entries.sortedBy { it.key }.forEach { displayViewPane ->
             paneCtrls[displayViewPane.key] =
@@ -169,7 +165,7 @@ interface DisplayViewLayout {
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                             displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                         ).grow()
-                        innerTableBg.debug()
+                        innerTableBg.debug = !layoutMode
                         val innerTableFg = Table()
                         val innerLabel = Label(label, Label.LabelStyle(bitmapFont, randomColor.label().color()))
                         innerLabel.setAlignment(Align.center)
@@ -177,7 +173,7 @@ interface DisplayViewLayout {
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                             displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                         ).grow()
-                        innerTableFg.debug()
+                        innerTableFg.debug = !layoutMode
                         this.add(innerTableBg)
                         this.add(innerTableFg)
                     } else { //draw specified content or black
@@ -188,7 +184,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug()
+                            innerTable.debug = !layoutMode
                             this.add(innerTable)
                             contentRendered = true
                         }
@@ -196,12 +192,12 @@ interface DisplayViewLayout {
                             bitmapFont.data.setScale(currentFontSize.fontScale())
                             val textLabel = Label(paneText[displayViewPane.key], Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color())).apply { this.setAlignment(Align.topLeft) }
                             textLabel.setAlignment(Align.topLeft)
-                            textLabel.debug()
+                            textLabel.debug = !layoutMode
                             val textTable = Table().padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
-                                .padBottom(ViewType.padHeight(screenHeight) - (adjacencyTopPadOffset()[displayViewPane.key] ?: 0))
-                                .padTop(ViewType.padHeight(screenHeight) + (adjacencyTopPadOffset()[displayViewPane.key] ?: 0))
+                                .padBottom(ViewType.padHeight(screenHeight) - (adjacencyTopPadOffset(currentFontSize)[displayViewPane.key] ?: 0))
+                                .padTop(ViewType.padHeight(screenHeight) + (adjacencyTopPadOffset(currentFontSize)[displayViewPane.key] ?: 0))
                             textTable.top()
-                            textTable.debug()
+                            textTable.debug = !layoutMode
                             textTable.add(textLabel).size(
                                 displayViewPane.value.width(screenWidth) - 2 * ViewType.padWidth(screenWidth),
                                 displayViewPane.value.height(screenHeight) - 2 * ViewType.padHeight(screenHeight)
@@ -212,7 +208,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug()
+                            innerTable.debug = !layoutMode
                             this.add(innerTable)
                             contentRendered = true
                         }
@@ -222,7 +218,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug()
+                            innerTable.debug = !layoutMode
                             this.add(innerTable)
                             contentRendered = true
                         }
@@ -232,7 +228,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug()
+                            innerTable.debug = !layoutMode
                             this.add(innerTable)
                         }
                     }
