@@ -43,7 +43,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
         }
 
         innerTable.top()
-        innerTable.debug()
+//        innerTable.debug()
 
         val scrollNine = NinePatch(TextureRegion(vScrollKnobTexture, 20, 20, 20, 20))
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture(batch)), null, null, null, NinePatchDrawable(scrollNine))
@@ -82,7 +82,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
         }
 
         innerTable.top()
-        innerTable.debug()
+//        innerTable.debug()
 
         return innerTable
     }

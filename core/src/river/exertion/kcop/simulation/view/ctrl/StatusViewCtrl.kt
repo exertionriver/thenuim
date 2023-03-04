@@ -67,7 +67,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : View
         }
 
         innerTable.top()
-        innerTable.debug()
+//        innerTable.debug()
 
         val scrollNine = NinePatch(statusColorTexture(batch, backgroundColor.triad().second.incr(2)))
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(statusColorTexture(batch)), null, null, null, NinePatchDrawable(scrollNine))

@@ -58,7 +58,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewC
 
         if (isTouchEvent()) innerTable.add(Label(touchText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-        innerTable.debug()
+//        innerTable.debug()
 
         return innerTable
     }

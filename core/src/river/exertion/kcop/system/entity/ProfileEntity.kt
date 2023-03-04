@@ -29,16 +29,16 @@ class ProfileEntity : Component, Id() {
     var isInitialized = false
     var assetPath : String? = null
 
-    fun initialize(entity: Entity, profileAsset : ProfileAsset) {
+    fun initialize(entity: Entity, profileAsset : ProfileAsset?) {
         this.entity = entity
-        this.entityName = this.entityName + (profileAsset.profile?.id ?: "")
-        this.assetPath = profileAsset.assetPath
+        this.entityName = this.entityName + (profileAsset?.profile?.id ?: "")
+        this.assetPath = profileAsset?.assetPath ?: ""
 
         components.forEach {
             if (!entity.components.contains(it) ) entity.add(it)
         }
 
-        ProfileComponent.getFor(entity)!!.profile = profileAsset.profile
+        ProfileComponent.getFor(entity)!!.profile = profileAsset?.profile ?: Profile()
         ImmersionTimerComponent.getFor(entity)!!.cumlImmersionTimer.resumeTimer()
 
         isInitialized = true
@@ -49,6 +49,13 @@ class ProfileEntity : Component, Id() {
         ImmersionTimerComponent(),
         ProfileComponent()
     )
+
+    fun reloadProfile() {
+        if (isInitialized) {
+            val jsonProfile = Util.json.encodeToJsonElement(ProfileComponent.getFor(entity)!!.profile)
+            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
+        }
+    }
 
     fun saveProfile() {
         if (isInitialized) {
@@ -63,7 +70,7 @@ class ProfileEntity : Component, Id() {
         fun has(entity : Entity) : Boolean { return entity.components.firstOrNull{ it is ProfileEntity } != null }
         fun getFor(entity : Entity) : ProfileEntity? = if (has(entity)) entity.components.first { it is ProfileEntity } as ProfileEntity else null
 
-        fun instantiate(engine: PooledEngine, profileAsset : ProfileAsset) : Entity {
+        fun instantiate(engine: PooledEngine, profileAsset : ProfileAsset?) : Entity {
             val newProfileEntity = engine.entity {
                 with<ProfileEntity>()
             }.apply { this[mapper]?.initialize(this, profileAsset) }
