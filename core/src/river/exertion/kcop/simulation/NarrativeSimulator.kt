@@ -75,7 +75,6 @@ class NarrativeSimulator(private val batch: Batch,
         FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
         NarrativeAssets.values().forEach { assets.load(it) }
-        ProfileAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         val multiplexer = InputMultiplexer()
@@ -86,11 +85,14 @@ class NarrativeSimulator(private val batch: Batch,
         val textFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
         val displayFont = assets[FreeTypeFontAssets.Immortal]
 
+        stage.addActor(viewLayout.createDisplayViewCtrl(batch, displayFont))
+        stage.addActor(viewLayout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
         stage.addActor(viewLayout.createLogViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
-        stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createMenuViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(viewLayout.createInputsViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createDisplayViewCtrl(batch, displayFont ) )
-        stage.addActor(viewLayout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]) )
+        stage.addActor(viewLayout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
+        stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
         narratives = mutableListOf(
             NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),

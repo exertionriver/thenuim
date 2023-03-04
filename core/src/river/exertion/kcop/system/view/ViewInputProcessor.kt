@@ -10,7 +10,7 @@ class ViewInputProcessor : InputProcessor {
     override fun keyDown(keycode: Int): Boolean {
         MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.send(null, ViewMessage(ViewType.TEXT, Input.Keys.toString(keycode)))
 
-        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "keyDown event:${Input.Keys.toString(keycode)}"))
+//        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "keyDown event:${Input.Keys.toString(keycode)}"))
 
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
             event = InputViewMessageEvent.KeyDownEvent,

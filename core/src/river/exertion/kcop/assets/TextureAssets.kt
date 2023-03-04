@@ -8,7 +8,8 @@ import ktx.assets.load
 enum class TextureAssets(val path: String) {
     KoboldA("images/kobold64.png"),
     KoboldB("images/kobold64b.png"),
-    KoboldC("images/kobold64c.png")
+    KoboldC("images/kobold64c.png"),
+    BlueSphere("images/blue_sphere.png"),
 }
     fun AssetManager.load(asset: TextureAssets) = load<Texture>(asset.path)
     operator fun AssetManager.get(asset: TextureAssets) = getAsset<Texture>(asset.path)

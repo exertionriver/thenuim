@@ -23,7 +23,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
     var statusViewCtrl = StatusViewCtrl(width, height)
     var menuViewCtrl = MenuViewCtrl(width, height)
     var inputsViewCtrl = InputViewCtrl(width, height)
-    var aiViewCtrl = ViewCtrl(ViewType.AI, width, height)
+    var aiViewCtrl = AiViewCtrl(width, height)
     var pauseViewCtrl = PauseViewCtrl(width, height)
 
     var currentNarrativeId : String? = null
@@ -101,7 +101,16 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
         return inputsViewCtrl
     }
-    fun createAiViewCtrl(batch : Batch, bitmapFont : BitmapFont) = createViewCtrl(aiViewCtrl, batch, bitmapFont)
+    fun createAiViewCtrl(batch : Batch, bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage: Texture) : AiViewCtrl {
+        aiViewCtrl.aiUpImage = upImage
+        aiViewCtrl.aiDownImage = downImage
+        aiViewCtrl.aiCheckedImage = checkedImage
+
+        aiViewCtrl.initCreate(bitmapFont, batch)
+
+        return aiViewCtrl
+    }
+
     fun createPauseViewCtrl(batch : Batch, bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage : Texture) : PauseViewCtrl {
         pauseViewCtrl.pauseUpImage = upImage
         pauseViewCtrl.pauseDownImage = downImage
@@ -236,10 +245,22 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage: DisplayViewMenuMessage = MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if (displayViewMenuMessage.menuIdx == 0) displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)
-                    if (displayViewMenuMessage.menuIdx == 1) displayViewCtrl.currentLayoutMode = (menuViewCtrl.isChecked[1] == true)
-                    if (displayViewMenuMessage.menuIdx == 2) displayViewCtrl.currentLayoutIdx = if (displayViewCtrl.currentLayoutIdx < displayViewCtrl.displayViewLayouts.size - 1) displayViewCtrl.currentLayoutIdx + 1 else 0
-                    if (displayViewMenuMessage.menuIdx == 3) displayViewCtrl.currentMenuIdx = if (displayViewCtrl.currentMenuIdx < displayViewCtrl.displayViewMenus.size - 1) displayViewCtrl.currentMenuIdx + 1 else 0
+                    if (displayViewMenuMessage.menuIdx == 0) {
+                        displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (displayViewCtrl.menuOpen) "Opened" else "Closed"}" ))
+                    }
+                    if (displayViewMenuMessage.menuIdx == 1) {
+                        displayViewCtrl.currentLayoutMode = (menuViewCtrl.isChecked[1] == true)
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "DisplayMode set to: ${if (displayViewCtrl.currentLayoutMode) "Background Box" else "Wireframe"}" ))
+                    }
+                    if (displayViewMenuMessage.menuIdx == 2) {
+                        displayViewCtrl.currentLayoutIdx = if (displayViewCtrl.currentLayoutIdx < displayViewCtrl.displayViewLayouts.size - 1) displayViewCtrl.currentLayoutIdx + 1 else 0
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Layout set to: ${displayViewCtrl.displayViewLayouts[displayViewCtrl.currentLayoutIdx].tag}" ))
+                    }
+                    if (displayViewMenuMessage.menuIdx == 3) {
+                        displayViewCtrl.currentMenuIdx = if (displayViewCtrl.currentMenuIdx < displayViewCtrl.displayViewMenus.size - 1) displayViewCtrl.currentMenuIdx + 1 else 0
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu set to: ${displayViewCtrl.displayViewMenus[displayViewCtrl.currentMenuIdx].tag}" ))
+                    }
 
                     this.displayViewCtrl.recreate()
                 }

@@ -43,6 +43,7 @@ class ProfileSimulator(private val batch: Batch,
     override fun show() {
         FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
+        ProfileAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         val inputMultiplexer = InputMultiplexer()
@@ -59,13 +60,10 @@ class ProfileSimulator(private val batch: Batch,
         stage.addActor(layout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
         stage.addActor(layout.createMenuViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createInputsViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(batch, textFont))
+        stage.addActor(layout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
         val profileEntity = ProfileEntity.instantiate(engine, assets[ProfileAssets.ExertionRiverText])
-
-        layout.displayViewCtrl.currentLayoutIdx = 0
-        layout.displayViewCtrl.recreate()
 
         layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
         layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id

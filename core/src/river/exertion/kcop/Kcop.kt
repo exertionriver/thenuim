@@ -25,6 +25,7 @@ import river.exertion.kcop.assets.NarrativeAssetLoader
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.assets.ProfileAssetLoader
 import river.exertion.kcop.simulation.NarrativeSimulator
+import river.exertion.kcop.simulation.ProfileSimulator
 import river.exertion.kcop.simulation.ViewSimulator
 
 class Kcop : KtxGame<KtxScreen>() {
@@ -57,12 +58,13 @@ class Kcop : KtxGame<KtxScreen>() {
             bindSingleton(assets)
 
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
+//            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
 //            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
         Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<ViewSimulator>()
+        setScreen<ProfileSimulator>()
 
     }
 
