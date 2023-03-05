@@ -9,20 +9,19 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 
-class ProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
+class LoadProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
 
-    override val backgroundColor = ColorPalette.of("green")
-
+    override val backgroundColor = ColorPalette.of("teal")
     override var menuTable = Table().apply { this.debug() }
 
     override val breadcrumbEntries = mapOf(
+        ProfileMenu.tag to ProfileMenu.label,
         MainMenu.tag to MainMenu.label
     )
 
     override fun getMenu(batch : Batch, bitmapFont: BitmapFont) : Table {
-
         return genericLayout(batch, bitmapFont)
     }
 
@@ -30,7 +29,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
     override fun label() = label
 
     companion object {
-        const val tag = "profileMenu"
-        const val label = "Profile"
+        const val tag = "loadProfileMenu"
+        const val label = "Load"
     }
 }

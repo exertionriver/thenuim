@@ -5,10 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.assets.TextureAssets
-import river.exertion.kcop.assets.get
 import river.exertion.kcop.simulation.view.ctrl.*
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.component.NarrativeComponent
@@ -245,21 +242,27 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage: DisplayViewMenuMessage = MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if (displayViewMenuMessage.menuIdx == 0) {
-                        displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (displayViewCtrl.menuOpen) "Opened" else "Closed"}" ))
+                    if (displayViewMenuMessage.menuButtonIdx != null) {
+                        if (displayViewMenuMessage.menuButtonIdx == 0) {
+                            displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (displayViewCtrl.menuOpen) "Opened" else "Closed"}" ))
+                        }
+                        if (displayViewMenuMessage.menuButtonIdx == 1) {
+                            displayViewCtrl.currentLayoutMode = (menuViewCtrl.isChecked[1] == true)
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "DisplayMode set to: ${if (displayViewCtrl.currentLayoutMode) "Background Box" else "Wireframe"}" ))
+                        }
+                        if (displayViewMenuMessage.menuButtonIdx == 2) {
+                            displayViewCtrl.currentLayoutIdx = if (displayViewCtrl.currentLayoutIdx < displayViewCtrl.displayViewLayouts.size - 1) displayViewCtrl.currentLayoutIdx + 1 else 0
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Layout set to: ${displayViewCtrl.displayViewLayouts[displayViewCtrl.currentLayoutIdx].tag}" ))
+                        }
+                        if (displayViewMenuMessage.menuButtonIdx == 3) {
+                            displayViewCtrl.currentMenuIdx = if (displayViewCtrl.currentMenuIdx < displayViewCtrl.displayViewMenus.size - 1) displayViewCtrl.currentMenuIdx + 1 else 0
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu set to: ${displayViewCtrl.displayViewMenus[displayViewCtrl.currentMenuIdx].tag()}" ))
+                        }
                     }
-                    if (displayViewMenuMessage.menuIdx == 1) {
-                        displayViewCtrl.currentLayoutMode = (menuViewCtrl.isChecked[1] == true)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "DisplayMode set to: ${if (displayViewCtrl.currentLayoutMode) "Background Box" else "Wireframe"}" ))
-                    }
-                    if (displayViewMenuMessage.menuIdx == 2) {
-                        displayViewCtrl.currentLayoutIdx = if (displayViewCtrl.currentLayoutIdx < displayViewCtrl.displayViewLayouts.size - 1) displayViewCtrl.currentLayoutIdx + 1 else 0
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Layout set to: ${displayViewCtrl.displayViewLayouts[displayViewCtrl.currentLayoutIdx].tag}" ))
-                    }
-                    if (displayViewMenuMessage.menuIdx == 3) {
-                        displayViewCtrl.currentMenuIdx = if (displayViewCtrl.currentMenuIdx < displayViewCtrl.displayViewMenus.size - 1) displayViewCtrl.currentMenuIdx + 1 else 0
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu set to: ${displayViewCtrl.displayViewMenus[displayViewCtrl.currentMenuIdx].tag}" ))
+
+                    if (displayViewMenuMessage.menuSelectTag != null) {
+                        displayViewCtrl.currentMenuIdx = displayViewCtrl.displayViewMenus.indexOf(displayViewCtrl.displayViewMenus.firstOrNull { it.tag() == displayViewMenuMessage.menuSelectTag } ?: 0)
                     }
 
                     this.displayViewCtrl.recreate()

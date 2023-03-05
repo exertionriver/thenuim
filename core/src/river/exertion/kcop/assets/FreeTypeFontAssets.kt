@@ -29,7 +29,7 @@ enum class FontSize {
 fun AssetManager.load(asset: FreeTypeFontAssets) = load(asset.path, BitmapFont::class.java,
     FreeTypeFontLoaderParameter().apply {
     this.fontParameters.genMipMaps = true
-    this.fontParameters.minFilter = Texture.TextureFilter.Linear
+    this.fontParameters.minFilter = Texture.TextureFilter.MipMapLinearLinear
     this.fontParameters.magFilter = Texture.TextureFilter.Linear
     this.fontParameters.characters = this.fontParameters.characters + "↑" + "↓"
     this.fontParameters.size = FontSize.baseFontSize

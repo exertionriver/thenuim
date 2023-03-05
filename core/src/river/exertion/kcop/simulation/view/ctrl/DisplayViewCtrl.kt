@@ -13,6 +13,7 @@ import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNar
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.DisplayViewMenu
+import river.exertion.kcop.simulation.view.displayViewMenus.LoadProfileMenu
 import river.exertion.kcop.simulation.view.displayViewMenus.MainMenu
 import river.exertion.kcop.simulation.view.displayViewMenus.ProfileMenu
 
@@ -25,7 +26,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
 
     var displayViewMenus : MutableList<DisplayViewMenu> = mutableListOf(
         MainMenu(screenWidth, screenHeight),
-        ProfileMenu(screenWidth, screenHeight)
+        ProfileMenu(screenWidth, screenHeight),
+        LoadProfileMenu(screenWidth, screenHeight)
     )
 
     var menuOpen = false
