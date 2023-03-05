@@ -14,6 +14,7 @@ import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.DisplayViewMenu
 import river.exertion.kcop.simulation.view.displayViewMenus.MainMenu
+import river.exertion.kcop.simulation.view.displayViewMenus.ProfileMenu
 
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
 
@@ -23,7 +24,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     )
 
     var displayViewMenus : MutableList<DisplayViewMenu> = mutableListOf(
-        MainMenu(screenWidth, screenHeight)
+        MainMenu(screenWidth, screenHeight),
+        ProfileMenu(screenWidth, screenHeight)
     )
 
     var menuOpen = false
@@ -188,7 +190,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
         this.add(
             Stack().apply {
                 this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch, currentLayoutMode, currentText, currentFontSize))
-                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].getMenu(batch))
+                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].getMenu(batch, bitmapFont))
             }).size(this.tableWidth(), this.tableHeight())
 
         this.clip()
