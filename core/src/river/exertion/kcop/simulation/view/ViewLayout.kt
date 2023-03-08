@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.simulation.view.ctrl.*
+import river.exertion.kcop.simulation.view.displayViewMenus.LoadProfileMenu
+import river.exertion.kcop.simulation.view.displayViewMenus.ProfileMenuParams
+import river.exertion.kcop.simulation.view.displayViewMenus.SaveProfileMenu
 import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.profile.Status
@@ -261,8 +264,12 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         }
                     }
 
-                    if (displayViewMenuMessage.menuSelectTag != null) {
-                        displayViewCtrl.currentMenuIdx = displayViewCtrl.displayViewMenus.indexOf(displayViewCtrl.displayViewMenus.firstOrNull { it.tag() == displayViewMenuMessage.menuSelectTag } ?: 0)
+                    if (displayViewMenuMessage.menuParams != null) {
+                        displayViewCtrl.currentMenuIdx = displayViewCtrl.displayViewMenus.indexOf(displayViewCtrl.displayViewMenus.firstOrNull { it.tag() == displayViewMenuMessage.menuParams!!.targetMenuTag } ?: 0)
+
+                        if ( listOf(LoadProfileMenu.tag, SaveProfileMenu.tag).contains(displayViewMenuMessage.menuParams!!.targetMenuTag) ) {
+                            (displayViewCtrl.displayViewMenus[displayViewCtrl.currentMenuIdx] as LoadProfileMenu).profileAsset = (displayViewMenuMessage.menuParams as ProfileMenuParams).profile
+                        }
                     }
 
                     this.displayViewCtrl.recreate()

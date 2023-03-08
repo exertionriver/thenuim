@@ -12,10 +12,7 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
-import river.exertion.kcop.simulation.view.displayViewMenus.DisplayViewMenu
-import river.exertion.kcop.simulation.view.displayViewMenus.LoadProfileMenu
-import river.exertion.kcop.simulation.view.displayViewMenus.MainMenu
-import river.exertion.kcop.simulation.view.displayViewMenus.ProfileMenu
+import river.exertion.kcop.simulation.view.displayViewMenus.*
 
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
 
@@ -27,7 +24,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
     var displayViewMenus : MutableList<DisplayViewMenu> = mutableListOf(
         MainMenu(screenWidth, screenHeight),
         ProfileMenu(screenWidth, screenHeight),
-        LoadProfileMenu(screenWidth, screenHeight)
+        LoadProfileMenu(screenWidth, screenHeight),
+        SaveProfileMenu(screenWidth, screenHeight)
     )
 
     var menuOpen = false
@@ -192,7 +190,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
         this.add(
             Stack().apply {
                 this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch, currentLayoutMode, currentText, currentFontSize))
-                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].getMenu(batch, bitmapFont))
+                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout(batch, bitmapFont))
             }).size(this.tableWidth(), this.tableHeight())
 
         this.clip()
@@ -200,5 +198,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Vie
 
     override fun dispose() {
         displayViewLayouts.forEach { it.dispose() }
+        displayViewMenus.forEach { it.dispose() }
     }
 }

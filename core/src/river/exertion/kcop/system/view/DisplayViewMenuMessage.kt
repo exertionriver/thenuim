@@ -1,3 +1,5 @@
 package river.exertion.kcop.system.view
 
-data class DisplayViewMenuMessage(val menuButtonIdx : Int? = null, val menuSelectTag : String? = null)
+import river.exertion.kcop.simulation.view.displayViewMenus.MenuParams
+
+data class DisplayViewMenuMessage(val menuButtonIdx : Int? = null, var menuParams : MenuParams? = null)

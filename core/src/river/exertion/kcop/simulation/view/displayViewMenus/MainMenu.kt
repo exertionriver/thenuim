@@ -1,6 +1,5 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.system.ShapeDrawerConfig
@@ -12,14 +11,15 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
 
     override val backgroundColor = ColorPalette.of("blue")
 
-    override var menuTable = Table().apply { this.debug() }
+    override fun menuPane(bitmapFont: BitmapFont) = Table().apply { this.debug() }
 
     override val breadcrumbEntries = mapOf<String, String>()
 
-    override fun getMenu(batch : Batch, bitmapFont: BitmapFont) : Table {
+    override val navs = mapOf(
+        "Profile >" to ProfileMenuParams("profileMenu", null)
+    )
 
-        return genericLayout(batch, bitmapFont)
-    }
+    override val actions = mapOf<String, String>()
 
     override fun tag() = tag
     override fun label() = label

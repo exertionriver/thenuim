@@ -2,10 +2,7 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
@@ -24,23 +21,55 @@ interface DisplayViewMenu {
     var screenHeight : Float
 
     val backgroundColor : ColorPalette
-
-    var menuTable : Table
-    val breadcrumbEntries : Map<String, String> //menu tags -> labels
-
     val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
 
-    fun getMenu(batch : Batch, bitmapFont: BitmapFont) : Table
+    fun menuPane(bitmapFont: BitmapFont) : Table
+    fun navButtonPane(bitmapFont: BitmapFont) : Table = Table().apply {
+       // this.debug()
 
-    fun breadcrumb(bitmapFont: BitmapFont) = Table().apply {
-        this.debug()
+        this@DisplayViewMenu.navs.entries.forEach { navEntry ->
+            this.add(
+                TextButton(navEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
+                    this.onClick {
+                        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, navEntry.value))
+                    this.center()
+                    }
+                }
+            ).padTop(ViewType.padHeight(screenHeight))
+            if (navEntry != this@DisplayViewMenu.navs.entries.last()) this.row()
+        }
+    }
+
+    fun actionButtonPane(bitmapFont: BitmapFont) : Table = Table().apply {
+     //   this.debug()
+
+        this@DisplayViewMenu.actions.entries.forEach { actionEntry ->
+            this.add(
+                TextButton(actionEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
+                    this.onClick {
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value))
+                        //go back a menu
+                        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, ProfileMenuParams(breadcrumbEntries.keys.toList()[0]) ))
+                    }
+                }
+            ).padRight(ViewType.padWidth(screenWidth))
+        }
+    }
+
+
+    val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
+    val navs : Map<String, MenuParams> //Button Label -> menu params
+    val actions : Map<String, String> //Button Label -> log text
+
+    fun breadcrumbPane(bitmapFont: BitmapFont) = Table().apply {
+      //  this.debug()
 
         //TODO : singleton with three-sized bitmap fonts
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
             this.add(Label("${menuLabel.value} > ", Label.LabelStyle(bitmapFont.apply {this.data.setScale(FontSize.SMALL.fontScale())}
                 , backgroundColor.label().color())).apply {
                 this.onClick {
-                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, menuLabel.key ))
+                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, ProfileMenuParams(menuLabel.key) ))
                 }
             } )
         }
@@ -49,7 +78,7 @@ interface DisplayViewMenu {
         return this
     }
 
-    fun genericLayout(batch : Batch, bitmapFont: BitmapFont) : Table {
+    fun menuLayout(batch : Batch, bitmapFont: BitmapFont) : Table {
 
         if (sdcMap[0] != null) sdcMap[0]!!.dispose()
 
@@ -68,17 +97,23 @@ interface DisplayViewMenu {
                 )
                 this.add(
                     Table().apply {
-                        this.add(breadcrumb(bitmapFont)).center().right().growX()
+                        this.add(breadcrumbPane(bitmapFont)).right().growX()
                         this.add(
-                            Table().apply { this.add(Label(this@DisplayViewMenu.label(), Label.LabelStyle(bitmapFont.apply { this.data.setScale(FontSize.LARGE.fontScale()) }, backgroundColor.label().color())))}
-                        ).center().right().padRight(ViewType.padWidth(screenWidth))
+                            Table().apply { this.add(Label(this@DisplayViewMenu.label(), Label.LabelStyle(bitmapFont.apply { this.data.setScale(FontSize.MEDIUM.fontScale()) }, backgroundColor.label().color())).apply {
+                                this.setAlignment(Align.center)
+                            }).padRight(ViewType.padWidth(screenWidth))
+                            }
+                        ).center().right()
                         this.row()
-                        this.add(menuTable).colspan(2).grow()
-                        this.debug()
+                        this.add(menuPane(bitmapFont)).growY().top()
+                        this.add(navButtonPane(bitmapFont)).top()
+                        this.row()
+                        this.add(actionButtonPane(bitmapFont)).colspan(2).right()
+                  //      this.debug()
                     }
                 )
             })
-            this.debug()
+      //      this.debug()
         }
     }
 
