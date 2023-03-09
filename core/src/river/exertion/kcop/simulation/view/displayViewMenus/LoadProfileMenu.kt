@@ -17,11 +17,48 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
 
     var profileAsset : ProfileAsset? = null
 
+    fun profileAssetTitle() = profileAsset?.assetPath
+
+    fun profileAssetInfo() : MutableList<String?> {
+
+        val returnList = mutableListOf<String?>()
+
+        if ((profileAsset != null) && (profileAsset!!.profile != null)) {
+            returnList.add("name: ${profileAsset!!.profile!!.name}")
+            returnList.add("current: ${profileAsset!!.profile!!.currentImmersionId}: ${profileAsset!!.profile!!.currentImmersionIdx?.toString()}")
+
+            if (profileAsset!!.profile!!.statuses.isNotEmpty()) returnList.add("\nstatuses:")
+
+            val listMaxSize = profileAsset!!.profile!!.statuses.size.coerceAtMost(8)
+
+            profileAsset!!.profile!!.statuses.sortedByDescending { it.value }.subList(0, listMaxSize).forEach {
+                returnList.add("${it.key}: ${it.value} (${it.cumlImmersionTime})")
+            }
+            profileAsset!!.profile!!.statuses.sortedByDescending { it.value }.subList(0, listMaxSize).forEach {
+                returnList.add("${it.key}: ${it.value} (${it.cumlImmersionTime})")
+            }
+        }
+
+        if ( returnList.isEmpty() ) returnList.add("no profile info found")
+
+        return returnList
+    }
+
     override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
 
-        this.add(Label(profileAsset?.assetPath, LabelStyle(bitmapFont, backgroundColor.label().color())))
+        this.add(Label(profileAssetTitle(), LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
+            this.wrap = true
+        }).growX()
+        this.row()
+        val profileAssetInfo = profileAssetInfo()
+        profileAssetInfo.forEach { profileEntry ->
+            this.add(Label(profileEntry, LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
+                this.wrap = true
+            }).growX().left()
+            this.row()
+        }
+        this.top()
         this.debug()
-
     }
 
     override val breadcrumbEntries = mapOf(

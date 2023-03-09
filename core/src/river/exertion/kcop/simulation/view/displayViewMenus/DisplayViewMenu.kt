@@ -1,8 +1,12 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
@@ -78,23 +82,30 @@ interface DisplayViewMenu {
         return this
     }
 
-    fun menuLayout(batch : Batch, bitmapFont: BitmapFont) : Table {
 
+    fun menuLayout(batch : Batch, bitmapFont: BitmapFont) : Table {
         if (sdcMap[0] != null) sdcMap[0]!!.dispose()
+        if (sdcMap[1] != null) sdcMap[1]!!.dispose()
 
         sdcMap[0] = ShapeDrawerConfig(batch, backgroundColor.color())
+        sdcMap[1] = ShapeDrawerConfig(batch, backgroundColor.triad().second.color())
+
+        val background = TextureRegionDrawable(
+            sdcMap[0]!!.textureRegion.apply {this.setRegion(0, 0,
+                ViewType.secondWidth(screenWidth).toInt() - 1,
+                ViewType.secondHeight(screenHeight).toInt() - 1)
+            })
+
+        val scrollBackground = TextureRegionDrawable(
+            sdcMap[1]!!.textureRegion.apply {this.setRegion(0, 0, 20, 20) }
+        )
+
+        val scrollNine = NinePatch(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
+        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(scrollBackground, null, null, null, NinePatchDrawable(scrollNine))
 
         return Table().apply {
             this.add(Stack().apply {
-                this.add(
-                    Image(
-                        TextureRegionDrawable(
-                        sdcMap[0]!!.textureRegion.apply {this.setRegion(0, 0,
-                            ViewType.secondWidth(screenWidth).toInt() - 1,
-                            ViewType.secondHeight(screenHeight).toInt() - 1)
-                        })
-                    )
-                )
+                this.add(Image(background))
                 this.add(
                     Table().apply {
                         this.add(breadcrumbPane(bitmapFont)).right().growX()
@@ -105,7 +116,20 @@ interface DisplayViewMenu {
                             }
                         ).center().right()
                         this.row()
-                        this.add(menuPane(bitmapFont)).growY().top()
+                        this.add(
+
+                        ScrollPane(menuPane(bitmapFont), scrollPaneStyle).apply {
+                            // https://github.com/raeleus/skin-composer/wiki/ScrollPane
+                            this.fadeScrollBars = false
+                            this.setFlickScroll(false)
+                            this.validate()
+                            //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
+                            this.layout()
+                        }
+
+                        ).height(ViewType.secondHeight(screenHeight) - 3 * bitmapFont.lineHeight)
+                            .width(ViewType.secondWidth(screenWidth) - 3 * bitmapFont.lineHeight)
+                            .growY().top()
                         this.add(navButtonPane(bitmapFont)).top()
                         this.row()
                         this.add(actionButtonPane(bitmapFont)).colspan(2).right()
