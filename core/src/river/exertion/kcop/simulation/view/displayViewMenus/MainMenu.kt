@@ -11,7 +11,7 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
 
     override val backgroundColor = ColorPalette.of("blue")
 
-    override fun menuPane(bitmapFont: BitmapFont) = Table().apply { this.debug() }
+    override fun menuPane(bitmapFont: BitmapFont) = null
 
     override val breadcrumbEntries = mapOf<String, String>()
 

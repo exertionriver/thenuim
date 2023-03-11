@@ -27,7 +27,7 @@ interface DisplayViewMenu {
     val backgroundColor : ColorPalette
     val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
 
-    fun menuPane(bitmapFont: BitmapFont) : Table
+    fun menuPane(bitmapFont: BitmapFont) : Table?
     fun navButtonPane(bitmapFont: BitmapFont) : Table = Table().apply {
        // this.debug()
 
@@ -117,16 +117,18 @@ interface DisplayViewMenu {
                         ).center().right()
                         this.row()
                         this.add(
+                            if (menuPane(bitmapFont) == null) { Table() }
+                            else {
 
-                        ScrollPane(menuPane(bitmapFont), scrollPaneStyle).apply {
-                            // https://github.com/raeleus/skin-composer/wiki/ScrollPane
-                            this.fadeScrollBars = false
-                            this.setFlickScroll(false)
-                            this.validate()
-                            //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
-                            this.layout()
-                        }
-
+                                ScrollPane(menuPane(bitmapFont), scrollPaneStyle).apply {
+                                    // https://github.com/raeleus/skin-composer/wiki/ScrollPane
+                                    this.fadeScrollBars = false
+                                    this.setFlickScroll(false)
+                                    this.validate()
+                                    //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
+                                    this.layout()
+                                }
+                            }
                         ).height(ViewType.secondHeight(screenHeight) - 3 * bitmapFont.lineHeight)
                             .width(ViewType.secondWidth(screenWidth) - 3 * bitmapFont.lineHeight)
                             .growY().top()

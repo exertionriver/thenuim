@@ -16,7 +16,7 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
 
     override val backgroundColor = ColorPalette.of("olive")
 
-    override fun menuPane(bitmapFont: BitmapFont) = Table().apply { this.debug() }
+    override fun menuPane(bitmapFont: BitmapFont) = null
 
     override val breadcrumbEntries = mapOf(
         ProfileMenu.tag to ProfileMenu.label,
