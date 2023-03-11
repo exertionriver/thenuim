@@ -12,8 +12,11 @@ import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.system.SystemManager
+import river.exertion.kcop.system.*
 import river.exertion.kcop.system.component.ImmersionTimerComponent
+import river.exertion.kcop.system.component.NarrativeComponent
+import river.exertion.kcop.system.component.ProfileComponent
+import river.exertion.kcop.system.entity.NarrativeEntity
 import river.exertion.kcop.system.entity.ProfileEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
@@ -24,7 +27,7 @@ class ProfileSimulator(private val batch: Batch,
                        private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val engine = PooledEngine().apply { SystemManager.init(this) }
+    val engineHandler = EngineHandler()
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -34,7 +37,7 @@ class ProfileSimulator(private val batch: Batch,
         stage.act(Gdx.graphics.deltaTime)
         stage.draw()
 
-        engine.update(delta)
+        engineHandler.engine.update(delta)
     }
 
     override fun hide() {
@@ -63,7 +66,12 @@ class ProfileSimulator(private val batch: Batch,
         stage.addActor(layout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        val profileEntity = ProfileEntity.instantiate(engine, assets[ProfileAssets.ExertionRiverText])
+        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(
+            EngineMessageType.INSTANTIATE_ENTITY,
+            ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
+        )
+
+        val profileEntity = engineHandler.getFirst<ProfileComponent>()!!
 
         layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
         layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id

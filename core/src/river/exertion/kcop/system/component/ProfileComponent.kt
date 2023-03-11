@@ -26,8 +26,8 @@ class ProfileComponent : Component, Telegraph {
     }
 
     companion object {
-        fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is ProfileComponent } != null
-        fun getFor(entity : Entity) : ProfileComponent? = if (has(entity)) entity.components.first { it is ProfileComponent } as ProfileComponent else null
+        fun has(entity : Entity?) : Boolean = entity?.components?.firstOrNull{ it is ProfileComponent } != null
+        fun getFor(entity : Entity?) : ProfileComponent? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileComponent } as ProfileComponent else null
     }
 
 }

@@ -59,12 +59,12 @@ class Kcop : KtxGame<KtxScreen>() {
 
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
-//            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
+//            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
         Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<ProfileSimulator>()
+        setScreen<NarrativeSimulator>()
 
     }
 

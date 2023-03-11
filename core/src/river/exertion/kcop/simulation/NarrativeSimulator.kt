@@ -15,9 +15,10 @@ import ktx.scene2d.*
 import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.system.SystemManager
+import river.exertion.kcop.system.*
 import river.exertion.kcop.system.component.NarrativeComponent
 import river.exertion.kcop.system.component.ProfileComponent
+import river.exertion.kcop.system.entity.IEntity
 import river.exertion.kcop.system.entity.NarrativeEntity
 import river.exertion.kcop.system.entity.ProfileEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
@@ -29,10 +30,10 @@ class NarrativeSimulator(private val batch: Batch,
                          private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val engine = PooledEngine().apply { SystemManager.init(this) }
+    val engineHandler = EngineHandler()
 
     var narrativesIdx = 0
-    lateinit var narratives : MutableList<Entity>
+    lateinit var narratives : List<Entity>
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -42,7 +43,7 @@ class NarrativeSimulator(private val batch: Batch,
         stage.act(Gdx.graphics.deltaTime)
         stage.draw()
 
-        engine.update(delta)
+        engineHandler.engine.update(delta)
 
         when {
             Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
@@ -94,12 +95,20 @@ class NarrativeSimulator(private val batch: Batch,
         stage.addActor(viewLayout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        narratives = mutableListOf(
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTest]),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeNavigationTest]),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeTimelineTest]),
-            NarrativeEntity.instantiate(engine, assets[NarrativeAssets.NarrativeLayoutTest])
+        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
+            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTest])
         )
+        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
+            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeNavigationTest])
+        )
+        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
+            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTimelineTest])
+        )
+        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
+            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeLayoutTest])
+        )
+
+        narratives = engineHandler.getAll<NarrativeComponent>()
 
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 

@@ -1,28 +1,17 @@
 package river.exertion.kcop.simulation
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import ktx.actors.alpha
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrl
-import river.exertion.kcop.system.SystemManager
+import river.exertion.kcop.system.EngineHandler
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -32,7 +21,7 @@ class ViewSimulator(private val batch: Batch,
                     private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val engine = PooledEngine().apply { SystemManager.init(this) }
+    val engineHandler = EngineHandler()
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -42,7 +31,7 @@ class ViewSimulator(private val batch: Batch,
         stage.act(Gdx.graphics.deltaTime)
         stage.draw()
 
-        engine.update(delta)
+        engineHandler.engine.update(delta)
     }
 
     override fun hide() {
