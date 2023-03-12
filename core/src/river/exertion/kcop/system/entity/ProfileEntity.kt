@@ -1,16 +1,10 @@
 package river.exertion.kcop.system.entity
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import kotlinx.serialization.json.encodeToJsonElement
-import ktx.ashley.entity
-import ktx.ashley.get
-import ktx.ashley.mapperFor
-import ktx.ashley.with
 import river.exertion.kcop.Util
 import river.exertion.kcop.assets.ProfileAsset
-import river.exertion.kcop.system.SystemManager
 import river.exertion.kcop.system.component.IRLTimeComponent
 import river.exertion.kcop.system.component.ImmersionTimerComponent
 import river.exertion.kcop.system.component.ProfileComponent
@@ -55,10 +49,5 @@ class ProfileEntity : IEntity {
             val jsonProfile = Util.json.encodeToJsonElement(ProfileComponent.getFor(entity)!!.profile)
             Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
         }
-    }
-
-    companion object {
-        fun has(entity : Entity?) : Boolean { return entity?.components?.firstOrNull{ it is ProfileEntity } != null }
-        fun getFor(entity : Entity?) : ProfileEntity? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileEntity } as ProfileEntity else null
     }
 }

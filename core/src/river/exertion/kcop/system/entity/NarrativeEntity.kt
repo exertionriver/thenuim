@@ -29,9 +29,4 @@ class NarrativeEntity : IEntity {
     override var components: MutableList<Component> = mutableListOf(
         NarrativeComponent()
     )
-
-    companion object {
-        fun has(entity : Entity) : Boolean { return entity.components.firstOrNull{ it is NarrativeEntity } != null }
-        fun getFor(entity : Entity) : NarrativeEntity? = if (has(entity)) entity.components.firstOrNull { it is NarrativeEntity } as NarrativeEntity else null
-    }
 }

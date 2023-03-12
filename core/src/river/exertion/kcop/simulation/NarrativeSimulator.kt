@@ -113,7 +113,7 @@ class NarrativeSimulator(private val batch: Batch,
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 
         viewLayout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
-
+        
         stage.addActor(viewLayout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
     }
 

@@ -22,4 +22,5 @@ interface IEntity : Component {
 
     //overall narrative timeline
     var components : MutableList<Component>
+
 }
