@@ -51,7 +51,8 @@ interface DisplayViewMenu {
             this.add(
                 TextButton(actionEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
                     this.onClick {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value))
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value.first))
+                        actionEntry.value.second()
                         //go back a menu
                         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, ProfileMenuParams(breadcrumbEntries.keys.toList()[0]) ))
                     }
@@ -63,7 +64,7 @@ interface DisplayViewMenu {
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
     val navs : Map<String, MenuParams> //Button Label -> menu params
-    val actions : Map<String, String> //Button Label -> log text
+    val actions : Map<String, Pair<String, () -> Unit>> //Button Label -> log text + action to run
 
     fun breadcrumbPane(bitmapFont: BitmapFont) = Table().apply {
       //  this.debug()

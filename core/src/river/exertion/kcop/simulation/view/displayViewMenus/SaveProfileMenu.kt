@@ -26,8 +26,8 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
     override val navs = mapOf<String, MenuParams>()
 
     override val actions = mapOf(
-        "Yes" to "Profile Saved!",
-        "No" to "Save Cancelled!"
+        "Yes" to Pair("Profile Saved!") {},
+        "No" to Pair("Save Cancelled!") {}
     )
 
     override fun tag() = tag

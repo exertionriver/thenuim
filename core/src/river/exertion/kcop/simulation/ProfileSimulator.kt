@@ -66,11 +66,7 @@ class ProfileSimulator(private val batch: Batch,
         stage.addActor(layout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(
-            EngineMessageType.INSTANTIATE_ENTITY,
-            ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
-        )
-
+        engineHandler.instantiateEntity(ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
         val profileEntity = engineHandler.getFirst<ProfileComponent>()!!
 
         layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id

@@ -4,9 +4,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.NarrativeAssets
 import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.assets.get
+import river.exertion.kcop.system.EngineMessage
+import river.exertion.kcop.system.EngineMessageType
+import river.exertion.kcop.system.MessageChannel
 import river.exertion.kcop.system.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.entity.NarrativeEntity
+import river.exertion.kcop.system.entity.ProfileEntity
 import java.awt.Menu
 
 class LoadProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
@@ -69,8 +76,13 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     override val navs = mapOf<String, MenuParams>()
 
     override val actions = mapOf(
-        "Yes" to "Profile Loaded!",
-        "No" to "Load Cancelled!"
+        "Yes" to Pair("Profile Loaded!") {
+            MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(
+                EngineMessageType.INSTANTIATE_ENTITY,
+                ProfileEntity::class.java, profileAsset)
+            )
+        },
+        "No" to Pair("Load Cancelled!") {}
     )
 
     override fun tag() = tag

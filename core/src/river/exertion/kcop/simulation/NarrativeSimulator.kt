@@ -95,25 +95,17 @@ class NarrativeSimulator(private val batch: Batch,
         stage.addActor(viewLayout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
-            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTest])
-        )
-        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
-            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeNavigationTest])
-        )
-        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
-            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTimelineTest])
-        )
-        MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(EngineMessageType.INSTANTIATE_ENTITY,
-            NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeLayoutTest])
-        )
+        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTest])
+        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeNavigationTest])
+        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTimelineTest])
+        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeLayoutTest])
 
         narratives = engineHandler.getAll<NarrativeComponent>()
 
         NarrativeComponent.getFor(narratives[narrativesIdx])!!.begin()
 
         viewLayout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
-        
+
         stage.addActor(viewLayout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
     }
 

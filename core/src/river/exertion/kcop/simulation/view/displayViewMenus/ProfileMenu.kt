@@ -68,9 +68,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
         "Save >" to ProfileMenuParams("saveProfileMenu", null)
     )
 
-    override val actions = mapOf<String, String>()
-
-
+    override val actions = mapOf<String, Pair<String, () -> Unit>>()
 
     @Suppress("NewApi")
     fun loadProfiles() {

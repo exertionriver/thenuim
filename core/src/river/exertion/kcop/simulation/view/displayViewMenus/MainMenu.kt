@@ -19,7 +19,7 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
         "Profile >" to ProfileMenuParams("profileMenu", null)
     )
 
-    override val actions = mapOf<String, String>()
+    override val actions = mapOf<String, Pair<String, () -> Unit>>()
 
     override fun tag() = tag
     override fun label() = label

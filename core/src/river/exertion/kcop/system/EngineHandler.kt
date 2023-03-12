@@ -42,22 +42,28 @@ class EngineHandler : Telegraph {
         }
     }
 
+    fun instantiateEntity(entityClass : Class<*>, initInfo : Any? = null) {
+        val newEntity = engine.entity()
+        val instance = entityClass.getDeclaredConstructor().newInstance()
+        val initMethod = entityClass.getMethod(IEntity::initialize.name,
+            (IEntity::initialize.valueParameters[0].type.classifier as KClass<*>).java,
+            (IEntity::initialize.valueParameters[1].type.classifier as KClass<*>).java)
+        initMethod.invoke(instance, newEntity, initInfo)
+
+        entities[instance as IEntity] = newEntity
+    }
+
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             val engineMessage: EngineMessage = MessageChannel.ECS_ENGINE_BRIDGE.receiveMessage(msg.extraInfo)
 
             when (engineMessage.messageType) {
                 EngineMessageType.INSTANTIATE_ENTITY -> {
-                    val newEntity = engine.entity()
-                    val instance = engineMessage.entityClass.getDeclaredConstructor().newInstance()
-                    val initMethod = engineMessage.entityClass.getMethod(IEntity::initialize.name,
-                        (IEntity::initialize.valueParameters[0].type.classifier as KClass<*>).java,
-                        (IEntity::initialize.valueParameters[1].type.classifier as KClass<*>).java)
-                    initMethod.invoke(instance, newEntity, engineMessage.initInfo)
-
-                    entities[instance as IEntity] = newEntity
+                    instantiateEntity(engineMessage.entityClass, engineMessage.initInfo)
                 }
-                else -> {}
+                EngineMessageType.ADD_COMPONENT -> {
+
+                }
             }
         }
         return true
