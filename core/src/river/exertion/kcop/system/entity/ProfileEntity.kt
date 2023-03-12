@@ -13,7 +13,6 @@ import river.exertion.kcop.system.profile.Profile
 class ProfileEntity : IEntity {
 
     override var entityName = "profile"
-    override var entity : Entity? = null
 
     override var isInitialized = false
 
@@ -28,26 +27,24 @@ class ProfileEntity : IEntity {
         this.assetPath = profileAsset?.assetPath ?: ""
 
         ProfileComponent.getFor(entity)!!.profile = profileAsset?.profile ?: Profile()
-        ImmersionTimerComponent.getFor(entity)!!.cumlImmersionTimer.resumeTimer()
     }
 
     override var components = mutableListOf(
         IRLTimeComponent(),
-        ImmersionTimerComponent(),
         ProfileComponent()
     )
 
     fun reloadProfile() {
         if (isInitialized) {
-            val jsonProfile = Util.json.encodeToJsonElement(ProfileComponent.getFor(entity)!!.profile)
-            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
+//            val jsonProfile = Util.json.encodeToJsonElement(ProfileComponent.getFor(entity)!!.profile)
+//            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
         }
     }
 
     fun saveProfile() {
         if (isInitialized) {
-            val jsonProfile = Util.json.encodeToJsonElement(ProfileComponent.getFor(entity)!!.profile)
-            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
+//            val jsonProfile = Util.json.encodeToJsonElement(ProfileComponent.getFor(entity)!!.profile)
+//            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
         }
     }
 }

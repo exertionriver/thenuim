@@ -8,7 +8,6 @@ import river.exertion.kcop.system.component.NarrativeComponent
 class NarrativeEntity : IEntity {
 
     override var entityName = "narrative"
-    override var entity : Entity? = null
 
     override var isInitialized = false
 

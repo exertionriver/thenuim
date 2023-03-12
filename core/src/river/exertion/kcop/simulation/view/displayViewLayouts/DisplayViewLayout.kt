@@ -71,7 +71,7 @@ interface DisplayViewLayout {
 
         val returnMap : MutableMap<Int, String?> = mutableMapOf()
 
-        if (currentText.isEmpty()) return returnMap
+        if (currentText.isEmpty() || textPanes().isEmpty()) return returnMap
 
         val panes = definePanes()
         var textParsed = false
