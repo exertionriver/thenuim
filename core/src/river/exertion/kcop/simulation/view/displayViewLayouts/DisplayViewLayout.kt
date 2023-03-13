@@ -13,12 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.assets.FreeTypeFontAssets
 import river.exertion.kcop.simulation.view.DisplayViewPane
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import kotlin.math.roundToInt
 
 interface DisplayViewLayout {
 

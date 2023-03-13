@@ -11,7 +11,7 @@ import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.system.EngineHandler
+import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 

@@ -1,14 +1,8 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import ktx.actors.onClick
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.view.DisplayViewMenuMessage
 
 class SaveProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
 
@@ -27,7 +21,7 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
 
     override val actions = mapOf(
         "Yes" to Pair("Profile Saved!") {},
-        "No" to Pair("Save Cancelled!") {}
+        "No" to Pair(null) {}
     )
 
     override fun tag() = tag

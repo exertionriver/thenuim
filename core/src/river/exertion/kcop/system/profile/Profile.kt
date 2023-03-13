@@ -9,7 +9,7 @@ data class Profile(
     override var id : String,
     var name : String,
     var currentImmersionId : String?,
-    var currentImmersionIdx : Int?,
+    var currentImmersionBlockId : String?,
     val statuses : MutableList<Status>
 ) : Id() {
     constructor() : this(UUID.randomUUID().toString(), "default", null, null, mutableListOf())

@@ -5,7 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.simulation.view.ViewType

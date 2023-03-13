@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.view
+package river.exertion.kcop.system.messaging.messages
 
 data class StatusViewMessage(val messageType : StatusViewMessageType, val statusKey : String, val statusValue : Float? = null)
 

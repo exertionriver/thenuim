@@ -1,9 +1,9 @@
-package river.exertion.kcop.system
+package river.exertion.kcop.system.messaging
 
 import com.badlogic.gdx.ai.msg.MessageManager
 import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
-import river.exertion.kcop.system.view.*
+import river.exertion.kcop.system.messaging.messages.*
 import kotlin.reflect.KClass
 
 enum class MessageChannel {
@@ -20,7 +20,9 @@ enum class MessageChannel {
     IMMERSION_TIME_BRIDGE { override val messageClass = ImmersionTimerMessage::class },
     NARRATIVE_PROMPT_BRIDGE { override val messageClass = ViewMessage::class },
     NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE { override val messageClass = ViewMessage::class },
-    ECS_ENGINE_BRIDGE { override val messageClass = EngineMessage::class }
+    ECS_ENGINE_ENTITY_BRIDGE { override val messageClass = EngineEntityMessage::class },
+    ECS_ENGINE_COMPONENT_BRIDGE { override val messageClass = EngineComponentMessage::class },
+    NARRATIVE_COMPONENT_BRIDGE { override val messageClass = NarrativeComponentMessage::class },
     ;
 
     fun id() = this.ordinal

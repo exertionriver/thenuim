@@ -1,4 +1,4 @@
-package river.exertion.kcop.system
+package river.exertion.kcop.system.view
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap

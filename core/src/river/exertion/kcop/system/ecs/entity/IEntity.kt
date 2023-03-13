@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.entity
+package river.exertion.kcop.system.ecs.entity
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity

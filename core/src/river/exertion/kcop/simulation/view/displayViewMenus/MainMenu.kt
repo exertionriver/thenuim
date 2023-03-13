@@ -1,9 +1,10 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import kotlin.system.exitProcess
 
 class MainMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
 
@@ -19,7 +20,12 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
         "Profile >" to ProfileMenuParams("profileMenu", null)
     )
 
-    override val actions = mapOf<String, Pair<String, () -> Unit>>()
+    override val actions = mapOf<String, Pair<String, () -> Unit>>(
+        "Exit" to Pair("Peace Out") {
+            Gdx.app.exit()
+            exitProcess(0)
+        },
+    )
 
     override fun tag() = tag
     override fun label() = label

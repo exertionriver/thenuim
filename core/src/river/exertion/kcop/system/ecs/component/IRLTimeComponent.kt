@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.component
+package river.exertion.kcop.system.ecs.component
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
@@ -7,9 +7,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Suppress("NewApi")
-class IRLTimeComponent() : Component {
+class IRLTimeComponent : IComponent, Component {
 
     fun irlTime() = Calendar.getInstance()
+
+    override var isInitialized = false
 
     private fun localDateTime() = LocalDateTime.of(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH), irlTime().get(Calendar.DAY_OF_MONTH),
         irlTime().get(Calendar.HOUR_OF_DAY), irlTime().get(Calendar.MINUTE), irlTime().get(Calendar.SECOND))

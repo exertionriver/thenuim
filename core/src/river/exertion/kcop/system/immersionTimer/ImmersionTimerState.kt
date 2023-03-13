@@ -2,8 +2,8 @@ package river.exertion.kcop.system.immersionTimer
 
 import com.badlogic.gdx.ai.fsm.State
 import com.badlogic.gdx.ai.msg.Telegram
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.view.ImmersionTimerMessage
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.ImmersionTimerMessage
 
 enum class ImmersionTimerState : State<ImmersionTimer> {
 

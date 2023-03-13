@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.component
+package river.exertion.kcop.system.ecs.component
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
@@ -7,10 +7,12 @@ import ktx.ashley.mapperFor
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerState
 
-class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Component {
+class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : IComponent, Component {
 
     val instImmersionTimer = ImmersionTimer(startTime, startState)
     val cumlImmersionTimer = ImmersionTimer(startTime, startState)
+
+    override var isInitialized = false
 
     companion object {
         val mapper = mapperFor<ImmersionTimerComponent>()

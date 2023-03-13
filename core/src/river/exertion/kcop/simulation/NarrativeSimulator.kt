@@ -1,7 +1,6 @@
 package river.exertion.kcop.simulation
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
@@ -16,11 +15,9 @@ import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.*
-import river.exertion.kcop.system.component.NarrativeComponent
-import river.exertion.kcop.system.component.ProfileComponent
-import river.exertion.kcop.system.entity.IEntity
-import river.exertion.kcop.system.entity.NarrativeEntity
-import river.exertion.kcop.system.entity.ProfileEntity
+import river.exertion.kcop.system.ecs.EngineHandler
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import river.exertion.kcop.system.ecs.entity.NarrativeEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 

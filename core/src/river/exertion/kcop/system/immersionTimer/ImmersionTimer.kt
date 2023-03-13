@@ -5,7 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.utils.TimeUtils
 import river.exertion.kcop.Id
-import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannel
 
 class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Id(), Telegraph {
 

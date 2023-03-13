@@ -1,18 +1,17 @@
-package river.exertion.kcop.system.component
+package river.exertion.kcop.system.ecs.component
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.mapperFor
+import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.narrative.structure.Narrative
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.view.StatusViewMessage
-import river.exertion.kcop.system.view.StatusViewMessageType
-import river.exertion.kcop.system.view.ViewMessage
+import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.system.messaging.messages.*
 
-class NarrativeComponent : Component, Telegraph {
+class NarrativeComponent : IComponent, Component, Telegraph {
 
     var narrative : Narrative? = null
 
@@ -21,7 +20,6 @@ class NarrativeComponent : Component, Telegraph {
     var flags : MutableList<String> = mutableListOf()
 
     var isActive = false //ie., is the current simulation
-    var isInitialized = false
 
     lateinit var sequentialStatusKey : String
 
@@ -39,6 +37,24 @@ class NarrativeComponent : Component, Telegraph {
 
     init {
         MessageChannel.NARRATIVE_PROMPT_BRIDGE.enableReceive(this)
+    }
+
+    override var isInitialized = false
+    override fun initialize(initData: Any?) {
+        super.initialize(initData)
+
+        if (initData != null) {
+            val initDataEntry = initData as Pair<NarrativeAsset, String>
+
+            narrative = initDataEntry.first.narrative
+            narrative!!.currentId = initDataEntry.second
+        }
+
+        initTimers()
+        activate()
+
+        MessageChannel.NARRATIVE_COMPONENT_BRIDGE.send(null, NarrativeComponentMessage(this) )
+
     }
 
     fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)

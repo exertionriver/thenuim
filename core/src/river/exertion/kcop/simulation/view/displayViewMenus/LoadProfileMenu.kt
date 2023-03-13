@@ -1,20 +1,27 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.assets.NarrativeAssets
-import river.exertion.kcop.assets.ProfileAsset
-import river.exertion.kcop.assets.get
-import river.exertion.kcop.system.EngineMessage
-import river.exertion.kcop.system.EngineMessageType
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.ShapeDrawerConfig
+import ktx.assets.load
+import ktx.collections.gdxArrayOf
+import river.exertion.kcop.assets.*
+import river.exertion.kcop.system.*
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.entity.NarrativeEntity
-import river.exertion.kcop.system.entity.ProfileEntity
-import java.awt.Menu
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import river.exertion.kcop.system.ecs.component.ProfileComponent
+import river.exertion.kcop.system.ecs.entity.ProfileEntity
+import river.exertion.kcop.system.messaging.*
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
+import river.exertion.kcop.system.messaging.messages.EngineEntityMessage
+import river.exertion.kcop.system.messaging.messages.EngineEntityMessageType
+import river.exertion.kcop.system.view.ShapeDrawerConfig
+import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
 
 class LoadProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
 
@@ -23,6 +30,9 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     override val backgroundColor = ColorPalette.of("teal")
 
     var profileAsset : ProfileAsset? = null
+    var currentNarrativeAsset : NarrativeAsset? = null
+
+    val am = AssetManager()
 
     fun profileAssetTitle() = profileAsset?.assetPath
 
@@ -32,7 +42,7 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
 
         if ((profileAsset != null) && (profileAsset!!.profile != null)) {
             returnList.add("name: ${profileAsset!!.profile!!.name}")
-            returnList.add("current: ${profileAsset!!.profile!!.currentImmersionId}: ${profileAsset!!.profile!!.currentImmersionIdx?.toString()}")
+            returnList.add("current: ${profileAsset!!.profile!!.currentImmersionId}: ${profileAsset!!.profile!!.currentImmersionBlockId}")
 
             if (profileAsset!!.profile!!.statuses.isNotEmpty()) returnList.add("\nstatuses:")
 
@@ -44,6 +54,10 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
             profileAsset!!.profile!!.statuses.sortedByDescending { it.value }.subList(0, listMaxSize).forEach {
                 returnList.add("${it.key}: ${it.value} (${it.cumlImmersionTime})")
             }
+
+            this.actions["Yes"] = Pair("Profile loaded: ${profileAsset!!.profile!!.name}", this.actions["Yes"]!!.second)
+
+            currentNarrativeAsset = loadNarrativeAsset(profileAsset!!.profile!!.currentImmersionId!!)
         }
 
         if ( returnList.isEmpty() ) returnList.add("no profile info found")
@@ -75,18 +89,50 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
 
     override val navs = mapOf<String, MenuParams>()
 
-    override val actions = mapOf(
+    override val actions = mutableMapOf(
         "Yes" to Pair("Profile Loaded!") {
-            MessageChannel.ECS_ENGINE_BRIDGE.send(null, EngineMessage(
-                EngineMessageType.INSTANTIATE_ENTITY,
+            MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(
+                EngineEntityMessageType.INSTANTIATE_ENTITY,
                 ProfileEntity::class.java, profileAsset)
             )
+            if (profileAsset?.profile != null) {
+                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                    EngineComponentMessageType.ADD_COMPONENT,
+                    profileAsset!!.profile!!.id, ProfileComponent::class.java, profileAsset?.profile)
+                )
+
+                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                    EngineComponentMessageType.ADD_COMPONENT,
+                    profileAsset!!.profile!!.id, NarrativeComponent::class.java, Pair(currentNarrativeAsset, profileAsset!!.profile!!.currentImmersionBlockId))
+                )
+            }
         },
-        "No" to Pair("Load Cancelled!") {}
+        "No" to Pair(null) {}
     )
+
+    @Suppress("NewApi")
+    fun loadNarrativeAsset(currentImmersionId : String) : NarrativeAsset? {
+
+        val lfhr = LocalFileHandleResolver()
+        am.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
+
+        val narrativePath = Path(NarrativeAssets.narrativeAssetLocation)
+
+        narrativePath.listDirectoryEntries().forEach {
+            am.load<NarrativeAsset>(it.toString())
+        }
+        am.finishLoading()
+
+        return am.getAll(NarrativeAsset::class.java, gdxArrayOf()).firstOrNull { it.narrative?.id == currentImmersionId }
+    }
 
     override fun tag() = tag
     override fun label() = label
+
+    override fun dispose() {
+        am.dispose()
+        super.dispose()
+    }
 
     companion object {
         const val tag = "loadProfileMenu"

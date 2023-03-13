@@ -43,9 +43,9 @@ class Kcop : KtxGame<KtxScreen>() {
 
         val lfhr = LocalFileHandleResolver()
         assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
+        assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
 
         val ifhr = InternalFileHandleResolver()
-        assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(ifhr))
         assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(ifhr))
         assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(ifhr))
 
@@ -59,12 +59,12 @@ class Kcop : KtxGame<KtxScreen>() {
 
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
-//            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
+//            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
         Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<NarrativeSimulator>()
+        setScreen<ProfileSimulator>()
 
     }
 

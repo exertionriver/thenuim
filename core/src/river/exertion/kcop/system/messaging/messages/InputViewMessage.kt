@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.view
+package river.exertion.kcop.system.messaging.messages
 
 data class InputViewMessage(val event : InputViewMessageEvent, val eventParams : Map<InputViewMessageParam, Any>) {
 

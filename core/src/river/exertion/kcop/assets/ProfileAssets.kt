@@ -4,10 +4,10 @@ import com.badlogic.gdx.assets.AssetManager
 import ktx.assets.getAsset
 import ktx.assets.load
 
-enum class ProfileAssets(val profileName: String) {
+enum class ProfileAssets(val profileFilename: String) {
     ExertionRiverText("er_profile")
     ;
-    fun path() = profileAssetPath(profileName)
+    fun path() = profileAssetPath(profileFilename)
 
     companion object {
         val profileAssetLocation = "kcop/profile/"

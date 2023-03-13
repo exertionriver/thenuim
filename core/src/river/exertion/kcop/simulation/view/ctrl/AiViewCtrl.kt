@@ -5,14 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.view.LogViewMessage
-import river.exertion.kcop.system.view.LogViewMessageType
-import river.exertion.kcop.system.view.ViewMessage
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 
 class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.AI, screenWidth, screenHeight) {
 

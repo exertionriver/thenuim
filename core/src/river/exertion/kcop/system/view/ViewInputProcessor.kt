@@ -3,7 +3,11 @@ package river.exertion.kcop.system.view
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.InputViewMessage
+import river.exertion.kcop.system.messaging.messages.InputViewMessageEvent
+import river.exertion.kcop.system.messaging.messages.InputViewMessageParam
+import river.exertion.kcop.system.messaging.messages.ViewMessage
 
 class ViewInputProcessor : InputProcessor {
 

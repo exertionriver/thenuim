@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.reflect.jvm.javaMethod
 
 

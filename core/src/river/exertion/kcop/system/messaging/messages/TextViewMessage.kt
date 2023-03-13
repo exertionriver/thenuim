@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.view
+package river.exertion.kcop.system.messaging.messages
 
 import river.exertion.kcop.assets.FontSize
 

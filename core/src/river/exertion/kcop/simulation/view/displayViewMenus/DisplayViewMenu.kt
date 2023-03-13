@@ -12,12 +12,12 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.view.DisplayViewMenuMessage
-import river.exertion.kcop.system.view.LogViewMessage
-import river.exertion.kcop.system.view.LogViewMessageType
+import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
+import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 
 interface DisplayViewMenu {
 
@@ -51,7 +51,8 @@ interface DisplayViewMenu {
             this.add(
                 TextButton(actionEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
                     this.onClick {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value.first))
+                        if (actionEntry.value.first != null)
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value.first!!))
                         actionEntry.value.second()
                         //go back a menu
                         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, ProfileMenuParams(breadcrumbEntries.keys.toList()[0]) ))
@@ -64,7 +65,7 @@ interface DisplayViewMenu {
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
     val navs : Map<String, MenuParams> //Button Label -> menu params
-    val actions : Map<String, Pair<String, () -> Unit>> //Button Label -> log text + action to run
+    val actions : Map<String, Pair<String?, () -> Unit>> //Button Label -> log text + action to run
 
     fun breadcrumbPane(bitmapFont: BitmapFont) = Table().apply {
       //  this.debug()

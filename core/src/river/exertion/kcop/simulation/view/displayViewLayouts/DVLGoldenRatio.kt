@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.DisplayViewPane
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
 

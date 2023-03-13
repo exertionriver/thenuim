@@ -1,14 +1,14 @@
-package river.exertion.kcop.system.system
+package river.exertion.kcop.system.ecs.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.oneOf
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.component.IRLTimeComponent
-import river.exertion.kcop.system.component.ImmersionTimerComponent
-import river.exertion.kcop.system.component.NarrativeComponent
-import river.exertion.kcop.system.view.LogViewMessage
-import river.exertion.kcop.system.view.LogViewMessageType
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.ecs.component.IRLTimeComponent
+import river.exertion.kcop.system.ecs.component.ImmersionTimerComponent
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 
 class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class, NarrativeComponent::class).get(), 1/60f) {
 

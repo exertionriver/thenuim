@@ -1,7 +1,7 @@
 package river.exertion.kcop.simulation
 
-import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
@@ -13,11 +13,7 @@ import ktx.scene2d.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.*
-import river.exertion.kcop.system.component.ImmersionTimerComponent
-import river.exertion.kcop.system.component.NarrativeComponent
-import river.exertion.kcop.system.component.ProfileComponent
-import river.exertion.kcop.system.entity.NarrativeEntity
-import river.exertion.kcop.system.entity.ProfileEntity
+import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -38,6 +34,12 @@ class ProfileSimulator(private val batch: Batch,
         stage.draw()
 
         engineHandler.engine.update(delta)
+
+        when {
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
+                val prevNarratives = "test"
+            }
+        }
     }
 
     override fun hide() {
@@ -66,11 +68,11 @@ class ProfileSimulator(private val batch: Batch,
         stage.addActor(layout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        engineHandler.instantiateEntity(ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
-        val profileEntity = engineHandler.getFirst<ProfileComponent>()!!
+//        engineHandler.instantiateEntity(ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
+//        val profileEntity = engineHandler.getFirst<ProfileComponent>()!!
 
-        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
-        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id
+//        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
+//        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id
     }
 
     override fun pause() {

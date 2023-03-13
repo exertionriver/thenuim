@@ -3,7 +3,6 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
@@ -12,16 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
-import ktx.actors.onClick
 import ktx.assets.load
 import ktx.collections.toGdxArray
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.assets.ProfileAssetLoader
 import river.exertion.kcop.assets.ProfileAssets
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.view.DisplayViewMenuMessage
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 
@@ -65,7 +61,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
 
     override val navs = mapOf(
         "Load >" to ProfileMenuParams("loadProfileMenu", null),
-        "Save >" to ProfileMenuParams("saveProfileMenu", null)
+ //       "Save >" to ProfileMenuParams("saveProfileMenu", null)
     )
 
     override val actions = mapOf<String, Pair<String, () -> Unit>>()

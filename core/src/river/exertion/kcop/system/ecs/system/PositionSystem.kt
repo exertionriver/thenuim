@@ -1,10 +1,10 @@
-package river.exertion.kcop.system.system
+package river.exertion.kcop.system.ecs.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.allOf
-import river.exertion.kcop.system.SystemManager
-import river.exertion.kcop.system.component.PositionComponent
+import river.exertion.kcop.system.ecs.SystemManager
+import river.exertion.kcop.system.ecs.component.PositionComponent
 
 class PositionSystem : IntervalIteratingSystem(allOf(PositionComponent::class).get(), 1/60f) {
 

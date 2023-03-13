@@ -19,5 +19,7 @@ object DesktopLauncher {
         }
 
         Lwjgl3Application(Kcop(), config).logLevel = Application.LOG_DEBUG
+
+
     }
 }

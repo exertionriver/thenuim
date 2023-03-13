@@ -10,8 +10,10 @@ import river.exertion.kcop.simulation.view.ctrl.*
 import river.exertion.kcop.simulation.view.displayViewMenus.LoadProfileMenu
 import river.exertion.kcop.simulation.view.displayViewMenus.ProfileMenuParams
 import river.exertion.kcop.simulation.view.displayViewMenus.SaveProfileMenu
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.component.NarrativeComponent
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import river.exertion.kcop.system.messaging.*
+import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Status
 import river.exertion.kcop.system.view.*
 
@@ -42,6 +44,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.NARRATIVE_PROMPT_BRIDGE_PAUSE_GATE.enableReceive(this)
+        MessageChannel.NARRATIVE_COMPONENT_BRIDGE.enableReceive(this)
     }
 
     private fun createViewCtrl(layoutViewCtrl : ViewCtrl, batch : Batch, bitmapFont : BitmapFont) : Table {
@@ -134,6 +137,8 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
         pauseViewCtrl.isChecked = false
         pauseViewCtrl.recreate()
+
+        textViewCtrl.recreate()
     }
 
     @Suppress("NewApi")
@@ -181,6 +186,11 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         }
                     }
                 }
+                (MessageChannel.NARRATIVE_COMPONENT_BRIDGE.isType(msg.message) ) -> {
+                    val narrativeComponentMessage : NarrativeComponentMessage = MessageChannel.NARRATIVE_COMPONENT_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    resetNarrative(narrativeComponentMessage.narrativeComponent)
+                }
                 (MessageChannel.LAYOUT_BRIDGE.isType(msg.message) ) -> {
                     val viewMessage: ViewMessage = MessageChannel.LAYOUT_BRIDGE.receiveMessage(msg.extraInfo)
 
@@ -194,6 +204,9 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         this.currentInstBlockTimerId = viewMessage.param
                     }
                     if ( (viewMessage.targetView == ViewType.LOG) && (viewMessage.messageContent == ViewMessage.BlockCumlTimer) ) {
+                        this.currentCumlBlockTimerId = viewMessage.param
+                    }
+                    if ( (viewMessage.targetView == ViewType.TEXT) && (viewMessage.messageContent == ViewMessage.BlockCumlTimer) ) {
                         this.currentCumlBlockTimerId = viewMessage.param
                     }
                 }

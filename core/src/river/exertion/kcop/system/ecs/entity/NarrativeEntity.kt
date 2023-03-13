@@ -1,9 +1,9 @@
-package river.exertion.kcop.system.entity
+package river.exertion.kcop.system.ecs.entity
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import river.exertion.kcop.assets.NarrativeAsset
-import river.exertion.kcop.system.component.NarrativeComponent
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
 
 class NarrativeEntity : IEntity {
 

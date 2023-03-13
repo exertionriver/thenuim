@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.view.DisplayViewMenuMessage
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 
 class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.MENU, screenWidth, screenHeight) {
 

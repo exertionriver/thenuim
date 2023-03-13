@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.kcop.system.MessageChannel
-import river.exertion.kcop.system.ShapeDrawerConfig
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import kotlin.reflect.jvm.javaMethod

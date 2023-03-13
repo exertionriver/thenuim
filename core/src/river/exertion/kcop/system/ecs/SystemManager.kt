@@ -1,10 +1,10 @@
-package river.exertion.kcop.system
+package river.exertion.kcop.system.ecs
 
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Gdx
-import river.exertion.kcop.system.system.NarrativeTextSystem
-import river.exertion.kcop.system.system.PositionSystem
-import river.exertion.kcop.system.system.TimeLogSystem
+import river.exertion.kcop.system.ecs.system.NarrativeTextSystem
+import river.exertion.kcop.system.ecs.system.PositionSystem
+import river.exertion.kcop.system.ecs.system.TimeLogSystem
 
 object SystemManager {
 

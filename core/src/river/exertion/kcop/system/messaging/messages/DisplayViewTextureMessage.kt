@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.view
+package river.exertion.kcop.system.messaging.messages
 
 import com.badlogic.gdx.graphics.Texture
 
