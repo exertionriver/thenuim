@@ -89,15 +89,18 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     override val actions = mutableMapOf(
         "Yes" to Pair("Profile Loaded!") {
             MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(
+                EngineEntityMessageType.REMOVE_ALL_ENTITIES,
+                ProfileEntity::class.java, profileAsset)
+            )
+
+            //remove statuses
+            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.CLEAR_STATUSES))
+
+            MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(
                 EngineEntityMessageType.INSTANTIATE_ENTITY,
                 ProfileEntity::class.java, profileAsset)
             )
             if (profileAsset?.profile != null) {
-                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
-                    EngineComponentMessageType.ADD_COMPONENT,
-                    profileAsset!!.profile!!.id, ProfileComponent::class.java, profileAsset?.profile)
-                )
-
                 MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                     EngineComponentMessageType.ADD_COMPONENT,
                     profileAsset!!.profile!!.id, NarrativeComponent::class.java, Pair(currentNarrativeAsset, profileAsset!!.profile!!.currentImmersionBlockId))

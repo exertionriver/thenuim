@@ -8,7 +8,7 @@
       "6Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
       "7Here is a story about a kobold named\n\n Krazza. Krazza lived in the blue caves\n of the purple mountains. "
     ], "fontSize" :  "large"},
-  {"id" : "demo_block2", "narrativeText" : ["first basic layout block"], "displayText" : [
+  {"id" : "demo_block2", "narrativeText" : ["second basic layout block"], "displayText" : [
     "1Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
     "2Here is a story about a \nkobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
     "3Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
@@ -17,7 +17,7 @@
     "6Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
     "7Here is a story about a kobold named\n\n Krazza. Krazza lived in the blue caves\n of the purple mountains. "
   ], "fontSize" :  "medium"},
-  {"id" : "demo_block3", "narrativeText" : ["first basic layout block"], "displayText" : [
+  {"id" : "demo_block3", "narrativeText" : ["third basic layout block"], "displayText" : [
     "1Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
     "2Here is a story about a \nkobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
     "3Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",

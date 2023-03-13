@@ -301,7 +301,12 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
 
                     when (statusViewMessage.messageType) {
                         StatusViewMessageType.ADD_STATUS -> {
-                            this.statusViewCtrl.statuses.add(Status(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
+                            if (statusViewMessage.statusKey != null) {
+                                this.statusViewCtrl.statuses.add(Status(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
+                            }
+                        }
+                        StatusViewMessageType.CLEAR_STATUSES -> {
+                            this.statusViewCtrl.statuses.clear()
                         }
                         StatusViewMessageType.REMOVE_STATUS -> {
                             this.statusViewCtrl.statuses.removeIf { it.key == statusViewMessage.statusKey }

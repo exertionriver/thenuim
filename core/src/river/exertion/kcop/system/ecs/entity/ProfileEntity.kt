@@ -6,6 +6,7 @@ import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.IRLTimeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.profile.Profile
+import kotlin.reflect.KClass
 
 class ProfileEntity : IEntity {
 
@@ -18,7 +19,7 @@ class ProfileEntity : IEntity {
     override fun initialize(entity: Entity, initData: Any?) {
         super.initialize(entity, initData)
 
-        val profileAsset = if ((initData != null) && (initData is ProfileAsset) ) initData else null
+        val profileAsset = IEntity.checkInitType<ProfileAsset>(initData)
 
         this.entityName = profileAsset?.profile?.id ?: ""
         this.assetPath = profileAsset?.assetPath ?: ""

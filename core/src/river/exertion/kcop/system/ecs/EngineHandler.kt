@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.entity
+import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.IComponent
 import river.exertion.kcop.system.ecs.entity.IEntity
 import river.exertion.kcop.system.messaging.*
@@ -32,7 +33,7 @@ class EngineHandler : Telegraph {
     inline fun <reified T:Component> getFirst() : Entity? = engine.entities.firstOrNull { entity -> entity.components.firstOrNull { it is T } != null }
     inline fun <reified T:Component> getAll() : List<Entity> = engine.entities.filter { entity -> entity.components.firstOrNull { it is T } != null }
 
-    fun remove(entityName : String) {
+    fun removeEntity(entityName : String) {
         val removeEntityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
 
         if (removeEntityEntry != null) {
@@ -41,7 +42,7 @@ class EngineHandler : Telegraph {
         }
     }
 
-    inline fun <reified T: IEntity> removeAll() {
+    inline fun <reified T: IEntity> removeEntities(entityClass : Class<T>) {
         val removeEntityEntryList = entities.filter { entityEntry -> (entityEntry.key is T) }
         removeEntityEntryList.forEach { entityEntry ->
             engine.removeEntity(entityEntry.value)
@@ -72,6 +73,14 @@ class EngineHandler : Telegraph {
         engine.entities.firstOrNull{ it == entityEntry?.value }?.add(instance as Component)
     }
 
+    inline fun <reified T: Component> removeComponent(entityName : String, componentClass: Class<T>) {
+        val entityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
+
+        if (entityEntry != null) {
+            engine.entities.first().remove(componentClass)
+        }
+    }
+
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
@@ -82,6 +91,12 @@ class EngineHandler : Telegraph {
                         EngineEntityMessageType.INSTANTIATE_ENTITY -> {
                             instantiateEntity(engineEntityMessage.entityClass, engineEntityMessage.initInfo)
                         }
+                        EngineEntityMessageType.REMOVE_ENTITY -> {
+                            removeEntity((engineEntityMessage.initInfo as ProfileAsset).profile!!.id)
+                        }
+                        EngineEntityMessageType.REMOVE_ALL_ENTITIES -> {
+                            removeEntities(engineEntityMessage.entityClass as Class<IEntity>)
+                        }
                         else -> {}
                     }
                 }
@@ -91,6 +106,9 @@ class EngineHandler : Telegraph {
                     when (engineComponentMessage.messageType) {
                         EngineComponentMessageType.ADD_COMPONENT -> {
                             addComponent(engineComponentMessage.entityId, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
+                        }
+                        EngineComponentMessageType.REMOVE_COMPONENT -> {
+                            removeComponent(engineComponentMessage.entityId, engineComponentMessage.componentClass as Class<Component>)
                         }
                         else -> {}
                     }
