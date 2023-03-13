@@ -258,6 +258,15 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage: DisplayViewMenuMessage = MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
+                    if ((displayViewMenuMessage.menuButtonIdx == null) && (displayViewMenuMessage.menuParams == null)) {
+                        //close menu
+                        displayViewCtrl.menuOpen = false
+                        menuViewCtrl.isChecked[0] = false
+
+                        menuViewCtrl.recreate()
+
+                    }
+
                     if (displayViewMenuMessage.menuButtonIdx != null) {
                         if (displayViewMenuMessage.menuButtonIdx == 0) {
                             displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)

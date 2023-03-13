@@ -15,10 +15,7 @@ import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.messaging.*
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
-import river.exertion.kcop.system.messaging.messages.EngineEntityMessage
-import river.exertion.kcop.system.messaging.messages.EngineEntityMessageType
+import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
@@ -105,6 +102,9 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
                     EngineComponentMessageType.ADD_COMPONENT,
                     profileAsset!!.profile!!.id, NarrativeComponent::class.java, Pair(currentNarrativeAsset, profileAsset!!.profile!!.currentImmersionBlockId))
                 )
+
+                //close menu
+                MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage())
             }
         },
         "No" to Pair(null) {}
