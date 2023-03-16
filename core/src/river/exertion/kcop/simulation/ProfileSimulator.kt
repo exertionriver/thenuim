@@ -76,7 +76,9 @@ class ProfileSimulator(private val batch: Batch,
 
         engineHandler.instantiateEntity(ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
         engineHandler.addComponent(assets[ProfileAssets.ExertionRiverText].profile!!.id, NarrativeComponent::class.java,
-            Pair(assets[NarrativeAssets.NarrativeNavigationTest], assets[ProfileAssets.ExertionRiverText].profile!!.currentImmersionBlockId))
+            NarrativeComponent.NarrativeComponentInit(assets[NarrativeAssets.NarrativeNavigationTest],
+                assets[ProfileAssets.ExertionRiverText].profile!!.currentImmersionBlockId!!,
+                assets[ProfileAssets.ExertionRiverText].profile!!.statuses.first { it.key == assets[NarrativeAssets.NarrativeNavigationTest].narrative?.id }.cumlImmersionTime!!))
 
 //        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
 //        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id

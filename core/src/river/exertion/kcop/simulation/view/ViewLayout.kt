@@ -271,6 +271,10 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
                         if (displayViewMenuMessage.menuButtonIdx == 0) {
                             displayViewCtrl.menuOpen = (menuViewCtrl.isChecked[0] == true)
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (displayViewCtrl.menuOpen) "Opened" else "Closed"}" ))
+
+                            if (!pauseViewCtrl.isChecked)
+                                MessageChannel.LAYOUT_BRIDGE.send(null, ViewMessage(ViewType.PAUSE, ViewMessage.TogglePause))
+
                         }
                         if (displayViewMenuMessage.menuButtonIdx == 1) {
                             displayViewCtrl.currentLayoutMode = (menuViewCtrl.isChecked[1] == true)

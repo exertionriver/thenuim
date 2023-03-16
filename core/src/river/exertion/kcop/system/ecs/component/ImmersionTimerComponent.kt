@@ -10,7 +10,7 @@ import river.exertion.kcop.system.immersionTimer.ImmersionTimerState
 class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : IComponent, Component {
 
     val instImmersionTimer = ImmersionTimer(startTime, startState)
-    val cumlImmersionTimer = ImmersionTimer(startTime, startState)
+    var cumlImmersionTimer = ImmersionTimer(startTime, startState)
 
     override var isInitialized = false
 

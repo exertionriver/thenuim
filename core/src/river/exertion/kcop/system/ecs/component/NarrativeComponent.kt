@@ -9,6 +9,8 @@ import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.system.ecs.entity.IEntity
+import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.messages.*
 
 class NarrativeComponent : IComponent, Component, Telegraph {
@@ -44,13 +46,23 @@ class NarrativeComponent : IComponent, Component, Telegraph {
         super.initialize(initData)
 
         if (initData != null) {
-            val initDataEntry = initData as Pair<NarrativeAsset, String>
+            val narrativeComponentInit = IComponent.checkInitType<NarrativeComponentInit>(initData)
 
-            narrative = initDataEntry.first.narrative
-            narrative!!.currentId = initDataEntry.second
+            if (narrativeComponentInit != null) {
+                narrative = narrativeComponentInit.narrativeAsset.narrative
+                narrative!!.currentId = narrativeComponentInit.currentBlockId
+                narrativeImmersionTimer.cumlImmersionTimer.timePausedAt = narrativeImmersionTimer.cumlImmersionTimer.startTime
+                narrativeImmersionTimer.cumlImmersionTimer.startTime -= ImmersionTimer.inMilliseconds(narrativeComponentInit.currentCumlTimer)
+            }
         }
 
+        //TODO: store / load block cuml timers
         initTimers()
+
+//        used for testing currently
+//        blockImmersionTimers[narrative!!.currentId]!!.cumlImmersionTimer.timePausedAt = narrativeImmersionTimer.cumlImmersionTimer.timePausedAt
+//        blockImmersionTimers[narrative!!.currentId]!!.cumlImmersionTimer.startTime = narrativeImmersionTimer.cumlImmersionTimer.startTime
+
         activate()
 
         MessageChannel.NARRATIVE_COMPONENT_BRIDGE.send(null, NarrativeComponentMessage(this) )
@@ -168,6 +180,11 @@ class NarrativeComponent : IComponent, Component, Telegraph {
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is NarrativeComponent } != null
         fun getFor(entity : Entity) : NarrativeComponent? = if (has(entity)) entity.components.first { it is NarrativeComponent } as NarrativeComponent else null
 
+    }
+
+    data class NarrativeComponentInit(val narrativeAsset: NarrativeAsset, val currentBlockId: String, private val nullableCurrentCumlTimer: String?) {
+        val currentCumlTimer: String
+            get() = nullableCurrentCumlTimer ?: "00:00:00"
     }
 
 }

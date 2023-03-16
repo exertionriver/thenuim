@@ -8,4 +8,17 @@ interface IComponent {
 
         isInitialized = true
     }
+
+    companion object {
+        inline fun <reified T>checkInitType(initData : Any?) : T? {
+            return if (initData != null) {
+                if (initData is T) initData
+                else {
+                    throw Exception("receive:$this requires ${T::class}, found ${initData::class}")
+                }
+            }
+            else null
+        }
+    }
+
 }

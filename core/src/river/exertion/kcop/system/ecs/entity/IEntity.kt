@@ -24,11 +24,10 @@ interface IEntity {
 
     //overall narrative timeline
     var components : MutableList<Component>
-    
+
     companion object {
         inline fun <reified T>checkInitType(initData : Any?) : T? {
             return if ( (initData != null) && (initData is T) ) initData else null
         }
-
     }
 }

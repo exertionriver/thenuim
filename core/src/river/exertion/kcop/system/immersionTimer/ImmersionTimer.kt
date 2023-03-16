@@ -74,5 +74,7 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
             val timeSplit = timeString.split(":")
             return timeSplit[0].toInt() * 3600 + timeSplit[1].toInt() * 60 + timeSplit[2].toInt()
         }
+
+        fun inMilliseconds(timeString : String) : Int = inSeconds(timeString) * 1000
     }
 }

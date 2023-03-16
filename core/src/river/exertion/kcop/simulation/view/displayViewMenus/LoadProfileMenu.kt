@@ -103,7 +103,10 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
             if (profileAsset?.profile != null) {
                 MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                     EngineComponentMessageType.ADD_COMPONENT,
-                    profileAsset!!.profile!!.id, NarrativeComponent::class.java, Pair(currentNarrativeAsset, profileAsset!!.profile!!.currentImmersionBlockId))
+                    profileAsset!!.profile!!.id, NarrativeComponent::class.java,
+                    NarrativeComponent.NarrativeComponentInit(currentNarrativeAsset!!,
+                        profileAsset!!.profile!!.currentImmersionBlockId!!,
+                        profileAsset!!.profile!!.statuses.firstOrNull { it.key == currentNarrativeAsset?.narrative?.id }?.cumlImmersionTime))
                 )
 
                 //close menu
