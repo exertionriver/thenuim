@@ -1,6 +1,12 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.8 - AI button, basic menu implementation with quick button example. Profile view and profile-based narrative loading</b>
+
+https://user-images.githubusercontent.com/13192685/225593696-dd00bc11-ec1f-4c93-b284-214ec9be2be8.mp4
+
+---
+
 <b>v0.7 - clean up of golden ratio layout, creation of text panes layout, text continuation between panes, asset-driven font size for display text</b>
 
 ![kcop0_7a_grlayout](https://user-images.githubusercontent.com/13192685/222736734-1179f588-f15c-4e6d-aee4-324ab5ab5fb3.png)
