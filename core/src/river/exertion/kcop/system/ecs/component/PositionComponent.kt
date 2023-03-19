@@ -4,11 +4,12 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector3
 
-class PositionComponent(positionStart : Vector3 = Vector3(0f, 0f, 0f)) : IComponent, Component {
+class PositionComponent(positionStart : Vector3 = Vector3(0f, 0f, 0f)) : IComponent {
 
     var positionActive = positionStart
     fun positionActive() = positionActive
 
+    override var entityName = ""
     override var isInitialized = false
 
     companion object {

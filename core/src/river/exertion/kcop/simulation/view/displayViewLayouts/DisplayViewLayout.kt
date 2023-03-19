@@ -80,7 +80,7 @@ interface DisplayViewLayout {
         val textDVPs = textPanes().associateWith { panes[it] }
         var dvpText = currentTextRemaining
 
-        var extraRow = 0
+        var extraRow : Int
 
         while (!textParsed) {
             var paneParsed = false

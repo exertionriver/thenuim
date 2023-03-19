@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.ctrl
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -15,11 +17,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.StatusViewMessage
+import river.exertion.kcop.system.messaging.messages.StatusViewMessageType
 import river.exertion.kcop.system.profile.Status
 import kotlin.math.roundToInt
 
 
-class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.STATUS, screenWidth, screenHeight) {
+class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.STATUS, screenWidth, screenHeight) {
+
+    init {
+        MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
+    }
 
     val statuses : MutableList<Status> = mutableListOf()
 
@@ -89,5 +98,35 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : View
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
         this.add(textScrollPane(bitmapFont, batch)).size(this.tableWidth(), this.tableHeight())
         this.clip()
+    }
+
+    @Suppress("NewApi")
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            if (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) {
+                val statusViewMessage: StatusViewMessage = MessageChannel.STATUS_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+
+                when (statusViewMessage.messageType) {
+                    StatusViewMessageType.ADD_STATUS -> {
+                        if (statusViewMessage.statusKey != null) {
+                            statuses.add(Status(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
+                        }
+                    }
+                    StatusViewMessageType.CLEAR_STATUSES -> {
+                        statuses.clear()
+                    }
+                    StatusViewMessageType.REMOVE_STATUS -> {
+                        statuses.removeIf { it.key == statusViewMessage.statusKey }
+                    }
+                    StatusViewMessageType.UPDATE_STATUS -> {
+                        statuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
+                    }
+                }
+
+                if (isInitialized) recreate()
+                return true
+            }
+        }
+        return false
     }
 }

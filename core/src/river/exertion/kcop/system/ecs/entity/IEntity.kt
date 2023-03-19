@@ -2,10 +2,6 @@ package river.exertion.kcop.system.ecs.entity
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import river.exertion.kcop.assets.ProfileAsset
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.StatusViewMessage
-import kotlin.reflect.KClass
 
 interface IEntity {
 
@@ -26,8 +22,14 @@ interface IEntity {
     var components : MutableList<Component>
 
     companion object {
-        inline fun <reified T>checkInitType(initData : Any?) : T? {
-            return if ( (initData != null) && (initData is T) ) initData else null
+        inline fun <reified T:Any>checkInitType(initData : Any?) : T? {
+            return if (initData != null) {
+                if (initData is T) initData
+                else {
+                    throw Exception("initData:$this requires ${T::class}, found ${initData::class}")
+                }
+            }
+            else null
         }
     }
 }

@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.ctrl
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -12,7 +14,11 @@ import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 
-class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.AI, screenWidth, screenHeight) {
+class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.AI, screenWidth, screenHeight) {
+
+    init {
+        MessageChannel.AI_VIEW_BRIDGE.enableReceive(this)
+    }
 
     var aiUpImage : Texture? = null
     var aiDownImage : Texture? = null
@@ -47,5 +53,17 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
         this.add(clickButton()).width(this.tableWidth()).height(this.tableHeight())
         this.clip()
+    }
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            if (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) {
+//                val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+
+                if (isInitialized) recreate()
+                return true
+            }
+        }
+        return false
     }
 }

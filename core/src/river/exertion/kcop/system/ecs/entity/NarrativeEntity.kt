@@ -16,13 +16,11 @@ class NarrativeEntity : IEntity {
         super.initialize(entity, initData)
 
         val narrativeAsset = IEntity.checkInitType<NarrativeAsset>(initData)
-        val narrative = narrativeAsset?.narrative
 
+        val narrative = narrativeAsset?.narrative
         this.entityName = this.entityName + (narrative?.id ?: "")
 
-        NarrativeComponent.getFor(entity)!!.narrative = narrative
-        NarrativeComponent.getFor(entity)!!.narrative?.init()
-        NarrativeComponent.getFor(entity)!!.initTimers()
+        NarrativeComponent.getFor(entity)!!.initialize(entityName, narrativeAsset)
     }
 
     //overall narrative timeline

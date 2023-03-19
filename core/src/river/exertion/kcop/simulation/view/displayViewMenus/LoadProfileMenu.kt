@@ -1,5 +1,6 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
+import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -12,7 +13,6 @@ import river.exertion.kcop.assets.*
 import river.exertion.kcop.system.*
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
-import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.messaging.*
 import river.exertion.kcop.system.messaging.messages.*
@@ -96,10 +96,17 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
             //remove statuses
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.CLEAR_STATUSES))
 
+            //close menu
+            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(0, false))
+            MessageChannel.MENU_VIEW_BRIDGE.send(null, DisplayViewMenuMessage(0, false))
+
+            //instantiate profile
             MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(
                 EngineEntityMessageType.INSTANTIATE_ENTITY,
                 ProfileEntity::class.java, profileAsset)
             )
+
+            //add current narrative
             if (profileAsset?.profile != null) {
                 MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                     EngineComponentMessageType.ADD_COMPONENT,
@@ -109,8 +116,6 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
                         profileAsset!!.profile!!.statuses.firstOrNull { it.key == currentNarrativeAsset?.narrative?.id }?.cumlImmersionTime))
                 )
 
-                //close menu
-                MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage())
             }
         },
         "No" to Pair(null) {}

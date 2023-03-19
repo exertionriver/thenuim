@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.ctrl
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -11,11 +13,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.messages.LogViewMessageType
+import river.exertion.kcop.system.messaging.messages.ViewMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.reflect.jvm.javaMethod
 
 
-class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.LOG, screenWidth, screenHeight) {
+class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.LOG, screenWidth, screenHeight) {
+
+    init {
+        MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
+    }
 
     var currentLog : MutableList<String>? = null
     var textTimeSdc : ShapeDrawerConfig? = null
@@ -159,4 +169,29 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtr
         }).size(this.tableWidth(), this.tableHeight())
         this.clip()
     }
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            if (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) {
+                val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+
+                if (logMessage.messageType == LogViewMessageType.LogEntry) {
+                    addLog(logMessage.message)
+                    if (isInitialized) recreate()
+                } else {
+                    when (logMessage.messageType) {
+                        LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
+                        LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
+                        LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
+                        else -> {}
+                    }
+                    if (isInitialized) rebuildTextTimeReadout()
+                }
+
+                return true
+            }
+        }
+        return false
+    }
+
 }

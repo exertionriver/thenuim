@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.ctrl
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -12,7 +14,11 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 
-class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.MENU, screenWidth, screenHeight) {
+class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.MENU, screenWidth, screenHeight) {
+
+    init {
+        MessageChannel.MENU_VIEW_BRIDGE.enableReceive(this)
+    }
 
     var menuUpImage : MutableMap<Int, Texture?> = mutableMapOf()
     var menuDownImage : MutableMap<Int, Texture?> = mutableMapOf()
@@ -42,7 +48,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
 
             innerButton.onClick {
                 this@MenuViewCtrl.isChecked[idx] = !(this@MenuViewCtrl.isChecked[idx] ?: false)
-                MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(idx))
+                MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(idx, this@MenuViewCtrl.isChecked[idx]!!))
             }
 
             buttonList.add(innerButton)
@@ -74,5 +80,19 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
         this.add(buttonLayout()).width(this.tableWidth()).height(this.tableHeight())
         this.clip()
+    }
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            if (MessageChannel.MENU_VIEW_BRIDGE.isType(msg.message) ) {
+                val displayViewMenuMessage : DisplayViewMenuMessage = MessageChannel.MENU_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+
+                this@MenuViewCtrl.isChecked[displayViewMenuMessage.menuButtonIdx] = displayViewMenuMessage.isChecked
+
+                if (isInitialized) recreate()
+                return true
+            }
+        }
+        return false
     }
 }

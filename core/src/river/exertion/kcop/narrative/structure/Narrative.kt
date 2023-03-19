@@ -41,6 +41,8 @@ data class Narrative(
         previousId = currentId
     }
 
+    fun firstBlock() = narrativeBlocks[0]
+
     fun currentBlock() = narrativeBlocks.firstOrNull { it.id == currentId }
 
     fun previousBlock() = narrativeBlocks.firstOrNull { it.id == previousId }

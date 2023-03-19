@@ -18,6 +18,7 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
+import river.exertion.kcop.system.messaging.messages.MenuMessage
 
 interface DisplayViewMenu {
 
@@ -35,7 +36,7 @@ interface DisplayViewMenu {
             this.add(
                 TextButton(navEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
                     this.onClick {
-                        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, navEntry.value))
+                        MessageChannel.MENU_BRIDGE.send(null, MenuMessage(navEntry.value))
                     this.center()
                     }
                 }
@@ -55,7 +56,7 @@ interface DisplayViewMenu {
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value.first!!))
                         actionEntry.value.second()
                         //go back a menu
-                        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, ProfileMenuParams(breadcrumbEntries.keys.toList()[0]) ))
+                        MessageChannel.MENU_BRIDGE.send(null, MenuMessage(ProfileMenuParams(breadcrumbEntries.keys.toList()[0]) ))
                     }
                 }
             ).padRight(ViewType.padWidth(screenWidth))
@@ -75,7 +76,7 @@ interface DisplayViewMenu {
             this.add(Label("${menuLabel.value} > ", Label.LabelStyle(bitmapFont.apply {this.data.setScale(FontSize.SMALL.fontScale())}
                 , backgroundColor.label().color())).apply {
                 this.onClick {
-                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, ProfileMenuParams(menuLabel.key) ))
+                    MessageChannel.MENU_BRIDGE.send(null, MenuMessage(ProfileMenuParams(menuLabel.key) ))
                 }
             } )
         }

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.IRLTimeComponent
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.profile.Profile
 import kotlin.reflect.KClass
@@ -11,7 +12,6 @@ import kotlin.reflect.KClass
 class ProfileEntity : IEntity {
 
     override var entityName = "profile"
-
     override var isInitialized = false
 
     var assetPath : String? = null
@@ -24,7 +24,7 @@ class ProfileEntity : IEntity {
         this.entityName = profileAsset?.profile?.id ?: ""
         this.assetPath = profileAsset?.assetPath ?: ""
 
-        ProfileComponent.getFor(entity)!!.profile = profileAsset?.profile ?: Profile()
+        ProfileComponent.getFor(entity)!!.initialize(entityName, profileAsset?.profile)
     }
 
     override var components : MutableList<Component> = mutableListOf(

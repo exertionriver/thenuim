@@ -1,11 +1,13 @@
 package river.exertion.kcop.system.ecs
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentType
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.entity
+import ktx.ashley.remove
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.IComponent
 import river.exertion.kcop.system.ecs.entity.IEntity
@@ -42,7 +44,7 @@ class EngineHandler : Telegraph {
         }
     }
 
-    inline fun <reified T: IEntity> removeEntities(entityClass : Class<T>) {
+    inline fun <reified T: IEntity> removeEntities() {
         val removeEntityEntryList = entities.filter { entityEntry -> (entityEntry.key is T) }
         removeEntityEntryList.forEach { entityEntry ->
             engine.removeEntity(entityEntry.value)
@@ -62,23 +64,36 @@ class EngineHandler : Telegraph {
         entities[instance as IEntity] = newEntity
     }
 
-    fun addComponent(entityId : String, componentClass : Class<*>, initInfo : Any? = null) {
-        val entityEntry = entities.entries.firstOrNull { it.key.entityName == entityId }
+    fun addComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
+        val entityEntry = entities.entries.firstOrNull { it.key.entityName == entityName }
         val instance = componentClass.getDeclaredConstructor().newInstance()
         val initMethod = componentClass.getMethod(
             IComponent::initialize.name,
-            (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java)
-        initMethod.invoke(instance, initInfo)
+            (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java,
+            (IComponent::initialize.valueParameters[1].type.classifier as KClass<*>).java)
+        initMethod.invoke(instance, entityName, initInfo)
 
         engine.entities.firstOrNull{ it == entityEntry?.value }?.add(instance as Component)
     }
 
-    inline fun <reified T: Component> removeComponent(entityName : String, componentClass: Class<T>) {
+    fun removeComponent(entityName : String, componentClass: Class<*>) {
         val entityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
 
         if (entityEntry != null) {
-            engine.entities.first().remove(componentClass)
+            if (componentClass.interfaces.contains(Component::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                engine.entities.first().remove(componentClass as Class<Component>)
+            }
         }
+    }
+
+    //initInfo is an already-initialized component instance
+    fun replaceComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
+        val entityEntry = entities.entries.firstOrNull { it.key.entityName == entityName }
+
+        removeComponent(entityName, componentClass)
+
+        engine.entities.firstOrNull{ it == entityEntry?.value }?.add(initInfo as Component)
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -95,9 +110,8 @@ class EngineHandler : Telegraph {
                             removeEntity((engineEntityMessage.initInfo as ProfileAsset).profile!!.id)
                         }
                         EngineEntityMessageType.REMOVE_ALL_ENTITIES -> {
-                            removeEntities(engineEntityMessage.entityClass as Class<IEntity>)
+                            removeEntities<IEntity>()
                         }
-                        else -> {}
                     }
                 }
                 (MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.isType(msg.message) ) -> {
@@ -108,9 +122,11 @@ class EngineHandler : Telegraph {
                             addComponent(engineComponentMessage.entityId, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
                         }
                         EngineComponentMessageType.REMOVE_COMPONENT -> {
-                            removeComponent(engineComponentMessage.entityId, engineComponentMessage.componentClass as Class<Component>)
+                            removeComponent(engineComponentMessage.entityId, engineComponentMessage.componentClass)
                         }
-                        else -> {}
+                        EngineComponentMessageType.REPLACE_COMPONENT -> {
+                            replaceComponent(engineComponentMessage.entityId, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
+                        }
                     }
                 }
             }

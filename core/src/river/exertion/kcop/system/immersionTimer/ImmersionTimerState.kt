@@ -34,19 +34,7 @@ enum class ImmersionTimerState : State<ImmersionTimer> {
     }
 
     override fun onMessage(immersionTimer: ImmersionTimer?, telegram: Telegram?): Boolean {
-
-        if ( (telegram != null) && (MessageChannel.IMMERSION_TIME_BRIDGE.isType(telegram.message))) {
-            val immersionTimeMessage : ImmersionTimerMessage = MessageChannel.IMMERSION_TIME_BRIDGE.receiveMessage(telegram.extraInfo)
-
-            if (immersionTimeMessage.timerId == immersionTimer?.id) {
-                if ( (immersionTimeMessage.toState == null) || (immersionTimeMessage.toState != immersionTimer?.stateMachine?.currentState) ) {
-                    immersionTimer?.stateMachine?.update() //simple toggle
-                    return true
-                }
-            }
-        }
-
-        return false
+        return true
     }
 
 }

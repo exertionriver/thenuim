@@ -7,15 +7,16 @@ import com.badlogic.gdx.utils.TimeUtils
 import river.exertion.kcop.Id
 import river.exertion.kcop.system.messaging.MessageChannel
 
-class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Id(), Telegraph {
+class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Id() {
 
     val stateMachine = DefaultStateMachine(this, startState)
 
     var timePausedAt : Long = 0
     var pausedTime : Long = 0
 
+    var isActive = false
+
     init {
-        MessageChannel.IMMERSION_TIME_BRIDGE.enableReceive(this)
         if (startState == ImmersionTimerState.PAUSED) timePausedAt = startTime //init timer in paused mode
     }
 
@@ -35,11 +36,9 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
 
     fun isNotStarted() = ( stateMachine.currentState == ImmersionTimerState.PAUSED ) && ( activeTime().toInt() == 0 )
 
-    fun isPaused() = ( stateMachine.currentState == ImmersionTimerState.PAUSED ) && ( activeTime() > 0 )
-
-    fun beginTimer() {
-        stateMachine.changeState(ImmersionTimerState.RUNNING)
-        resetTimer()
+    fun setCumlTimeAgo(cumlTimeAgo : Long = 0L) {
+        timePausedAt = startTime
+        startTime -= cumlTimeAgo
     }
 
     fun resetTimer() {
@@ -47,34 +46,36 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
         startTime = TimeUtils.millis()
         timePausedAt = 0
         pausedTime = 0
+
+        isActive = true
     }
 
     fun pauseTimer() {
         if (stateMachine.currentState != ImmersionTimerState.PAUSED) stateMachine.changeState(ImmersionTimerState.PAUSED)
         timePausedAt = TimeUtils.millis()
+
+        isActive = false
     }
 
     fun resumeTimer() {
         if (stateMachine.currentState != ImmersionTimerState.RUNNING) stateMachine.changeState(ImmersionTimerState.RUNNING)
         pausedTime += TimeUtils.timeSinceMillis(timePausedAt)
         timePausedAt = 0
+
+        isActive = true
     }
 
     fun onOrPast(timeString : String) : Boolean {
         return immersionTimeSeconds() >= inSeconds(timeString)
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        return this.stateMachine.currentState.onMessage(this, msg)
-    }
-
     companion object {
 
-        fun inSeconds(timeString : String) : Int {
+        fun inSeconds(timeString : String) : Long {
             val timeSplit = timeString.split(":")
-            return timeSplit[0].toInt() * 3600 + timeSplit[1].toInt() * 60 + timeSplit[2].toInt()
+            return timeSplit[0].toInt() * 3600L + timeSplit[1].toInt() * 60L + timeSplit[2].toInt()
         }
 
-        fun inMilliseconds(timeString : String) : Int = inSeconds(timeString) * 1000
+        fun inMilliseconds(timeString : String) : Long = inSeconds(timeString) * 1000L
     }
 }

@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.ctrl
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -12,9 +14,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.TextViewMessage
 
 
-class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCtrl(ViewType.TEXT, screenWidth, screenHeight) {
+class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.TEXT, screenWidth, screenHeight) {
+
+    init {
+        MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
+    }
 
     var currentText : String? = null
     var currentPrompts : List<String>? = null
@@ -98,5 +106,21 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : ViewCt
             })
         }).size(this.tableWidth(), this.tableHeight())
         this.clip()
+    }
+
+    @Suppress("NewApi")
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            if (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) {
+                val textViewMessage: TextViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+
+                currentText = textViewMessage.narrativeText
+                currentPrompts = textViewMessage.prompts
+
+                if (isInitialized) recreate()
+                return true
+            }
+        }
+        return false
     }
 }

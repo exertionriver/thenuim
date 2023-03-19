@@ -4,16 +4,18 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import river.exertion.kcop.system.profile.Profile
 
-class ProfileComponent : IComponent, Component {
+class ProfileComponent : IComponent {
 
     var profile : Profile? = null
 
+    override var entityName = ""
     override var isInitialized = false
-    override fun initialize(initData: Any?) {
-        super.initialize(initData)
+
+    override fun initialize(entityName: String, initData: Any?) {
+        super.initialize(entityName, initData)
 
         if (initData != null) {
-            profile = initData as Profile?
+            profile = IComponent.checkInitType(initData)
         }
     }
 
