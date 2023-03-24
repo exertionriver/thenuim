@@ -1,6 +1,5 @@
 package river.exertion.kcop.system.ecs.component
 
-import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.TimeUtils
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
@@ -15,6 +14,19 @@ class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState 
 
     override var entityName = ""
     override var isInitialized = false
+
+    override fun initialize(entityName: String, initData: Any?) {
+
+        if (initData != null) {
+            val initTimer : ImmersionTimerComponent = IComponent.checkInitType(initData) ?: this
+
+            this.entityName = entityName
+            instImmersionTimer = initTimer.instImmersionTimer
+            cumlImmersionTimer = initTimer.cumlImmersionTimer
+
+            super.initialize(entityName, initData)
+        }
+    }
 
     companion object {
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is ImmersionTimerComponent } != null

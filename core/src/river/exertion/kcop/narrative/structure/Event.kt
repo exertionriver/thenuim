@@ -16,7 +16,7 @@ data class Event(
     }
 
     //after running validation at load-time
-    fun event() : EventType? = EventType.values().firstOrNull { event == it.label() }
+    fun eventType() : EventType? = EventType.values().firstOrNull { event == it.label() }
 
     enum class EventType {
         LOG { override fun label() = "log"},
@@ -34,7 +34,16 @@ data class Event(
         companion object {
             fun isEventType(event : String) = values().firstOrNull { it.label() == event } != null
             fun isImageEvent(event : String) = listOf(SHOW_IMAGE.label(), FADE_IMAGE.label()).contains(event)
-            fun isAudioEvent(event : String) = listOf(PLAY_SOUND.label(), PLAY_MUSIC.label(), FADE_MUSIC.label()).contains(event)
+            fun isMusicEvent(event : String) = listOf(PLAY_MUSIC.label(), FADE_MUSIC.label()).contains(event)
         }
+    }
+
+    fun eventTrigger() : EventTrigger? = EventTrigger.values().firstOrNull { trigger == it.label() }
+
+    enum class EventTrigger {
+        ON_EXIT { override fun label() = "onExit"},
+        ON_ENTRY {override fun label() = "onEntry"},
+        ;
+        abstract fun label() : String
     }
 }

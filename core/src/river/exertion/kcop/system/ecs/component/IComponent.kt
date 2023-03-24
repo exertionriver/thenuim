@@ -7,6 +7,7 @@ interface IComponent : Component {
     var isInitialized : Boolean
     var entityName : String
 
+    //done automatically by EngineHandler::addComponent()
     fun initialize(entityName : String, initData: Any?) {
 
         this.entityName = entityName

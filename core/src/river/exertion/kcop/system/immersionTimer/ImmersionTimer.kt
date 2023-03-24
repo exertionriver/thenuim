@@ -1,26 +1,23 @@
 package river.exertion.kcop.system.immersionTimer
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.utils.TimeUtils
 import river.exertion.kcop.Id
-import river.exertion.kcop.system.messaging.MessageChannel
 
 class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Id() {
 
     val stateMachine = DefaultStateMachine(this, startState)
 
-    var timePausedAt : Long = 0
-    var pausedTime : Long = 0
+    var pausedAtTime : Long = 0
+    var pausedDurationMillis : Long = 0
 
     var isActive = false
 
     init {
-        if (startState == ImmersionTimerState.PAUSED) timePausedAt = startTime //init timer in paused mode
+        if (startState == ImmersionTimerState.PAUSED) pausedAtTime = startTime //init timer in paused mode
     }
 
-    private fun pausedTime() = if (timePausedAt > 0) TimeUtils.timeSinceMillis(timePausedAt) + pausedTime else pausedTime
+    private fun pausedTime() = if (pausedAtTime > 0) TimeUtils.timeSinceMillis(pausedAtTime) + pausedDurationMillis else pausedDurationMillis
 
     private fun activeTime() = TimeUtils.timeSinceMillis(startTime) - pausedTime()
 
@@ -34,33 +31,27 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
 
     fun immersionTime() = "${immersionTimeHoursStr()}:${immersionTimeMinutesStr()}:${immersionTimeSecondsStr()}"
 
-    fun isNotStarted() = ( stateMachine.currentState == ImmersionTimerState.PAUSED ) && ( activeTime().toInt() == 0 )
-
-    fun setCumlTimeAgo(cumlTimeAgo : Long = 0L) {
-        timePausedAt = startTime
-        startTime -= cumlTimeAgo
+    fun setPastStartTime(millisAgo : Long = 0L) {
+        pausedAtTime = startTime
+        startTime -= millisAgo
     }
 
     fun resetTimer() {
-        if (stateMachine.currentState != ImmersionTimerState.RUNNING) stateMachine.changeState(ImmersionTimerState.RUNNING)
         startTime = TimeUtils.millis()
-        timePausedAt = 0
-        pausedTime = 0
-
-        isActive = true
+        pausedAtTime = if (stateMachine.currentState == ImmersionTimerState.PAUSED) startTime else 0
     }
 
     fun pauseTimer() {
-        if (stateMachine.currentState != ImmersionTimerState.PAUSED) stateMachine.changeState(ImmersionTimerState.PAUSED)
-        timePausedAt = TimeUtils.millis()
+        stateMachine.changeState(ImmersionTimerState.PAUSED)
+        pausedAtTime = TimeUtils.millis()
 
         isActive = false
     }
 
     fun resumeTimer() {
-        if (stateMachine.currentState != ImmersionTimerState.RUNNING) stateMachine.changeState(ImmersionTimerState.RUNNING)
-        pausedTime += TimeUtils.timeSinceMillis(timePausedAt)
-        timePausedAt = 0
+        stateMachine.changeState(ImmersionTimerState.RUNNING)
+        pausedDurationMillis += TimeUtils.timeSinceMillis(pausedAtTime)
+        pausedAtTime = 0
 
         isActive = true
     }

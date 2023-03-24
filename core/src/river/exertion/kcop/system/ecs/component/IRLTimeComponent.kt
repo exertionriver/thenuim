@@ -1,6 +1,5 @@
 package river.exertion.kcop.system.ecs.component
 
-import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import ktx.ashley.mapperFor
 import java.time.LocalDateTime

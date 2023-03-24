@@ -59,9 +59,9 @@ class EngineHandler : Telegraph {
             IEntity::initialize.name,
             (IEntity::initialize.valueParameters[0].type.classifier as KClass<*>).java,
             (IEntity::initialize.valueParameters[1].type.classifier as KClass<*>).java)
-        initMethod.invoke(instance, newEntity, initInfo)
 
         entities[instance as IEntity] = newEntity
+        initMethod.invoke(instance, newEntity, initInfo)
     }
 
     fun addComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
@@ -71,9 +71,9 @@ class EngineHandler : Telegraph {
             IComponent::initialize.name,
             (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java,
             (IComponent::initialize.valueParameters[1].type.classifier as KClass<*>).java)
-        initMethod.invoke(instance, entityName, initInfo)
 
         engine.entities.firstOrNull{ it == entityEntry?.value }?.add(instance as Component)
+        initMethod.invoke(instance, entityName, initInfo)
     }
 
     fun removeComponent(entityName : String, componentClass: Class<*>) {

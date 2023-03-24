@@ -21,10 +21,10 @@ data class Narrative(
     ) : Id() {
 
     @Transient
-    var currentId = ""
+    var currentBlockId = ""
 
     @Transient
-    var previousId = ""
+    var previousBlockId = ""
 
     @Transient
     var textures : MutableMap<String, Asset<Texture>> = mutableMapOf()
@@ -36,16 +36,16 @@ data class Narrative(
     var music : MutableMap<String, Asset<Music>> = mutableMapOf()
 
 
-    fun init() {
-        currentId = narrativeBlocks.firstOrNull()?.id ?: currentId
-        previousId = currentId
+    fun init(blockIdStart : String? = null) {
+        currentBlockId = narrativeBlocks.firstOrNull { it.id == blockIdStart }?.id ?: firstBlock().id
+        previousBlockId = currentBlockId
     }
 
     fun firstBlock() = narrativeBlocks[0]
 
-    fun currentBlock() = narrativeBlocks.firstOrNull { it.id == currentId }
+    fun currentBlock() = narrativeBlocks.firstOrNull { it.id == currentBlockId }
 
-    fun previousBlock() = narrativeBlocks.firstOrNull { it.id == previousId }
+    fun previousBlock() = narrativeBlocks.firstOrNull { it.id == previousBlockId }
 
     fun currentIdx() = narrativeBlocks.indexOf(currentBlock() ?: narrativeBlocks[0])
 
@@ -67,39 +67,39 @@ data class Narrative(
         if (isSequential()) {
             listOf("(↑) Prev", "(↓) Next")
         } else {
-            promptBlocks.firstOrNull { it.narrativeBlockId == currentId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$id' at '$currentId')>")
+            promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$id' at '$currentBlockId')>")
         }
 
-    fun previousEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == previousId }
-    fun currentEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == currentId }
+    fun previousEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == previousBlockId }
+    fun currentEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }
 
-    fun currentTimelineEventBlock() = timelineEventBlocks.firstOrNull { it.narrativeBlockId == currentId }
+    fun currentTimelineEventBlock() = timelineEventBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }
 
     fun next(promptKey : String) {
-        val possiblePreviousId = currentId
+        val possiblePreviousId = currentBlockId
 
-        currentId = if (isSequential()) {
+        currentBlockId = if (isSequential()) {
             when (promptKey) {
                 Input.Keys.toString(Input.Keys.UP) -> narrativeBlocks[seqPrevIdx()].id
                 Input.Keys.toString(Input.Keys.DOWN) -> narrativeBlocks[seqNextIdx()].id
-                else -> currentId
+                else -> currentBlockId
             }
         } else {
-            promptBlocks.firstOrNull { it.narrativeBlockId == currentId }?.prompts?.firstOrNull { it.promptKey.toString() == promptKey }?.promptNextId ?: currentId
+            promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.firstOrNull { it.promptKey.toString() == promptKey }?.promptNextId ?: currentBlockId
         }
 
-        if (currentId != possiblePreviousId) previousId = possiblePreviousId
+        if (currentBlockId != possiblePreviousId) previousBlockId = possiblePreviousId
     }
 
     fun prev() {
-        val possiblePreviousId = currentId
-        currentId = narrativeBlocks[seqPrevIdx()].id
-        if (currentId != possiblePreviousId) previousId = possiblePreviousId
+        val possiblePreviousId = currentBlockId
+        currentBlockId = narrativeBlocks[seqPrevIdx()].id
+        if (currentBlockId != possiblePreviousId) previousBlockId = possiblePreviousId
     }
 
     fun next() {
-        val possiblePreviousId = currentId
-        currentId = narrativeBlocks[seqNextIdx()].id
-        if (currentId != possiblePreviousId) previousId = possiblePreviousId
+        val possiblePreviousId = currentBlockId
+        currentBlockId = narrativeBlocks[seqNextIdx()].id
+        if (currentBlockId != possiblePreviousId) previousBlockId = possiblePreviousId
     }
 }

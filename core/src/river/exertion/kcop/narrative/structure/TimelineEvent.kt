@@ -1,7 +1,7 @@
 package river.exertion.kcop.narrative.structure
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.Id
+import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 
 @Serializable
 data class TimelineEvent(
@@ -16,7 +16,7 @@ data class TimelineEvent(
     }
 
     //after running validation at load-time
-    fun event() : TimelineEventType = TimelineEventType.values().first { event == it.label() }
+    fun timelineEventType() : TimelineEventType = TimelineEventType.values().first { event == it.label() }
 
     enum class TimelineEventType {
         LOG { override fun label() = "log"},

@@ -10,14 +10,12 @@ enum class ImmersionTimerState : State<ImmersionTimer> {
     RUNNING {
         override fun update(immersionTimer : ImmersionTimer) {
             immersionTimer.stateMachine.changeState(PAUSED)
-            immersionTimer.pauseTimer()
         }
         override fun toggleState() = PAUSED
     },
     PAUSED {
         override fun update(immersionTimer : ImmersionTimer) {
             immersionTimer.stateMachine.changeState(RUNNING)
-            immersionTimer.resumeTimer()
         }
         override fun toggleState()  = RUNNING
     }

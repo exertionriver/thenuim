@@ -17,6 +17,8 @@ import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.*
 import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.activate
+import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.system.ecs.entity.NarrativeEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
@@ -94,14 +96,16 @@ class NarrativeSimulator(private val batch: Batch,
         stage.addActor(viewLayout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
         stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
-        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTest])
+        val narrativeInit = NarrativeComponent.NarrativeComponentInit(assets[NarrativeAssets.NarrativeTest])
+
+        engineHandler.instantiateEntity(NarrativeEntity::class.java, narrativeInit)
 //        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeNavigationTest])
 //        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeTimelineTest])
 //        engineHandler.instantiateEntity(NarrativeEntity::class.java, assets[NarrativeAssets.NarrativeLayoutTest])
 
         narrativesBlock = engineHandler.getAll<NarrativeComponent>().associateWith { NarrativeComponent.getFor(it)!!.narrativeCurrBlockId() } as MutableMap<Entity, String>
 
-        NarrativeComponent.getFor(narrativesBlock.keys.toList()[narrativesIdx])!!.activate(narrativesBlock.values.toList()[narrativesIdx])
+//        NarrativeComponent.getFor(narrativesBlock.keys.toList()[narrativesIdx])!!.activate(narrativesBlock.values.toList()[narrativesIdx])
 
 //        viewLayout.resetNarrative(NarrativeComponent.getFor(narratives[narrativesIdx])!!)
 

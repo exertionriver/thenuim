@@ -58,6 +58,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
 
     //clears if texture is null
     fun showImage(layoutPaneIdx : Int, texture : Texture?) {
+        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
         displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
 
         this.recreate()
@@ -68,12 +69,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
             displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
             displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = true
             displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
-
             Timer.schedule(object : Timer.Task() {
                 override fun run() {
-                    if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! >= .1)
+                    if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! >= .1f)
                         displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] =
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! - .1f
+                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]?.minus(.1f)
                     else {
                         displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = false
                         this.cancel()
@@ -87,11 +87,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     fun fadeImageOut(layoutPaneIdx : Int, texture : Texture?) {
         if (displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] != texture && displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] != true) {
             displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = true
+            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
             Timer.schedule(object : Timer.Task() {
                 override fun run() {
-                    if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! <= .9)
+                    if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! <= .9f)
                         displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] =
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! + .1f
+                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]?.plus(.1f)
                     else {
                         displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
                         displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = false

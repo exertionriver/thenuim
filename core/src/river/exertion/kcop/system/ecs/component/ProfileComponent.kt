@@ -1,6 +1,5 @@
 package river.exertion.kcop.system.ecs.component
 
-import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import river.exertion.kcop.system.profile.Profile
 
@@ -12,10 +11,11 @@ class ProfileComponent : IComponent {
     override var isInitialized = false
 
     override fun initialize(entityName: String, initData: Any?) {
-        super.initialize(entityName, initData)
 
         if (initData != null) {
             profile = IComponent.checkInitType(initData)
+
+            super.initialize(entityName, initData)
         }
     }
 
