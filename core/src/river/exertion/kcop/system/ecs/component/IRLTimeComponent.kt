@@ -23,10 +23,7 @@ class IRLTimeComponent : IComponent {
     fun localTime() = "${localHoursStr()}:${localMinutesStr()}:${localSecondsStr()}"
 
     companion object {
-        val mapper = mapperFor<IRLTimeComponent>()
-
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is IRLTimeComponent } != null
         fun getFor(entity : Entity) : IRLTimeComponent? = if (has(entity)) entity.components.first { it is IRLTimeComponent } as IRLTimeComponent else null
-
     }
 }

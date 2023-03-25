@@ -11,7 +11,10 @@ import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandl
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.unpause
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.system.messaging.messages.DisplayViewTextMessage
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
+import river.exertion.kcop.system.messaging.messages.NarrativeMessage
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -24,7 +27,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
     var narrative : Narrative? = null
 
-    val narrativeImmersionTimer = ImmersionTimerComponent()
+    val narrativeImmersionTimer = ImmersionTimerComponent().apply { this.isInitialized = true }
     var blockImmersionTimers : MutableMap<String, ImmersionTimerComponent> = mutableMapOf()
     var flags : MutableList<String> = mutableListOf()
 
@@ -51,7 +54,7 @@ class NarrativeComponent : IComponent, Telegraph {
                 narrative!!.init(narrativeComponentInit.currentBlockId)
 
                 //set the narrative layout
-                MessageChannel.DISPLAY_VIEW_CONFIG_BRIDGE.send(null, ViewMessage(narrative!!.layoutTag))
+                MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrative!!.layoutTag))
 
                 //set the narrative cumulative timer
                 narrativeImmersionTimer.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(narrativeComponentInit.currentCumlTimer))
@@ -99,6 +102,5 @@ class NarrativeComponent : IComponent, Telegraph {
 
     // only need to replace in case of settings change
     //            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(EngineComponentMessageType.REPLACE_COMPONENT, narrativeComponent.narrativeImmersionTimer.entityName, ImmersionTimerComponent::class.java, narrativeComponent.narrativeImmersionTimer))
-
 
 }

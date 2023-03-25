@@ -8,6 +8,10 @@ import river.exertion.kcop.system.messaging.messages.*
 
 object NarrativeComponentEventHandler {
 
+    fun NarrativeComponent.currentText() : String {
+        return if (isInitialized) narrative!!.currentText() else ""
+    }
+
     //outputs aggregate text
     fun NarrativeComponent.executeReadyTimelineEvents() : String {
 
@@ -17,14 +21,15 @@ object NarrativeComponentEventHandler {
 
             readyTimelineEvents(narrativeImmersionTimer.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).forEach { timelineEvent ->
 
-                when (timelineEvent.timelineEventType()) {
-                    TimelineEvent.TimelineEventType.LOG -> {
+                when (timelineEvent.eventType()) {
+                    Event.EventType.LOG -> {
                         MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, timelineEvent.param) )
 
                         narrative!!.timelineEventBlocks.firstOrNull { it.narrativeBlockId == narrativeCurrBlockId() }?.timelineEvents?.remove(timelineEvent)
                         narrative!!.timelineEvents.remove(timelineEvent)
                     }
-                    TimelineEvent.TimelineEventType.TEXT -> { returnText += "\n${timelineEvent.param}" }
+                    Event.EventType.TEXT -> { returnText += "\n${timelineEvent.param}" }
+                    else -> {}
                 }
             }
         }
@@ -83,7 +88,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.SHOW_IMAGE -> {
-                        val currentImageEventInSamePane = currentBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.event) && (it.param2 == previousBlockEvent.param2) } != null
+                        val currentImageEventInSamePane = currentBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == previousBlockEvent.param2) } != null
 
                         if ( !currentImageEventInSamePane ) {
                             MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
@@ -92,7 +97,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.FADE_IMAGE -> {
-                        val currentImageEventInSamePane = currentBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.event) && (it.param2 == previousBlockEvent.param2) } != null
+                        val currentImageEventInSamePane = currentBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == previousBlockEvent.param2) } != null
 
                         if ( !currentImageEventInSamePane ) {
                             MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
@@ -106,7 +111,7 @@ object NarrativeComponentEventHandler {
                         )
                     }
                     Event.EventType.PLAY_MUSIC -> {
-                        val currentMusicPlaying = currentBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.event) } != null
+                        val currentMusicPlaying = currentBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
 
                         if ( !currentMusicPlaying ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
@@ -115,7 +120,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.FADE_MUSIC -> {
-                        val currentMusicPlaying = currentBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.event) } != null
+                        val currentMusicPlaying = currentBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
 
                         if ( !currentMusicPlaying ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
@@ -147,7 +152,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.SHOW_IMAGE -> {
-                        val previousImageEventInSamePane = previousBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.event) && (it.param2 == currentBlockEvent.param2) } != null
+                        val previousImageEventInSamePane = previousBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == currentBlockEvent.param2) } != null
 
                         if ( narrative!!.textures.keys.contains(currentBlockEvent.param) ) {
                             MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
@@ -160,7 +165,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.FADE_IMAGE -> {
-                        val previousImageEventInSamePane = previousBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.event) && (it.param2 == currentBlockEvent.param2) } != null
+                        val previousImageEventInSamePane = previousBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == currentBlockEvent.param2) } != null
 
                         if ( narrative!!.textures.keys.contains(currentBlockEvent.param) ) {
                             MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
@@ -180,7 +185,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.PLAY_MUSIC -> {
-                        val previousMusicPlaying = previousBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.event) } != null
+                        val previousMusicPlaying = previousBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
 
                         if ( narrative!!.music.keys.contains(currentBlockEvent.param) ) {
                                 MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
@@ -193,7 +198,7 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.FADE_MUSIC -> {
-                        val previousMusicPlaying = previousBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.event) } != null
+                        val previousMusicPlaying = previousBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
 
                         if ( narrative!!.music.keys.contains(currentBlockEvent.param) ) {
                             if ( previousMusicPlaying ) {
@@ -216,9 +221,12 @@ object NarrativeComponentEventHandler {
             }
         }
 
-        returnText += "${narrative!!.currentText()}${returnText}\nblock inst time:[${blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.immersionTime()}]\nblock cuml time:[${blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.immersionTime()}]"
-
         return returnText
+    }
+
+    fun NarrativeComponent.currentBlockTimer() : String {
+        return if (isInitialized) "\nblock inst time:[${blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.immersionTime()}]\nblock cuml time:[${blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.immersionTime()}]"
+        else ""
     }
 
     private fun NarrativeComponent.readyPreviousBlockEvents() : MutableList<Event> {
@@ -231,11 +239,11 @@ object NarrativeComponentEventHandler {
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
 
             narrative!!.previousEventBlock()?.events?.filter {
-                Event.EventType.isImageEvent(it.event)
+                Event.EventType.isImageEvent(it.eventType)
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
 
             narrative!!.previousEventBlock()?.events?.filter {
-                Event.EventType.isMusicEvent(it.event)
+                Event.EventType.isMusicEvent(it.eventType)
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
         }
 

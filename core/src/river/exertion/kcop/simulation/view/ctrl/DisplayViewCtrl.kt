@@ -25,7 +25,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
-        MessageChannel.DISPLAY_VIEW_CONFIG_BRIDGE.enableReceive(this)
         MessageChannel.MENU_BRIDGE.enableReceive(this)
     }
 
@@ -53,15 +52,15 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
     }
 
-    var currentMusic : Music? = null
-    var currentSound : Music? = null
-
     //clears if texture is null
     fun showImage(layoutPaneIdx : Int, texture : Texture?) {
-        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
-        displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
 
-        this.recreate()
+        if (texture != null) {
+            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
+            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
+        } else {
+            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
+        }
     }
 
     fun fadeImageIn(layoutPaneIdx : Int, texture : Texture?) {
@@ -111,8 +110,13 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
 
     fun clearImages() {
         displayViewLayouts[currentLayoutIdx].paneTextures.clear()
-        this.recreate()
+        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.entries.forEach { it.setValue(1f) }
     }
+
+    fun clearText() {
+        currentText = ""
+    }
+
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
         this.add(
@@ -127,21 +131,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.DISPLAY_VIEW_CONFIG_BRIDGE.isType(msg.message) ) -> {
-                    val viewMessage: ViewMessage = MessageChannel.DISPLAY_VIEW_CONFIG_BRIDGE.receiveMessage(msg.extraInfo)
-
-                    setLayoutIdxByTag(viewMessage.messageContent)
-                    currentLayoutMode = false
-
-                    if (isInitialized) recreate()
-                    return true
-                }
                 (MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.isType(msg.message) ) -> {
-                    val textViewMessage: TextViewMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
+                    val displayViewTextMessage: DisplayViewTextMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    currentText = textViewMessage.displayText
-                    currentFontSize = textViewMessage.displayFontSize
-
+                    setLayoutIdxByTag(displayViewTextMessage.layoutTag)
+                    if (displayViewTextMessage.displayText != null) currentText = displayViewTextMessage.displayText
+                    if (displayViewTextMessage.displayFontSize != null) currentFontSize = displayViewTextMessage.displayFontSize
 
                     if (isInitialized) recreate()
                     return true
@@ -155,8 +150,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         DisplayViewTextureMessageType.FADE_IMAGE_IN -> fadeImageIn(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
                         DisplayViewTextureMessageType.FADE_IMAGE_OUT -> fadeImageOut(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
                         DisplayViewTextureMessageType.CROSSFADE_IMAGE -> crossFadeImage(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessageType.CLEAR_ALL -> clearImages()
-                    }
+                        DisplayViewTextureMessageType.CLEAR_ALL -> { clearImages(); clearText(); audioCtrl.stopMusic() }
+                        }
 
                     if (isInitialized) recreate()
                     return true

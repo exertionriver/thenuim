@@ -1,6 +1,8 @@
 package river.exertion.kcop.system.messaging.messages
 
-data class EngineComponentMessage(val messageType : EngineComponentMessageType, var entityId : String, var componentClass: Class<*>, var initInfo : Any? = null)
+import river.exertion.kcop.system.ecs.component.IComponent
+
+data class EngineComponentMessage(val messageType : EngineComponentMessageType, var entityName : String, var componentClass: Class<*>, var componentInstance: IComponent? = null, var initInfo : Any? = null)
 
 //initInfo is component instance if replace
 

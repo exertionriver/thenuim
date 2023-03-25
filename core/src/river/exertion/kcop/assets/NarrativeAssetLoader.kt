@@ -6,11 +6,11 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.narrative.structure.Narrative
 import ktx.assets.load
+import river.exertion.kcop.narrative.structure.Event
 
 class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<NarrativeAsset?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {
@@ -35,13 +35,20 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
 
             narrative.eventBlocks.forEach { eventBlock ->
                 eventBlock.events.forEach { event ->
-                    if (event.event.contains("Image") && !narrative.textures.keys.contains(event.param)) {
+                    if ( !event.validateFields() ) {
+                        returnNarrativeAsset.status = "${narrative.id} not loaded"
+                        if (returnNarrativeAsset.statusDetail == null)
+                            returnNarrativeAsset.statusDetail = "invalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.id}"
+                        else
+                            returnNarrativeAsset.statusDetail += "\ninvalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.id}"
+                    }
+                    if (Event.EventType.isImageEvent(event.eventType) && !narrative.textures.keys.contains(event.param)) {
                         narrative.textures[event.param] = manager.load(event.param)
                     }
-                    if (event.event.contains("Sound") && !narrative.sounds.keys.contains(event.param)) {
+                    if (Event.EventType.isSoundEvent(event.eventType) && !narrative.sounds.keys.contains(event.param)) {
                         narrative.sounds[event.param] = manager.load(event.param)
                     }
-                    if (event.event.contains("Music") && !narrative.music.keys.contains(event.param)) {
+                    if (Event.EventType.isMusicEvent(event.eventType) && !narrative.music.keys.contains(event.param)) {
                         narrative.music[event.param] = manager.load(event.param)
                     }
                 }
@@ -52,9 +59,9 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                 if ( !timelineEvent.validateFields() ) {
                     returnNarrativeAsset.status = "${narrative.id} not loaded"
                     if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.event} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
                     else
-                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.event} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
                     }
                 }
             }
@@ -63,9 +70,9 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                 if ( !timelineEvent.validateFields() ) {
                     returnNarrativeAsset.status = "${narrative.id} not loaded"
                     if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.event} in <timelineEvents> for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.id}"
                     else
-                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.event} in <timelineEvents> for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.id}"
                 }
             }
             return returnNarrativeAsset

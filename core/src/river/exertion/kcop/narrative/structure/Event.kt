@@ -5,18 +5,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Event(
     var id: String? = null,
-    val event: String = "",
-    val trigger: String = "",
+    val eventType: String = "",
+    val eventTrigger: String = "",
     val param: String = "",
     val param2: String = ""
 ) {
 
     fun validateFields() : Boolean {
-        return EventType.isEventType(event)
+        return EventType.isEventType(eventType)
     }
 
     //after running validation at load-time
-    fun eventType() : EventType? = EventType.values().firstOrNull { event == it.label() }
+    fun eventType() : EventType? = EventType.values().firstOrNull { eventType == it.label() }
 
     enum class EventType {
         LOG { override fun label() = "log"},
@@ -35,10 +35,11 @@ data class Event(
             fun isEventType(event : String) = values().firstOrNull { it.label() == event } != null
             fun isImageEvent(event : String) = listOf(SHOW_IMAGE.label(), FADE_IMAGE.label()).contains(event)
             fun isMusicEvent(event : String) = listOf(PLAY_MUSIC.label(), FADE_MUSIC.label()).contains(event)
+            fun isSoundEvent(event : String) = listOf(PLAY_SOUND.label()).contains(event)
         }
     }
 
-    fun eventTrigger() : EventTrigger? = EventTrigger.values().firstOrNull { trigger == it.label() }
+    fun eventTrigger() : EventTrigger? = EventTrigger.values().firstOrNull { eventTrigger == it.label() }
 
     enum class EventTrigger {
         ON_EXIT { override fun label() = "onExit"},

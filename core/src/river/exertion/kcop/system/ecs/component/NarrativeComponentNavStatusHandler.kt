@@ -1,10 +1,7 @@
 package river.exertion.kcop.system.ecs.component
 
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
-import river.exertion.kcop.system.messaging.messages.StatusViewMessage
-import river.exertion.kcop.system.messaging.messages.StatusViewMessageType
+import river.exertion.kcop.system.messaging.messages.*
 
 object NarrativeComponentNavStatusHandler {
 
@@ -42,8 +39,6 @@ object NarrativeComponentNavStatusHandler {
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.pauseTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()
-
-//            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(EngineComponentMessageType.REPLACE_COMPONENT, entityName, ImmersionTimerComponent::class.java, narrativeImmersionTimer))
         }
     }
 
@@ -54,6 +49,7 @@ object NarrativeComponentNavStatusHandler {
             pause()
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.REMOVE_STATUS, sequentialStatusKey()))
+            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.CLEAR_ALL))
 
             changed = true
         }

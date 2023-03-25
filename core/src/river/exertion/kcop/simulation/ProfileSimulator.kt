@@ -72,7 +72,7 @@ class ProfileSimulator(private val batch: Batch,
         stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
 
         engineHandler.instantiateEntity(ProfileEntity::class.java, assets[ProfileAssets.ExertionRiverText])
-        engineHandler.addComponent(assets[ProfileAssets.ExertionRiverText].profile!!.id, NarrativeComponent::class.java,
+        engineHandler.addComponent(assets[ProfileAssets.ExertionRiverText].profile!!.id, NarrativeComponent::class.java, null,
             NarrativeComponent.NarrativeComponentInit(assets[NarrativeAssets.NarrativeNavigationTest],
                 assets[ProfileAssets.ExertionRiverText].profile!!.currentImmersionBlockId!!,
                 assets[ProfileAssets.ExertionRiverText].profile!!.statuses.first { it.key == assets[NarrativeAssets.NarrativeNavigationTest].narrative?.id }.cumlImmersionTime!!))

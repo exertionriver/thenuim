@@ -25,4 +25,7 @@ interface IComponent : Component {
             else null
         }
     }
+
+    //in case disposables are used
+    fun dispose() {}
 }

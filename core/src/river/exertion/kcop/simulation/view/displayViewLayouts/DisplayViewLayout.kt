@@ -163,7 +163,7 @@ interface DisplayViewLayout {
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                             displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                         ).grow()
-                        innerTableBg.debug = !layoutMode
+                        innerTableBg.debug = layoutMode
                         val innerTableFg = Table()
                         val innerLabel = Label(label, Label.LabelStyle(bitmapFont, randomColor.label().color()))
                         innerLabel.setAlignment(Align.center)
@@ -171,7 +171,7 @@ interface DisplayViewLayout {
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                             displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                         ).grow()
-                        innerTableFg.debug = !layoutMode
+                        innerTableFg.debug = layoutMode
                         this.add(innerTableBg)
                         this.add(innerTableFg)
                     } else { //draw specified content or black
@@ -182,7 +182,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug = !layoutMode
+                            innerTable.debug = layoutMode
                             this.add(innerTable)
                             contentRendered = true
                         }
@@ -190,12 +190,12 @@ interface DisplayViewLayout {
                             bitmapFont.data.setScale(currentFontSize.fontScale())
                             val textLabel = Label(paneText[displayViewPane.key], Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color())).apply { this.setAlignment(Align.topLeft) }
                             textLabel.setAlignment(Align.topLeft)
-                            textLabel.debug = !layoutMode
+                            textLabel.debug = layoutMode
                             val textTable = Table().padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
                                 .padBottom(ViewType.padHeight(screenHeight) - (adjacencyTopPadOffset(currentFontSize)[displayViewPane.key] ?: 0))
                                 .padTop(ViewType.padHeight(screenHeight) + (adjacencyTopPadOffset(currentFontSize)[displayViewPane.key] ?: 0))
                             textTable.top()
-                            textTable.debug = !layoutMode
+                            textTable.debug = layoutMode
                             textTable.add(textLabel).size(
                                 displayViewPane.value.width(screenWidth) - 2 * ViewType.padWidth(screenWidth),
                                 displayViewPane.value.height(screenHeight) - 2 * ViewType.padHeight(screenHeight)
@@ -206,7 +206,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug = !layoutMode
+                            innerTable.debug = layoutMode
                             this.add(innerTable)
                             contentRendered = true
                         }
@@ -216,7 +216,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug = !layoutMode
+                            innerTable.debug = layoutMode
                             this.add(innerTable)
                             contentRendered = true
                         }
@@ -226,7 +226,7 @@ interface DisplayViewLayout {
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()
-                            innerTable.debug = !layoutMode
+                            innerTable.debug = layoutMode
                             this.add(innerTable)
                         }
                     }

@@ -11,10 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.ImmersionTimerMessage
 import river.exertion.kcop.system.messaging.messages.NarrativeMessage
 import river.exertion.kcop.system.messaging.messages.PauseViewMessage
-import river.exertion.kcop.system.messaging.messages.ViewMessage
 
 class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.PAUSE, screenWidth, screenHeight) {
 

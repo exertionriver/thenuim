@@ -16,7 +16,6 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
-import river.exertion.kcop.system.messaging.messages.ViewMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.reflect.jvm.javaMethod
 

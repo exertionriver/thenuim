@@ -32,4 +32,7 @@ interface IEntity {
             else null
         }
     }
+
+    //in case disposables are used
+    fun dispose() {}
 }
