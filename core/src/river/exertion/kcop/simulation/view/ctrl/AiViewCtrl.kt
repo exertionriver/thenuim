@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -18,6 +19,7 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
 
     init {
         MessageChannel.AI_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var aiUpImage : Texture? = null
@@ -57,11 +59,18 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            if (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) {
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
+                }
+                (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) -> {
 //                val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                if (isInitialized) recreate()
-                return true
+                    if (isInitialized) recreate()
+                    return true
+                }
             }
         }
         return false

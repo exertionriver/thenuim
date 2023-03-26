@@ -1,6 +1,8 @@
 package river.exertion.kcop.system.ecs.component
 
+import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.next
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
 
 object NarrativeComponentNavStatusHandler {
@@ -27,6 +29,7 @@ object NarrativeComponentNavStatusHandler {
             unpause()
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
+            Switchboard.updateProfile(this)
 
             changed = true
         }
@@ -71,10 +74,12 @@ object NarrativeComponentNavStatusHandler {
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
 
+                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
+                Switchboard.updateProfile(this)
+
+                changed = true
             }
 
-            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
-            changed = true
         }
     }
 }

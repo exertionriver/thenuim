@@ -3,10 +3,7 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
@@ -22,6 +19,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
     init {
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var currentText : String? = null
@@ -111,14 +109,21 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
     @Suppress("NewApi")
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            if (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) {
-                val textViewMessage: TextViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
+                }
+                (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val textViewMessage: TextViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                currentText = textViewMessage.narrativeText
-                currentPrompts = textViewMessage.prompts
+                    currentText = textViewMessage.narrativeText
+                    currentPrompts = textViewMessage.prompts
 
-                if (isInitialized) recreate()
-                return true
+                    if (isInitialized) recreate()
+                    return true
+                }
             }
         }
         return false

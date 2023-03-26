@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -19,6 +20,7 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     init {
         MessageChannel.PAUSE_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var pauseUpImage : Texture? = null
@@ -45,12 +47,15 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
         innerButton.onClick {
             this@PauseViewCtrl.isChecked = !this@PauseViewCtrl.isChecked
-
-            val messageType = if (isChecked) NarrativeMessage.NarrativeMessageType.PAUSE else NarrativeMessage.NarrativeMessageType.UNPAUSE
-            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(messageType, null) )
+            toggleImmersionPause()
         }
 
         return innerButton
+    }
+
+    fun toggleImmersionPause() {
+        val messageType = if (isChecked) NarrativeMessage.NarrativeMessageType.PAUSE else NarrativeMessage.NarrativeMessageType.UNPAUSE
+        MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(messageType, null) )
     }
 
     override fun build(bitmapFont: BitmapFont, batch: Batch) {
@@ -60,21 +65,30 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            if (MessageChannel.PAUSE_VIEW_BRIDGE.isType(msg.message) ) {
-                val pauseMessage : PauseViewMessage = MessageChannel.PAUSE_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
-
-                if (!isChecked) {
-                    isChecked = pauseMessage.setPause
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
                 }
+                (MessageChannel.PAUSE_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val pauseMessage : PauseViewMessage = MessageChannel.PAUSE_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                if (isInitialized) recreate()
-                return true
-            }
-            if (MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.isType(msg.message) ) {
-                val narrativeMessage: NarrativeMessage = MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.receiveMessage(msg.extraInfo)
+                    if (isChecked != pauseMessage.setPause) {
+                        isChecked = pauseMessage.setPause
+                        toggleImmersionPause()
+                    }
 
-                if (!isChecked) {
-                    MessageChannel.NARRATIVE_BRIDGE.send(null, narrativeMessage)
+                    if (isInitialized) recreate()
+                    return true
+                }
+                (MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {
+                    val narrativeMessage: NarrativeMessage = MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.receiveMessage(msg.extraInfo)
+
+                    if (!isChecked) {
+                        MessageChannel.NARRATIVE_BRIDGE.send(null, narrativeMessage)
+                    }
+                    return true
                 }
             }
         }

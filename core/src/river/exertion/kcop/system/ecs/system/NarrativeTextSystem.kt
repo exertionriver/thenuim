@@ -27,9 +27,10 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
             if (narrativeComponent.changed) {
                 MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrativeComponent.narrative!!.layoutTag, narrativeComponent.narrative!!.currentDisplayText(), narrativeComponent.narrative!!.currentFontSize()))
-                MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
                 NarrativeComponent.getFor(entity)!!.changed = false
             }
+
+            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
         }
     }
 }

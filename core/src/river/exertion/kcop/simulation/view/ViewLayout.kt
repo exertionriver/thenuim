@@ -23,37 +23,37 @@ class ViewLayout(var width : Float, var height : Float) {
     var aiViewCtrl = AiViewCtrl(width, height)
     var pauseViewCtrl = PauseViewCtrl(width, height)
 
-    fun createDisplayViewCtrl(batch : Batch, bitmapFont : BitmapFont) : DisplayViewCtrl {
+    fun createDisplayViewCtrl(bitmapFont : BitmapFont) : DisplayViewCtrl {
 
-        displayViewCtrl.initCreate(bitmapFont, batch)
+        displayViewCtrl.initCreate(bitmapFont)
 
         return displayViewCtrl
     }
 
-    fun createTextViewCtrl(batch : Batch, bitmapFont : BitmapFont, vScrollKnobImage : Texture) : TextViewCtrl {
+    fun createTextViewCtrl(bitmapFont : BitmapFont, vScrollKnobImage : Texture) : TextViewCtrl {
         textViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
-        textViewCtrl.initCreate(bitmapFont, batch)
+        textViewCtrl.initCreate(bitmapFont)
 
         return textViewCtrl
     }
-    fun createLogViewCtrl(batch : Batch, bitmapFont : BitmapFont, vScrollImage : Texture, vScrollKnobImage : Texture) : LogViewCtrl {
+    fun createLogViewCtrl(bitmapFont : BitmapFont, vScrollImage : Texture, vScrollKnobImage : Texture) : LogViewCtrl {
         logViewCtrl.vScrollTexture = vScrollImage
         logViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
-        logViewCtrl.initCreate(bitmapFont, batch)
+        logViewCtrl.initCreate(bitmapFont)
 
         return logViewCtrl
     }
-    fun createStatusViewCtrl(batch : Batch, bitmapFont : BitmapFont, vScrollKnobImage : Texture) : StatusViewCtrl {
+    fun createStatusViewCtrl(bitmapFont : BitmapFont, vScrollKnobImage : Texture) : StatusViewCtrl {
         statusViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
-        statusViewCtrl.initCreate(bitmapFont, batch)
+        statusViewCtrl.initCreate(bitmapFont)
 
         return statusViewCtrl
     }
 
-    fun createMenuViewCtrl(batch : Batch, bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage : Texture) : MenuViewCtrl {
+    fun createMenuViewCtrl(bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage : Texture) : MenuViewCtrl {
 
         (0..5).forEach {
             menuViewCtrl.menuUpImage[it] = upImage
@@ -61,36 +61,36 @@ class ViewLayout(var width : Float, var height : Float) {
             menuViewCtrl.menuCheckedImage[it] = checkedImage
         }
 
-        menuViewCtrl.initCreate(bitmapFont, batch)
+        menuViewCtrl.initCreate(bitmapFont)
 
         return menuViewCtrl
     }
 
-    fun createInputsViewCtrl(batch : Batch, bitmapFont : BitmapFont, clickImage : Texture, keyPressImage : Texture, keyUpImage : Texture) : InputViewCtrl {
+    fun createInputsViewCtrl(bitmapFont : BitmapFont, clickImage : Texture, keyPressImage : Texture, keyUpImage : Texture) : InputViewCtrl {
         inputsViewCtrl.clickImage = clickImage
         inputsViewCtrl.keyPressImage = keyPressImage
         inputsViewCtrl.keyUpImage = keyUpImage
 
-        inputsViewCtrl.initCreate(bitmapFont, batch)
+        inputsViewCtrl.initCreate(bitmapFont)
 
         return inputsViewCtrl
     }
-    fun createAiViewCtrl(batch : Batch, bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage: Texture) : AiViewCtrl {
+    fun createAiViewCtrl(bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage: Texture) : AiViewCtrl {
         aiViewCtrl.aiUpImage = upImage
         aiViewCtrl.aiDownImage = downImage
         aiViewCtrl.aiCheckedImage = checkedImage
 
-        aiViewCtrl.initCreate(bitmapFont, batch)
+        aiViewCtrl.initCreate(bitmapFont)
 
         return aiViewCtrl
     }
 
-    fun createPauseViewCtrl(batch : Batch, bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage : Texture) : PauseViewCtrl {
+    fun createPauseViewCtrl(bitmapFont : BitmapFont, upImage : Texture, downImage : Texture, checkedImage : Texture) : PauseViewCtrl {
         pauseViewCtrl.pauseUpImage = upImage
         pauseViewCtrl.pauseDownImage = downImage
         pauseViewCtrl.pauseCheckedImage = checkedImage
 
-        pauseViewCtrl.initCreate(bitmapFont, batch)
+        pauseViewCtrl.initCreate(bitmapFont)
 
         return pauseViewCtrl
     }

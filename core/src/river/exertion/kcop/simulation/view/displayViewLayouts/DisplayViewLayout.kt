@@ -21,6 +21,7 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 interface DisplayViewLayout {
 
     val tag : String //used for assignment in narrative asset
+    fun tag() = tag
 
     var screenWidth : Float
     var screenHeight : Float

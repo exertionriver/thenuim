@@ -24,12 +24,12 @@ import river.exertion.kcop.system.view.ViewInputProcessor
 
 
 class NarrativeSimulator(private val batch: Batch,
-                         private val assets: AssetManager,
                          private val stage: Stage,
                          private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
     val engineHandler = EngineHandler()
+    val assetManagerHandler = AssetManagerHandler()
 
     var narrativesIdx = 0
     var narrativeEntityName = ""
@@ -77,30 +77,30 @@ class NarrativeSimulator(private val batch: Batch,
     }
 
     override fun show() {
-        FreeTypeFontAssets.values().forEach { assets.load(it) }
-        TextureAssets.values().forEach { assets.load(it) }
-        NarrativeAssets.values().forEach { assets.load(it) }
-        assets.finishLoading()
+        FreeTypeFontAssets.values().forEach { assetManagerHandler.assets.load(it) }
+        TextureAssets.values().forEach { assetManagerHandler.assets.load(it) }
+        NarrativeAssets.values().forEach { assetManagerHandler.assets.load(it) }
+        assetManagerHandler.assets.finishLoading()
 
         val multiplexer = InputMultiplexer()
         multiplexer.addProcessor(ViewInputProcessor())
         multiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = multiplexer
 
-        val textFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        val displayFont = assets[FreeTypeFontAssets.Immortal]
+        val textFont = assetManagerHandler.assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        val displayFont = assetManagerHandler.assets[FreeTypeFontAssets.Immortal]
 
-        stage.addActor(viewLayout.createDisplayViewCtrl(batch, displayFont))
-        stage.addActor(viewLayout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
-        stage.addActor(viewLayout.createLogViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
-        stage.addActor(viewLayout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
-        stage.addActor(viewLayout.createMenuViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createInputsViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
-        stage.addActor(viewLayout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createDisplayViewCtrl(displayFont))
+        stage.addActor(viewLayout.createTextViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createLogViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
+        stage.addActor(viewLayout.createStatusViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createMenuViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createInputsViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createAiViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
+        stage.addActor(viewLayout.createPauseViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createTextViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
 
-        narrativesBlock = NarrativeAssets.values().map { assets[it] }.associateWith { it.narrative!!.firstBlock().id }.toMutableMap()
+        narrativesBlock = NarrativeAssets.values().map { assetManagerHandler.assets[it] }.associateWith { it.narrative!!.firstBlock().id }.toMutableMap()
 
         narrativeEntityName = engineHandler.instantiateEntity(NarrativeEntity::class.java, NarrativeComponent.NarrativeComponentInit(narrativesBlock.keys.toList()[narrativesIdx], narrativesBlock.values.toList()[narrativesIdx]))
     }
@@ -118,7 +118,7 @@ class NarrativeSimulator(private val batch: Batch,
     }
 
     override fun dispose() {
-        assets.dispose()
+        assetManagerHandler.dispose()
         viewLayout.dispose()
     }
 }

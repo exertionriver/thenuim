@@ -2,10 +2,10 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.assets.FontSize
@@ -14,6 +14,7 @@ import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNar
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.*
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
 
@@ -26,6 +27,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
         MessageChannel.MENU_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var displayViewLayouts : MutableList<DisplayViewLayout> = mutableListOf(
@@ -49,7 +51,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     var currentFontSize = FontSize.SMALL
 
     fun setLayoutIdxByTag(tag : String) {
-        currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
+        currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag() == tag } ?: displayViewLayouts[currentLayoutIdx])
+    }
+
+    fun setMenuIdxByTag(tag : String) {
+        currentMenuIdx = displayViewMenus.indexOf(displayViewMenus.firstOrNull { it.tag() == tag } ?: displayViewMenus[currentMenuIdx])
     }
 
     //clears if texture is null
@@ -131,6 +137,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
+                }
                 (MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.isType(msg.message) ) -> {
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
 
@@ -182,10 +193,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 (MessageChannel.MENU_BRIDGE.isType(msg.message) ) -> {
                     val menuMessage: MenuMessage = MessageChannel.MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
-                        currentMenuIdx = displayViewMenus.indexOf(displayViewMenus.firstOrNull { it.tag() == menuMessage.menuParams!!.targetMenuTag } ?: 0)
+                        setMenuIdxByTag(menuMessage.menuParams!!.targetMenuTag)
 
-                        if ( listOf(LoadProfileMenu.tag, SaveProfileMenu.tag).contains(menuMessage.menuParams!!.targetMenuTag) ) {
-                            (displayViewMenus[currentMenuIdx] as LoadProfileMenu).profileAsset = (menuMessage.menuParams as ProfileMenuParams).profile
+                        if ( displayViewMenus[currentMenuIdx] is ProfileReqMenu ) {
+                            (displayViewMenus[currentMenuIdx] as ProfileReqMenu).profile = (menuMessage.menuParams as ProfileMenuParams).profileAsset
                         }
 
                     if (isInitialized) recreate()

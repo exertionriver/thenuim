@@ -2,6 +2,7 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import kotlin.system.exitProcess

@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -12,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 
 class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.MENU, screenWidth, screenHeight) {
 
     init {
         MessageChannel.MENU_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var menuUpImage : MutableMap<Int, Texture?> = mutableMapOf()
@@ -48,7 +51,14 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
             innerButton.onClick {
                 this@MenuViewCtrl.isChecked[idx] = !(this@MenuViewCtrl.isChecked[idx] ?: false)
-                MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(idx, this@MenuViewCtrl.isChecked[idx]!!))
+                if (idx == 0) {
+                    if (this@MenuViewCtrl.isChecked[idx] == true)
+                        Switchboard.openMenu()
+                    else
+                        Switchboard.closeMenu()
+                }
+                else
+                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(idx, this@MenuViewCtrl.isChecked[idx]!!))
             }
 
             buttonList.add(innerButton)
@@ -84,13 +94,20 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            if (MessageChannel.MENU_VIEW_BRIDGE.isType(msg.message) ) {
-                val displayViewMenuMessage : DisplayViewMenuMessage = MessageChannel.MENU_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
+                }
+                (MessageChannel.MENU_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val displayViewMenuMessage : DisplayViewMenuMessage = MessageChannel.MENU_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                this@MenuViewCtrl.isChecked[displayViewMenuMessage.menuButtonIdx] = displayViewMenuMessage.isChecked
+                    this@MenuViewCtrl.isChecked[displayViewMenuMessage.menuButtonIdx] = displayViewMenuMessage.isChecked
 
-                if (isInitialized) recreate()
-                return true
+                    if (isInitialized) recreate()
+                    return true
+                }
             }
         }
         return false

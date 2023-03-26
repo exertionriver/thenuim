@@ -16,6 +16,7 @@ import ktx.collections.toGdxArray
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.assets.ProfileAssetLoader
 import river.exertion.kcop.assets.ProfileAssets
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import kotlin.io.path.Path
@@ -39,17 +40,17 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
         })
 
         listCtrl.onChange {
-            navs.forEach { it.value.profile = profiles[selected] }
+            navs.forEach { it.value.profileAsset = profiles[selected] }
         }
 
-        listCtrl.debug()
+//        listCtrl.debug()
         listCtrl.alignment = Align.topLeft
         listCtrl.setItems(profiles.keys.toGdxArray())
 
         return Table().apply {
             this.add(listCtrl).growY().top().left()
             this.add(Table())
-            this.debug()
+//            this.debug()
             this.top()
             this.left()
         }
@@ -61,7 +62,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
 
     override val navs = mapOf(
         "Load >" to ProfileMenuParams("loadProfileMenu", null),
- //       "Save >" to ProfileMenuParams("saveProfileMenu", null)
+        "Save >" to ProfileMenuParams("saveProfileMenu", null)
     )
 
     override val actions = mapOf<String, Pair<String, () -> Unit>>()

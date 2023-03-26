@@ -1,6 +1,8 @@
 package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -13,13 +15,14 @@ import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.messaging.MessageChannel
 import kotlin.reflect.jvm.javaMethod
 
 open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
 
     var sdc : ShapeDrawerConfig? = null
     var bitmapFont : BitmapFont? = null
-    var batch : Batch? = null
+    lateinit var batch : Batch
 
     var isInitialized = false
 
@@ -55,15 +58,14 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
         build(this.bitmapFont!!, this.batch!!)
     }
 
-    fun initCreate(bitmapFont: BitmapFont, batch: Batch) {
-        if (this.batch == null) this.batch = batch
+    fun initCreate(bitmapFont: BitmapFont) {
         if (this.bitmapFont == null) this.bitmapFont = bitmapFont
 
         isInitialized = true
 
         clearTable()
 
-        build(bitmapFont, batch)
+        build(bitmapFont, this.batch!!)
     }
 
     open fun build(bitmapFont: BitmapFont, batch: Batch) {

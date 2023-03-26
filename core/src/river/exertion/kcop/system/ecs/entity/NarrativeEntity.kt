@@ -2,10 +2,14 @@ package river.exertion.kcop.system.ecs.entity
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import river.exertion.kcop.assets.NarrativeAsset
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
+import river.exertion.kcop.assets.NarrativeAssets
 import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.assets.ProfileAssetLoader
 import river.exertion.kcop.system.ecs.component.IComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import kotlin.io.path.Path
 
 class NarrativeEntity : IEntity {
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -16,6 +17,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
     init {
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var clickImage : Texture? = null
@@ -86,22 +88,30 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            if (MessageChannel.INPUT_VIEW_BRIDGE.isType(msg.message) ) {
-                val inputMessage : InputViewMessage = MessageChannel.INPUT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
+                }
+                (MessageChannel.INPUT_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val inputMessage : InputViewMessage = MessageChannel.INPUT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                if (inputMessage.event.isReleaseEvent()) {
-                    releaseEvent()
-                } else {
-                    if (inputMessage.event.isKeyEvent()) {
-                        keyEvent(inputMessage.getKeyStr())
+                    if (inputMessage.event.isReleaseEvent()) {
+                        releaseEvent()
+                    } else {
+                        if (inputMessage.event.isKeyEvent()) {
+                            keyEvent(inputMessage.getKeyStr())
+                        }
+                        else if (inputMessage.event.isTouchEvent()) {
+                            touchEvent(inputMessage.getScreenX(), inputMessage.getScreenY(), inputMessage.getButton())
+                        }
                     }
-                    else if (inputMessage.event.isTouchEvent()) {
-                        touchEvent(inputMessage.getScreenX(), inputMessage.getScreenY(), inputMessage.getButton())
-                    }
+
+                    if (isInitialized) recreate()
+                    return true
                 }
 
-                if (isInitialized) recreate()
-                return true
             }
         }
         return false

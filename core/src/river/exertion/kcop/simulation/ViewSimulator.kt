@@ -16,12 +16,12 @@ import river.exertion.kcop.system.view.ViewInputProcessor
 
 
 class ViewSimulator(private val batch: Batch,
-                    private val assets: AssetManager,
                     private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
     val engineHandler = EngineHandler()
+    val assetManagerHandler = AssetManagerHandler()
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -38,26 +38,26 @@ class ViewSimulator(private val batch: Batch,
     }
 
     override fun show() {
-        FreeTypeFontAssets.values().forEach { assets.load(it) }
-        TextureAssets.values().forEach { assets.load(it) }
-        assets.finishLoading()
+        FreeTypeFontAssets.values().forEach { assetManagerHandler.assets.load(it) }
+        TextureAssets.values().forEach { assetManagerHandler.assets.load(it) }
+        assetManagerHandler.assets.finishLoading()
 
         val inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(ViewInputProcessor())
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        val textFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        val displayFont = assets[FreeTypeFontAssets.Immortal]
+        val textFont = assetManagerHandler.assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
+        val displayFont = assetManagerHandler.assets[FreeTypeFontAssets.Immortal]
 
-        stage.addActor(layout.createDisplayViewCtrl(batch, displayFont))
-        stage.addActor(layout.createTextViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createLogViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createStatusViewCtrl(batch, textFont, assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createMenuViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createInputsViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(batch, textFont, assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere], assets[TextureAssets.BlueSphere]))
-        stage.addActor(layout.createPauseViewCtrl(batch, textFont, assets[TextureAssets.KoboldA], assets[TextureAssets.KoboldB], assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createDisplayViewCtrl(displayFont))
+        stage.addActor(layout.createTextViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createLogViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
+        stage.addActor(layout.createStatusViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createMenuViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createInputsViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createAiViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
+        stage.addActor(layout.createPauseViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
 
         //experiments for border
 //        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = 0f; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })
@@ -81,7 +81,7 @@ class ViewSimulator(private val batch: Batch,
     }
 
     override fun dispose() {
-        assets.dispose()
+        assetManagerHandler.dispose()
         layout.dispose()
     }
 }

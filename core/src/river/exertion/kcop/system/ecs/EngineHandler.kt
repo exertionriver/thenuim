@@ -41,7 +41,6 @@ class EngineHandler : Telegraph {
     fun removeEntity(removeIEntity : IEntity) {
         engine.removeEntity(entities[removeIEntity])
 
-        removeIEntity.dispose()
         entities.remove(removeIEntity)
     }
 
@@ -99,10 +98,11 @@ class EngineHandler : Telegraph {
         val initMethod = componentClass.getMethod(
             IComponent::initialize.name,
             (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java,
-            (IComponent::initialize.valueParameters[1].type.classifier as KClass<*>).java)
+            (IComponent::initialize.valueParameters[1].type.classifier as KClass<*>).java
+        )
 
-            addComponentInstance(entityName, entity, instance as IComponent)
-            initMethod.invoke(instance, entityName, initInfo)
+        addComponentInstance(entityName, entity, instance as IComponent)
+        initMethod.invoke(instance, entityName, initInfo)
 
         return entityName
     }
@@ -161,4 +161,6 @@ class EngineHandler : Telegraph {
         }
         return true
     }
+
+    fun dispose() { }
 }

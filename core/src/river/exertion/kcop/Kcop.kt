@@ -2,6 +2,8 @@ package river.exertion.kcop
 
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.ai.msg.TelegramProvider
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
@@ -28,49 +30,51 @@ import river.exertion.kcop.simulation.NarrativeSimulator
 import river.exertion.kcop.simulation.ProfileSimulator
 import river.exertion.kcop.simulation.ViewSimulator
 import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
+import river.exertion.kcop.system.messaging.MessageChannel
 
-class Kcop : KtxGame<KtxScreen>() {
+class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
+
+    init {
+        MessageChannel.TWO_BATCH_BRIDGE.enableProvider(this)
+    }
+
+    lateinit var twoBatch : PolygonSpriteBatch
+//    val threeBatch = ModelBatch()
 
     private val context = Context()
 
     override fun create() {
-        val perspectiveCamera = PerspectiveCamera(75f, initViewportWidth, initViewportHeight )
+//        val perspectiveCamera = PerspectiveCamera(75f, initViewportWidth, initViewportHeight )
         val orthoCamera = OrthographicCamera().apply { setToOrtho(false, initViewportWidth, initViewportHeight) }
-        val menuViewport = FitViewport(initViewportWidth, initViewportHeight, orthoCamera)
-        val gameBatch = ModelBatch()
-        val menuBatch = PolygonSpriteBatch()
-        val menuStage = Stage(menuViewport, menuBatch)
-        val assets = AssetManager()
+        val viewport = FitViewport(initViewportWidth, initViewportHeight, orthoCamera)
 
-        val lfhr = LocalFileHandleResolver()
-        assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
-        assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
-
-        val ifhr = InternalFileHandleResolver()
-        assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(ifhr))
-        assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(ifhr))
+        twoBatch = PolygonSpriteBatch()
+        val stage = Stage(viewport, twoBatch)
 
         context.register {
-            bindSingleton(perspectiveCamera)
             bindSingleton(orthoCamera)
-            bindSingleton<Batch>(menuBatch)
-            bindSingleton(gameBatch)
-            bindSingleton(menuStage)
-            bindSingleton(assets)
+            bindSingleton<Batch>(twoBatch)
+            bindSingleton(stage)
 
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
-//            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(ProfileSimulator( inject(), inject(), inject() ) )
+//            addScreen(NarrativeSimulator( inject(), inject(), inject() ) )
         }
         Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<NarrativeSimulator>()
+        setScreen<ProfileSimulator>()
 
     }
 
     companion object {
         val initViewportWidth = 1280F
         val initViewportHeight = 720F
+    }
+
+    override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {
+        if (msg == MessageChannel.TWO_BATCH_BRIDGE.id()) return twoBatch
+
+        return MessageChannel.TWO_BATCH_BRIDGE.messageClass().java.getDeclaredConstructor().newInstance()
     }
 }

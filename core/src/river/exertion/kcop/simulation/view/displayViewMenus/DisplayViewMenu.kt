@@ -12,10 +12,11 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuParams
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 import river.exertion.kcop.system.messaging.messages.MenuMessage
@@ -106,6 +107,8 @@ interface DisplayViewMenu {
         val scrollNine = NinePatch(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle(scrollBackground, null, null, null, NinePatchDrawable(scrollNine))
 
+        val menuPane = menuPane(bitmapFont)
+
         return Table().apply {
             this.add(Stack().apply {
                 this.add(Image(background))
@@ -120,10 +123,10 @@ interface DisplayViewMenu {
                         ).center().right()
                         this.row()
                         this.add(
-                            if (menuPane(bitmapFont) == null) { Table() }
+                            if (menuPane == null) { Table() }
                             else {
 
-                                ScrollPane(menuPane(bitmapFont), scrollPaneStyle).apply {
+                                ScrollPane(menuPane, scrollPaneStyle).apply {
                                     // https://github.com/raeleus/skin-composer/wiki/ScrollPane
                                     this.fadeScrollBars = false
                                     this.setFlickScroll(false)

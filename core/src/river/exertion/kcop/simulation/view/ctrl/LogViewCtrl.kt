@@ -3,10 +3,7 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
@@ -24,6 +21,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
     init {
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
 
     var currentLog : MutableList<String>? = null
@@ -171,23 +169,30 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            if (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) {
-                val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
-
-                if (logMessage.messageType == LogViewMessageType.LogEntry) {
-                    addLog(logMessage.message)
-                    if (isInitialized) recreate()
-                } else {
-                    when (logMessage.messageType) {
-                        LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
-                        LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
-                        LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
-                        else -> {}
-                    }
-                    if (isInitialized) rebuildTextTimeReadout()
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.batch = twoBatch
+                    return true
                 }
+                (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) -> {
+                    val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                return true
+                    if (logMessage.messageType == LogViewMessageType.LogEntry) {
+                        addLog(logMessage.message)
+                        if (isInitialized) recreate()
+                    } else {
+                        when (logMessage.messageType) {
+                            LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
+                            LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
+                            LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
+                            else -> {}
+                        }
+                        if (isInitialized) rebuildTextTimeReadout()
+                    }
+
+                    return true
+                }
             }
         }
         return false
