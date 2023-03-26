@@ -22,14 +22,12 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
-import river.exertion.kcop.assets.NarrativeAsset
-import river.exertion.kcop.assets.NarrativeAssetLoader
-import river.exertion.kcop.assets.ProfileAsset
-import river.exertion.kcop.assets.ProfileAssetLoader
+import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.NarrativeSimulator
 import river.exertion.kcop.simulation.ProfileSimulator
 import river.exertion.kcop.simulation.ViewSimulator
 import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
+import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.messaging.MessageChannel
 
 class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
@@ -44,6 +42,8 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
     private val context = Context()
 
     override fun create() {
+        Gdx.app.logLevel = loglevel
+
 //        val perspectiveCamera = PerspectiveCamera(75f, initViewportWidth, initViewportHeight )
         val orthoCamera = OrthographicCamera().apply { setToOrtho(false, initViewportWidth, initViewportHeight) }
         val viewport = FitViewport(initViewportWidth, initViewportHeight, orthoCamera)
@@ -51,24 +51,30 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         twoBatch = PolygonSpriteBatch()
         val stage = Stage(viewport, twoBatch)
 
+        val engineHandler = EngineHandler()
+        val assetManagerHandler = AssetManagerHandler()
+
         context.register {
             bindSingleton(orthoCamera)
             bindSingleton(stage)
+            bindSingleton(engineHandler)
+            bindSingleton(assetManagerHandler)
 
-            addScreen(ColorPaletteSimulator( inject(), inject() ) )
-//            addScreen(ViewSimulator( inject(), inject() ) )
-//            addScreen(ProfileSimulator( inject(), inject() ) )
-//            addScreen(NarrativeSimulator( inject(), inject() ) )
+//            addScreen(ColorPaletteSimulator( inject(), inject(), inject() ) )
+//            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
+//            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
-        Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<ColorPaletteSimulator>()
-
+        setScreen<NarrativeSimulator>()
     }
 
     companion object {
         val initViewportWidth = 1280F
         val initViewportHeight = 720F
+
+        val title = "koboldCave Operating Platform (kcop) v0.9"
+        val loglevel = LOG_DEBUG
     }
 
     override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {

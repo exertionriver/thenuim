@@ -23,11 +23,11 @@ import river.exertion.kcop.system.view.ViewInputProcessor
 
 
 class ProfileSimulator(private val stage: Stage,
+                       private val engineHandler: EngineHandler,
+                       private val assetManagerHandler: AssetManagerHandler,
                        private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val engineHandler = EngineHandler()
-    val assetManagerHandler = AssetManagerHandler()
 
     @Suppress("NewApi")
     override fun render(delta: Float) {

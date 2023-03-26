@@ -1,12 +1,9 @@
 package river.exertion.kcop.simulation
 
-import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
@@ -17,18 +14,17 @@ import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.*
 import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.activate
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.system.ecs.entity.NarrativeEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
 class NarrativeSimulator(private val stage: Stage,
+                         private val engineHandler: EngineHandler,
+                         private val assetManagerHandler: AssetManagerHandler,
                          private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val engineHandler = EngineHandler()
-    val assetManagerHandler = AssetManagerHandler()
 
     var narrativesIdx = 0
     var narrativeEntityName = ""

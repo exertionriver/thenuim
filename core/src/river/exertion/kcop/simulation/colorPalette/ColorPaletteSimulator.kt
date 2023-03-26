@@ -15,10 +15,10 @@ import river.exertion.kcop.assets.*
 
 
 class ColorPaletteSimulator(private val stage: Stage,
+                            private val assetManagerHandler: AssetManagerHandler,
                             private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val cpLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val assetManagerHandler = AssetManagerHandler()
 
     @Suppress("NewApi")
     override fun render(delta: Float) {

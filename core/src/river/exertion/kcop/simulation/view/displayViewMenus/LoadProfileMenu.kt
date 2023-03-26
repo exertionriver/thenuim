@@ -87,16 +87,15 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     }
 
     fun loadProfile() {
+        //inactivate narrative and close menu
+        MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.INACTIVATE))
+        Switchboard.closeMenu()
+
         //clear profile entities
         MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(
             EngineEntityMessageType.REMOVE_ALL_ENTITIES,
             ProfileEntity::class.java, profile)
         )
-
-        //remove statuses
-        MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.CLEAR_STATUSES))
-
-        Switchboard.closeMenu()
 
         //instantiate profile
         MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(

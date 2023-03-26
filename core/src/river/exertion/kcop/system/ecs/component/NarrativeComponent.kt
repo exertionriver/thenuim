@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.activate
+import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.next
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.pause
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.unpause
@@ -82,6 +83,7 @@ class NarrativeComponent : IComponent, Telegraph {
                 when (narrativeMessage.narrativeMessageType) {
                     NarrativeMessage.NarrativeMessageType.PAUSE -> pause()
                     NarrativeMessage.NarrativeMessageType.UNPAUSE -> unpause()
+                    NarrativeMessage.NarrativeMessageType.INACTIVATE -> inactivate()
                     NarrativeMessage.NarrativeMessageType.NEXT -> if (narrativeMessage.promptNext != null) next(narrativeMessage.promptNext)
                 }
                 return true
