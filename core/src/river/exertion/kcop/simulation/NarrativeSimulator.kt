@@ -23,8 +23,7 @@ import river.exertion.kcop.system.ecs.entity.NarrativeEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
-class NarrativeSimulator(private val batch: Batch,
-                         private val stage: Stage,
+class NarrativeSimulator(private val stage: Stage,
                          private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)

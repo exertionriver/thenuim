@@ -18,7 +18,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
         val narrativeComponent = NarrativeComponent.getFor(entity)!!
 
-        if ( (narrativeComponent.narrative != null) && narrativeComponent.isActive) {
+        if (narrativeComponent.isInitialized && narrativeComponent.isActive) {
 
             var currentText = narrativeComponent.currentText()
             currentText += narrativeComponent.executeReadyTimelineEvents()

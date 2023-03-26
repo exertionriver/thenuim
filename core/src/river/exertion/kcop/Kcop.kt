@@ -53,17 +53,16 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
         context.register {
             bindSingleton(orthoCamera)
-            bindSingleton<Batch>(twoBatch)
             bindSingleton(stage)
 
-//            addScreen(ColorPaletteSimulator( inject(), inject(), inject(), inject() ) )
-//            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
-            addScreen(ProfileSimulator( inject(), inject(), inject() ) )
-//            addScreen(NarrativeSimulator( inject(), inject(), inject() ) )
+            addScreen(ColorPaletteSimulator( inject(), inject() ) )
+//            addScreen(ViewSimulator( inject(), inject() ) )
+//            addScreen(ProfileSimulator( inject(), inject() ) )
+//            addScreen(NarrativeSimulator( inject(), inject() ) )
         }
         Gdx.app.logLevel = LOG_DEBUG
 
-        setScreen<ProfileSimulator>()
+        setScreen<ColorPaletteSimulator>()
 
     }
 

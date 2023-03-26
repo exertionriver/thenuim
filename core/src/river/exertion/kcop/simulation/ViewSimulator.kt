@@ -15,8 +15,7 @@ import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
-class ViewSimulator(private val batch: Batch,
-                    private val stage: Stage,
+class ViewSimulator(private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)

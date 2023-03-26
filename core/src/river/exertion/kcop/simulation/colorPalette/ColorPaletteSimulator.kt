@@ -11,18 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import ktx.app.KtxScreen
 import ktx.scene2d.*
 import river.exertion.kcop.*
-import river.exertion.kcop.assets.BitmapFontAssets
-import river.exertion.kcop.assets.FreeTypeFontAssets
-import river.exertion.kcop.assets.get
-import river.exertion.kcop.assets.load
+import river.exertion.kcop.assets.*
 
 
-class ColorPaletteSimulator(private val batch: Batch,
-                            private val assets: AssetManager,
-                            private val stage: Stage,
+class ColorPaletteSimulator(private val stage: Stage,
                             private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val cpLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val assetManagerHandler = AssetManagerHandler()
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -52,13 +48,12 @@ class ColorPaletteSimulator(private val batch: Batch,
 
     override fun show() {
 //        BitmapFontAssets.values().forEach { assets.load(it) }
-        FreeTypeFontAssets.values().forEach { assets.load(it) }
-        assets.finishLoading()
+        FreeTypeFontAssets.values().forEach { assetManagerHandler.assets.load(it) }
+        assetManagerHandler.assets.finishLoading()
 
         Gdx.input.inputProcessor = stage
 
-        cpLayout.bitmapFont = assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        cpLayout.batch = batch
+        cpLayout.bitmapFont = assetManagerHandler.assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
 
         stage.addActor(cpLayout.createSampleSwatchesCtrl())
         stage.addActor(cpLayout.createBaseSwatchesCtrl())
@@ -80,6 +75,6 @@ class ColorPaletteSimulator(private val batch: Batch,
     }
 
     override fun dispose() {
-        assets.dispose()
+        assetManagerHandler.dispose()
     }
 }

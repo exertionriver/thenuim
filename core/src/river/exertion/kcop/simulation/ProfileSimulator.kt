@@ -22,8 +22,7 @@ import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
-class ProfileSimulator(private val batch: Batch,
-                       private val stage: Stage,
+class ProfileSimulator(private val stage: Stage,
                        private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)

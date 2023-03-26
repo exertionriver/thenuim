@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -12,6 +13,11 @@ import river.exertion.kcop.simulation.view.ViewType
 import kotlin.reflect.jvm.javaMethod
 
 class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
+
+    init {
+        MessageChannel.COLOR_PALETTE_BRIDGE.enableReceive(this)
+        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+    }
 
     var bitmapFont : BitmapFont? = null
     var batch : Batch? = null
@@ -28,10 +34,6 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     var compSwatchesCtrl = ColorSwatchesCtrl(thirdColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
     var triadFirstSwatchesCtrl = ColorSwatchesCtrl(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
     var triadSecondSwatchesCtrl = ColorSwatchesCtrl(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-
-    init {
-        MessageChannel.COLOR_PALETTE_BRIDGE.enableReceive(this)
-    }
 
     fun colorColumnWidth() = ViewType.fifthWidth(width) + ViewType.padWidth(width)
 
@@ -117,14 +119,24 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
     override fun handleMessage(msg: Telegram?): Boolean {
-        if ( (msg != null) && (MessageChannel.COLOR_PALETTE_BRIDGE.isType(msg.message) ) ) {
-            val colorPaletteMessage : ColorPaletteMessage = MessageChannel.COLOR_PALETTE_BRIDGE.receiveMessage(msg.extraInfo)
+        if (msg != null) {
+            when {
+                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
+                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
+                    batch = twoBatch
+                    return true
+                }
+                (MessageChannel.COLOR_PALETTE_BRIDGE.isType(msg.message) ) -> {
+                    val colorPaletteMessage : ColorPaletteMessage = MessageChannel.COLOR_PALETTE_BRIDGE.receiveMessage(msg.extraInfo)
 
-            baseColor = colorPaletteMessage.colorPalette
-            baseColorName = colorPaletteMessage.name
+                    baseColor = colorPaletteMessage.colorPalette
+                    baseColorName = colorPaletteMessage.name
 
-            recreateSpectrumSwatches()
+                    recreateSpectrumSwatches()
+                    return true
+                }
+            }
         }
-        return true
+        return false
     }
 }
