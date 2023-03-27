@@ -1,7 +1,6 @@
 package river.exertion.kcop.assets
 
 import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
@@ -14,6 +13,10 @@ import ktx.assets.load
 import ktx.assets.unloadSafely
 import ktx.collections.gdxArrayOf
 import river.exertion.kcop.simulation.view.FontPackage
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.AMHMessage
+import river.exertion.kcop.system.messaging.messages.MenuMessage
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 
@@ -32,8 +35,10 @@ class AssetManagerHandler : Telegraph {
 
         assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
         assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
-        loadProfiles()
-        loadNarratives()
+        loadProfileAssets()
+        loadNarrativeAssets()
+
+        MessageChannel.AMH_BRIDGE.enableReceive(this)
     }
 
     inline fun <reified T:LoadableAsset>reloadAssets(assetLoadLocation : String): Map<String, T> {
@@ -62,8 +67,8 @@ class AssetManagerHandler : Telegraph {
         return returnAssets
     }
 
-    fun loadProfiles() = reloadAssets<ProfileAsset>(ProfileAssets.profileAssetLocation)
-    fun loadNarratives() = reloadAssets<NarrativeAsset>(NarrativeAssets.narrativeAssetLocation)
+    fun loadProfileAssets() = reloadAssets<ProfileAsset>(ProfileAssets.profileAssetLocation)
+    fun loadNarrativeAssets() = reloadAssets<NarrativeAsset>(NarrativeAssets.narrativeAssetLocation)
 
     fun fontPackage() : FontPackage {
         return FontPackage(
@@ -74,10 +79,26 @@ class AssetManagerHandler : Telegraph {
         )
     }
 
+//    MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuProfiles))
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
-            return true
+            when {
+                (MessageChannel.AMH_BRIDGE.isType(msg.message) ) -> {
+                    val amhMessage: AMHMessage = MessageChannel.AMH_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    when (amhMessage.messageType) {
+                        AMHMessage.AMHMessageType.ReloadMenuProfiles -> {
+                            val loadedProfileAssets = loadProfileAssets().values.toList()
+                            val loadedNarrativeAssets = loadNarrativeAssets().values.toList()
+                            MessageChannel.MENU_BRIDGE.send(null, MenuMessage(null, ProfileMenuParams(loadedProfileAssets, loadedNarrativeAssets)))
+                        }
+                        else -> {}
+                    }
+
+                    return true
+                }
+            }
         }
         return false
     }

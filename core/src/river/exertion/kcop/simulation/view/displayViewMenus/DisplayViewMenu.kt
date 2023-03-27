@@ -12,7 +12,8 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuParams
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
+import river.exertion.kcop.simulation.view.displayViewMenus.params.NavMenuParams
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.view.ShapeDrawerConfig
@@ -29,45 +30,44 @@ interface DisplayViewMenu {
     val backgroundColor : ColorPalette
     val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
 
+    val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
+    val navs : MutableList<ActionParam> //Button Label -> action
+    val actions : MutableList<ActionParam> //Button Label -> log text + action to run
+
     fun menuPane(bitmapFont: BitmapFont) : Table?
     fun navButtonPane(bitmapFont: BitmapFont) : Table = Table().apply {
        // this.debug()
 
-        this@DisplayViewMenu.navs.entries.forEach { navEntry ->
+        this@DisplayViewMenu.navs.forEach { navEntry ->
             this.add(
-                TextButton(navEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
+                TextButton(navEntry.label, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
                     this.onClick {
-                        MessageChannel.MENU_BRIDGE.send(null, MenuMessage(navEntry.value))
+                        navEntry.action()
                     this.center()
                     }
                 }
             ).padTop(ViewType.padHeight(screenHeight))
-            if (navEntry != this@DisplayViewMenu.navs.entries.last()) this.row()
+            if (navEntry != this@DisplayViewMenu.navs.last()) this.row()
         }
     }
 
     fun actionButtonPane(bitmapFont: BitmapFont) : Table = Table().apply {
      //   this.debug()
 
-        this@DisplayViewMenu.actions.entries.forEach { actionEntry ->
+        this@DisplayViewMenu.actions.forEach { actionEntry ->
             this.add(
-                TextButton(actionEntry.key, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
+                TextButton(actionEntry.label, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
                     this.onClick {
-                        if (actionEntry.value.first != null)
-                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.value.first!!))
-                        actionEntry.value.second()
+                        if (actionEntry.log != null)
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.log!!))
+                        actionEntry.action()
                         //go back a menu
-                        MessageChannel.MENU_BRIDGE.send(null, MenuMessage(ProfileMenuParams(breadcrumbEntries.keys.toList()[0]) ))
+                        MessageChannel.MENU_BRIDGE.send(null, MenuMessage(NavMenuParams(breadcrumbEntries.keys.toList()[0]) ))
                     }
                 }
             ).padRight(ViewType.padWidth(screenWidth))
         }
     }
-
-
-    val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
-    val navs : Map<String, MenuParams> //Button Label -> menu params
-    val actions : Map<String, Pair<String?, () -> Unit>> //Button Label -> log text + action to run
 
     fun breadcrumbPane(bitmapFont: BitmapFont) = Table().apply {
       //  this.debug()
@@ -77,7 +77,7 @@ interface DisplayViewMenu {
             this.add(Label("${menuLabel.value} > ", Label.LabelStyle(bitmapFont.apply {this.data.setScale(FontSize.SMALL.fontScale())}
                 , backgroundColor.label().color())).apply {
                 this.onClick {
-                    MessageChannel.MENU_BRIDGE.send(null, MenuMessage(ProfileMenuParams(menuLabel.key) ))
+                    MessageChannel.MENU_BRIDGE.send(null, MenuMessage(NavMenuParams(menuLabel.key) ))
                 }
             } )
         }
@@ -85,7 +85,6 @@ interface DisplayViewMenu {
 
         return this
     }
-
 
     fun menuLayout(batch : Batch, bitmapFont: BitmapFont) : Table {
         if (sdcMap[0] != null) sdcMap[0]!!.dispose()

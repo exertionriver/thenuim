@@ -13,7 +13,7 @@ import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNar
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.*
-import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileReqMenu
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
 
@@ -198,11 +198,29 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 (MessageChannel.MENU_BRIDGE.isType(msg.message) ) -> {
                     val menuMessage: MenuMessage = MessageChannel.MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
-                        setMenuIdxByTag(menuMessage.menuParams!!.targetMenuTag)
+                    if (menuMessage.navMenuParams != null) {
+                        setMenuIdxByTag(menuMessage.navMenuParams!!.targetMenuTag)
 
-                        if ( displayViewMenus[currentMenuIdx] is ProfileReqMenu ) {
-                            (displayViewMenus[currentMenuIdx] as ProfileReqMenu).profile = (menuMessage.menuParams as ProfileMenuParams).profileAsset
+                        displayViewMenus.filter { it is ProfileReqMenu }.forEach { profileReqMenu ->
+                            if (menuMessage.navMenuParams!!.selectedProfileAsset != null) {
+                                (profileReqMenu as ProfileReqMenu).selectedProfileAsset = menuMessage.navMenuParams!!.selectedProfileAsset!!
+                            }
+                            if (menuMessage.navMenuParams!!.selectedNarrativeAsset != null) {
+                                (profileReqMenu as ProfileReqMenu).selectedNarrativeAsset = menuMessage.navMenuParams!!.selectedNarrativeAsset!!
+                            }
                         }
+                    }
+
+                    if (menuMessage.profileMenuParams != null ) {
+                        displayViewMenus.filter { it is ProfileReqMenu }.forEach { profileReqMenu ->
+                            if (menuMessage.profileMenuParams!!.profileAssets != null) {
+                                (profileReqMenu as ProfileReqMenu).profileAssets = menuMessage.profileMenuParams!!.profileAssets!!
+                            }
+                            if (menuMessage.profileMenuParams!!.narrativeAssets != null) {
+                                (profileReqMenu as ProfileReqMenu).narrativeAssets = menuMessage.profileMenuParams!!.narrativeAssets!!
+                            }
+                        }
+                    }
 
                     build()
                     return true

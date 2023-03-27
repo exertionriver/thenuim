@@ -2,9 +2,14 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
+import river.exertion.kcop.simulation.view.displayViewMenus.params.NavMenuParams
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.AMHMessage
+import river.exertion.kcop.system.messaging.messages.MenuMessage
 import kotlin.system.exitProcess
 
 class MainMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
@@ -17,15 +22,18 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
 
     override val breadcrumbEntries = mapOf<String, String>()
 
-    override val navs = mapOf(
-        "Profile >" to ProfileMenuParams("profileMenu", null)
+    override val navs = mutableListOf(
+        ActionParam("Profile >", {
+            MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuProfiles))
+            MessageChannel.MENU_BRIDGE.send(null, MenuMessage(NavMenuParams("profileMenu")))
+        })
     )
 
-    override val actions = mapOf<String, Pair<String, () -> Unit>>(
-        "Exit" to Pair("Peace Out") {
+    override val actions = mutableListOf(
+        ActionParam("Exit", {
             Gdx.app.exit()
             exitProcess(0)
-        },
+        }, "Peace Out")
     )
 
     override fun tag() = tag

@@ -33,6 +33,7 @@ enum class MessageChannel {
 
     TWO_BATCH_BRIDGE { override val messageClass = PolygonSpriteBatch::class },
     FONT_BRIDGE { override val messageClass = FontPackage::class },
+    AMH_BRIDGE { override val messageClass = AMHMessage::class },
     ;
 
     abstract val messageClass : KClass<*>
