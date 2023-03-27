@@ -34,9 +34,11 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     init {
         MessageChannel.TWO_BATCH_BRIDGE.enableProvider(this)
+        MessageChannel.FONT_BRIDGE.enableProvider(this)
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
+    lateinit var assetManagerHandler : AssetManagerHandler
 //    val threeBatch = ModelBatch()
 
     private val context = Context()
@@ -52,7 +54,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         val stage = Stage(viewport, twoBatch)
 
         val engineHandler = EngineHandler()
-        val assetManagerHandler = AssetManagerHandler()
+        assetManagerHandler = AssetManagerHandler()
 
         context.register {
             bindSingleton(orthoCamera)
@@ -79,7 +81,8 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {
         if (msg == MessageChannel.TWO_BATCH_BRIDGE.id()) return twoBatch
+        if (msg == MessageChannel.FONT_BRIDGE.id()) return assetManagerHandler.fontPackage()
 
-        return MessageChannel.TWO_BATCH_BRIDGE.messageClass().java.getDeclaredConstructor().newInstance()
+        return false
     }
 }

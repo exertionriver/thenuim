@@ -72,28 +72,21 @@ class NarrativeSimulator(private val stage: Stage,
     }
 
     override fun show() {
-        FreeTypeFontAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        TextureAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        NarrativeAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        assetManagerHandler.assets.finishLoading()
 
         val multiplexer = InputMultiplexer()
         multiplexer.addProcessor(ViewInputProcessor())
         multiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = multiplexer
 
-        val textFont = assetManagerHandler.assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        val displayFont = assetManagerHandler.assets[FreeTypeFontAssets.Immortal]
-
-        stage.addActor(viewLayout.createDisplayViewCtrl(displayFont))
-        stage.addActor(viewLayout.createTextViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(viewLayout.createLogViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
-        stage.addActor(viewLayout.createStatusViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(viewLayout.createMenuViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createInputsViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createAiViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
-        stage.addActor(viewLayout.createPauseViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createTextViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createDisplayViewCtrl())
+        stage.addActor(viewLayout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
+        stage.addActor(viewLayout.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(viewLayout.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
+        stage.addActor(viewLayout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(viewLayout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
 
         narrativesBlock = NarrativeAssets.values().map { assetManagerHandler.assets[it] }.associateWith { it.narrative!!.firstBlock().id }.toMutableMap()
 

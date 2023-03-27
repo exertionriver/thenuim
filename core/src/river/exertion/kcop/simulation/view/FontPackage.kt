@@ -1,0 +1,16 @@
+package river.exertion.kcop.simulation.view
+
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import river.exertion.kcop.assets.FontSize
+
+data class FontPackage(val text : BitmapFont, val small : BitmapFont, val medium : BitmapFont, val large : BitmapFont) {
+
+    fun font(fontSize: FontSize) : BitmapFont {
+        return when (fontSize) {
+            FontSize.TEXT -> text
+            FontSize.SMALL -> small
+            FontSize.MEDIUM -> medium
+            FontSize.LARGE -> large
+        }
+    }
+}

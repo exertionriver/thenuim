@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -26,6 +28,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
     init {
         MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
     val statuses : MutableList<Status> = mutableListOf()
@@ -34,7 +37,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
 
     private lateinit var scrollPane : ScrollPane
 
-    fun statusColorTexture(batch : Batch, overrideColor : ColorPalette? = null) : TextureRegion {
+    fun statusColorTexture(overrideColor : ColorPalette? = null) : TextureRegion {
 
         if (overrideColor == null)
             this.sdc = ShapeDrawerConfig(batch, backgroundColor.color())
@@ -45,7 +48,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
             .roundToInt(), ViewType.padHeight(screenHeight).roundToInt()) }
     }
 
-    fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
+    fun textScrollPane() : ScrollPane {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
             ViewType.padHeight(
@@ -60,13 +63,13 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
 
             barStack.add(
                 ProgressBar(0f, 1f, .01f, false, ProgressBar.ProgressBarStyle(
-                    NinePatchDrawable(NinePatch(statusColorTexture(batch))),
+                    NinePatchDrawable(NinePatch(statusColorTexture())),
                     null
-                ).apply { this.knobBefore = NinePatchDrawable(NinePatch(statusColorTexture(batch, backgroundColor.triad().first)))}
+                ).apply { this.knobBefore = NinePatchDrawable(NinePatch(statusColorTexture(backgroundColor.triad().first)))}
             ).apply { this.value = it.value }
             )
             barStack.add(
-                Label(it.key, Label.LabelStyle(bitmapFont, backgroundColor.label().incr(2).color()))
+                Label(it.key, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().incr(2).color()))
             )
 
             innerTable.add(barStack)
@@ -76,8 +79,8 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         innerTable.top()
 //        innerTable.debug()
 
-        val scrollNine = NinePatch(statusColorTexture(batch, backgroundColor.triad().second.incr(2)))
-        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(statusColorTexture(batch)), null, null, null, NinePatchDrawable(scrollNine))
+        val scrollNine = NinePatch(statusColorTexture(backgroundColor.triad().second.incr(2)))
+        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(statusColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
 
         val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
@@ -93,8 +96,8 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         return scrollPane
     }
 
-    override fun build(bitmapFont: BitmapFont, batch: Batch) {
-        this.add(textScrollPane(bitmapFont, batch)).size(this.tableWidth(), this.tableHeight())
+    override fun buildCtrl() {
+        this.add(textScrollPane()).size(this.tableWidth(), this.tableHeight())
         this.clip()
     }
 
@@ -105,6 +108,11 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                 (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
                     val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
                     super.batch = twoBatch
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.fontPackage = fontPackage
                     return true
                 }
                 (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {
@@ -127,7 +135,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                         }
                     }
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
             }

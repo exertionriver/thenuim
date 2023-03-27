@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.system.messaging.messages.*
 import kotlin.reflect.KClass
@@ -31,6 +32,7 @@ enum class MessageChannel {
     ECS_ENGINE_COMPONENT_BRIDGE { override val messageClass = EngineComponentMessage::class },
 
     TWO_BATCH_BRIDGE { override val messageClass = PolygonSpriteBatch::class },
+    FONT_BRIDGE { override val messageClass = FontPackage::class },
     ;
 
     abstract val messageClass : KClass<*>

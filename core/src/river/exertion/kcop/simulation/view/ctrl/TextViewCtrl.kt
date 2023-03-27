@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.TextViewMessage
@@ -20,6 +22,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
     init {
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
     var currentText : String? = null
@@ -32,7 +35,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
     fun isText() = !currentText.isNullOrEmpty()
     fun isPrompts() = !currentPrompts.isNullOrEmpty()
 
-    fun textScrollPane(bitmapFont: BitmapFont, batch : Batch) : ScrollPane {
+    fun textScrollPane() : ScrollPane {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
             ViewType.padHeight(
@@ -43,7 +46,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         )
 
         if (isText()) {
-            val textLabel = Label(currentText, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
+            val textLabel = Label(currentText, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
             textLabel.wrap = true
             innerTable.add(textLabel).growX()
         }
@@ -52,7 +55,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 //        innerTable.debug()
 
         val scrollNine = NinePatch(TextureRegion(vScrollKnobTexture, 20, 20, 20, 20))
-        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture(batch)), null, null, null, NinePatchDrawable(scrollNine))
+        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
 
         val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
@@ -68,7 +71,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         return scrollPane
     }
 
-    fun promptPane(bitmapFont : BitmapFont) : Table {
+    fun promptPane() : Table {
 
         val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
             ViewType.padHeight(
@@ -80,7 +83,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
+                val logLabel = Label(entry, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()
@@ -93,14 +96,14 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         return innerTable
     }
 
-    override fun build(bitmapFont: BitmapFont, batch: Batch) {
+    override fun buildCtrl() {
 
         this.add(Stack().apply {
-            this.add(backgroundColorImg(batch))
+            this.add(backgroundColorImg())
             this.add(Table().apply {
-                this.add(textScrollPane(bitmapFont, batch))
+                this.add(textScrollPane())
                 this.row()
-                this.add(promptPane(bitmapFont)).growX()
+                this.add(promptPane()).growX()
             })
         }).size(this.tableWidth(), this.tableHeight())
         this.clip()
@@ -115,13 +118,18 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                     super.batch = twoBatch
                     return true
                 }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.fontPackage = fontPackage
+                    return true
+                }
                 (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val textViewMessage: TextViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
                     currentText = textViewMessage.narrativeText
                     currentPrompts = textViewMessage.prompts
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
             }

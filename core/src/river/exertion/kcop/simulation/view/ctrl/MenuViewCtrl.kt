@@ -3,8 +3,6 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
@@ -87,7 +85,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         return buttonLayout
     }
 
-    override fun build(bitmapFont: BitmapFont, batch: Batch) {
+    override fun buildCtrl() {
         this.add(buttonLayout()).width(this.tableWidth()).height(this.tableHeight())
         this.clip()
     }
@@ -105,7 +103,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
                     this@MenuViewCtrl.isChecked[displayViewMenuMessage.menuButtonIdx] = displayViewMenuMessage.isChecked
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
             }

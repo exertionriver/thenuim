@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
@@ -16,11 +18,7 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
 
     init {
         MessageChannel.COLOR_PALETTE_BRIDGE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
-
-    var bitmapFont : BitmapFont? = null
-    var batch : Batch? = null
 
     var baseColorName = "darkGray"
     var baseColor = ColorPalette.of(baseColorName)
@@ -51,12 +49,6 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     fun colorSwatchWidth() = colorColumnWidth()
 
     fun createSampleSwatchesCtrl() : Table {
-        if (bitmapFont == null) throw Exception("${::createSampleSwatchesCtrl.javaMethod?.name}: bitmapFont needs to be set")
-        if (batch == null) throw Exception("${::createSampleSwatchesCtrl.javaMethod?.name}: batch needs to be set")
-
-        if (sampleSwatchesCtrl.bitmapFont == null) sampleSwatchesCtrl.bitmapFont = bitmapFont
-        if (sampleSwatchesCtrl.batch == null) sampleSwatchesCtrl.batch = batch
-
         sampleSwatchesCtrl.swatchEntries = ColorPalette.w3cColors()[sampleSwatchesIdx]
         sampleSwatchesCtrl.create()
 
@@ -76,12 +68,6 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     }
 
     private fun createSpectrumSwatchesCtrl(swatchesCtrl : ColorSwatchesCtrl, colorPalette : ColorPalette, colorNameOverride : String? = null) : Table {
-        if (bitmapFont == null) throw Exception("${::createSpectrumSwatchesCtrl.javaMethod?.name}: bitmapFont needs to be set")
-        if (batch == null) throw Exception("${::createSpectrumSwatchesCtrl.javaMethod?.name}: batch needs to be set")
-
-        if (swatchesCtrl.bitmapFont == null) swatchesCtrl.bitmapFont = bitmapFont
-        if (swatchesCtrl.batch == null) swatchesCtrl.batch = batch
-
         val colorName = colorNameOverride ?: colorPalette.tags()[0]
 
         swatchesCtrl.swatchEntries = colorPalette.labelledSpectrum(colorName)
@@ -121,11 +107,6 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    batch = twoBatch
-                    return true
-                }
                 (MessageChannel.COLOR_PALETTE_BRIDGE.isType(msg.message) ) -> {
                     val colorPaletteMessage : ColorPaletteMessage = MessageChannel.COLOR_PALETTE_BRIDGE.receiveMessage(msg.extraInfo)
 

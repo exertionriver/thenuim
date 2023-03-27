@@ -3,8 +3,6 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
@@ -58,7 +56,7 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
         MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(messageType, null) )
     }
 
-    override fun build(bitmapFont: BitmapFont, batch: Batch) {
+    override fun buildCtrl() {
         this.add(clickButton()).width(this.tableWidth()).height(this.tableHeight())
         this.clip()
     }
@@ -79,7 +77,7 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
                         toggleImmersionPause()
                     }
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
                 (MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {

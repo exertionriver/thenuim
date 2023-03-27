@@ -3,12 +3,11 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
@@ -28,6 +27,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
         MessageChannel.MENU_BRIDGE.enableReceive(this)
         MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
     var displayViewLayouts : MutableList<DisplayViewLayout> = mutableListOf(
@@ -83,7 +83,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = false
                         this.cancel()
                     }
-                    this@DisplayViewCtrl.recreate()
+                    this@DisplayViewCtrl.build()
                 }
             }, 0f, .05f)
         }
@@ -103,7 +103,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = false
                         this.cancel()
                     }
-                    this@DisplayViewCtrl.recreate()
+                    this@DisplayViewCtrl.build()
                 }
             }, 0f, .05f)
         }
@@ -124,11 +124,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     }
 
 
-    override fun build(bitmapFont: BitmapFont, batch: Batch) {
+    override fun buildCtrl() {
         this.add(
             Stack().apply {
-                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(bitmapFont, batch, currentLayoutMode, currentText, currentFontSize))
-                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout(batch, bitmapFont))
+                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(fontPackage.font(FontSize.SMALL), batch, currentLayoutMode, currentText, currentFontSize))
+                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout(batch, fontPackage.font(FontSize.SMALL)))
             }).size(this.tableWidth(), this.tableHeight())
 
         this.clip()
@@ -142,6 +142,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     super.batch = twoBatch
                     return true
                 }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.fontPackage = fontPackage
+                    return true
+                }
                 (MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.isType(msg.message) ) -> {
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
 
@@ -149,7 +154,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     if (displayViewTextMessage.displayText != null) currentText = displayViewTextMessage.displayText
                     if (displayViewTextMessage.displayFontSize != null) currentFontSize = displayViewTextMessage.displayFontSize
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
 
@@ -164,7 +169,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         DisplayViewTextureMessageType.CLEAR_ALL -> { clearImages(); clearText(); audioCtrl.stopMusic() }
                         }
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
@@ -187,7 +192,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu set to: ${displayViewMenus[currentMenuIdx].tag()}" ))
                     }
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
                 (MessageChannel.MENU_BRIDGE.isType(msg.message) ) -> {
@@ -199,7 +204,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                             (displayViewMenus[currentMenuIdx] as ProfileReqMenu).profile = (menuMessage.menuParams as ProfileMenuParams).profileAsset
                         }
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
             }

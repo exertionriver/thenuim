@@ -3,12 +3,12 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.InputViewMessage
@@ -18,6 +18,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     init {
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
     var clickImage : Texture? = null
@@ -58,30 +59,30 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
     fun touchText() = "$currentButton ($currentClickX,$currentClickY)"
 
-    fun textTable(bitmapFont: BitmapFont) : Table {
+    fun textTable() : Table {
 
         val innerTable = Table()
 
-        innerTable.add(Label(keyText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color()))).expandY()
+        innerTable.add(Label(keyText(), Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))).expandY()
 
         innerTable.row()
 
-        if (isTouchEvent()) innerTable.add(Label(touchText(), Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
+        if (isTouchEvent()) innerTable.add(Label(touchText(), Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color())))
 
 //        innerTable.debug()
 
         return innerTable
     }
 
-    override fun build(bitmapFont: BitmapFont, batch: Batch) {
+    override fun buildCtrl() {
 
         if ( (currentImage != null) && (isTouchEvent() || isKeyEvent()) ) {
             this.add(Stack().apply {
-                this.add(backgroundColorImg(batch))
-                this.add(textTable(bitmapFont))
+                this.add(backgroundColorImg())
+                this.add(textTable())
             } ).size(this.tableWidth(), this.tableHeight())
         } else {
-            this.add(backgroundColorImg(batch)).size(this.tableWidth(), this.tableHeight())
+            this.add(backgroundColorImg()).size(this.tableWidth(), this.tableHeight())
         }
         this.clip()
     }
@@ -92,6 +93,11 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
                 (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
                     val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
                     super.batch = twoBatch
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.fontPackage = fontPackage
                     return true
                 }
                 (MessageChannel.INPUT_VIEW_BRIDGE.isType(msg.message) ) -> {
@@ -108,7 +114,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
                         }
                     }
 
-                    if (isInitialized) recreate()
+                    build()
                     return true
                 }
 

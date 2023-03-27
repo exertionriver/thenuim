@@ -15,7 +15,7 @@ enum class NarrativeAssets(val narrativeFilename: String) {
     companion object {
         val narrativeAssetLocation = "kcop/narrative/"
         val narrativeAssetExtension = ".json"
-        fun narrativeAssetPath(profileName : String) = narrativeAssetLocation + profileName + narrativeAssetExtension
+        fun narrativeAssetPath(narrativeFilename : String) = narrativeAssetLocation + narrativeFilename + narrativeAssetExtension
     }
 }
 

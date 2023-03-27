@@ -12,7 +12,7 @@ enum class ProfileAssets(val profileFilename: String) {
     companion object {
         val profileAssetLocation = "kcop/profile/"
         val profileAssetExtension = ".json"
-        fun profileAssetPath(profileName : String) = profileAssetLocation + profileName + profileAssetExtension
+        fun profileAssetPath(profileFilename : String) = profileAssetLocation + profileFilename + profileAssetExtension
     }
 }
 

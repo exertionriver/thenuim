@@ -32,15 +32,12 @@ class ProfileAssetLoader(resolver: FileHandleResolver?) :
             val jsonElement = json.parseToJsonElement(rawData)
             val profile = json.decodeFromJsonElement(jsonElement) as Profile
 
-            ProfileAsset(profile).apply {
-                this.assetPath = fileName
-            }
+            ProfileAsset(profile, fileName)
 
         } catch (ex : Exception) {
-            ProfileAsset().apply {
+            ProfileAsset(null, fileName).apply {
                 this.status = "not loaded"
                 this.statusDetail = ex.message
-                this.assetPath = fileName
             }
         }
     }

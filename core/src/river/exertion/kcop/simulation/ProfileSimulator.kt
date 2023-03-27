@@ -50,28 +50,19 @@ class ProfileSimulator(private val stage: Stage,
     }
 
     override fun show() {
-        FreeTypeFontAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        TextureAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        ProfileAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        NarrativeAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        assetManagerHandler.assets.finishLoading()
-
         val inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(ViewInputProcessor())
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        val textFont = assetManagerHandler.assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
-        val displayFont = assetManagerHandler.assets[FreeTypeFontAssets.Immortal]
-
-        stage.addActor(layout.createDisplayViewCtrl(displayFont))
-        stage.addActor(layout.createTextViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createLogViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createStatusViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createMenuViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createInputsViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
-        stage.addActor(layout.createPauseViewCtrl(textFont, assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createDisplayViewCtrl())
+        stage.addActor(layout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
+        stage.addActor(layout.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(layout.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(layout.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
+        stage.addActor(layout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
 
         engineHandler.instantiateEntity(ProfileEntity::class.java, assetManagerHandler.assets[ProfileAssets.ExertionRiverText])
         engineHandler.addComponent(assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.id, NarrativeComponent::class.java, null,

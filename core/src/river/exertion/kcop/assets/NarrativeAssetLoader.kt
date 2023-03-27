@@ -31,7 +31,7 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             val jsonElement = json.parseToJsonElement(rawData)
             val narrative = json.decodeFromJsonElement(jsonElement) as Narrative
 
-            val returnNarrativeAsset = NarrativeAsset(narrative)
+            val returnNarrativeAsset = NarrativeAsset(narrative, fileName)
 
             narrative.eventBlocks.forEach { eventBlock ->
                 eventBlock.events.forEach { event ->
@@ -78,7 +78,7 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             return returnNarrativeAsset
 
         } catch (ex : Exception) {
-            return NarrativeAsset().apply {
+            return NarrativeAsset(null, fileName).apply {
                 this.status = "not loaded"
                 this.statusDetail = ex.message
             }

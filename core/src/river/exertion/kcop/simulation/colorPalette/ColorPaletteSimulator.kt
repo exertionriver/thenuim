@@ -47,13 +47,7 @@ class ColorPaletteSimulator(private val stage: Stage,
     }
 
     override fun show() {
-//        BitmapFontAssets.values().forEach { assets.load(it) }
-        FreeTypeFontAssets.values().forEach { assetManagerHandler.assets.load(it) }
-        assetManagerHandler.assets.finishLoading()
-
         Gdx.input.inputProcessor = stage
-
-        cpLayout.bitmapFont = assetManagerHandler.assets[FreeTypeFontAssets.NotoSansSymbolsSemiBold]
 
         stage.addActor(cpLayout.createSampleSwatchesCtrl())
         stage.addActor(cpLayout.createBaseSwatchesCtrl())

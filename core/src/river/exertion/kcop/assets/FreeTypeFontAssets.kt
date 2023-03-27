@@ -7,8 +7,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoa
 import ktx.assets.getAsset
 
 enum class FreeTypeFontAssets(val path: String) {
-    NotoSansSymbolsSemiBold("fonts/notoSansSymbols/static/NotoSansSymbols-SemiBold.ttf"), //https://fonts.google.com/noto/specimen/Noto+Sans+Symbols
-    Immortal("fonts/immortal/IMMORTAL.ttf")  //https://www.1001freefonts.com/fantasy-fonts.php
+    //https://fonts.google.com/noto/specimen/Noto+Sans+Symbols
+    NotoSansSymbolsSemiBoldText("fonts/notoSansSymbols/static/NotoSansSymbols-SemiBold.ttf") { override fun baseFontSize() = FontSize.TEXT },
+    //https://www.1001freefonts.com/fantasy-fonts.php
+    ImmortalLarge("fonts/immortal/IMMORTAL.ttf") { override fun baseFontSize() = FontSize.LARGE },
+    ImmortalMedium("fonts/immortal/IMMORTAL.ttf") { override fun baseFontSize() = FontSize.MEDIUM },
+    ImmortalSmall("fonts/immortal/IMMORTAL.ttf") { override fun baseFontSize() = FontSize.SMALL }
+    ;
+    abstract fun baseFontSize() : FontSize
 }
 
 enum class FontSize {
