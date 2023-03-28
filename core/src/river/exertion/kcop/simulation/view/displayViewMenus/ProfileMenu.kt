@@ -18,6 +18,7 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileReqMen
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.MenuMessage
+import river.exertion.kcop.system.profile.Profile
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class ProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu, ProfileReqMenu {
@@ -31,6 +32,8 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
 
     override var selectedProfileAsset : ProfileAsset? = null
     override var selectedNarrativeAsset : NarrativeAsset? = null
+
+    override var currentProfile : Profile? = null
 
     override fun menuPane(bitmapFont: BitmapFont) : Table {
 
@@ -48,7 +51,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
 
 //        listCtrl.debug()
         listCtrl.alignment = Align.topLeft
-        listCtrl.setItems(profileAssets.map { it.assetPath }.toGdxArray())
+        listCtrl.setItems(profileAssets.map { it.profileAssetTitle() }.toGdxArray())
 
         return Table().apply {
             this.add(listCtrl).growY().top().left()

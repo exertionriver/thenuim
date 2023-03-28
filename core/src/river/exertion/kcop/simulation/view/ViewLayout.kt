@@ -24,7 +24,7 @@ class ViewLayout(var width : Float, var height : Float) {
     fun createTextViewCtrl(vScrollKnobImage : Texture) : TextViewCtrl {
         textViewCtrl.vScrollKnobTexture = vScrollKnobImage
 
-        textViewCtrl.buildCtrl()
+        textViewCtrl.build()
 
         return textViewCtrl
     }

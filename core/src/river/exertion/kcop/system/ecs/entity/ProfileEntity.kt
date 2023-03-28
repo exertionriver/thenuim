@@ -16,12 +16,18 @@ class ProfileEntity : IEntity {
     override fun initialize(entity: Entity, initData: Any?) {
         super.initialize(entity, initData)
 
-        val profileAsset = IEntity.checkInitType<ProfileAsset>(initData)
+        try {
+            val profileAsset = IEntity.checkInitType<ProfileAsset>(initData)
+            this.entityName = profileAsset?.profile?.id ?: throw Exception("profileEntity:$this entityName not set")
+            ProfileComponent.getFor(entity)!!.initialize(entityName, profileAsset.profile)
+        } catch (ex : Exception) {
+            val entityName = IEntity.checkInitType<String>(initData)
+            this.entityName = entityName ?: throw Exception("profileEntity:$this entityName not set")
+            ProfileComponent.getFor(entity)!!.initialize(entityName, null)
+        }
 
-        this.entityName = profileAsset?.profile?.id ?: throw Exception("profileEntity:$this entityName not set")
   //      this.assetPath = profileAsset.assetPath ?: throw Exception("profileEntity:$this assetPath not set")
 
-        ProfileComponent.getFor(entity)!!.initialize(entityName, profileAsset.profile)
     }
 
     override var components : MutableList<Component> = mutableListOf(

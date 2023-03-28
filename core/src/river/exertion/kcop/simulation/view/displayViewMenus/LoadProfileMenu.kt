@@ -10,6 +10,7 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileReqMenu
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.Switchboard
+import river.exertion.kcop.system.profile.Profile
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class LoadProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu,
@@ -25,11 +26,9 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     override var selectedProfileAsset : ProfileAsset? = null
     override var selectedNarrativeAsset : NarrativeAsset? = null
 
+    override var currentProfile : Profile? = null
+
     override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
-        this.add(Label(selectedProfileAsset?.profileAssetTitle(), LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
-            this.wrap = true
-        }).growX()
-        this.row()
         val profileAssetInfo = selectedProfileAsset?.profileAssetInfo()
         profileAssetInfo?.forEach { profileEntry ->
             this.add(Label(profileEntry, LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
@@ -39,7 +38,7 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
         }
         this.top()
 //        this.debug()
-        this@LoadProfileMenu.replaceErrorAction()
+        this@LoadProfileMenu.refreshActions()
     }
 
     override val breadcrumbEntries = mapOf(
@@ -49,9 +48,11 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
 
     override val navs = mutableListOf<ActionParam>()
 
-    fun replaceErrorAction() {
+    fun refreshActions() {
         if (selectedProfileAsset == null) {
             actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
+        } else {
+            actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Profile Loaded : ${selectedProfileAsset?.profile?.name}" }
         }
     }
 
@@ -59,7 +60,7 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
         ActionParam("Yes", {
             Switchboard.closeMenu()
             Switchboard.loadProfile(selectedProfileAsset!!, selectedNarrativeAsset)
-        }, "Profile Loaded : ${selectedProfileAsset?.profile?.name}"),
+        }, "Profile Loaded!"),
         ActionParam("No", {})
     )
 

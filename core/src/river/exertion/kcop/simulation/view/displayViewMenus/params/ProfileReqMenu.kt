@@ -2,6 +2,7 @@ package river.exertion.kcop.simulation.view.displayViewMenus.params
 
 import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.system.profile.Profile
 
 interface ProfileReqMenu {
 
@@ -10,4 +11,6 @@ interface ProfileReqMenu {
 
     var selectedProfileAsset : ProfileAsset?
     var selectedNarrativeAsset : NarrativeAsset?
+
+    var currentProfile : Profile?
 }

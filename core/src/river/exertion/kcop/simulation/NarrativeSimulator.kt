@@ -16,6 +16,7 @@ import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.system.ecs.entity.NarrativeEntity
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 

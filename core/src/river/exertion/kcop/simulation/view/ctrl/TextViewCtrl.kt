@@ -25,14 +25,13 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    var currentText : String? = null
+    var currentText : String = "No Narrative Loaded"
     var currentPrompts : List<String>? = null
 
     var vScrollKnobTexture : Texture? = null
 
     private lateinit var scrollPane : ScrollPane
 
-    fun isText() = !currentText.isNullOrEmpty()
     fun isPrompts() = !currentPrompts.isNullOrEmpty()
 
     fun textScrollPane() : ScrollPane {
@@ -45,11 +44,9 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
             ViewType.padHeight(height)
         )
 
-        if (isText()) {
-            val textLabel = Label(currentText, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
-            textLabel.wrap = true
-            innerTable.add(textLabel).growX()
-        }
+        val textLabel = Label(currentText, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+        textLabel.wrap = true
+        innerTable.add(textLabel).growX()
 
         innerTable.top()
 //        innerTable.debug()

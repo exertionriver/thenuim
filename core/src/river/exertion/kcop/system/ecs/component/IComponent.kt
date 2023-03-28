@@ -9,7 +9,6 @@ interface IComponent : Component {
 
     //done automatically by EngineHandler::addComponent()
     fun initialize(entityName : String, initData: Any?) {
-
         this.entityName = entityName
         isInitialized = true
     }

@@ -1,5 +1,6 @@
 package river.exertion.kcop.system.messaging
 
+import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
@@ -23,8 +24,15 @@ object Switchboard {
 
     fun updateProfile(narrativeComponent : NarrativeComponent) {
         MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_BLOCK_ID, narrativeComponent.narrativeId(), narrativeComponent.narrativeCurrBlockId()))
-        MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeComponent.sequentialStatusKey(), narrativeComponent.seqNarrativeProgress().toString()))
-        MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME, narrativeComponent.narrativeId(), narrativeComponent.narrativeImmersionTimer.cumlImmersionTimer.immersionTime()))
+        MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeComponent.narrativeId(), narrativeComponent.seqNarrativeProgress().toString()))
+    }
+
+    fun newProfile(entityName : String) {
+        //instantiate profile
+        MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.send(null, EngineEntityMessage(
+            EngineEntityMessageType.INSTANTIATE_ENTITY,
+            ProfileEntity::class.java, entityName)
+        )
     }
 
     fun loadProfile(profileAsset : ProfileAsset, narrativeAsset : NarrativeAsset?) {
@@ -56,6 +64,16 @@ object Switchboard {
         ) )
     }
 
-    fun saveProfile(profileAsset : ProfileAsset) {
+    fun saveProfile(newName : String, profileAsset : ProfileAsset, currentProfile : Profile, saveType : AssetManagerHandler.SaveType) {
+
+        when (saveType) {
+            //overwrite-save profile
+            AssetManagerHandler.SaveType.Overwrite -> {
+                MessageChannel.AMH_BRIDGE.send(null, AMHMessage(
+                    AMHMessage.AMHMessageType.SaveProfile, profileAsset.apply { this.profile = currentProfile; this.profile!!.name = newName })
+                )
+            }
+            else -> {}
+        }
     }
 }

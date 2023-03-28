@@ -31,6 +31,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             }
 
             MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
+            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME, narrativeComponent.narrativeId(), narrativeComponent.narrativeImmersionTimer.cumlImmersionTimer.immersionTime()))
         }
     }
 }

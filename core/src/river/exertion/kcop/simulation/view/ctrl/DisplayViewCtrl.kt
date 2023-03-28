@@ -169,7 +169,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         DisplayViewTextureMessageType.CLEAR_ALL -> { clearImages(); clearText(); audioCtrl.stopMusic() }
                         }
 
-                    build()
+                    if (!menuOpen) build()
                     return true
                 }
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
@@ -208,6 +208,9 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                             if (menuMessage.navMenuParams!!.selectedNarrativeAsset != null) {
                                 (profileReqMenu as ProfileReqMenu).selectedNarrativeAsset = menuMessage.navMenuParams!!.selectedNarrativeAsset!!
                             }
+                            if (menuMessage.navMenuParams!!.currentProfile != null) {
+                                (profileReqMenu as ProfileReqMenu).currentProfile = menuMessage.navMenuParams!!.currentProfile!!
+                            }
                         }
                     }
 
@@ -218,6 +221,9 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                             }
                             if (menuMessage.profileMenuParams!!.narrativeAssets != null) {
                                 (profileReqMenu as ProfileReqMenu).narrativeAssets = menuMessage.profileMenuParams!!.narrativeAssets!!
+                            }
+                            if (menuMessage.profileMenuParams!!.currentProfile != null) {
+                                (profileReqMenu as ProfileReqMenu).currentProfile = menuMessage.profileMenuParams!!.currentProfile!!
                             }
                         }
                     }

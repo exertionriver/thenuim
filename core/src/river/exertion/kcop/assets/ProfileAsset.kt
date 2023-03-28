@@ -1,13 +1,17 @@
 package river.exertion.kcop.assets
 
+import com.badlogic.gdx.Gdx
+import kotlinx.serialization.json.encodeToJsonElement
+import river.exertion.kcop.Util
 import river.exertion.kcop.system.profile.Profile
 
 class ProfileAsset(var profile : Profile? = null, override var assetPath : String) : LoadableAsset {
     override var status : String? = null
     override var statusDetail : String? = null
 
-    fun profileAssetTitle() = profile?.name
+    fun profileAssetTitle() = assetPath
 
+    //TODO: diff between asset and current
     fun profileAssetInfo() : MutableList<String?> {
 
         val returnList = mutableListOf<String?>()
@@ -29,5 +33,10 @@ class ProfileAsset(var profile : Profile? = null, override var assetPath : Strin
         if ( returnList.isEmpty() ) returnList.add("no profile info found")
 
         return returnList
+    }
+
+    fun save() {
+        val jsonProfile = Util.json.encodeToJsonElement(this.profile)
+        Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
     }
 }

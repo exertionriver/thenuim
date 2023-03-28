@@ -79,8 +79,6 @@ class AssetManagerHandler : Telegraph {
         )
     }
 
-//    MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuProfiles))
-
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
@@ -93,7 +91,11 @@ class AssetManagerHandler : Telegraph {
                             val loadedNarrativeAssets = loadNarrativeAssets().values.toList()
                             MessageChannel.MENU_BRIDGE.send(null, MenuMessage(null, ProfileMenuParams(loadedProfileAssets, loadedNarrativeAssets)))
                         }
-                        else -> {}
+                        AMHMessage.AMHMessageType.SaveProfile -> {
+                            if (amhMessage.saveProfileAsset != null) {
+                                amhMessage.saveProfileAsset.save()
+                            }
+                        }
                     }
 
                     return true
@@ -101,6 +103,10 @@ class AssetManagerHandler : Telegraph {
             }
         }
         return false
+    }
+
+    enum class SaveType() {
+        Merge, Overwrite
     }
 
     fun dispose() {
