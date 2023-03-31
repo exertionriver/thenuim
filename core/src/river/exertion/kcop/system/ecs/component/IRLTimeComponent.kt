@@ -13,7 +13,7 @@ class IRLTimeComponent : IComponent {
     override var entityName = ""
     override var isInitialized = false
 
-    private fun localDateTime() = LocalDateTime.of(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH), irlTime().get(Calendar.DAY_OF_MONTH),
+    private fun localDateTime() = LocalDateTime.of(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH) + 1, irlTime().get(Calendar.DAY_OF_MONTH),
         irlTime().get(Calendar.HOUR_OF_DAY), irlTime().get(Calendar.MINUTE), irlTime().get(Calendar.SECOND))
 
     private fun localHoursStr() = localDateTime().hour.toString().padStart(2, '0')

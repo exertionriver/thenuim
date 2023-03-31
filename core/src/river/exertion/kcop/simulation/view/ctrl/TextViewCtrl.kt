@@ -25,7 +25,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    var currentText : String = "No Narrative Loaded"
+    var currentText : String = NoNarrativeLoaded
     var currentPrompts : List<String>? = null
 
     var vScrollKnobTexture : Texture? = null
@@ -132,5 +132,9 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
             }
         }
         return false
+    }
+
+    companion object {
+        const val NoNarrativeLoaded = "No Narrative Loaded"
     }
 }

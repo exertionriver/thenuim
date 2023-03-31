@@ -1,4 +1,4 @@
-{"id" : "timeline_narrative", "layoutTag" : "goldenRatioLayout", "narrativeBlocks" : [
+{"name" : "timeline_narrative", "layoutTag" : "goldenRatioLayout", "narrativeBlocks" : [
     {"id" : "demo_block1", "narrativeText" : ["first timeline block"]},
     {"id" : "demo_block2", "narrativeText" : ["second timeline block"]},
     {"id" : "demo_block3", "narrativeText" : ["third timeline block"]},

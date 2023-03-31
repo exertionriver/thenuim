@@ -1,7 +1,7 @@
 package river.exertion.kcop.system.messaging.messages
 
-data class LogViewMessage(val messageType : LogViewMessageType, val message : String, val param : String? = null)
+data class LogViewMessage(val messageType : LogViewMessageType, val message : String? = null, val param : String? = null)
 
 enum class LogViewMessageType {
-    LogEntry, InstImmersionTime, CumlImmersionTime, LocalTime
+    LogEntry, ResetTime, InstImmersionTime, CumlImmersionTime, LocalTime
 }

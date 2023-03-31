@@ -12,10 +12,7 @@ import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandl
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.unpause
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.DisplayViewTextMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
-import river.exertion.kcop.system.messaging.messages.NarrativeMessage
+import river.exertion.kcop.system.messaging.messages.*
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -35,13 +32,13 @@ class NarrativeComponent : IComponent, Telegraph {
     var isActive = false //ie., is the current simulation
     var changed = false
 
-    fun narrativeId() = narrative?.id ?: throw Exception("narrativeId:$this narrative.id not set")
+    fun narrativeName() = narrative?.name ?: throw Exception("narrative name:$this narrative.name not set")
 
     fun narrativeCurrBlockId() = narrative?.currentBlockId ?: throw Exception("narrativeCurrBlockId:$this narrative.currentBlockId not set")
     fun narrativePrevBlockId() = narrative?.previousBlockId ?: throw Exception("narrativePrevBlockId:$this narrative.previousBlockId not set")
 
     fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)
-    fun sequentialStatusKey() : String = "progress(${narrativeId().subSequence(0, 3)})"
+    fun sequentialStatusKey() : String = "progress(${narrativeName().subSequence(0, 3)})"
 
     override fun initialize(entityName: String, initData: Any?) {
 
@@ -64,6 +61,9 @@ class NarrativeComponent : IComponent, Telegraph {
                 narrative!!.narrativeBlocks.forEach { narrativeBlock ->
                     blockImmersionTimers[narrativeBlock.id] = ImmersionTimerComponent().apply { this.isInitialized = true }
                 }
+
+                //load current profile
+                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_IMMERSION, narrativeComponentInit.narrativeAsset.narrativeAssetName(), narrativeComponentInit.currentBlockId))
 
                 //start timers
                 activate(narrativeCurrBlockId())

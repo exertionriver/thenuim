@@ -13,14 +13,13 @@ import ktx.actors.onClick
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.simulation.view.displayViewMenus.params.NavMenuParams
-import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
+import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
-import river.exertion.kcop.system.messaging.messages.MenuMessage
+import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 
 interface DisplayViewMenu {
 
@@ -61,11 +60,9 @@ interface DisplayViewMenu {
                         if (actionEntry.log != null)
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.log!!))
                         actionEntry.action()
-                        //go back a menu
-                        MessageChannel.MENU_BRIDGE.send(null, MenuMessage(NavMenuParams(breadcrumbEntries.keys.toList()[0]) ))
                     }
                 }
-            ).padRight(ViewType.padWidth(screenWidth))
+            ).right().padRight(ViewType.padWidth(screenWidth))
         }
     }
 
@@ -77,7 +74,7 @@ interface DisplayViewMenu {
             this.add(Label("${menuLabel.value} > ", Label.LabelStyle(bitmapFont.apply {this.data.setScale(FontSize.SMALL.fontScale())}
                 , backgroundColor.label().color())).apply {
                 this.onClick {
-                    MessageChannel.MENU_BRIDGE.send(null, MenuMessage(NavMenuParams(menuLabel.key) ))
+                    MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(menuLabel.key) ))
                 }
             } )
         }

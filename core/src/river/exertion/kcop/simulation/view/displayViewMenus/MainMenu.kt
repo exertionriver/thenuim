@@ -3,13 +3,12 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.simulation.view.displayViewMenus.params.NavMenuParams
-import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuParams
+import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.AMHMessage
-import river.exertion.kcop.system.messaging.messages.MenuMessage
+import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import kotlin.system.exitProcess
 
 class MainMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
@@ -25,7 +24,11 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
     override val navs = mutableListOf(
         ActionParam("Profile >", {
             MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuProfiles))
-            MessageChannel.MENU_BRIDGE.send(null, MenuMessage(NavMenuParams("profileMenu")))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams("profileMenu")))
+        }),
+        ActionParam("Narrative >", {
+            MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuNarratives))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams("narrativeMenu")))
         })
     )
 

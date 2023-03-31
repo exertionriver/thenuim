@@ -65,7 +65,6 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
             addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
-//            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
 
         setScreen<ProfileSimulator>()

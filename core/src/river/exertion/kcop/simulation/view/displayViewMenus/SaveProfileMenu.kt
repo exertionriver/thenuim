@@ -5,60 +5,50 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import river.exertion.kcop.assets.AssetManagerHandler
-import river.exertion.kcop.assets.NarrativeAsset
-import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileReqMenu
+import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
-import river.exertion.kcop.system.profile.Profile
+import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
-class SaveProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu,
-    ProfileReqMenu {
+class SaveProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
 
     override val backgroundColor = ColorPalette.of("olive")
 
-    override var profileAssets = listOf<ProfileAsset>()
-    override var narrativeAssets = listOf<NarrativeAsset>()
+    var selectedProfileAssetInfo: List<String>? = null
+    var selectedProfileAssetName : String? = null
 
-    override var selectedProfileAsset : ProfileAsset? = null
-    override var selectedNarrativeAsset : NarrativeAsset? = null
-
-    override var currentProfile : Profile? = null
-
-    var filename : String? = null
-    fun filename() = filename ?: ""
+    fun selectedProfileAssetName() = selectedProfileAssetName ?: throw Exception("SaveProfileMenu requires valid selectProfileAssetName")
 
     override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
-        val profileAssetInfo = selectedProfileAsset?.profileAssetInfo()
-
-        if (profileAssetInfo?.isNotEmpty() == true) {
+        if (selectedProfileAssetInfo != null) {
             this.add(Label("save name: ", Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-            val nameTextField = TextField(selectedProfileAsset?.profile!!.name, TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null))
-            nameTextField.setTextFieldListener { textField, _ -> filename = textField.text }
-            this.add(nameTextField).growX()
+            val nameTextField = TextField(selectedProfileAssetName(), TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
+//                this.alignment = Align.top
+            }
+            nameTextField.setTextFieldListener { textField, _ -> selectedProfileAssetName = textField.text }
+            this.add(nameTextField).growX().top()
             this.row()
 
-            profileAssetInfo.forEach { profileEntry ->
+            selectedProfileAssetInfo!!.forEach { profileEntry ->
                 this.add(Label(profileEntry, Label.LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
                     this.wrap = true
-                }).colspan(2).growX().left()
+                }).colspan(2).growX()
                 this.row()
             }
+  //      this.debug()
+            this@SaveProfileMenu.actions.firstOrNull { it.label == "Overwrite" }?.apply { this.log = "Profile Saved : ${selectedProfileAssetName()}" }
         } else {
-            this.add(Label("no profile entry found", Label.LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
-                this.wrap = true
-            }).growX().left()
-            this.row()
+            this.add(Label("no profile info found", Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
+            ).growX().left()
+            this@SaveProfileMenu.actions.firstOrNull { it.label == "Overwrite" }?.apply { this.label = "Error"; this.action = {} }
         }
         this.top()
-//        this.debug()
-        this@SaveProfileMenu.replaceErrorAction()
-        filename = selectedProfileAsset?.profile!!.name
     }
 
     override val breadcrumbEntries = mapOf(
@@ -68,26 +58,18 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
 
     override val navs = mutableListOf<ActionParam>()
 
-    @Suppress("NewApi")
-    fun replaceErrorAction() {
-        if (selectedProfileAsset == null) {
-            actions.firstOrNull { it.label == "Overwrite" }?.apply { this.label = "Error"; this.action = {} }
-//            actions.removeIf { it.label == "Merge" }
-        } else {
-            actions.firstOrNull { it.label == "Overwrite" }?.apply { this.log = "Profile Saved : ${selectedProfileAsset?.profile?.name}" }
-        }
-    }
-
     override val actions = mutableListOf(
         ActionParam("Overwrite", {
             Switchboard.closeMenu()
-            Switchboard.saveProfile(filename(), selectedProfileAsset!!, currentProfile!!, AssetManagerHandler.SaveType.Overwrite)
+            Switchboard.saveSelectedProfile(selectedProfileAssetName(), AssetManagerHandler.SaveType.Overwrite)
+            Switchboard.clearMenu()
         }, "Profile Saved!"),
 /*        ActionParam("Merge", {
             Switchboard.closeMenu()
             Switchboard.saveProfile(selectedProfileAsset!!, AssetManagerHandler.SaveType.Merge)
         }, "Profile Saved : ${selectedProfileAsset?.profile?.name}"),
- */       ActionParam("Cancel", {})
+ */        //go back a menu
+        ActionParam("Cancel", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
     )
 
     override fun tag() = tag

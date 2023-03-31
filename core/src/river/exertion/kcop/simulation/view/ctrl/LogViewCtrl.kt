@@ -29,9 +29,12 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     var currentLog : MutableList<String>? = null
     var textTimeSdc : ShapeDrawerConfig? = null
 
-    var instImmersionTimeStr = "00:00:00"
-    var cumlImmersionTimeStr = "00:00:00"
-    var localTimeStr = "00:00:00"
+
+    val initTimeStr = "00:00:00"
+
+    var instImmersionTimeStr = initTimeStr
+    var cumlImmersionTimeStr = initTimeStr
+    var localTimeStr = initTimeStr
 
     var vScrollTexture : Texture? = null
     var vScrollKnobTexture : Texture? = null
@@ -183,17 +186,27 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                 (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if (logMessage.messageType == LogViewMessageType.LogEntry) {
-                        addLog(logMessage.message)
-                        build()
-                    } else {
-                        when (logMessage.messageType) {
-                            LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
-                            LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
-                            LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
-                            else -> {}
+                    when {
+                        (logMessage.messageType == LogViewMessageType.ResetTime) -> {
+                            updateInstImmersionTime(initTimeStr)
+                            updateCumlImmersionTime(initTimeStr)
+                            rebuildTextTimeReadout()
                         }
-                        rebuildTextTimeReadout()
+                        else -> if (logMessage.message != null) {
+                            if (logMessage.messageType == LogViewMessageType.LogEntry) {
+                                addLog(logMessage.message)
+                                build()
+                            } else {
+                                when (logMessage.messageType) {
+                                    LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
+                                    LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
+                                    LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
+                                    else -> {}
+                                }
+                                rebuildTextTimeReadout()
+                            }
+
+                        }
                     }
 
                     return true
@@ -203,4 +216,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         return false
     }
 
+    companion object {
+        const val NoProfileLoaded = "No Profile Loaded"
+    }
 }

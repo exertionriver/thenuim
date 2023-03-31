@@ -11,7 +11,8 @@ import river.exertion.kcop.assets.FontSize
 
 @Serializable
 data class Narrative(
-    override var id: String,
+    val name : String,
+    val description : String = "",
     val layoutTag : String,
     val narrativeBlocks : MutableList<NarrativeBlock> = mutableListOf(),
     val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
@@ -67,7 +68,7 @@ data class Narrative(
         if (isSequential()) {
             listOf("(↑) Prev", "(↓) Next")
         } else {
-            promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$id' at '$currentBlockId')>")
+            promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$name' at '$currentBlockId')>")
         }
 
     fun previousEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == previousBlockId }

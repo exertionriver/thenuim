@@ -18,7 +18,7 @@ object NarrativeComponentNavStatusHandler {
     }
 
     fun NarrativeComponent.activate(setBlockId : String) {
-        if (isInitialized) {
+        if (isInitialized && !isActive) {
             isActive = true
 
             narrative!!.currentBlockId = setBlockId
@@ -29,7 +29,6 @@ object NarrativeComponentNavStatusHandler {
             unpause()
 
             MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
-            Switchboard.updateProfile(this)
 
             changed = true
         }
@@ -46,7 +45,7 @@ object NarrativeComponentNavStatusHandler {
     }
 
     fun NarrativeComponent.inactivate() {
-        if (isInitialized) {
+        if (isInitialized && isActive) {
             isActive = false
 
             pause()

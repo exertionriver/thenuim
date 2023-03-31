@@ -13,7 +13,7 @@ import kotlin.io.path.Path
 
 class NarrativeEntity : IEntity {
 
-    override var entityName = "narrative"
+    override var entityName = "<default>"
     override var isInitialized = false
 
     override fun initialize(entity: Entity, initData: Any?) {
@@ -21,7 +21,7 @@ class NarrativeEntity : IEntity {
 
         val narrativeComponentInit = IComponent.checkInitType<NarrativeComponent.NarrativeComponentInit>(initData)
 
-        this.entityName = narrativeComponentInit?.narrativeAsset?.narrative?.id ?: throw Exception("narrativeEntity:$this entityName not set")
+        this.entityName = narrativeComponentInit?.narrativeAsset?.narrative?.name ?: throw Exception("narrativeEntity:$this entityName not set")
 
         NarrativeComponent.getFor(entity)!!.initialize(entityName, initData)
     }

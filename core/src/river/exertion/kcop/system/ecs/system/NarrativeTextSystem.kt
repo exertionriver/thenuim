@@ -3,7 +3,6 @@ package river.exertion.kcop.system.ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.allOf
-import river.exertion.kcop.narrative.structure.Event
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponentEventHandler.currentBlockTimer
@@ -30,8 +29,8 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
                 NarrativeComponent.getFor(entity)!!.changed = false
             }
 
-            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.id))
-            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME, narrativeComponent.narrativeId(), narrativeComponent.narrativeImmersionTimer.cumlImmersionTimer.immersionTime()))
+            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.name))
+            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME, narrativeComponent.narrativeName(), narrativeComponent.narrativeImmersionTimer.cumlImmersionTimer.immersionTime()))
         }
     }
 }

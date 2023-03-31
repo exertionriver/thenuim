@@ -40,22 +40,13 @@ class EngineHandler : Telegraph {
 
     fun removeEntity(removeIEntity : IEntity) {
         engine.removeEntity(entities[removeIEntity])
-
         entities.remove(removeIEntity)
     }
 
-    fun removeEntity(entityName : String) {
-        val removeEntityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
+    fun removeEntity(entityClass : Class<*>) {
+        val removeEntityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.javaClass == entityClass) }.firstOrNull()
 
         if (removeEntityEntry != null) {
-            removeEntity(removeEntityEntry.key)
-        }
-    }
-
-    inline fun <reified T: IEntity> removeEntities() {
-        val removeEntityEntryList = entities.entries.filter { entityEntry -> (entityEntry.key is T) }
-
-        removeEntityEntryList.forEach { removeEntityEntry ->
             removeEntity(removeEntityEntry.key)
         }
     }
@@ -78,12 +69,12 @@ class EngineHandler : Telegraph {
         val entityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
 
         if (entityEntry != null) {
-            if (componentClass.interfaces.contains(Component::class.java)) {
-                val componentToRemove = engine.entities.first()
+            val componentToRemove = entityEntry.value.components.filter { componentEntry -> (componentEntry.javaClass == componentClass) }.firstOrNull()
 
+            if (componentToRemove != null && (componentClass.interfaces.contains(IComponent::class.java))) {
                 (componentToRemove as IComponent).dispose()
                 @Suppress("UNCHECKED_CAST")
-                componentToRemove.remove(componentClass as Class<Component>)
+                entityEntry.value.remove(componentClass as Class<Component>)
             }
         }
     }
@@ -135,11 +126,9 @@ class EngineHandler : Telegraph {
                             instantiateEntity(engineEntityMessage.entityClass, engineEntityMessage.initInfo)
                         }
                         EngineEntityMessageType.REMOVE_ENTITY -> {
-                            removeEntity((engineEntityMessage.initInfo as ProfileAsset).profile!!.id)
+                            removeEntity(engineEntityMessage.entityClass)
                         }
-                        EngineEntityMessageType.REMOVE_ALL_ENTITIES -> {
-                            removeEntities<IEntity>()
-                        }
+                        else -> {}
                     }
                 }
                 (MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.isType(msg.message) ) -> {

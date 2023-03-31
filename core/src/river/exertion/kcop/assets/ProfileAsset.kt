@@ -11,28 +11,24 @@ class ProfileAsset(var profile : Profile? = null, override var assetPath : Strin
 
     fun profileAssetTitle() = assetPath
 
-    //TODO: diff between asset and current
-    fun profileAssetInfo() : MutableList<String?> {
+    fun profileAssetName() = profile?.name
 
-        val returnList = mutableListOf<String?>()
+    //TODO: diff between asset and current
+    fun profileAssetInfo(currentProfile : Profile? = null) : List<String> {
+
+        val returnList = mutableListOf<String>()
 
         if (profile != null) {
-            returnList.add("name: ${profile!!.name}")
-            returnList.add("path: ${assetPath}")
-            returnList.add("current: ${profile!!.currentImmersionId}: ${profile!!.currentImmersionBlockId}")
-
-            if (profile!!.statuses.isNotEmpty()) returnList.add("\nstatuses:")
-
-            val listMaxSize = profile!!.statuses.size.coerceAtMost(8)
-
-            profile!!.statuses.sortedByDescending { it.value }.subList(0, listMaxSize).forEach {
-                returnList.add("${it.key}: ${it.value} (${it.cumlImmersionTime})")
-            }
+            returnList.add("path: $assetPath")
+            if (currentProfile == null)
+                returnList.addAll(profile!!.profileInfo())
+            else
+                returnList.addAll(currentProfile.profileInfo())
         }
 
         if ( returnList.isEmpty() ) returnList.add("no profile info found")
 
-        return returnList
+        return returnList.toList()
     }
 
     fun save() {

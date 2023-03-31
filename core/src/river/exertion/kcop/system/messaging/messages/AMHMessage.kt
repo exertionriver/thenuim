@@ -1,11 +1,14 @@
 package river.exertion.kcop.system.messaging.messages
 
-import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.system.profile.Profile
 
-data class AMHMessage(val messageType : AMHMessageType, val saveProfileAsset : ProfileAsset? = null) {
+data class AMHMessage(val messageType : AMHMessageType, val selectedTitle : String? = null, val currentProfile : Profile? = null, val saveName : String? = null) {
 
     enum class AMHMessageType {
-        ReloadMenuProfiles, SaveProfile
+        ReloadMenuProfiles, ReloadMenuNarratives,
+        SetSelectedProfileAsset, SetSelectedNarrativeAsset,
+        LoadSelectedProfile, LoadSelectedNarrative, ReloadCurrentProfile,
+        SaveOverwriteProfile, SaveMergeProfile
     }
 }
 

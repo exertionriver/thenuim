@@ -9,7 +9,7 @@ class TestBlockLoad {
         val narrative = Util.loader<Narrative>(Util.internalFile("kcop/narrative/nsb_kcop.json"))
 
         if (narrative != null) {
-            println(narrative.id)
+            println(narrative.name)
             println(narrative.narrativeBlocks[0].narrativeText)
             println(narrative.narrativeBlocks[1].narrativeText)
 

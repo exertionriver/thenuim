@@ -36,11 +36,11 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             narrative.eventBlocks.forEach { eventBlock ->
                 eventBlock.events.forEach { event ->
                     if ( !event.validateFields() ) {
-                        returnNarrativeAsset.status = "${narrative.id} not loaded"
+                        returnNarrativeAsset.status = "${narrative.name} not loaded"
                         if (returnNarrativeAsset.statusDetail == null)
-                            returnNarrativeAsset.statusDetail = "invalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.id}"
+                            returnNarrativeAsset.statusDetail = "invalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.name}"
                         else
-                            returnNarrativeAsset.statusDetail += "\ninvalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.id}"
+                            returnNarrativeAsset.statusDetail += "\ninvalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.name}"
                     }
                     if (Event.EventType.isImageEvent(event.eventType) && !narrative.textures.keys.contains(event.param)) {
                         narrative.textures[event.param] = manager.load(event.param)
@@ -57,22 +57,22 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             narrative.timelineEventBlocks.forEach { timelineEventBlock ->
                 timelineEventBlock.timelineEvents.forEach { timelineEvent ->
                 if ( !timelineEvent.validateFields() ) {
-                    returnNarrativeAsset.status = "${narrative.id} not loaded"
+                    returnNarrativeAsset.status = "${narrative.name} not loaded"
                     if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
                     else
-                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
                     }
                 }
             }
 
             narrative.timelineEvents.forEach { timelineEvent ->
                 if ( !timelineEvent.validateFields() ) {
-                    returnNarrativeAsset.status = "${narrative.id} not loaded"
+                    returnNarrativeAsset.status = "${narrative.name} not loaded"
                     if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.name}"
                     else
-                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.id}"
+                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.name}"
                 }
             }
             return returnNarrativeAsset

@@ -19,7 +19,7 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.StatusViewMessage
 import river.exertion.kcop.system.messaging.messages.StatusViewMessageType
-import river.exertion.kcop.system.profile.Status
+import river.exertion.kcop.system.profile.ProfileStatus
 import kotlin.math.roundToInt
 
 
@@ -31,7 +31,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    val statuses : MutableList<Status> = mutableListOf()
+    val profileStatuses : MutableList<ProfileStatus> = mutableListOf()
 
     var vScrollKnobTexture : Texture? = null
 
@@ -58,7 +58,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
             ViewType.padHeight(height)
         )
 
-        statuses.forEach {
+        profileStatuses.forEach {
             val barStack = Stack()
 
             barStack.add(
@@ -121,17 +121,17 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                     when (statusViewMessage.messageType) {
                         StatusViewMessageType.ADD_STATUS -> {
                             if (statusViewMessage.statusKey != null) {
-                                statuses.add(Status(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
+                                profileStatuses.add(ProfileStatus(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
                             }
                         }
                         StatusViewMessageType.CLEAR_STATUSES -> {
-                            statuses.clear()
+                            profileStatuses.clear()
                         }
                         StatusViewMessageType.REMOVE_STATUS -> {
-                            statuses.removeIf { it.key == statusViewMessage.statusKey }
+                            profileStatuses.removeIf { it.key == statusViewMessage.statusKey }
                         }
                         StatusViewMessageType.UPDATE_STATUS -> {
-                            statuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
+                            profileStatuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
                         }
                     }
 

@@ -12,38 +12,37 @@ import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
-class LoadProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
+class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
 
     override val backgroundColor = ColorPalette.of("teal")
 
-    var selectedProfileAssetInfo: List<String>? = null
-    var selectedProfileAssetName : String? = null
+    var selectedNarrativeAssetInfo: List<String>? = null
+    var selectedNarrativeAssetName : String? = null
 
-    fun selectedProfileAssetName() = selectedProfileAssetName ?: throw Exception("LoadProfileMenu requires valid selectProfileAssetName")
+    fun selectedNarrativeAssetName() = selectedNarrativeAssetName ?: throw Exception("LoadNarrativeMenu requires valid selectNarrativeAssetTitle")
 
     override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
-
-        if (selectedProfileAssetInfo != null) {
-            selectedProfileAssetInfo!!.forEach { profileEntry ->
+        if (selectedNarrativeAssetInfo != null) {
+            selectedNarrativeAssetInfo!!.forEach { profileEntry ->
                 this.add(Label(profileEntry, LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
                     this.wrap = true
                 }).growX().left()
                 this.row()
             }
 //        this.debug()
-            this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Profile Loaded : ${selectedProfileAssetName()}" }
+            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${selectedNarrativeAssetName()}" }
         } else {
-            this.add(Label("no profile info found", LabelStyle(bitmapFont, backgroundColor.label().color()))
+            this.add(Label("no narrative info found", LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()
-            this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
+            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
         }
         this.top()
     }
 
     override val breadcrumbEntries = mapOf(
-        ProfileMenu.tag to ProfileMenu.label,
+        NarrativeMenu.tag to NarrativeMenu.label,
         MainMenu.tag to MainMenu.label
     )
 
@@ -52,9 +51,9 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     override val actions = mutableListOf(
         ActionParam("Yes", {
             Switchboard.closeMenu()
-            Switchboard.loadSelectedProfile()
+            Switchboard.loadSelectedNarrative()
             Switchboard.clearMenu()
-        }, "Profile Loaded!"),
+        }, "Narrative Loaded!"),
         //go back a menu
         ActionParam("No", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
     )
@@ -63,7 +62,7 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
     override fun label() = label
 
     companion object {
-        const val tag = "loadProfileMenu"
+        const val tag = "loadNarrativeMenu"
         const val label = "Load"
     }
 }

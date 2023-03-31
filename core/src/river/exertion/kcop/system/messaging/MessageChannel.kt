@@ -3,7 +3,6 @@ package river.exertion.kcop.system.messaging
 import com.badlogic.gdx.ai.msg.MessageManager
 import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
@@ -17,7 +16,8 @@ enum class MessageChannel {
     DISPLAY_VIEW_AUDIO_BRIDGE { override val messageClass = DisplayViewAudioMessage::class },
     DISPLAY_VIEW_MENU_BRIDGE { override val messageClass = DisplayViewMenuMessage::class },
     DISPLAY_VIEW_TEXT_BRIDGE { override val messageClass = DisplayViewTextMessage::class },
-    MENU_BRIDGE { override val messageClass = MenuMessage::class },
+    INTRA_MENU_BRIDGE { override val messageClass = MenuNavMessage::class },
+    INTER_MENU_BRIDGE { override val messageClass = MenuDataMessage::class },
     TEXT_VIEW_BRIDGE { override val messageClass = TextViewMessage::class },
     LOG_VIEW_BRIDGE { override val messageClass = LogViewMessage::class },
     STATUS_VIEW_BRIDGE { override val messageClass = StatusViewMessage::class },
