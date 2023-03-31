@@ -86,7 +86,11 @@ data class Narrative(
                 else -> currentBlockId
             }
         } else {
-            promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.firstOrNull { it.promptKey.toString() == promptKey }?.promptNextId ?: currentBlockId
+            val currentPrompts = promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.firstOrNull { it.promptKey.toString() == promptKey }
+            val nextId = currentPrompts?.promptNextId
+            val randNextId = currentPrompts?.promptRandomId?.random()
+
+            nextId ?: randNextId ?: currentBlockId
         }
 
         if (currentBlockId != possiblePreviousId) previousBlockId = possiblePreviousId

@@ -36,7 +36,7 @@ class ProfileAssetLoader(resolver: FileHandleResolver?) :
 
         } catch (ex : Exception) {
             ProfileAsset(null, fileName).apply {
-                this.status = "not loaded"
+                this.status = "$fileName not loaded"
                 this.statusDetail = ex.message
             }
         }

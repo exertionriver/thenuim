@@ -3,23 +3,22 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.*
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.StatusViewMessage
 import river.exertion.kcop.system.messaging.messages.StatusViewMessageType
+import river.exertion.kcop.system.profile.DisplayStatus
 import river.exertion.kcop.system.profile.ProfileStatus
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.math.roundToInt
 
 
@@ -31,7 +30,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    val profileStatuses : MutableList<ProfileStatus> = mutableListOf()
+    val displayStatuses : MutableList<DisplayStatus> = mutableListOf()
 
     var vScrollKnobTexture : Texture? = null
 
@@ -58,7 +57,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
             ViewType.padHeight(height)
         )
 
-        profileStatuses.forEach {
+        displayStatuses.forEach {
             val barStack = Stack()
 
             barStack.add(
@@ -121,17 +120,17 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                     when (statusViewMessage.messageType) {
                         StatusViewMessageType.ADD_STATUS -> {
                             if (statusViewMessage.statusKey != null) {
-                                profileStatuses.add(ProfileStatus(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
+                                displayStatuses.add(DisplayStatus(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
                             }
                         }
                         StatusViewMessageType.CLEAR_STATUSES -> {
-                            profileStatuses.clear()
+                            displayStatuses.clear()
                         }
                         StatusViewMessageType.REMOVE_STATUS -> {
-                            profileStatuses.removeIf { it.key == statusViewMessage.statusKey }
+                            displayStatuses.removeIf { it.key == statusViewMessage.statusKey }
                         }
                         StatusViewMessageType.UPDATE_STATUS -> {
-                            profileStatuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
+                            displayStatuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
                         }
                     }
 

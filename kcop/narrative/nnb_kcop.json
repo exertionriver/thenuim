@@ -18,7 +18,7 @@
     { "narrativeBlockId" : "demo_block3", "prompts" : [
       { "id" : "third_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block4"},
       { "id" : "third_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block2"},
-      { "id" : "third_prompt_c", "promptText" : "(C)ycle", "promptKey" : "C", "promptNextId" : "demo_block3"}
+      { "id" : "third_prompt_c", "promptText" : "(R)andom Jump", "promptKey" : "R", "promptRandomId" : ["demo_block1", "demo_block4", "demo_block6"]}
     ]},
     { "narrativeBlockId" : "demo_block4", "prompts" : [
       { "id" : "fourth_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block5"},

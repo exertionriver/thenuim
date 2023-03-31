@@ -32,15 +32,17 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             val narrative = json.decodeFromJsonElement(jsonElement) as Narrative
 
             val returnNarrativeAsset = NarrativeAsset(narrative, fileName)
+            val errorStatus = "${narrative.name} not loaded"
 
             narrative.eventBlocks.forEach { eventBlock ->
                 eventBlock.events.forEach { event ->
                     if ( !event.validateFields() ) {
-                        returnNarrativeAsset.status = "${narrative.name} not loaded"
+                        returnNarrativeAsset.status = errorStatus
+                        val errorDetail = "invalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.name}"
                         if (returnNarrativeAsset.statusDetail == null)
-                            returnNarrativeAsset.statusDetail = "invalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.name}"
+                            returnNarrativeAsset.statusDetail = errorDetail
                         else
-                            returnNarrativeAsset.statusDetail += "\ninvalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.name}"
+                            returnNarrativeAsset.statusDetail += "\n$errorDetail"
                     }
                     if (Event.EventType.isImageEvent(event.eventType) && !narrative.textures.keys.contains(event.param)) {
                         narrative.textures[event.param] = manager.load(event.param)
@@ -57,29 +59,44 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             narrative.timelineEventBlocks.forEach { timelineEventBlock ->
                 timelineEventBlock.timelineEvents.forEach { timelineEvent ->
                 if ( !timelineEvent.validateFields() ) {
-                    returnNarrativeAsset.status = "${narrative.name} not loaded"
+                    returnNarrativeAsset.status = errorStatus
+                    val errorDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
                     if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
+                        returnNarrativeAsset.statusDetail = errorDetail
                     else
-                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
-                    }
+                        returnNarrativeAsset.statusDetail += "\n$errorDetail"                    }
                 }
             }
 
             narrative.timelineEvents.forEach { timelineEvent ->
                 if ( !timelineEvent.validateFields() ) {
-                    returnNarrativeAsset.status = "${narrative.name} not loaded"
+                    returnNarrativeAsset.status = errorStatus
+                    val errorDetail = "invalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.name}"
                     if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = "invalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.name}"
+                        returnNarrativeAsset.statusDetail = errorDetail
                     else
-                        returnNarrativeAsset.statusDetail += "\ninvalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.name}"
+                        returnNarrativeAsset.statusDetail += "\n$errorDetail"
                 }
             }
+
+            narrative.promptBlocks.forEach { promptBlock ->
+                promptBlock.prompts.forEach { prompt ->
+                    if (prompt.promptNextId != null && prompt.promptRandomId != null) {
+                        returnNarrativeAsset.status = errorStatus
+                        val errorDetail = "narrative ${narrative.name} block ${promptBlock.narrativeBlockId} prompt ${prompt.id} cannot have both promptNextId and promptRandomId"
+                        if (returnNarrativeAsset.statusDetail == null)
+                            returnNarrativeAsset.statusDetail = errorDetail
+                        else
+                            returnNarrativeAsset.statusDetail += "\n$errorDetail"
+                    }
+                }
+            }
+
             return returnNarrativeAsset
 
         } catch (ex : Exception) {
             return NarrativeAsset(null, fileName).apply {
-                this.status = "not loaded"
+                this.status = "$fileName not loaded"
                 this.statusDetail = ex.message
             }
         }
