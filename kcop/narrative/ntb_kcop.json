@@ -15,14 +15,15 @@
       { "eventType" : "log", "eventTrigger" : "onEntry", "param" : "entered demo_block4" },
       { "eventType" : "text", "eventTrigger" : "onExit", "param" : "exited demo_block4" },
       { "eventType" : "log", "eventTrigger" : "onExit", "param" : "exited demo_block4" },
-      { "eventType" : "getFlag", "eventTrigger" : "onEntry", "param" : "demo_block2" },
-      { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block4" }
+      { "eventType" : "unsetFlag", "eventTrigger" : "onEntry", "param" : "demo_block2" },
+      { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block4" },
+      { "eventType" : "plusCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
     ]},
     { "narrativeBlockId" : "demo_block6", "events" : [
       { "eventType" : "log", "eventTrigger" : "onEntry", "param" : "entered demo_block6"},
       { "eventType" : "text", "eventTrigger" : "onEntry", "param" : "entered demo_block6"},
-      { "eventType" : "getFlag", "eventTrigger" : "onEntry", "param" : "demo_block2"},
-      { "eventType" : "getFlag", "eventTrigger" : "onEntry", "param" : "demo_block6"},
+      { "eventType" : "unsetFlag", "eventTrigger" : "onEntry", "param" : "demo_block2"},
+      { "eventType" : "unsetFlag", "eventTrigger" : "onEntry", "param" : "demo_block6"},
       { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block6"},
       { "eventType" : "zeroCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
     ]}

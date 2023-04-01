@@ -59,10 +59,14 @@ class ProfileSimulator(private val stage: Stage,
         engineHandler.addComponent(ProfileEntity.entityName, ProfileComponent::class.java, null,
                 ProfileComponent.ProfileComponentInit(assetManagerHandler.assets[ProfileAssets.ExertionRiverText]))
 
+        val immersionAsset = assetManagerHandler.narrativeAssets.values.first { it.narrative?.name == assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.currentImmersionName }
+
         engineHandler.addComponent(ProfileEntity.entityName, NarrativeComponent::class.java, null,
-            NarrativeComponent.NarrativeComponentInit(assetManagerHandler.narrativeAssets.values.first { it.narrative?.name == assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.currentImmersionName },
+            NarrativeComponent.NarrativeComponentInit(immersionAsset,
                 assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.immersionBlockId(),
-                assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.immersionCumlTime()))
+                assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.immersionCumlTime(),
+                assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.statuses?.filter { it.immersionName == immersionAsset.narrativeAssetName()})
+            )
 
 //        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
 //        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id

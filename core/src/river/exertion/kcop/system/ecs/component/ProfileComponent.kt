@@ -37,6 +37,7 @@ class ProfileComponent : IComponent, Telegraph {
         }
     }
 
+    @Suppress("NewApi")
     override fun handleMessage(msg: Telegram?): Boolean {
 
         if (msg != null) {
@@ -82,6 +83,8 @@ class ProfileComponent : IComponent, Telegraph {
                                     } else {
                                         profile!!.statuses?.firstOrNull { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey }?.value = profileMessage.updateValue.toFloat()
                                     }
+                                } else if ( (profileMessage.immersionName != null) && (profileMessage.updateKey != null) ) {
+                                    profile!!.statuses?.removeIf { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey }
                                 }
                             }
                             ProfileMessage.ProfileMessageType.LOAD_AMH_WITH_CURRENT -> {

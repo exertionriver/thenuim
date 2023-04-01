@@ -13,6 +13,7 @@ import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandl
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.system.profile.ProfileStatus
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -27,7 +28,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
     val narrativeImmersionTimer = ImmersionTimerComponent().apply { this.isInitialized = true }
     var blockImmersionTimers : MutableMap<String, ImmersionTimerComponent> = mutableMapOf()
-    var flags : MutableList<String> = mutableListOf()
+    var flags : MutableList<ProfileStatus> = mutableListOf()
 
     var isActive = false //ie., is the current simulation
     var changed = false
@@ -62,9 +63,11 @@ class NarrativeComponent : IComponent, Telegraph {
                     blockImmersionTimers[narrativeBlock.id] = ImmersionTimerComponent().apply { this.isInitialized = true }
                 }
 
-                //load current profile
+                //update current profile and statuses
                 MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_IMMERSION, narrativeComponentInit.narrativeAsset.narrativeAssetName(), narrativeComponentInit.currentBlockId))
                 MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeComponentInit.narrativeAsset.narrativeAssetName(), "progress", seqNarrativeProgress().toString()))
+
+                narrativeComponentInit.profileStatuses?.forEach { flags.add(it) }
 
                 //start timers
                 activate(narrativeCurrBlockId())
@@ -98,7 +101,7 @@ class NarrativeComponent : IComponent, Telegraph {
         fun getFor(entity : Entity) : NarrativeComponent? = if (has(entity)) entity.components.first { it is NarrativeComponent } as NarrativeComponent else null
     }
 
-    data class NarrativeComponentInit(val narrativeAsset: NarrativeAsset, val currentBlockId: String? = null, private val nullableCurrentCumlTimer: String? = null) {
+    data class NarrativeComponentInit(val narrativeAsset: NarrativeAsset, val currentBlockId: String? = null, private val nullableCurrentCumlTimer: String? = null, val profileStatuses : List<ProfileStatus>? = null) {
         val currentCumlTimer: String
             get() = nullableCurrentCumlTimer ?: "00:00:00"
     }

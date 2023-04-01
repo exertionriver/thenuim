@@ -14,6 +14,7 @@ import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.*
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
 
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
@@ -179,6 +180,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
 
                     if (displayViewMenuMessage.menuButtonIdx == 0) {
                         menuOpen = (displayViewMenuMessage.isChecked)
+                        if (!menuOpen) Switchboard.clearMenu()
                         MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
                     }
                     if (displayViewMenuMessage.menuButtonIdx == 1) {

@@ -146,9 +146,10 @@ class AssetManagerHandler : Telegraph {
 
                 NarrativeComponent.NarrativeComponentInit(selectedNarrativeAsset!!,
                     currentProfile!!.immersionBlockId(selectedNarrativeAsset!!.narrative!!.name),
-                    currentProfile!!.immersionCumlTime(selectedNarrativeAsset!!.narrative!!.name)
+                    currentProfile!!.immersionCumlTime(selectedNarrativeAsset!!.narrative!!.name),
+                    currentProfile!!.statuses?.filter { it.immersionName == selectedNarrativeAsset!!.narrative!!.name})
                 )
-            ) )
+            )
 
         } else {
             MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewCtrl.NoNarrativeLoaded))

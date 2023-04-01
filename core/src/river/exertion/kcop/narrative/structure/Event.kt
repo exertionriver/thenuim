@@ -11,6 +11,9 @@ data class Event(
     val param2: String = ""
 ) {
 
+    @Transient
+    var fired = false
+
     fun validateFields() : Boolean {
         return EventType.isEventType(eventType)
     }
@@ -20,9 +23,9 @@ data class Event(
 
     enum class EventType {
         LOG { override fun label() = "log"},
-        TEXT {override fun label() = "text"},
+        TEXT { override fun label() = "text"},
         SET_FLAG { override fun label() = "setFlag"},
-        GET_FLAG {override fun label() = "getFlag"},
+        UNSET_FLAG {override fun label() = "unsetFlag"},
         ZERO_COUNTER {override fun label() = "zeroCounter"},
         PLUS_COUNTER {override fun label() = "plusCounter"},
         MINUS_COUNTER {override fun label() = "minusCounter"},
