@@ -7,7 +7,8 @@
     {"id" : "demo_block6", "narrativeText" : ["sixth timeline block"]}
   ], "eventBlocks" : [
     { "narrativeBlockId" : "demo_block2", "events" : [
-      { "id" : "optional_id", "eventTrigger" : "onEntry", "eventType" : "setFlag", "param" : "demo_block2" }
+      { "id" : "optional_id", "eventTrigger" : "onEntry", "eventType" : "setFlag", "param" : "demo_block2" },
+      { "eventType" : "minusCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
     ]},
     { "narrativeBlockId" : "demo_block4", "events" : [
       { "eventType" : "text", "eventTrigger" : "onEntry", "param" : "entered demo_block4" },
@@ -22,7 +23,8 @@
       { "eventType" : "text", "eventTrigger" : "onEntry", "param" : "entered demo_block6"},
       { "eventType" : "getFlag", "eventTrigger" : "onEntry", "param" : "demo_block2"},
       { "eventType" : "getFlag", "eventTrigger" : "onEntry", "param" : "demo_block6"},
-      { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block6"}
+      { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block6"},
+      { "eventType" : "zeroCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
     ]}
   ], "timelineEvents" : [
     { "id" : "timeline_event_a", "immersionTime" : "00:00:30", "eventType" : "text", "param" : "timeline_event_a @ :30"},

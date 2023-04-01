@@ -1,6 +1,4 @@
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.Util
-import river.exertion.kcop.narrative.structure.Narrative
 
 class TestNarrativeTimers {
 

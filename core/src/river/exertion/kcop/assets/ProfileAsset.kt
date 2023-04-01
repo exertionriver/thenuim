@@ -1,8 +1,8 @@
 package river.exertion.kcop.assets
 
 import com.badlogic.gdx.Gdx
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
-import river.exertion.kcop.Util
 import river.exertion.kcop.system.profile.Profile
 
 class ProfileAsset(var profile : Profile? = null, override var assetPath : String) : LoadableAsset {
@@ -31,8 +31,10 @@ class ProfileAsset(var profile : Profile? = null, override var assetPath : Strin
         return returnList.toList()
     }
 
+    private val json = Json { ignoreUnknownKeys = true }
+
     fun save() {
-        val jsonProfile = Util.json.encodeToJsonElement(this.profile)
+        val jsonProfile = json.encodeToJsonElement(this.profile)
         Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
     }
 }

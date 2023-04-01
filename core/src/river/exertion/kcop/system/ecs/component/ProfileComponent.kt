@@ -9,6 +9,8 @@ import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.AMHMessage
 import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import river.exertion.kcop.system.profile.Profile
+import river.exertion.kcop.system.profile.ProfileLocation
+import river.exertion.kcop.system.profile.ProfileStatus
 
 class ProfileComponent : IComponent, Telegraph {
 
@@ -43,28 +45,50 @@ class ProfileComponent : IComponent, Telegraph {
                     val profileMessage: ProfileMessage = MessageChannel.PROFILE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     if ( (profile != null) && isInitialized) {
-                        if ( (profileMessage.updateString != null && profileMessage.immersionName != null) ||
-                                (profileMessage.profileMessageType == ProfileMessage.ProfileMessageType.LOAD_AMH_WITH_CURRENT ) ) {
-                            when (profileMessage.profileMessageType) {
-                                ProfileMessage.ProfileMessageType.UPDATE_IMMERSION -> {
-                                    profile!!.currentImmersionName = profileMessage.immersionName
-                                    profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName }?.immersionBlockId = profileMessage.updateString!!
-                                }
-                                ProfileMessage.ProfileMessageType.UPDATE_BLOCK_ID -> {
-                                    profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName }?.immersionBlockId = profileMessage.updateString!!
-                                }
-                                ProfileMessage.ProfileMessageType.UPDATE_STATUS -> {
-                                    profile!!.statuses?.firstOrNull { it.key == profileMessage.immersionName }?.value = profileMessage.updateString!!.toFloat()
-                                }
-                                ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME -> {
-                                    profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName }?.cumlImmersionTime = profileMessage.updateString
-                                }
-                                ProfileMessage.ProfileMessageType.LOAD_AMH_WITH_CURRENT -> {
-                                    MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadCurrentProfile, null, this.profile))
+                        when (profileMessage.profileMessageType) {
+                            ProfileMessage.ProfileMessageType.UPDATE_IMMERSION -> {
+                                profile!!.currentImmersionName = profileMessage.immersionName
+
+                                if (profileMessage.updateKey != null) {
+                                    if (profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName } == null) {
+                                        profile!!.locations?.add(ProfileLocation(profile!!.currentImmersionName!!, profileMessage.updateKey))
+                                    } else {
+                                        profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName }?.immersionBlockId = profileMessage.updateKey
+                                    }
                                 }
                             }
-                            return true
+                            ProfileMessage.ProfileMessageType.UPDATE_BLOCK_ID -> {
+                                if (profileMessage.updateKey != null) {
+                                    if (profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! } == null) {
+                                        profile!!.locations?.add(ProfileLocation(profileMessage.immersionName!!, profileMessage.updateKey))
+                                    } else {
+                                        profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! }?.immersionBlockId = profileMessage.updateKey
+                                    }
+                                }
+                            }
+                            ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME -> {
+                                if (profileMessage.updateKey != null) {
+                                    if (profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! } == null) {
+                                        profile!!.locations?.add(ProfileLocation(profileMessage.immersionName!!, null, profileMessage.updateKey))
+                                    } else {
+                                        profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! }?.cumlImmersionTime = profileMessage.updateKey
+                                    }
+                                }
+                            }
+                            ProfileMessage.ProfileMessageType.UPDATE_STATUS -> {
+                                if ( (profileMessage.immersionName != null) && (profileMessage.updateKey != null) && (profileMessage.updateValue != null) ) {
+                                    if (profile!!.statuses?.firstOrNull { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey } == null) {
+                                        profile!!.statuses?.add(ProfileStatus(profileMessage.immersionName, profileMessage.updateKey, profileMessage.updateValue.toFloat()))
+                                    } else {
+                                        profile!!.statuses?.firstOrNull { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey }?.value = profileMessage.updateValue.toFloat()
+                                    }
+                                }
+                            }
+                            ProfileMessage.ProfileMessageType.LOAD_AMH_WITH_CURRENT -> {
+                                MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadCurrentProfile, null, this.profile))
+                            }
                         }
+                        return true
                     }
                 }
             }

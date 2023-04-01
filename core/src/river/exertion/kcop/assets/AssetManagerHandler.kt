@@ -17,6 +17,7 @@ import river.exertion.kcop.simulation.view.ctrl.LogViewCtrl
 import river.exertion.kcop.simulation.view.ctrl.TextViewCtrl
 import river.exertion.kcop.simulation.view.displayViewMenus.params.NarrativeMenuDataParams
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuDataParams
+import river.exertion.kcop.system.ecs.SystemManager.logDebug
 import river.exertion.kcop.system.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
@@ -76,7 +77,11 @@ class AssetManagerHandler : Telegraph {
         assets.getAll(T::class.java, currentAssetArray)
 
         currentAssetArray.forEach {
-            if (it.status == null) returnAssets[it.assetPath] = it
+            if (it.status == null) {
+                returnAssets[it.assetPath] = it
+            } else {
+                logDebug("${it.status}", "${it.statusDetail}")
+            }
         }
 
         return returnAssets

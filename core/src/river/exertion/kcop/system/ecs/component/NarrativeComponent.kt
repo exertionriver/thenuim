@@ -64,6 +64,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
                 //load current profile
                 MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_IMMERSION, narrativeComponentInit.narrativeAsset.narrativeAssetName(), narrativeComponentInit.currentBlockId))
+                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeComponentInit.narrativeAsset.narrativeAssetName(), "progress", seqNarrativeProgress().toString()))
 
                 //start timers
                 activate(narrativeCurrBlockId())

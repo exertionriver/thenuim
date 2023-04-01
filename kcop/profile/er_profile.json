@@ -3,10 +3,10 @@
   {"immersionName":"cyoa_narrative","immersionBlockId":"demo_block6","cumlImmersionTime":"00:02:20"},
   {"immersionName":"layout_narrative","immersionBlockId":"demo_block1","cumlImmersionTime":"00:00:31"},
   {"immersionName":"timeline_narrative","immersionBlockId":"demo_block6","cumlImmersionTime":"00:00:22"}
-],"statuses":[{"immersionName":"cyoa_narrative","key":"progress","value":1.0},
+],"statuses":[
+  {"immersionName":"cyoa_narrative","key":"progress","value":1.0,"display":true},
   {"immersionName":"cyoa_narrative","key":"navCountUp","value":2.0},
-  {"immersionName":"timeline_narrative","key":"progress","value":1.0},
+  {"immersionName":"timeline_narrative","key":"progress","value":1.0,"display":true},
   {"immersionName":"timeline_narrative","key":"navCountDown","value":1.0}
-
 ]
 }

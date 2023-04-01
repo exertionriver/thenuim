@@ -53,7 +53,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
         return Table().apply {
             this.add(listCtrl).growY().top().left()
 //            this.add(Table())
-            this.debug()
+//            this.debug()
             this.top()
             this.left()
         }

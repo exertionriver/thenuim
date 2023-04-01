@@ -34,5 +34,13 @@
       { "id" : "sixth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block5"},
       { "id" : "sixth_prompt_c", "promptText" : "Jump (B)ack", "promptKey" : "B", "promptNextId" : "demo_block2"}
     ]}
+  ],
+  "eventBlocks" : [
+    { "narrativeBlockId" : "demo_block2", "events" : [
+      { "eventType" : "plusCounter", "eventTrigger" : "onEntry", "param" : "navCountUp" }
+    ]},
+    { "narrativeBlockId" : "demo_block5", "events" : [
+      { "eventType" : "zeroCounter", "eventTrigger" : "onEntry", "param" : "navCountUp" }
+    ]}
   ]
 }

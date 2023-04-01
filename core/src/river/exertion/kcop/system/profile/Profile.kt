@@ -25,7 +25,7 @@ data class Profile(
 
         if (locations?.isNotEmpty() == true) returnList.add("\nlocations:")
 
-        val locationListMaxSize = locations?.size?.coerceAtMost(4) ?: 0
+        val locationListMaxSize = locations?.size?.coerceAtMost(8) ?: 0
 
         locations?.sortedByDescending { it.cumlImmersionTime }?.subList(0, locationListMaxSize)?.forEach { location ->
                 returnList.add("${location.immersionName}: ${location.immersionBlockId} [${location.cumlImmersionTime}]")
@@ -33,10 +33,10 @@ data class Profile(
 
         if (statuses?.isNotEmpty() == true) returnList.add("\nstatuses:")
 
-        val statusListMaxSize = statuses?.size?.coerceAtMost(4) ?: 0
+        val statusListMaxSize = statuses?.size?.coerceAtMost(8) ?: 0
 
         statuses?.sortedByDescending { it.value }?.subList(0, statusListMaxSize)?.forEach { status ->
-            returnList.add("${status.key}: ${status.value}")
+            returnList.add("${status.immersionName}: ${status.key} [${status.value}]")
         }
 
         if ( returnList.isEmpty() ) returnList.add("no profile info found")

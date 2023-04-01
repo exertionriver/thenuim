@@ -32,7 +32,7 @@ object Switchboard {
 
     fun updateProfile(narrativeComponent : NarrativeComponent) {
         MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_BLOCK_ID, narrativeComponent.narrativeName(), narrativeComponent.narrativeCurrBlockId()))
-        MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeComponent.narrativeName(), narrativeComponent.seqNarrativeProgress().toString()))
+        MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeComponent.narrativeName(), "progress", narrativeComponent.seqNarrativeProgress().toString()))
     }
 
     fun newProfile(entityName : String) {
