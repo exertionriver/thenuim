@@ -53,7 +53,6 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
         ActionParam("Yes", {
             Switchboard.closeMenu()
             Switchboard.loadSelectedProfile()
-            Switchboard.clearMenu()
         }, "Profile Loaded!"),
         //go back a menu
         ActionParam("No", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})

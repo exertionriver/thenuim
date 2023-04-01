@@ -180,7 +180,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
 
                     if (displayViewMenuMessage.menuButtonIdx == 0) {
                         menuOpen = (displayViewMenuMessage.isChecked)
-                        if (!menuOpen) Switchboard.clearMenu()
                         MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
                     }
                     if (displayViewMenuMessage.menuButtonIdx == 1) {

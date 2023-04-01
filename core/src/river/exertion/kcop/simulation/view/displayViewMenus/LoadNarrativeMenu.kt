@@ -52,7 +52,6 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
         ActionParam("Yes", {
             Switchboard.closeMenu()
             Switchboard.loadSelectedNarrative()
-            Switchboard.clearMenu()
         }, "Narrative Loaded!"),
         //go back a menu
         ActionParam("No", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})

@@ -62,7 +62,6 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
         ActionParam("Overwrite", {
             Switchboard.closeMenu()
             Switchboard.saveSelectedProfile(selectedProfileAssetName(), AssetManagerHandler.SaveType.Overwrite)
-            Switchboard.clearMenu()
         }, "Profile Saved!"),
 /*        ActionParam("Merge", {
             Switchboard.closeMenu()

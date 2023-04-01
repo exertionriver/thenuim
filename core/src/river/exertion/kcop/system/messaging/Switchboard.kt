@@ -25,6 +25,7 @@ object Switchboard {
     }
 
     fun openMenu() {
+        clearMenu()
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(0, true))
         MessageChannel.PAUSE_VIEW_BRIDGE.send(null, PauseViewMessage(true))
         MessageChannel.MENU_VIEW_BRIDGE.send(null, DisplayViewMenuMessage(0, true))
