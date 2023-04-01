@@ -1,6 +1,12 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.9 - Save profile, load narrative, counter support for immersions
+
+https://user-images.githubusercontent.com/13192685/229291860-9279153a-adc8-419d-9a29-73c634c6a6fb.mp4
+
+---
+
 <b>v0.8 - AI button, basic menu implementation with quick button example. Profile view and profile-based narrative loading</b>
 
 https://user-images.githubusercontent.com/13192685/225593696-dd00bc11-ec1f-4c93-b284-214ec9be2be8.mp4
