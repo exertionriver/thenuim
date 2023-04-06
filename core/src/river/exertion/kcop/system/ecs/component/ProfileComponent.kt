@@ -3,39 +3,73 @@ package river.exertion.kcop.system.ecs.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.narrative.character.NameTypes
+import river.exertion.kcop.system.ecs.entity.ProfileEntity
+import river.exertion.kcop.system.immersionTimer.ImmersionTimer
+import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.AMHMessage
+import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
 import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import river.exertion.kcop.system.profile.Profile
-import river.exertion.kcop.system.profile.ProfileLocation
-import river.exertion.kcop.system.profile.ProfileStatus
 
 class ProfileComponent : IComponent, Telegraph {
 
-    init {
-        MessageChannel.PROFILE_BRIDGE.enableReceive(this)
-    }
-
     var profile : Profile? = null
+    fun profileId() = if (profile != null) profile?.id!! else throw Exception("ProfileComponent::profileId() profile is null")
 
-    override var entityName = ""
     override var isInitialized = false
 
-    override fun initialize(entityName: String, initData: Any?) {
+    val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
+
+    override fun initialize(initData: Any?) {
 
         if (initData != null) {
-            super.initialize(entityName, initData)
+            super.initialize(initData)
+
             val profileComponentInit = IComponent.checkInitType<ProfileComponentInit>(initData)
 
-            profile = profileComponentInit!!.profileAsset.profile
+            if (profileComponentInit!!.profileAsset != null) {
+                profile = profileComponentInit.profileAsset!!.profile
+                timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profileComponentInit.profileAsset.profile!!.cumlTime()))
+            } else {
+                profile = Profile(name= NameTypes.COMMON.nextName())
+            }
+
+            MessageChannel.PROFILE_BRIDGE.enableReceive(this)
+
+            activate()
 
         } else {
             //allow empty component
-            super.initialize(entityName, null)
+            super.initialize(null)
         }
     }
+
+    fun activate() {
+        if (isInitialized) {
+
+            timerPair.instImmersionTimer!!.resetTimer()
+            timerPair.instImmersionTimer.resumeTimer()
+            timerPair.cumlImmersionTimer.resumeTimer()
+        }
+    }
+
+    fun inactivate() {
+        if (isInitialized) {
+
+            timerPair.instImmersionTimer!!.pauseTimer()
+            timerPair.cumlImmersionTimer.pauseTimer()
+
+            MessageChannel.PROFILE_BRIDGE.disableReceive(this)
+
+            isInitialized = false
+        }
+    }
+
+    fun cumlTime() = if (isInitialized) timerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.zero()
 
     @Suppress("NewApi")
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -47,48 +81,18 @@ class ProfileComponent : IComponent, Telegraph {
 
                     if ( (profile != null) && isInitialized) {
                         when (profileMessage.profileMessageType) {
-                            ProfileMessage.ProfileMessageType.UPDATE_IMMERSION -> {
-                                profile!!.currentImmersionName = profileMessage.immersionName
-
-                                if (profileMessage.updateKey != null) {
-                                    if (profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName } == null) {
-                                        profile!!.locations?.add(ProfileLocation(profile!!.currentImmersionName!!, profileMessage.updateKey))
-                                    } else {
-                                        profile!!.locations?.firstOrNull { it.immersionName == profile!!.currentImmersionName }?.immersionBlockId = profileMessage.updateKey
-                                    }
-                                }
-                            }
-                            ProfileMessage.ProfileMessageType.UPDATE_BLOCK_ID -> {
-                                if (profileMessage.updateKey != null) {
-                                    if (profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! } == null) {
-                                        profile!!.locations?.add(ProfileLocation(profileMessage.immersionName!!, profileMessage.updateKey))
-                                    } else {
-                                        profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! }?.immersionBlockId = profileMessage.updateKey
-                                    }
+                            ProfileMessage.ProfileMessageType.UPDATE_IMMERSION_ID -> {
+                                if (profileMessage.immersionId != null) {
+                                    profile!!.currentImmersionId = profileMessage.immersionId
                                 }
                             }
                             ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME -> {
-                                if (profileMessage.updateKey != null) {
-                                    if (profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! } == null) {
-                                        profile!!.locations?.add(ProfileLocation(profileMessage.immersionName!!, null, profileMessage.updateKey))
-                                    } else {
-                                        profile!!.locations?.firstOrNull { it.immersionName == profileMessage.immersionName!! }?.cumlImmersionTime = profileMessage.updateKey
-                                    }
+                                if (profileMessage.cumlTime != null) {
+                                    profile!!.cumlTime = profileMessage.cumlTime
                                 }
                             }
-                            ProfileMessage.ProfileMessageType.UPDATE_STATUS -> {
-                                if ( (profileMessage.immersionName != null) && (profileMessage.updateKey != null) && (profileMessage.updateValue != null) ) {
-                                    if (profile!!.statuses?.firstOrNull { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey } == null) {
-                                        profile!!.statuses?.add(ProfileStatus(profileMessage.immersionName, profileMessage.updateKey, profileMessage.updateValue.toFloat()))
-                                    } else {
-                                        profile!!.statuses?.firstOrNull { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey }?.value = profileMessage.updateValue.toFloat()
-                                    }
-                                } else if ( (profileMessage.immersionName != null) && (profileMessage.updateKey != null) ) {
-                                    profile!!.statuses?.removeIf { it.immersionName == profileMessage.immersionName && it.key == profileMessage.updateKey }
-                                }
-                            }
-                            ProfileMessage.ProfileMessageType.LOAD_AMH_WITH_CURRENT -> {
-                                MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadCurrentProfile, null, this.profile))
+                            ProfileMessage.ProfileMessageType.INACTIVATE -> {
+                                inactivate()
                             }
                         }
                         return true
@@ -104,5 +108,5 @@ class ProfileComponent : IComponent, Telegraph {
         fun getFor(entity : Entity?) : ProfileComponent? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileComponent } as ProfileComponent else null
     }
 
-    data class ProfileComponentInit(val profileAsset: ProfileAsset)
+    data class ProfileComponentInit(val profileAsset: ProfileAsset? = null)
 }

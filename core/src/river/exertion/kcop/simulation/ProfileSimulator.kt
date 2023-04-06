@@ -1,19 +1,13 @@
 package river.exertion.kcop.simulation
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
-import ktx.scene2d.*
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.system.*
 import river.exertion.kcop.system.ecs.EngineHandler
-import river.exertion.kcop.system.ecs.component.NarrativeComponent
-import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
@@ -24,6 +18,8 @@ class ProfileSimulator(private val stage: Stage,
                        private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+
+    val profileEntity = engineHandler.instantiateEntity(ProfileEntity::class.java)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -53,20 +49,6 @@ class ProfileSimulator(private val stage: Stage,
         stage.addActor(layout.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
         stage.addActor(layout.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
         stage.addActor(layout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-
-        engineHandler.instantiateEntity(ProfileEntity::class.java)
-
-        engineHandler.addComponent(ProfileEntity.entityName, ProfileComponent::class.java, null,
-                ProfileComponent.ProfileComponentInit(assetManagerHandler.assets[ProfileAssets.ExertionRiverText]))
-
-        val immersionAsset = assetManagerHandler.narrativeAssets.values.first { it.narrative?.name == assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.currentImmersionName }
-
-        engineHandler.addComponent(ProfileEntity.entityName, NarrativeComponent::class.java, null,
-            NarrativeComponent.NarrativeComponentInit(immersionAsset,
-                assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.immersionBlockId(),
-                assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.immersionCumlTime(),
-                assetManagerHandler.assets[ProfileAssets.ExertionRiverText].profile!!.statuses?.filter { it.immersionName == immersionAsset.narrativeAssetName()})
-            )
 
 //        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
 //        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id

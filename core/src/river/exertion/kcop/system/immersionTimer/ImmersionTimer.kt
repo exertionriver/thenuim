@@ -4,14 +4,12 @@ import com.badlogic.gdx.ai.fsm.DefaultStateMachine
 import com.badlogic.gdx.utils.TimeUtils
 import river.exertion.kcop.Id
 
-class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) : Id() {
+class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) {
 
     val stateMachine = DefaultStateMachine(this, startState)
 
     var pausedAtTime : Long = 0
     var pausedDurationMillis : Long = 0
-
-    var isActive = false
 
     init {
         if (startState == ImmersionTimerState.PAUSED) pausedAtTime = startTime //init timer in paused mode
@@ -44,16 +42,12 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
     fun pauseTimer() {
         stateMachine.changeState(ImmersionTimerState.PAUSED)
         pausedAtTime = TimeUtils.millis()
-
-        isActive = false
     }
 
     fun resumeTimer() {
         stateMachine.changeState(ImmersionTimerState.RUNNING)
         pausedDurationMillis += TimeUtils.timeSinceMillis(pausedAtTime)
         pausedAtTime = 0
-
-        isActive = true
     }
 
     fun onOrPast(timeString : String) : Boolean {
@@ -61,6 +55,8 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
     }
 
     companion object {
+
+        fun zero() = "00:00:00"
 
         fun inSeconds(timeString : String) : Long {
             val timeSplit = timeString.split(":")

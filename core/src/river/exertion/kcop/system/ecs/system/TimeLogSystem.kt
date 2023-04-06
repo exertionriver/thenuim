@@ -6,7 +6,6 @@ import ktx.ashley.oneOf
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.ecs.component.IRLTimeComponent
 import river.exertion.kcop.system.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 
@@ -22,8 +21,8 @@ class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::cla
         }
 
         if ( immersionTimerComponent != null ) {
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.InstImmersionTime, immersionTimerComponent.instImmersionTimer.immersionTime()) )
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.CumlImmersionTime, immersionTimerComponent.cumlImmersionTimer.immersionTime()) )
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.InstImmersionTime, immersionTimerComponent.instImmersionTime()) )
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.CumlImmersionTime, immersionTimerComponent.cumlImmersionTime()) )
         }
     }
 }

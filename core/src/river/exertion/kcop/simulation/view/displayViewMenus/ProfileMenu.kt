@@ -13,7 +13,8 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.AMHMessage
+import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
+import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
@@ -65,13 +66,16 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
 
     override val navs = mutableListOf(
         ActionParam("Load >", {
-            MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.SetSelectedProfileAsset, selectedProfileAssetTitle))
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams("loadProfileMenu", selectedProfileAssetTitle)))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileAsset, selectedProfileAssetTitle))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(LoadProfileMenu.tag, selectedProfileAssetTitle)))
         }),
         ActionParam("Save >", {
-            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.LOAD_AMH_WITH_CURRENT))
-            MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.SetSelectedProfileAsset, selectedProfileAssetTitle, null, selectedProfileAssetTitle))
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams("saveProfileMenu", selectedProfileAssetTitle)))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileAsset, selectedProfileAssetTitle))
+            MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.PollSelectedProfileAsset))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(SaveProfileMenu.tag, selectedProfileAssetTitle)))
+        }),
+        ActionParam("New >", {
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(NewProfileMenu.tag, null)))
         })
     )
 

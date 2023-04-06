@@ -42,7 +42,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         LoadProfileMenu(screenWidth, screenHeight),
         SaveProfileMenu(screenWidth, screenHeight),
         NarrativeMenu(screenWidth, screenHeight),
-        LoadNarrativeMenu(screenWidth, screenHeight)
+        LoadNarrativeMenu(screenWidth, screenHeight),
+        NewProfileMenu(screenWidth, screenHeight),
+        SaveProgressMenu(screenWidth, screenHeight),
+        RestartProgressMenu(screenWidth, screenHeight),
     )
 
     var menuOpen = false
@@ -54,7 +57,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     var currentFontSize = FontSize.SMALL
 
     fun setLayoutIdxByTag(tag : String) {
-        currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag() == tag } ?: displayViewLayouts[currentLayoutIdx])
+        currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
     }
 
     fun setMenuIdxByTag(tag : String) {
@@ -202,76 +205,94 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
                     //to menus from elsewhere
-                    if ( menuDataMessage.profileMenuDataParams != null ) {
-                        displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
-                            if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null) {
-                                (profileMenu as ProfileMenu).profileAssetTitles = menuDataMessage.profileMenuDataParams!!.profileAssetTitles
-                            }
-                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle != null) {
-                                (profileMenu as ProfileMenu).selectedProfileAssetTitle = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle
+                    if (menuDataMessage.profileMenuDataParams != null && menuDataMessage.narrativeMenuDataParams != null) {
+                        displayViewMenus.filter { it is SaveProgressMenu }.forEach { saveProgressMenu ->
+
+                            val assetsInfo = (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo ?: listOf("")) + (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo ?: listOf(""))
+                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
+                                (saveProgressMenu as SaveProgressMenu).progressAssetsInfo = assetsInfo
                             }
                         }
-                        displayViewMenus.filter { it is LoadProfileMenu }.forEach { loadProfileMenu ->
+                        displayViewMenus.filter { it is RestartProgressMenu }.forEach { restartProgressMenu ->
+
+                            val assetsInfo = (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo ?: listOf("")) + (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo ?: listOf(""))
                             if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                (loadProfileMenu as LoadProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
-                            }
-                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
-                                (loadProfileMenu as LoadProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
-                            }
-                        }
-                        displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
-                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
-                            }
-                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
-                                (saveProfileMenu as SaveProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
+                                (restartProgressMenu as RestartProgressMenu).progressAssetsInfo = assetsInfo
                             }
                         }
                     } else {
-                        displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
-                            (profileMenu as ProfileMenu).profileAssetTitles = null
-                            profileMenu.selectedProfileAssetTitle = null
-                        }
-                        displayViewMenus.filter { it is LoadProfileMenu }.forEach { loadProfileMenu ->
-                            (loadProfileMenu as LoadProfileMenu).selectedProfileAssetInfo = null
-                            loadProfileMenu.selectedProfileAssetInfo = null
-                            loadProfileMenu.selectedProfileAssetName = null
-                        }
-                        displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
-                            (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = null
-                            saveProfileMenu.selectedProfileAssetInfo = null
-                            saveProfileMenu.selectedProfileAssetName = null
+                        if ( menuDataMessage.profileMenuDataParams != null ) {
+                            displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
+                                if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null) {
+                                    (profileMenu as ProfileMenu).profileAssetTitles = menuDataMessage.profileMenuDataParams!!.profileAssetTitles
+                                }
+                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle != null) {
+                                    (profileMenu as ProfileMenu).selectedProfileAssetTitle = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle
+                                }
+                            }
+                            displayViewMenus.filter { it is LoadProfileMenu }.forEach { loadProfileMenu ->
+                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
+                                    (loadProfileMenu as LoadProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
+                                }
+                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
+                                    (loadProfileMenu as LoadProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
+                                }
+                            }
+                            displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
+                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
+                                    (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
+                                }
+                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
+                                    (saveProfileMenu as SaveProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
+                                }
+                            }
+                        } else {
+                            displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
+                                (profileMenu as ProfileMenu).profileAssetTitles = null
+                                profileMenu.selectedProfileAssetTitle = null
+                            }
+                            displayViewMenus.filter { it is LoadProfileMenu }.forEach { loadProfileMenu ->
+                                (loadProfileMenu as LoadProfileMenu).selectedProfileAssetInfo = null
+                                loadProfileMenu.selectedProfileAssetInfo = null
+                                loadProfileMenu.selectedProfileAssetName = null
+                            }
+                            displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
+                                (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = null
+                                saveProfileMenu.selectedProfileAssetInfo = null
+                                saveProfileMenu.selectedProfileAssetName = null
 
+                            }
+                        }
+
+                        if ( menuDataMessage.narrativeMenuDataParams != null ) {
+                            displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
+                                if (menuDataMessage.narrativeMenuDataParams!!.narrativeAssetTitles != null) {
+                                    (narrativeMenu as NarrativeMenu).narrativeAssetTitles = menuDataMessage.narrativeMenuDataParams!!.narrativeAssetTitles
+                                }
+                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetTitle != null) {
+                                    (narrativeMenu as NarrativeMenu).selectedNarrativeAssetTitle = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetTitle
+                                }
+                            }
+                            displayViewMenus.filter { it is LoadNarrativeMenu }.forEach { loadNarrativeMenu ->
+                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
+                                    (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
+                                }
+                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName != null) {
+                                    (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetName = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName
+                                }
+                            }
+                        } else {
+                            displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
+                                (narrativeMenu as NarrativeMenu).narrativeAssetTitles = null
+                                narrativeMenu.selectedNarrativeAssetTitle = null
+                            }
+                            displayViewMenus.filter { it is LoadNarrativeMenu }.forEach { loadNarrativeMenu ->
+                                (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetInfo = null
+                                loadNarrativeMenu.selectedNarrativeAssetName = null
+                            }
                         }
                     }
 
-                    if ( menuDataMessage.narrativeMenuDataParams != null ) {
-                        displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
-                            if (menuDataMessage.narrativeMenuDataParams!!.narrativeAssetTitles != null) {
-                                (narrativeMenu as NarrativeMenu).narrativeAssetTitles = menuDataMessage.narrativeMenuDataParams!!.narrativeAssetTitles
-                            }
-                            if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetTitle != null) {
-                                (narrativeMenu as NarrativeMenu).selectedNarrativeAssetTitle = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetTitle
-                            }
-                        }
-                        displayViewMenus.filter { it is LoadNarrativeMenu }.forEach { loadNarrativeMenu ->
-                            if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
-                                (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
-                            }
-                            if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName != null) {
-                                (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetName = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName
-                            }
-                        }
-                    } else {
-                        displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
-                            (narrativeMenu as NarrativeMenu).narrativeAssetTitles = null
-                            narrativeMenu.selectedNarrativeAssetTitle = null
-                        }
-                        displayViewMenus.filter { it is LoadNarrativeMenu }.forEach { loadNarrativeMenu ->
-                            (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetInfo = null
-                            loadNarrativeMenu.selectedNarrativeAssetName = null
-                        }
-                    }
                     build()
                     return true
                 }
@@ -303,6 +324,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
             }
         }
         return false
+    }
+
+    companion object {
+        const val defaultLayoutTag = DVLGoldenRatio.tag
     }
 
     override fun dispose() {

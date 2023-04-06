@@ -7,7 +7,8 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.AMHMessage
+import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
+import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import kotlin.system.exitProcess
 
@@ -23,12 +24,16 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
 
     override val navs = mutableListOf(
         ActionParam("Profile >", {
-            MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuProfiles))
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams("profileMenu")))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuProfiles))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(ProfileMenu.tag)))
         }),
         ActionParam("Narrative >", {
-            MessageChannel.AMH_BRIDGE.send(null, AMHMessage(AMHMessage.AMHMessageType.ReloadMenuNarratives))
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams("narrativeMenu")))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(NarrativeMenu.tag)))
+        }),
+        ActionParam("Save Progress >", {
+            MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.PrepSaveProgress))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(SaveProgressMenu.tag)))
         })
     )
 

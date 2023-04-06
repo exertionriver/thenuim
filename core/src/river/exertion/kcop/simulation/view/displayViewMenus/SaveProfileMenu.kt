@@ -31,7 +31,10 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
             val nameTextField = TextField(selectedProfileAssetName(), TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
 //                this.alignment = Align.top
             }
-            nameTextField.setTextFieldListener { textField, _ -> selectedProfileAssetName = textField.text }
+            nameTextField.setTextFieldListener {
+                textField, _ -> selectedProfileAssetName = textField.text
+                this@SaveProfileMenu.actions.firstOrNull { it.label == "Overwrite" }?.apply { this.log = "Profile Saved : $selectedProfileAssetName" }
+            }
             this.add(nameTextField).growX().top()
             this.row()
 
@@ -41,8 +44,8 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
                 }).colspan(2).growX()
                 this.row()
             }
-  //      this.debug()
-            this@SaveProfileMenu.actions.firstOrNull { it.label == "Overwrite" }?.apply { this.log = "Profile Saved : ${selectedProfileAssetName()}" }
+            this@SaveProfileMenu.actions.firstOrNull { it.label == "Overwrite" }?.apply { this.log = "Profile Saved : $selectedProfileAssetName" }
+            //      this.debug()
         } else {
             this.add(Label("no profile info found", Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()

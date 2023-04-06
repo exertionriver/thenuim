@@ -5,7 +5,6 @@ import river.exertion.kcop.narrative.structure.TimelineEvent
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
-import river.exertion.kcop.system.profile.ProfileStatus
 
 object NarrativeComponentEventHandler {
 
@@ -20,7 +19,7 @@ object NarrativeComponentEventHandler {
 
         if (isInitialized) {
 
-            readyTimelineEvents(narrativeImmersionTimer.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).forEach { timelineEvent ->
+            readyTimelineEvents(timerPair.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).forEach { timelineEvent ->
 
                 when (timelineEvent.eventType()) {
                     Event.EventType.LOG -> {
@@ -63,7 +62,7 @@ object NarrativeComponentEventHandler {
     fun NarrativeComponent.executeReadyBlockEvents() : String {
 
         var returnText = ""
-        var counterVal = 0f
+        var counterVal = 0
 
         if (isInitialized) {
 
@@ -80,54 +79,48 @@ object NarrativeComponentEventHandler {
                     Event.EventType.TEXT -> { returnText += "\n${previousBlockEvent.param}" }
                     Event.EventType.SET_FLAG -> {
                         if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
-                            flags.add(ProfileStatus(narrative!!.name, previousBlockEvent.param))
-//                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${previousBlockEvent.param}") )
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), previousBlockEvent.param, "1.0") )
+                            flags.add(ImmersionStatus(previousBlockEvent.param))
                         }
                     }
                     Event.EventType.UNSET_FLAG -> {
                         if ( flags.map { it.key }.contains(previousBlockEvent.param) ) {
-//                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${previousBlockEvent.param}, unsetting") )
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), previousBlockEvent.param, null) )
-                            flags.removeAll(flags.filter { it.key == previousBlockEvent.param })
+                            flags.removeIf { it.key == previousBlockEvent.param }
                         }
                     }
                     Event.EventType.ZERO_COUNTER -> {
-                        if (!previousBlockEvent.fired) {
-                            counterVal = 0f
+                        if ( !flags.map { it.key }.contains("fired_${previousBlockEvent.param}") ) {
+                            counterVal = 0
                             if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
-                                flags.add(ProfileStatus(narrative!!.name, previousBlockEvent.param, counterVal))
+                                flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
                             } else {
-                                flags.first { it.key == previousBlockEvent.param }.value = counterVal
+                                flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
                             }
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), previousBlockEvent.param, counterVal.toString()) )
-                            previousBlockEvent.fired = true
+
+                            flags.add(ImmersionStatus("fired_${previousBlockEvent.param}"))
                         }
                     }
                     Event.EventType.PLUS_COUNTER -> {
-                        if (!previousBlockEvent.fired) {
+                        if ( !flags.map { it.key }.contains("fired_${previousBlockEvent.param}") ) {
                             if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
-                                counterVal = 1f
-                                flags.add(ProfileStatus(narrative!!.name, previousBlockEvent.param, counterVal))
+                                counterVal = 1
+                                flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
                             } else {
-                                counterVal = flags.first { it.key == previousBlockEvent.param }.value?.plus(1f)!!
-                                flags.first { it.key == previousBlockEvent.param }.value = counterVal
+                                counterVal = flags.first { it.key == previousBlockEvent.param }.value!!.toInt().plus(1)
+                                flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
                             }
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), previousBlockEvent.param, counterVal.toString()) )
-                            previousBlockEvent.fired = true
+                            flags.add(ImmersionStatus("fired_${previousBlockEvent.param}"))
                         }
                     }
                     Event.EventType.MINUS_COUNTER -> {
-                        if (!previousBlockEvent.fired) {
+                        if ( !flags.map { it.key }.contains("fired_${previousBlockEvent.param}") ) {
                             if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
-                                counterVal = -1f
-                                flags.add(ProfileStatus(narrative!!.name, previousBlockEvent.param, -1f))
+                                counterVal = -1
+                                flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
                             } else {
-                                counterVal = flags.first { it.key == previousBlockEvent.param }.value?.minus(1f)!!
-                                flags.first { it.key == previousBlockEvent.param }.value = counterVal
+                                counterVal = flags.first { it.key == previousBlockEvent.param }.value!!.toInt().minus(1)
+                                flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
                             }
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), previousBlockEvent.param, counterVal.toString()) )
-                            previousBlockEvent.fired = true
+                            flags.add(ImmersionStatus("fired_${previousBlockEvent.param}"))
                         }
                     }
                     Event.EventType.SHOW_IMAGE -> {
@@ -184,54 +177,50 @@ object NarrativeComponentEventHandler {
                     Event.EventType.TEXT -> { returnText += "\n${currentBlockEvent.param}" }
                     Event.EventType.SET_FLAG -> {
                         if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                            flags.add(ProfileStatus(narrative!!.name, currentBlockEvent.param))
+                            flags.add(ImmersionStatus(currentBlockEvent.param))
 //                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${currentBlockEvent.param}") )
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), currentBlockEvent.param, "1.0") )
                         }
                     }
                     Event.EventType.UNSET_FLAG -> {
                         if ( flags.map { it.key }.contains(currentBlockEvent.param) ) {
 //                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${currentBlockEvent.param}, unsetting") )
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), currentBlockEvent.param, null) )
                             flags.removeIf { it.key == currentBlockEvent.param }
                         }
                     }
                     Event.EventType.ZERO_COUNTER -> {
-                        if (!currentBlockEvent.fired) {
-                            counterVal = 0f
+                        if ( !flags.map { it.key }.contains("fired_${currentBlockEvent.param}") ) {
+                            counterVal = 0
                             if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                                flags.add(ProfileStatus(narrative!!.name, currentBlockEvent.param, counterVal))
+                                flags.add(ImmersionStatus(currentBlockEvent.param, counterVal.toString()))
                             } else {
-                                flags.first { it.key == currentBlockEvent.param }.value = counterVal
+                                flags.first { it.key == currentBlockEvent.param }.value = counterVal.toString()
                             }
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), currentBlockEvent.param, counterVal.toString()) )
-                            currentBlockEvent.fired = true
+
+                            flags.add(ImmersionStatus("fired_${currentBlockEvent.param}"))
                         }
                     }
                     Event.EventType.PLUS_COUNTER -> {
-                        if (!currentBlockEvent.fired) {
+                        if ( !flags.map { it.key }.contains("fired_${currentBlockEvent.param}") ) {
                             if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                                counterVal = 1f
-                                flags.add(ProfileStatus(narrative!!.name, currentBlockEvent.param, counterVal))
+                                counterVal = 1
+                                flags.add(ImmersionStatus(currentBlockEvent.param, counterVal.toString()))
                             } else {
-                                counterVal = flags.first { it.key == currentBlockEvent.param }.value?.plus(1f)!!
-                                flags.first { it.key == currentBlockEvent.param }.value = counterVal
+                                counterVal = flags.first { it.key == currentBlockEvent.param }.value!!.toInt().plus(1)
+                                flags.first { it.key == currentBlockEvent.param }.value = counterVal.toString()
                             }
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), currentBlockEvent.param, counterVal.toString()) )
-                            currentBlockEvent.fired = true
+                            flags.add(ImmersionStatus("fired_${currentBlockEvent.param}"))
                         }
                     }
                     Event.EventType.MINUS_COUNTER -> {
-                        if (!currentBlockEvent.fired) {
+                        if ( !flags.map { it.key }.contains("fired_${currentBlockEvent.param}") ) {
                             if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                                counterVal = -1f
-                                flags.add(ProfileStatus(narrative!!.name, currentBlockEvent.param, -1f))
+                                counterVal = -1
+                                flags.add(ImmersionStatus(currentBlockEvent.param, counterVal.toString()))
                             } else {
-                                counterVal = flags.first { it.key == currentBlockEvent.param }.value?.minus(1f)!!
-                                flags.first { it.key == currentBlockEvent.param }.value = counterVal
+                                counterVal = flags.first { it.key == currentBlockEvent.param }.value!!.toInt().minus(1)
+                                flags.first { it.key == currentBlockEvent.param }.value = counterVal.toString()
                             }
-                            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_STATUS, narrativeName(), currentBlockEvent.param, counterVal.toString()) )
-                            currentBlockEvent.fired = true
+                            flags.add(ImmersionStatus("fired_${currentBlockEvent.param}"))
                         }
                     }
                     Event.EventType.SHOW_IMAGE -> {

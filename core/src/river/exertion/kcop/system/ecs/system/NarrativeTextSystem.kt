@@ -17,7 +17,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
         val narrativeComponent = NarrativeComponent.getFor(entity)!!
 
-        if (narrativeComponent.isInitialized && narrativeComponent.isActive) {
+        if (narrativeComponent.isInitialized) {
 
             var currentText = narrativeComponent.currentText()
             currentText += narrativeComponent.executeReadyTimelineEvents()
@@ -25,12 +25,11 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             currentText += narrativeComponent.currentBlockTimer()
 
             if (narrativeComponent.changed) {
-                MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrativeComponent.narrative!!.layoutTag, narrativeComponent.narrative!!.currentDisplayText(), narrativeComponent.narrative!!.currentFontSize()))
+                MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrativeComponent.layoutTag(), narrativeComponent.currentDisplayText(), narrativeComponent.currentFontSize()))
                 NarrativeComponent.getFor(entity)!!.changed = false
             }
 
-            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.narrative!!.currentPrompts(), narrativeComponent.narrative!!.name))
-            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UPDATE_CUML_TIME, narrativeComponent.narrativeName(), narrativeComponent.narrativeImmersionTimer.cumlImmersionTimer.immersionTime()))
+            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.currentPrompts()))
         }
     }
 }

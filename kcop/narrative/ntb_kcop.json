@@ -1,4 +1,6 @@
-{"name" : "timeline_narrative", "layoutTag" : "goldenRatioLayout", "narrativeBlocks" : [
+{
+  "id" : "66a15a22-4de7-48fa-90bc-2d95f983656f",
+  "name" : "timeline_narrative", "layoutTag" : "goldenRatioLayout", "narrativeBlocks" : [
     {"id" : "demo_block1", "narrativeText" : ["first timeline block"]},
     {"id" : "demo_block2", "narrativeText" : ["second timeline block"]},
     {"id" : "demo_block3", "narrativeText" : ["third timeline block"]},

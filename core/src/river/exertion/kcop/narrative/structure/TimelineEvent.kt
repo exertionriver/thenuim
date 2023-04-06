@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TimelineEvent(
-    var id : String? = null,
     val immersionTime: String = "",
     val eventType: String = "",
     val param: String = ""

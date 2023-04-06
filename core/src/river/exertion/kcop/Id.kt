@@ -2,6 +2,10 @@ package river.exertion.kcop
 
 import java.util.UUID
 
-open class Id {
-    open var id : String = UUID.randomUUID().toString()
+interface Id {
+    var id : String
+
+    companion object {
+        fun randomId() : String = UUID.randomUUID().toString()
+    }
 }

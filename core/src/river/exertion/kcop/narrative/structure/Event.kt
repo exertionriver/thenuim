@@ -4,15 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Event(
-    var id: String? = null,
     val eventType: String = "",
     val eventTrigger: String = "",
     val param: String = "",
     val param2: String = ""
 ) {
-
-    @Transient
-    var fired = false
 
     fun validateFields() : Boolean {
         return EventType.isEventType(eventType)

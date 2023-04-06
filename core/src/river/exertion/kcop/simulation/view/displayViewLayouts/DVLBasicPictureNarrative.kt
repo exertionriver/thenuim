@@ -12,7 +12,7 @@ import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class DVLBasicPictureNarrative(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
 
-    override val tag = "basicPictureNarrative"
+    override val tag = Companion.tag
 
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
 
@@ -78,5 +78,9 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         innerTable.validate()
         innerTable.layout()
         return innerTable
+    }
+
+    companion object {
+        const val tag = "basicPictureNarrative"
     }
 }

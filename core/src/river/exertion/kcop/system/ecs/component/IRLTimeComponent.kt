@@ -10,7 +10,6 @@ class IRLTimeComponent : IComponent {
 
     fun irlTime() = Calendar.getInstance()
 
-    override var entityName = ""
     override var isInitialized = false
 
     private fun localDateTime() = LocalDateTime.of(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH) + 1, irlTime().get(Calendar.DAY_OF_MONTH),

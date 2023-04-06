@@ -65,6 +65,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 //            addScreen(ColorPaletteSimulator( inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
             addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
+//            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )
         }
 
         setScreen<ProfileSimulator>()
@@ -74,7 +75,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         val initViewportWidth = 1280F
         val initViewportHeight = 720F
 
-        val title = "koboldCave Operating Platform (kcop) v0.9"
+        val title = "koboldCave Operating Platform (kcop) v0.10"
         val loglevel = LOG_DEBUG
     }
 

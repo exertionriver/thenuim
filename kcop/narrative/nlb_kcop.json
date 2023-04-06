@@ -1,4 +1,6 @@
-{"name" : "layout_narrative", "description" : "Krazza story", "layoutTag" : "basicPictureNarrative", "narrativeBlocks" : [
+{
+  "id": "8da9ea8e-284f-460e-90da-9f3ffeace2f5",
+  "name" : "layout_narrative", "description" : "Krazza story", "layoutTag" : "basicPictureNarrative", "narrativeBlocks" : [
     {"id" : "demo_block1", "narrativeText" : ["first basic layout block"], "displayText" : [
       "1Here is a story about a kobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",
       "2Here is a story about a \nkobold named Krazza. Krazza lived in the blue caves of the purple mountains. ",

@@ -19,7 +19,7 @@ object NameGenerator {
     val commonVowels = mutableListOf("o", "u", "a", "i", "e")
     val commonConsonants = mutableListOf("y", "dz", "dj", "ch", "sz", "s", "h", "p", "ng", "b", "g", "m", "k", "w","zh", "f", "sh", "v", "l", "t", "r", "th", "n","d", "z","s")
 
-    val rnd = Random(11161978)
+    val rnd = Random.Default
 
     fun nextVowel() = commonVowels[rnd.nextInt(commonVowels.size)]
     fun nextConsonant() = commonConsonants[rnd.nextInt(commonConsonants.size)]

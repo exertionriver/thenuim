@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessageType
@@ -30,7 +31,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     var textTimeSdc : ShapeDrawerConfig? = null
 
 
-    val initTimeStr = "00:00:00"
+    val initTimeStr = ImmersionTimer.zero()
 
     var instImmersionTimeStr = initTimeStr
     var cumlImmersionTimeStr = initTimeStr
@@ -190,6 +191,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                         (logMessage.messageType == LogViewMessageType.ResetTime) -> {
                             updateInstImmersionTime(initTimeStr)
                             updateCumlImmersionTime(initTimeStr)
+                            updateLocalTime(initTimeStr)
                             rebuildTextTimeReadout()
                         }
                         else -> if (logMessage.message != null) {

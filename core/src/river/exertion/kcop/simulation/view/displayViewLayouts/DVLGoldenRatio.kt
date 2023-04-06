@@ -12,7 +12,7 @@ import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
 
-    override val tag = "goldenRatioLayout"
+    override val tag = Companion.tag
 
     override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
 
@@ -227,6 +227,9 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
         innerTable.validate()
         innerTable.layout()
         return innerTable
+    }
 
+    companion object {
+        const val tag = "goldenRatioLayout"
     }
 }

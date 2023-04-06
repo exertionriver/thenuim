@@ -16,8 +16,7 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.StatusViewMessage
 import river.exertion.kcop.system.messaging.messages.StatusViewMessageType
-import river.exertion.kcop.system.profile.DisplayStatus
-import river.exertion.kcop.system.profile.ProfileStatus
+import river.exertion.kcop.simulation.view.DisplayStatus
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.math.roundToInt
 

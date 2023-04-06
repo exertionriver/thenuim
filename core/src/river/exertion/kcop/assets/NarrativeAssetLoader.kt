@@ -6,16 +6,14 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import river.exertion.kcop.narrative.structure.Narrative
 import ktx.assets.load
 import river.exertion.kcop.narrative.structure.Event
+import river.exertion.kcop.narrative.structure.Narrative
 
 class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<NarrativeAsset?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {
 
-    val json = Json { ignoreUnknownKeys = true }
     lateinit var rawData: String
 
     override fun getDependencies(fileName: String?, file: FileHandle?, parameter: NarrativeSequenceParameter?): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
@@ -28,10 +26,10 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): NarrativeAsset {
         try {
             rawData = file.readString()
-            val jsonElement = json.parseToJsonElement(rawData)
-            val narrative = json.decodeFromJsonElement(jsonElement) as Narrative
+            val jsonElement = AssetManagerHandler.json.parseToJsonElement(rawData)
+            val narrative = AssetManagerHandler.json.decodeFromJsonElement(jsonElement) as Narrative
 
-            val returnNarrativeAsset = NarrativeAsset(narrative, fileName)
+            val returnNarrativeAsset = NarrativeAsset(narrative).apply { this.assetPath = fileName }
             val errorStatus = "${narrative.name} not loaded"
 
             narrative.eventBlocks.forEach { eventBlock ->
@@ -83,7 +81,7 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                 promptBlock.prompts.forEach { prompt ->
                     if (prompt.promptNextId != null && prompt.promptRandomId != null) {
                         returnNarrativeAsset.status = errorStatus
-                        val errorDetail = "narrative ${narrative.name} block ${promptBlock.narrativeBlockId} prompt ${prompt.id} cannot have both promptNextId and promptRandomId"
+                        val errorDetail = "narrative ${narrative.name} block ${promptBlock.narrativeBlockId} prompt ${prompt.promptKey} cannot have both promptNextId and promptRandomId"
                         if (returnNarrativeAsset.statusDetail == null)
                             returnNarrativeAsset.statusDetail = errorDetail
                         else
@@ -95,7 +93,8 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             return returnNarrativeAsset
 
         } catch (ex : Exception) {
-            return NarrativeAsset(null, fileName).apply {
+            return NarrativeAsset().apply {
+                this.assetPath = fileName
                 this.status = "$fileName not loaded"
                 this.statusDetail = ex.message
             }

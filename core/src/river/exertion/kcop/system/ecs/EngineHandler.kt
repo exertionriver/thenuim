@@ -51,7 +51,7 @@ class EngineHandler : Telegraph {
         }
     }
 
-    fun instantiateEntity(entityClass : Class<*>, initInfo : Any? = null) : String {
+    fun instantiateEntity(entityClass : Class<*>, initInfo : Any? = null) : Entity {
         val newEntity = engine.entity()
         val instance = entityClass.getDeclaredConstructor().newInstance()
         val initMethod = entityClass.getMethod(
@@ -62,7 +62,7 @@ class EngineHandler : Telegraph {
         entities[instance as IEntity] = newEntity
         initMethod.invoke(instance, newEntity, initInfo)
 
-        return instance.entityName
+        return newEntity
     }
 
     fun removeComponent(entityName : String, componentClass: Class<*>) {
@@ -79,40 +79,32 @@ class EngineHandler : Telegraph {
         }
     }
 
-    fun addComponentInstance(entityName : String, entity : Entity, componentInstance : IComponent) {
-        componentInstance.entityName = entityName
+    fun addComponentInstance(entity : Entity, componentInstance : IComponent) {
         engine.entities.firstOrNull { it == entity }?.add(componentInstance)
     }
 
-    fun addInstantiateComponent(entityName : String, entity : Entity, componentClass : Class<*>, initInfo : Any? = null) : String? {
+    fun addInstantiateComponent(entity : Entity, componentClass : Class<*>, initInfo : Any? = null) {
         val instance = componentClass.getDeclaredConstructor().newInstance()
         val initMethod = componentClass.getMethod(
             IComponent::initialize.name,
-            (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java,
-            (IComponent::initialize.valueParameters[1].type.classifier as KClass<*>).java
+            (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java
         )
 
-        addComponentInstance(entityName, entity, instance as IComponent)
-        initMethod.invoke(instance, entityName, initInfo)
-
-        return entityName
+        addComponentInstance(entity, instance as IComponent)
+        initMethod.invoke(instance, initInfo)
     }
 
-    fun addComponent(entityName : String, componentClass : Class<*>, componentInstance : IComponent? = null, initInfo : Any? = null) {
+    fun addComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
         val entityEntry = entities.entries.firstOrNull { it.key.entityName == entityName }
 
         if (entityEntry != null) {
-            if (componentInstance != null && componentInstance.isInitialized) {
-                addComponentInstance(entityName, entityEntry.value, componentInstance)
-            } else if (initInfo != null) {
-                addInstantiateComponent(entityName, entityEntry.value, componentClass, initInfo)
-            }
+            addInstantiateComponent(entityEntry.value, componentClass, initInfo)
         }
     }
 
-    fun replaceComponent(entityName : String, componentClass : Class<*>, componentInstance : IComponent? = null, initInfo : Any? = null) {
+    fun replaceComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
         removeComponent(entityName, componentClass)
-        addComponent(entityName, componentClass, componentInstance, initInfo)
+        addComponent(entityName, componentClass, initInfo)
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -136,13 +128,13 @@ class EngineHandler : Telegraph {
 
                     when (engineComponentMessage.messageType) {
                         EngineComponentMessageType.ADD_COMPONENT -> {
-                            addComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.componentInstance, engineComponentMessage.initInfo)
+                            addComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
                         }
                         EngineComponentMessageType.REMOVE_COMPONENT -> {
                             removeComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass)
                         }
                         EngineComponentMessageType.REPLACE_COMPONENT -> {
-                            replaceComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.componentInstance, engineComponentMessage.initInfo)
+                            replaceComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
                         }
                     }
                 }

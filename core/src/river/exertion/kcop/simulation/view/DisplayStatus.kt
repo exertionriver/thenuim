@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.profile
+package river.exertion.kcop.simulation.view
 
 import kotlinx.serialization.Serializable
 

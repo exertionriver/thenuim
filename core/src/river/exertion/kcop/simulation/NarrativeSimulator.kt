@@ -4,19 +4,18 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
-import ktx.scene2d.*
-import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
+import river.exertion.kcop.assets.NarrativeAsset.Companion.get
 import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.system.*
 import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
-import river.exertion.kcop.system.ecs.entity.NarrativeEntity
-import river.exertion.kcop.system.messaging.Switchboard
+import river.exertion.kcop.system.ecs.entity.ProfileEntity
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.DisplayViewTextureMessage
+import river.exertion.kcop.system.messaging.messages.DisplayViewTextureMessageType
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -27,9 +26,10 @@ class NarrativeSimulator(private val stage: Stage,
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
+    val profileEntity = engineHandler.instantiateEntity(ProfileEntity::class.java)
+
     var narrativesIdx = 0
-    var narrativeEntityName = ""
-    lateinit var narrativesBlock : MutableMap<NarrativeAsset, String>
+    lateinit var narrativesBlock : List<NarrativeAsset>
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -46,24 +46,20 @@ class NarrativeSimulator(private val stage: Stage,
                 val prevNarrativesIdx = narrativesIdx
                 narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
                 if (prevNarrativesIdx != narrativesIdx) {
-                    //save place in previous narrative
-                    narrativesBlock[narrativesBlock.keys.toList()[prevNarrativesIdx]] = engineHandler.getComponentFor<NarrativeComponent>(narrativeEntityName)!!.narrativeCurrBlockId()
-                    //remove status line
-                    engineHandler.getComponentFor<NarrativeComponent>(narrativeEntityName)!!.inactivate()
-                    //load new narrative component
-                    engineHandler.replaceComponent(narrativeEntityName, NarrativeComponent::class.java, null, NarrativeComponent.NarrativeComponentInit(narrativesBlock.keys.toList()[narrativesIdx], narrativesBlock.values.toList()[narrativesIdx]))
+
+                    NarrativeComponent.getFor(profileEntity)!!.inactivate()
+
+                    assetManagerHandler.initNarrative(narrativesBlock[narrativesIdx], null)
                 }
             }
             Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
                 val prevNarrativesIdx = narrativesIdx
-                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.entries.size - 1)
+                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.size - 1)
                 if (prevNarrativesIdx != narrativesIdx) {
-                    //save place in previous narrative
-                    narrativesBlock[narrativesBlock.keys.toList()[prevNarrativesIdx]] = engineHandler.getComponentFor<NarrativeComponent>(narrativeEntityName)!!.narrativeCurrBlockId()
-                    //remove status line
-                    engineHandler.getComponentFor<NarrativeComponent>(narrativeEntityName)!!.inactivate()
-                    //load new narrative component
-                    engineHandler.replaceComponent(narrativeEntityName, NarrativeComponent::class.java, null, NarrativeComponent.NarrativeComponentInit(narrativesBlock.keys.toList()[narrativesIdx], narrativesBlock.values.toList()[narrativesIdx]))
+
+                    NarrativeComponent.getFor(profileEntity)!!.inactivate()
+
+                    assetManagerHandler.initNarrative(narrativesBlock[narrativesIdx], null)
                 }
             }
         }
@@ -89,9 +85,10 @@ class NarrativeSimulator(private val stage: Stage,
         stage.addActor(viewLayout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
         stage.addActor(viewLayout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
 
-        narrativesBlock = NarrativeAssets.values().map { assetManagerHandler.assets[it] }.associateWith { it.narrative!!.firstBlock().id }.toMutableMap()
+        narrativesBlock = assetManagerHandler.narrativeAssets.values.toList()
 
-        narrativeEntityName = engineHandler.instantiateEntity(NarrativeEntity::class.java, NarrativeComponent.NarrativeComponentInit(narrativesBlock.keys.toList()[narrativesIdx], narrativesBlock.values.toList()[narrativesIdx]))
+        assetManagerHandler.initNarrative(narrativesBlock[narrativesIdx], null)
+
     }
 
     override fun pause() {

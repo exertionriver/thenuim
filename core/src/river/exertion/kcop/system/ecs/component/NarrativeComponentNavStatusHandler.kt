@@ -1,6 +1,5 @@
 package river.exertion.kcop.system.ecs.component
 
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.next
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
@@ -9,8 +8,8 @@ object NarrativeComponentNavStatusHandler {
 
     fun NarrativeComponent.unpause() {
         if (isInitialized) {
-            narrativeImmersionTimer.cumlImmersionTimer.resumeTimer()
-            narrativeImmersionTimer.instImmersionTimer.resumeTimer()
+            timerPair.cumlImmersionTimer.resumeTimer()
+            timerPair.instImmersionTimer!!.resumeTimer()
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
@@ -18,17 +17,16 @@ object NarrativeComponentNavStatusHandler {
     }
 
     fun NarrativeComponent.activate(setBlockId : String) {
-        if (isInitialized && !isActive) {
-            isActive = true
+        if (isInitialized) {
 
             narrative!!.currentBlockId = setBlockId
 
-            narrativeImmersionTimer.instImmersionTimer.resetTimer()
+            timerPair.instImmersionTimer!!.resetTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
 
             unpause()
 
-            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
+//            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
 
             changed = true
         }
@@ -36,8 +34,8 @@ object NarrativeComponentNavStatusHandler {
 
     fun NarrativeComponent.pause() {
         if (isInitialized) {
-            narrativeImmersionTimer.cumlImmersionTimer.pauseTimer()
-            narrativeImmersionTimer.instImmersionTimer.pauseTimer()
+            timerPair.cumlImmersionTimer.pauseTimer()
+            timerPair.instImmersionTimer!!.pauseTimer()
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.pauseTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()
@@ -45,13 +43,16 @@ object NarrativeComponentNavStatusHandler {
     }
 
     fun NarrativeComponent.inactivate() {
-        if (isInitialized && isActive) {
-            isActive = false
+        if (isInitialized) {
 
             pause()
 
-            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.REMOVE_STATUS, sequentialStatusKey()))
+//            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.REMOVE_STATUS, sequentialStatusKey()))
             MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.CLEAR_ALL))
+
+            MessageChannel.NARRATIVE_BRIDGE.disableReceive(this)
+
+            isInitialized = false
 
             changed = true
         }
@@ -73,8 +74,7 @@ object NarrativeComponentNavStatusHandler {
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
 
-                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
-                Switchboard.updateProfile(this)
+//                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
 
                 changed = true
             }

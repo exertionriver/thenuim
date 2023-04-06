@@ -1,28 +1,38 @@
 package river.exertion.kcop.assets
 
+import com.badlogic.gdx.assets.AssetManager
+import ktx.assets.getAsset
 import river.exertion.kcop.narrative.structure.Narrative
 
-class NarrativeAsset(var narrative : Narrative? = null, override var assetPath : String) : LoadableAsset {
+class NarrativeAsset(var narrative : Narrative? = null) : LoadableAsset {
+    override lateinit var assetPath : String
     override var status : String? = null
     override var statusDetail : String? = null
 
-    fun narrativeAssetTitle() = assetPath
+    override fun assetId() = if (narrative != null) narrative?.id!! else throw Exception("NarrativeAsset::assetId() narrative is null")
+    override fun assetName() = if (narrative != null) narrative?.name!! else throw Exception("NarrativeAsset::assetName() narrative is null")
+    override fun assetTitle() = assetPath
 
-    fun narrativeAssetName() = narrative?.name
+    override fun newAssetFilename(): String = NarrativeAssets.narrativeAssetPath(super.newAssetFilename())
 
-    fun narrativeAssetInfo() : List<String> {
+    override fun assetInfo() : List<String> {
 
         val returnList = mutableListOf<String>()
 
         if (narrative != null) {
-            returnList.add("name: ${narrative!!.name}")
-            returnList.add("description: ${narrative!!.description}")
-            returnList.add("path: ${assetPath}")
-            returnList.add("blocks: ${narrative!!.narrativeBlocks.size}")
+            returnList.add("path: $assetPath")
+            returnList.addAll(narrative!!.narrativeInfo())
+        } else {
+            returnList.add("no narrative info found")
         }
 
-        if ( returnList.isEmpty() ) returnList.add("no narrative info found")
-
         return returnList.toList()
+    }
+
+    companion object {
+        operator fun AssetManager.get(asset: NarrativeAsset) = getAsset<NarrativeAsset>(asset.assetPath).also {
+            if (it.status != null) println ("Asset Status: ${it.status}")
+            if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
+        }
     }
 }

@@ -4,12 +4,10 @@ import com.badlogic.ashley.core.Component
 
 interface IComponent : Component {
 
-    var entityName : String
     var isInitialized : Boolean
 
     //done automatically by EngineHandler::addComponent()
-    fun initialize(entityName : String, initData: Any?) {
-        this.entityName = entityName
+    fun initialize(initData: Any?) {
         isInitialized = true
     }
 

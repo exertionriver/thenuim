@@ -33,7 +33,8 @@ enum class MessageChannel {
 
     TWO_BATCH_BRIDGE { override val messageClass = PolygonSpriteBatch::class },
     FONT_BRIDGE { override val messageClass = FontPackage::class },
-    AMH_BRIDGE { override val messageClass = AMHMessage::class },
+    AMH_LOAD_BRIDGE { override val messageClass = AMHLoadMessage::class },
+    AMH_SAVE_BRIDGE { override val messageClass = AMHSaveMessage::class }
     ;
 
     abstract val messageClass : KClass<*>
@@ -43,6 +44,7 @@ enum class MessageChannel {
     fun isType(messageId : Int) = id() == messageId
     fun send(sender: Telegraph?, message : Any) = if (messageClass().isInstance(message)) MessageManager.getInstance().dispatchMessage(sender, id(), message) else throw Exception("send:$this requires ${messageClass()}, found ${message::class}")
     fun enableReceive(receiver: Telegraph?) = MessageManager.getInstance().addListener(receiver, this.id())
+    fun disableReceive(receiver: Telegraph?) = MessageManager.getInstance().removeListener(receiver, this.id())
     fun enableProvider(provider: TelegramProvider?) = MessageManager.getInstance().addProvider(provider, this.id())
     inline fun <reified T:Any> receiveMessage(message : Any) : T {
         return if (T::class == messageClass()) message as T else throw Exception("receive:$this requires ${this.messageClass()}, found ${T::class}")

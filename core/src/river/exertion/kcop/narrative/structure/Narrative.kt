@@ -11,6 +11,7 @@ import river.exertion.kcop.assets.FontSize
 
 @Serializable
 data class Narrative(
+    override var id: String = Id.randomId(),
     val name : String,
     val description : String = "",
     val layoutTag : String,
@@ -19,7 +20,7 @@ data class Narrative(
     val eventBlocks : MutableList<EventBlock> = mutableListOf(),
     val timelineEvents : MutableList<TimelineEvent> = mutableListOf(),
     val timelineEventBlocks : MutableList<TimelineEventBlock> = mutableListOf(),
-    ) : Id() {
+    ) : Id {
 
     @Transient
     var currentBlockId = ""
@@ -106,5 +107,16 @@ data class Narrative(
         val possiblePreviousId = currentBlockId
         currentBlockId = narrativeBlocks[seqNextIdx()].id
         if (currentBlockId != possiblePreviousId) previousBlockId = possiblePreviousId
+    }
+
+
+    fun narrativeInfo() : List<String> {
+        val returnList = mutableListOf<String>()
+
+        returnList.add("name: $name")
+        returnList.add("description: $description")
+        returnList.add("blocks: ${narrativeBlocks.size}")
+
+        return returnList.toList()
     }
 }
