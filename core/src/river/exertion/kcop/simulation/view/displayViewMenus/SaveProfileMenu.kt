@@ -64,7 +64,7 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
     override val actions = mutableListOf(
         ActionParam("Overwrite", {
             Switchboard.closeMenu()
-            Switchboard.saveSelectedProfile(selectedProfileAssetName(), AssetManagerHandler.SaveType.Overwrite)
+            Switchboard.saveOverwriteSelectedProfile(selectedProfileAssetName())
         }, "Profile Saved!"),
 /*        ActionParam("Merge", {
             Switchboard.closeMenu()

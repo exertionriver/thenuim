@@ -1,6 +1,6 @@
 package river.exertion.kcop.assets
 
-interface LoadableAsset {
+interface IAsset {
     var assetPath : String
     var status : String?
     var statusDetail : String?

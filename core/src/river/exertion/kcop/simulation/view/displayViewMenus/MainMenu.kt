@@ -7,6 +7,7 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
 import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
@@ -27,6 +28,10 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuProfiles))
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(ProfileMenu.tag)))
         }),
+        ActionParam("Settings >", {
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshSelectedProfile))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(ProfileSettingsMenu.tag)))
+        }),
         ActionParam("Narrative >", {
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives))
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(NarrativeMenu.tag)))
@@ -38,10 +43,13 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
     )
 
     override val actions = mutableListOf(
-        ActionParam("Exit", {
+        ActionParam("Exit kcop", {
             Gdx.app.exit()
             exitProcess(0)
-        }, "Peace Out")
+        }, "Peace Out"),
+        ActionParam("Close Menu", {
+            Switchboard.closeMenu()
+        })
     )
 
     override fun tag() = tag

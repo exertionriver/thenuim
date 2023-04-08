@@ -2,14 +2,13 @@ package river.exertion.kcop.system.view
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
-import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
 
 class ViewInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
-        MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.NEXT, Input.Keys.toString(keycode)))
+        MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Next, Input.Keys.toString(keycode)))
 
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
             event = InputViewMessageEvent.KeyDownEvent,

@@ -20,7 +20,7 @@ class ViewSimulator(private val stage: Stage,
                     private val assetManagerHandler: AssetManagerHandler,
                     private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -42,22 +42,13 @@ class ViewSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        stage.addActor(layout.createDisplayViewCtrl())
-        stage.addActor(layout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
-        stage.addActor(layout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        viewLayout.build(stage, assetManagerHandler)
 
         //experiments for border
 //        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = 0f; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })
 //        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = ViewType.firstWidth(orthoCamera.viewportWidth) - 10; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })
 
 //        layout.displayViewCtrl.recreate()
-
-
     }
 
     override fun pause() {
@@ -74,6 +65,6 @@ class ViewSimulator(private val stage: Stage,
 
     override fun dispose() {
         assetManagerHandler.dispose()
-        layout.dispose()
+        viewLayout.dispose()
     }
 }

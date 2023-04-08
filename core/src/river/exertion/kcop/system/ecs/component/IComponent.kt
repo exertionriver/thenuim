@@ -6,6 +6,8 @@ interface IComponent : Component {
 
     var isInitialized : Boolean
 
+    fun componentId() : String
+
     //done automatically by EngineHandler::addComponent()
     fun initialize(initData: Any?) {
         isInitialized = true

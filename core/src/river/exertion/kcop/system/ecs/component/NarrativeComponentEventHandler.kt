@@ -62,7 +62,7 @@ object NarrativeComponentEventHandler {
     fun NarrativeComponent.executeReadyBlockEvents() : String {
 
         var returnText = ""
-        var counterVal = 0
+        var counterVal : Int
 
         if (isInitialized) {
 
@@ -78,19 +78,17 @@ object NarrativeComponentEventHandler {
                     }
                     Event.EventType.TEXT -> { returnText += "\n${previousBlockEvent.param}" }
                     Event.EventType.SET_FLAG -> {
-                        if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
+                        if (!flags.map { it.key }.contains(previousBlockEvent.param)) {
                             flags.add(ImmersionStatus(previousBlockEvent.param))
                         }
                     }
                     Event.EventType.UNSET_FLAG -> {
-                        if ( flags.map { it.key }.contains(previousBlockEvent.param) ) {
-                            flags.removeIf { it.key == previousBlockEvent.param }
-                        }
+                        flags.removeIf { it.key == previousBlockEvent.param }
                     }
                     Event.EventType.ZERO_COUNTER -> {
-                        if ( !flags.map { it.key }.contains("fired_${previousBlockEvent.param}") ) {
+                        if (!flags.map { it.key }.contains("fired_${previousBlockEvent.param}")) {
                             counterVal = 0
-                            if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
+                            if (!flags.map { it.key }.contains(previousBlockEvent.param)) {
                                 flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
                             } else {
                                 flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
@@ -100,8 +98,8 @@ object NarrativeComponentEventHandler {
                         }
                     }
                     Event.EventType.PLUS_COUNTER -> {
-                        if ( !flags.map { it.key }.contains("fired_${previousBlockEvent.param}") ) {
-                            if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
+                        if (!flags.map { it.key }.contains("fired_${previousBlockEvent.param}")) {
+                            if (!flags.map { it.key }.contains(previousBlockEvent.param)) {
                                 counterVal = 1
                                 flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
                             } else {

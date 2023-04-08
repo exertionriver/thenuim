@@ -1,6 +1,10 @@
 package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.scenes.scene2d.Stage
+import river.exertion.kcop.assets.AssetManagerHandler
+import river.exertion.kcop.assets.TextureAssets
+import river.exertion.kcop.assets.get
 import river.exertion.kcop.simulation.view.ctrl.*
 
 class ViewLayout(var width : Float, var height : Float) {
@@ -84,6 +88,18 @@ class ViewLayout(var width : Float, var height : Float) {
         pauseViewCtrl.build()
 
         return pauseViewCtrl
+    }
+
+    fun build(stage: Stage, assetManagerHandler: AssetManagerHandler) {
+        stage.addActor(this.createDisplayViewCtrl())
+        stage.addActor(this.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(this.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
+        stage.addActor(this.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(this.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(this.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(this.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
+        stage.addActor(this.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(this.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
     }
 
     fun dispose() {

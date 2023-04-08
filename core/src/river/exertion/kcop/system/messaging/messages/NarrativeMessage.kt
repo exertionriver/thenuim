@@ -1,8 +1,10 @@
 package river.exertion.kcop.system.messaging.messages
 
-data class NarrativeMessage(val narrativeMessageType : NarrativeMessageType, val promptNext : String? = null) {
+import river.exertion.kcop.narrative.structure.NarrativeImmersion
+
+data class NarrativeMessage(val narrativeMessageType : NarrativeMessageType, val promptNext : String? = null, val narrativeImmersion: NarrativeImmersion? = null) {
 
     enum class NarrativeMessageType {
-        PAUSE, UNPAUSE, INACTIVATE, NEXT
+        UpdateNarrativeImmersion, ReplaceCumlTimer, Pause, Unpause, Inactivate, Next
     }
 }

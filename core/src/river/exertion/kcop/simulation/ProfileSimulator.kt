@@ -17,7 +17,7 @@ class ProfileSimulator(private val stage: Stage,
                        private val assetManagerHandler: AssetManagerHandler,
                        private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val layout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
     val profileEntity = engineHandler.instantiateEntity(ProfileEntity::class.java)
 
@@ -41,17 +41,7 @@ class ProfileSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        stage.addActor(layout.createDisplayViewCtrl())
-        stage.addActor(layout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
-        stage.addActor(layout.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(layout.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(layout.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
-        stage.addActor(layout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-
-//        layout.currentInstImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.instImmersionTimer.id
-//        layout.currentCumlImmersionTimerId = ImmersionTimerComponent.getFor(profileEntity)!!.cumlImmersionTimer.id
+        viewLayout.build(stage, assetManagerHandler)
     }
 
     override fun pause() {
@@ -68,7 +58,7 @@ class ProfileSimulator(private val stage: Stage,
 
     override fun dispose() {
         assetManagerHandler.dispose()
-        layout.dispose()
+        viewLayout.dispose()
     }
 
 }

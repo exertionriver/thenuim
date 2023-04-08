@@ -26,22 +26,42 @@ class NarrativeComponent : IComponent, Telegraph {
     override var isInitialized = false
 
     var narrative : Narrative? = null
+
     var narrativeImmersion : NarrativeImmersion? = null
-    fun narrativeId() = if (narrative != null) narrative?.id!! else throw Exception("NarrativeComponent::narrativeId() narrative is null")
+
+    override fun componentId() = if (narrative != null) narrative?.id!! else throw Exception("NarrativeComponent::component() narrative is null")
+
+    fun narrativeName() = narrative?.name ?: throw Exception("narrative name:$this narrative.name not set")
+
+    fun narrativeCurrBlockId() = narrative?.currentBlockId ?: throw Exception("narrativeCurrBlockId:$this narrative.currentBlockId not set")
+
+    fun narrativePrevBlockId() = narrative?.previousBlockId ?: throw Exception("narrativePrevBlockId:$this narrative.previousBlockId not set")
+
+    var flags : MutableList<ImmersionStatus>
+        get() = narrativeImmersion?.flags ?: mutableListOf()
+        set(value) { narrativeImmersion?.flags = value }
+
+    var location : ImmersionLocation
+        get() = narrativeImmersion?.location ?: ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTime())
+        set(value) { narrativeImmersion?.location = value }
 
     val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
+
     var blockImmersionTimers : MutableMap<String, ImmersionTimerPair> = mutableMapOf()
 
-    var flags : MutableList<ImmersionStatus> = mutableListOf()
-    fun location() = ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTime())
+    fun blockImmersionTimersStr() = blockImmersionTimers.mapValues { it.value.cumlImmersionTimer.immersionTime() }.toMutableMap()
+
+    fun cumlImmersionTime() = timerPair.cumlImmersionTimer.immersionTime()
 
     var changed = false
 
-    fun narrativeName() = narrative?.name ?: throw Exception("narrative name:$this narrative.name not set")
-    fun cumlImmersionTime() = timerPair.cumlImmersionTimer.immersionTime()
+    fun currentPrompts() = if (isInitialized) narrative!!.currentPrompts() else listOf()
 
-    fun narrativeCurrBlockId() = narrative?.currentBlockId ?: throw Exception("narrativeCurrBlockId:$this narrative.currentBlockId not set")
-    fun narrativePrevBlockId() = narrative?.previousBlockId ?: throw Exception("narrativePrevBlockId:$this narrative.previousBlockId not set")
+    fun layoutTag() = if (isInitialized) narrative!!.layoutTag else DisplayViewCtrl.defaultLayoutTag
+
+    fun currentDisplayText() = if (isInitialized) narrative!!.currentDisplayText() else "<no display text>"
+
+    fun currentFontSize() = if (isInitialized) narrative!!.currentFontSize() else FontSize.TEXT
 
 //    fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)
 //    fun sequentialStatusKey() : String = "progress(${narrativeName().subSequence(0, 3)})"
@@ -57,40 +77,50 @@ class NarrativeComponent : IComponent, Telegraph {
 
                 if (narrative != null) {
 
+                    //add timers for each block
+                    narrative!!.narrativeBlocks.forEach { narrativeBlock ->
+                        blockImmersionTimers[narrativeBlock.id] = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
+                    }
+
+                    // set current profile narrative id
+                    MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateImmersionId,
+                        null, componentId()
+                    ))
+
                     if (narrativeComponentInit.narrativeImmersionAsset != null) {
                         narrativeImmersion = narrativeComponentInit.narrativeImmersion()
+
                         narrative!!.init(narrativeImmersion!!.immersionBlockId())
+
+                        //set the narrative cumulative timer
+                        timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(narrativeComponentInit.cumlTime()))
+
+                        //set block cumulative timers
+                        narrativeComponentInit.immersionTimers().entries.forEach { timerEntry ->
+                            blockImmersionTimers[timerEntry.key]?.cumlImmersionTimer?.setPastStartTime(ImmersionTimer.inMilliseconds(timerEntry.value))
+                        }
                     } else {
+                        narrativeImmersion = null
                         narrative!!.init()
                     }
 
                     //set the narrative layout
                     MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrative!!.layoutTag))
                 } else {
+                    narrativeImmersion = null
                     MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewCtrl.NoNarrativeLoaded))
                 }
-
-                //set the narrative cumulative timer
-                timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(narrativeComponentInit.currentCumlTime()))
-
-                //update current profile and statuses
-                flags = narrativeComponentInit.flags().toMutableList()
-
-                //add timers for each block
-                narrative!!.narrativeBlocks.forEach { narrativeBlock ->
-                    blockImmersionTimers[narrativeBlock.id] = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
-                }
-
-                //when this timer component is added to the entity, it becomes the display timer for logCtrl
-                MessageChannel.NARRATIVE_BRIDGE.enableReceive(this)
 
                 super.initialize(initData)
 
                 //start timers
                 activate(narrativeCurrBlockId())
 
-                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(EngineComponentMessageType.ADD_COMPONENT, ProfileEntity.entityName, ImmersionTimerComponent::class.java, timerPair))
+                //when this timer component is added to the entity, it becomes the display timer for logCtrl
+                MessageChannel.NARRATIVE_BRIDGE.enableReceive(this)
+                MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
 
+                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(EngineComponentMessageType.ADD_COMPONENT, ProfileEntity.entityName, ImmersionTimerComponent::class.java, timerPair))
             }
         }
     }
@@ -102,21 +132,26 @@ class NarrativeComponent : IComponent, Telegraph {
                 val narrativeMessage: NarrativeMessage = MessageChannel.NARRATIVE_BRIDGE.receiveMessage(msg.extraInfo)
 
                 when (narrativeMessage.narrativeMessageType) {
-                    NarrativeMessage.NarrativeMessageType.PAUSE -> pause()
-                    NarrativeMessage.NarrativeMessageType.UNPAUSE -> unpause()
-                    NarrativeMessage.NarrativeMessageType.INACTIVATE -> inactivate()
-                    NarrativeMessage.NarrativeMessageType.NEXT -> if (narrativeMessage.promptNext != null) next(narrativeMessage.promptNext)
+                    NarrativeMessage.NarrativeMessageType.UpdateNarrativeImmersion -> {
+                        if (narrativeMessage.narrativeImmersion != null) {
+                            narrativeImmersion = narrativeMessage.narrativeImmersion
+                        }
+                    }
+                    NarrativeMessage.NarrativeMessageType.ReplaceCumlTimer -> {
+                        MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                                EngineComponentMessageType.REPLACE_COMPONENT,
+                                ProfileEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair))
+                    }
+                    NarrativeMessage.NarrativeMessageType.Pause -> pause()
+                    NarrativeMessage.NarrativeMessageType.Unpause -> unpause()
+                    NarrativeMessage.NarrativeMessageType.Inactivate -> inactivate()
+                    NarrativeMessage.NarrativeMessageType.Next -> if (narrativeMessage.promptNext != null) next(narrativeMessage.promptNext)
                 }
                 return true
             }
         }
         return false
     }
-
-    fun currentPrompts() = if (isInitialized) narrative!!.currentPrompts() else listOf()
-    fun layoutTag() = if (isInitialized) narrative!!.layoutTag else DisplayViewCtrl.defaultLayoutTag
-    fun currentDisplayText() = if (isInitialized) narrative!!.currentDisplayText() else "<no display text>"
-    fun currentFontSize() = if (isInitialized) narrative!!.currentFontSize() else FontSize.TEXT
 
     companion object {
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is NarrativeComponent } != null
@@ -127,8 +162,8 @@ class NarrativeComponent : IComponent, Telegraph {
 
         fun narrative() = narrativeAsset?.narrative
         fun narrativeImmersion() = narrativeImmersionAsset?.narrativeImmersion
-        fun flags() = narrativeImmersionAsset?.flags() ?: listOf()
-        fun currentCumlTime() = narrativeImmersionAsset?.narrativeImmersion?.cumlImmersionTime() ?: ImmersionTimer.zero()
+        fun immersionTimers() = narrativeImmersionAsset?.timers() ?: mapOf()
+        fun cumlTime() = narrativeImmersionAsset?.narrativeImmersion?.cumlImmersionTime() ?: ImmersionTimer.CumlTimeZero
     }
 
     // only need to replace in case of settings change

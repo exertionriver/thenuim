@@ -52,7 +52,7 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     }
 
     fun toggleImmersionPause() {
-        val messageType = if (isChecked) NarrativeMessage.NarrativeMessageType.PAUSE else NarrativeMessage.NarrativeMessageType.UNPAUSE
+        val messageType = if (isChecked) NarrativeMessage.NarrativeMessageType.Pause else NarrativeMessage.NarrativeMessageType.Unpause
         MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(messageType, null) )
     }
 

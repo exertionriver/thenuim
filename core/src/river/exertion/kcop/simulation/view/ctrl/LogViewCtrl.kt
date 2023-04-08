@@ -31,7 +31,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     var textTimeSdc : ShapeDrawerConfig? = null
 
 
-    val initTimeStr = ImmersionTimer.zero()
+    val initTimeStr = ImmersionTimer.CumlTimeZero
 
     var instImmersionTimeStr = initTimeStr
     var cumlImmersionTimeStr = initTimeStr

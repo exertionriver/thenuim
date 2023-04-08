@@ -52,6 +52,8 @@ object NarrativeComponentNavStatusHandler {
 
             MessageChannel.NARRATIVE_BRIDGE.disableReceive(this)
 
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentImmersion))
+
             isInitialized = false
 
             changed = true

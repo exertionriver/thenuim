@@ -71,7 +71,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
         }),
         ActionParam("Save >", {
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileAsset, selectedProfileAssetTitle))
-            MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.PollSelectedProfileAsset))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshSelectedProfile))
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(SaveProfileMenu.tag, selectedProfileAssetTitle)))
         }),
         ActionParam("New >", {

@@ -2,16 +2,6 @@ package river.exertion.kcop.system.ecs.entity
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
-import ktx.assets.load
-import river.exertion.kcop.assets.LoadableAsset
-import river.exertion.kcop.assets.ProfileAsset
-import river.exertion.kcop.assets.ProfileAssetLoader
-import river.exertion.kcop.assets.ProfileAssets
-import java.nio.file.Path
-import kotlin.io.path.Path
-import kotlin.io.path.listDirectoryEntries
 
 interface IEntity {
 

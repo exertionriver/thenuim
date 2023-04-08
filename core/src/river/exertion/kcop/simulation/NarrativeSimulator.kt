@@ -29,7 +29,7 @@ class NarrativeSimulator(private val stage: Stage,
     val profileEntity = engineHandler.instantiateEntity(ProfileEntity::class.java)
 
     var narrativesIdx = 0
-    lateinit var narrativesBlock : List<NarrativeAsset>
+    lateinit var narrativesBlock : NarrativeAssets
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -46,20 +46,16 @@ class NarrativeSimulator(private val stage: Stage,
                 val prevNarrativesIdx = narrativesIdx
                 narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
                 if (prevNarrativesIdx != narrativesIdx) {
-
                     NarrativeComponent.getFor(profileEntity)!!.inactivate()
-
-                    assetManagerHandler.initNarrative(narrativesBlock[narrativesIdx], null)
+                    narrativesBlock.values[narrativesIdx].initNarrative()
                 }
             }
             Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
                 val prevNarrativesIdx = narrativesIdx
-                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.size - 1)
+                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.values.size - 1)
                 if (prevNarrativesIdx != narrativesIdx) {
-
                     NarrativeComponent.getFor(profileEntity)!!.inactivate()
-
-                    assetManagerHandler.initNarrative(narrativesBlock[narrativesIdx], null)
+                    narrativesBlock.values[narrativesIdx].initNarrative()
                 }
             }
         }
@@ -69,26 +65,15 @@ class NarrativeSimulator(private val stage: Stage,
     }
 
     override fun show() {
-
         val multiplexer = InputMultiplexer()
         multiplexer.addProcessor(ViewInputProcessor())
         multiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = multiplexer
 
-        stage.addActor(viewLayout.createDisplayViewCtrl())
-        stage.addActor(viewLayout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(viewLayout.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
-        stage.addActor(viewLayout.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(viewLayout.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
-        stage.addActor(viewLayout.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(viewLayout.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        viewLayout.build(stage, assetManagerHandler)
 
-        narrativesBlock = assetManagerHandler.narrativeAssets.values.toList()
-
-        assetManagerHandler.initNarrative(narrativesBlock[narrativesIdx], null)
-
+        narrativesBlock = assetManagerHandler.narrativeAssets
+        narrativesBlock.values[narrativesIdx].initNarrative()
     }
 
     override fun pause() {

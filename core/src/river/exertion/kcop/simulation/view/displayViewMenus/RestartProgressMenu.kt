@@ -36,6 +36,7 @@ class RestartProgressMenu(override var screenWidth: Float, override var screenHe
     }
 
     override val breadcrumbEntries = mapOf(
+        ProfileMenu.tag to ProfileMenu.label,
         MainMenu.tag to MainMenu.label
     )
 
@@ -44,8 +45,8 @@ class RestartProgressMenu(override var screenWidth: Float, override var screenHe
     override val actions = mutableListOf(
         ActionParam("Restart", {
             Switchboard.closeMenu()
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RestartProgress))
-        }, "Progress Saved!"),
+            MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.RestartProgress))
+        }, "Narrative Restarted!"),
         ActionParam("Cancel", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
     )
 

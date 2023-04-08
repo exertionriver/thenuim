@@ -12,9 +12,15 @@ class NarrativeImmersion(
 
         var location : ImmersionLocation? = null,
 
+        var blockImmersionTimers : MutableMap<String, String> = mutableMapOf(),
+
         var flags : MutableList<ImmersionStatus> = mutableListOf()
 
 ) : Id {
-    fun immersionBlockId() = location?.immersionBlockId
-    fun cumlImmersionTime() = if (location != null) location!!.cumlImmersionTime else ImmersionTimer.zero()
+    fun immersionBlockId() = location?.immersionBlockId ?: UnknownBlockId
+    fun cumlImmersionTime() = if (location != null) location!!.cumlImmersionTime else ImmersionTimer.CumlTimeZero
+
+    companion object {
+        const val UnknownBlockId = "unknown"
+    }
 }

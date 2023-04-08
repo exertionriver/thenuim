@@ -3,8 +3,13 @@ package river.exertion.kcop.assets
 import com.badlogic.gdx.assets.AssetManager
 import ktx.assets.getAsset
 import river.exertion.kcop.narrative.structure.Narrative
+import river.exertion.kcop.system.ecs.component.NarrativeComponent
+import river.exertion.kcop.system.ecs.entity.ProfileEntity
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
+import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
 
-class NarrativeAsset(var narrative : Narrative? = null) : LoadableAsset {
+class NarrativeAsset(var narrative : Narrative? = null) : IAsset {
     override lateinit var assetPath : String
     override var status : String? = null
     override var statusDetail : String? = null
@@ -27,6 +32,18 @@ class NarrativeAsset(var narrative : Narrative? = null) : LoadableAsset {
         }
 
         return returnList.toList()
+    }
+
+    fun initNarrative(narrativeImmersionAsset: NarrativeImmersionAsset? = null) {
+        MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                EngineComponentMessageType.REPLACE_COMPONENT,
+                ProfileEntity.entityName, NarrativeComponent::class.java,
+                NarrativeComponent.NarrativeComponentInit(this, narrativeImmersionAsset)
+        ) )
+    }
+
+    fun update(narrativeImmersionComponent : NarrativeComponent?) {
+        narrative = narrativeImmersionComponent?.narrative
     }
 
     companion object {

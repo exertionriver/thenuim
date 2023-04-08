@@ -2,7 +2,6 @@ package river.exertion.kcop.system.immersionTimer
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine
 import com.badlogic.gdx.utils.TimeUtils
-import river.exertion.kcop.Id
 
 class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) {
 
@@ -56,13 +55,13 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
 
     companion object {
 
-        fun zero() = "00:00:00"
+        const val CumlTimeZero = "00:00:00"
 
         fun inSeconds(timeString : String) : Long {
             val timeSplit = timeString.split(":")
             return timeSplit[0].toInt() * 3600L + timeSplit[1].toInt() * 60L + timeSplit[2].toInt()
         }
 
-        fun inMilliseconds(timeString : String) : Long = inSeconds(timeString) * 1000L
+        fun inMilliseconds(timeString : String? = CumlTimeZero) : Long = inSeconds(timeString!!) * 1000L
     }
 }

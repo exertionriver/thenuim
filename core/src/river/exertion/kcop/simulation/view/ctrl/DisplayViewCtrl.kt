@@ -46,6 +46,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         NewProfileMenu(screenWidth, screenHeight),
         SaveProgressMenu(screenWidth, screenHeight),
         RestartProgressMenu(screenWidth, screenHeight),
+        ProfileSettingsMenu(screenWidth, screenHeight),
     )
 
     var menuOpen = false
@@ -213,13 +214,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                                 (saveProgressMenu as SaveProgressMenu).progressAssetsInfo = assetsInfo
                             }
                         }
-                        displayViewMenus.filter { it is RestartProgressMenu }.forEach { restartProgressMenu ->
-
-                            val assetsInfo = (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo ?: listOf("")) + (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo ?: listOf(""))
-                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                (restartProgressMenu as RestartProgressMenu).progressAssetsInfo = assetsInfo
-                            }
-                        }
                     } else {
                         if ( menuDataMessage.profileMenuDataParams != null ) {
                             displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
@@ -244,6 +238,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                                 }
                                 if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
                                     (saveProfileMenu as SaveProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
+                                }
+                            }
+                            displayViewMenus.filter { it is ProfileSettingsMenu }.forEach { profileSettingsMenu ->
+                                if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null && menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
+                                    (profileSettingsMenu as ProfileSettingsMenu).profileSettings = menuDataMessage.profileMenuDataParams!!.profileAssetTitles!!.zip(menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo!!).toMap().toMutableMap()
                                 }
                             }
                         } else {
@@ -279,6 +278,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                                 }
                                 if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName != null) {
                                     (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetName = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName
+                                }
+                            }
+                            displayViewMenus.filter { it is RestartProgressMenu }.forEach { restartProgressMenu ->
+
+                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
+                                    (restartProgressMenu as RestartProgressMenu).progressAssetsInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
                                 }
                             }
                         } else {

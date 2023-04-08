@@ -1,14 +1,10 @@
 package river.exertion.kcop.system.messaging
 
-import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.view.ctrl.LogViewCtrl
 import river.exertion.kcop.simulation.view.ctrl.TextViewCtrl
 import river.exertion.kcop.simulation.view.displayViewMenus.MainMenu
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
-import river.exertion.kcop.system.ecs.component.IRLTimeComponent
-import river.exertion.kcop.system.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.system.ecs.component.NarrativeComponent
-import river.exertion.kcop.system.ecs.component.ProfileComponent
+import river.exertion.kcop.system.ecs.component.*
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.messaging.messages.*
 
@@ -44,23 +40,18 @@ object Switchboard {
         MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.LoadSelectedNarrative))
     }
 
-    fun saveSelectedProfile(saveName : String, saveType : AssetManagerHandler.SaveType) {
+    fun saveOverwriteSelectedProfile(saveName : String) {
 
-        when (saveType) {
-            //overwrite-save profile
-            AssetManagerHandler.SaveType.Overwrite -> {
-                MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(
-                    AMHSaveMessage.AMHSaveMessageType.SaveOverwriteProfile, null, null, saveName)
-                )
-            }
-            else -> {}
-        }
+        MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(
+            AMHSaveMessage.AMHSaveMessageType.SaveOverwriteProfile, saveName)
+        )
+
     }
 
     fun newProfile(saveName : String) {
 
         MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(
-            AMHSaveMessage.AMHSaveMessageType.NewProfile, null, null, saveName)
+            AMHSaveMessage.AMHSaveMessageType.NewProfile, saveName)
         )
     }
 
@@ -85,4 +76,17 @@ object Switchboard {
                 ProfileEntity.entityName, ImmersionTimerComponent::class.java))
         MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.ResetTime))
     }
+
+    fun updateSettings(newSettings : MutableList<ProfileSetting>) {
+
+        newSettings.forEach { profileSetting ->
+            when (profileSetting.key) {
+                PSShowTimer.selectionKey -> PSShowTimer.PSShowTimerOptions.byTag(profileSetting.value)?.exec()
+                else -> {}
+            }
+        }
+
+        MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateSettings, null, null, newSettings))
+    }
+
 }
