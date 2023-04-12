@@ -7,15 +7,13 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.assets.*
-import river.exertion.kcop.assets.NarrativeAsset.Companion.get
 import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
+import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.DisplayViewTextureMessage
-import river.exertion.kcop.system.messaging.messages.DisplayViewTextureMessageType
+import river.exertion.kcop.system.profile.Profile
 import river.exertion.kcop.system.view.ViewInputProcessor
 
 
@@ -26,7 +24,7 @@ class NarrativeSimulator(private val stage: Stage,
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
-    val profileEntity = engineHandler.instantiateEntity(ProfileEntity::class.java)
+    lateinit var defaultProfileComponent : ProfileComponent
 
     var narrativesIdx = 0
     lateinit var narrativesBlock : NarrativeAssets
@@ -46,16 +44,16 @@ class NarrativeSimulator(private val stage: Stage,
                 val prevNarrativesIdx = narrativesIdx
                 narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
                 if (prevNarrativesIdx != narrativesIdx) {
-                    NarrativeComponent.getFor(profileEntity)!!.inactivate()
-                    narrativesBlock.values[narrativesIdx].initNarrative()
+                    NarrativeComponent.getFor(engineHandler.profileEntity)!!.inactivate()
+                    NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
                 }
             }
             Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
                 val prevNarrativesIdx = narrativesIdx
                 narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.values.size - 1)
                 if (prevNarrativesIdx != narrativesIdx) {
-                    NarrativeComponent.getFor(profileEntity)!!.inactivate()
-                    narrativesBlock.values[narrativesIdx].initNarrative()
+                    NarrativeComponent.getFor(engineHandler.profileEntity)!!.inactivate()
+                    NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
                 }
             }
         }
@@ -72,8 +70,11 @@ class NarrativeSimulator(private val stage: Stage,
 
         viewLayout.build(stage, assetManagerHandler)
 
+        defaultProfileComponent = ProfileComponent.getFor(engineHandler.profileEntity)!!
+
         narrativesBlock = assetManagerHandler.narrativeAssets
-        narrativesBlock.values[narrativesIdx].initNarrative()
+
+        NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
     }
 
     override fun pause() {

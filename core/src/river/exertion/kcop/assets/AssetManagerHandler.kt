@@ -72,16 +72,16 @@ class AssetManagerHandler : Telegraph {
 
     inline fun <reified T:IAsset>reloadAssets(assetLoadLocation : String): List<T> {
 
-        val returnAssets = mutableListOf<T>()
-
+        //remove previous assets of type T
         val previousAssetArray = gdxArrayOf<T>()
-        assets.getAll(T::class.java, previousAssetArray)
 
+        assets.getAll(T::class.java, previousAssetArray)
         previousAssetArray.forEach {
             assets.unloadSafely(it.assetPath)
         }
 
         //TODO: exception handling for path creation
+        //reload assets of type T
         Path(assetLoadLocation).listDirectoryEntries().forEach {
             assets.load<T>(it.toString())
         }
@@ -90,15 +90,12 @@ class AssetManagerHandler : Telegraph {
         val currentAssetArray = gdxArrayOf<T>()
         assets.getAll(T::class.java, currentAssetArray)
 
-        currentAssetArray.forEach {
-            if (it.status == null) {
-                returnAssets.add(it)
-            } else {
-                logDebug("${it.status}", "${it.statusDetail}")
-            }
+        //log any load errors
+        currentAssetArray.filter { it.status != null}.forEach {
+            logDebug("${it.status}", "${it.statusDetail}")
         }
 
-        return returnAssets
+        return currentAssetArray.toMutableList()
     }
 
     fun reloadProfileAssets()  {
@@ -109,30 +106,31 @@ class AssetManagerHandler : Telegraph {
         narrativeAssets.values = reloadAssets<NarrativeAsset>(NarrativeAssets.narrativeAssetLocation).toMutableList()
     }
 
+
     fun reloadNarrativeImmersionAssets() {
         narrativeImmersionAssets.values = reloadAssets<NarrativeImmersionAsset>(NarrativeImmersionAssets.narrativeImmersionAssetLocation).toMutableList()
     }
 
-    fun initSelectedProfile() {
-        if (selectedProfileAsset != null && selectedProfileAsset!!.profile != null) {
+    fun loadedProfileAssetTitles() : List<String> {
+        return if (profileAssets.values.isNotEmpty()) profileAssets.values.map { it.assetTitle() } else listOf("<no profiles found>")
+    }
 
-            //inactivate current narrative
-            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
-            //inactivate current profile
-            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.Inactivate))
+    fun loadedNarrativeAssetTitles() : List<String> {
+        return if (narrativeAssets.values.isNotEmpty()) narrativeAssets.values.map { it.assetTitle() } else listOf("<no narratives found>")
+    }
+
+    fun initSelectedProfile() {
+        if (ProfileAsset.isValid(selectedProfileAsset)) {
 
             //init selected profile
-            selectedProfileAsset!!.initProfile()
+            ProfileComponent.ecsInit(selectedProfileAsset!!.profile!!)
 
             //reload in prep to init
             reloadNarrativeAssets()
-            reloadNarrativeImmersionAssets()
-
             selectedNarrativeAsset = narrativeAssets.byId(selectedProfileAsset!!.profile!!.currentImmersionId)
-            selectedImmersionAsset = narrativeImmersionAssets.byIds(selectedProfileAsset!!.assetId(), selectedNarrativeAsset?.assetId())
 
+            //init current narrative immersion
             initSelectedNarrative()
-
         } else {
             Switchboard.noloadProfile()
         }
@@ -140,14 +138,21 @@ class AssetManagerHandler : Telegraph {
     }
 
     fun initSelectedNarrative() {
-        if (selectedNarrativeAsset != null) {
+        if (NarrativeAsset.isValid(selectedNarrativeAsset) ) {
 
-            //inactivate current narrative
-            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
+            if (ProfileAsset.isValid(selectedProfileAsset)) {
+                //reload in prep to init
+                reloadNarrativeImmersionAssets()
+                selectedImmersionAsset = narrativeImmersionAssets.byIds(selectedProfileAsset!!.assetId(), selectedNarrativeAsset!!.assetId())
+            } else {
+                selectedProfileAsset = ProfileAsset.new()
+
+                //pull over any settings or timer info from active profile
+                selectedProfileAsset!!.infoUpdate(currentProfileComponent!!)
+            }
 
             //init selected narrative
-            selectedNarrativeAsset!!.initNarrative(selectedImmersionAsset)
-
+            NarrativeComponent.ecsInit(selectedProfileAsset!!.profile!!, selectedNarrativeAsset!!.narrative!!, selectedImmersionAsset?.narrativeImmersion)
         } else {
             Switchboard.noloadNarrative()
         }
@@ -157,6 +162,9 @@ class AssetManagerHandler : Telegraph {
 
     companion object {
         val json = Json { ignoreUnknownKeys = true }
+
+        const val NoProfileLoaded = "No Profile Loaded"
+        const val NoNarrativeLoaded = "No Narrative Loaded"
     }
 
     fun dispose() {

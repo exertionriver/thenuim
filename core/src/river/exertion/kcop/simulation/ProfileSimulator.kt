@@ -8,6 +8,7 @@ import ktx.app.KtxScreen
 import river.exertion.kcop.assets.*
 import river.exertion.kcop.simulation.view.ViewLayout
 import river.exertion.kcop.system.ecs.EngineHandler
+import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.view.ViewInputProcessor
 
@@ -18,8 +19,6 @@ class ProfileSimulator(private val stage: Stage,
                        private val orthoCamera: OrthographicCamera) : KtxScreen {
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-
-    val profileEntity = engineHandler.instantiateEntity(ProfileEntity::class.java)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {

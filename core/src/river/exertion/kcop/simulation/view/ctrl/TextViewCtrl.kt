@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
@@ -25,7 +26,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    var currentText : String = NoNarrativeLoaded
+    var currentText : String = AssetManagerHandler.NoNarrativeLoaded
     var currentPrompts : List<String>? = null
 
     var vScrollKnobTexture : Texture? = null
@@ -132,9 +133,5 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
             }
         }
         return false
-    }
-
-    companion object {
-        const val NoNarrativeLoaded = "No Narrative Loaded"
     }
 }

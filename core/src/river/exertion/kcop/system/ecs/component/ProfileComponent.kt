@@ -3,16 +3,13 @@ package river.exertion.kcop.system.ecs.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.assets.ProfileAsset
-import river.exertion.kcop.narrative.character.NameTypes
+import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
-import river.exertion.kcop.system.messaging.messages.ProfileMessage
+import river.exertion.kcop.system.messaging.Switchboard
+import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Profile
 
 class ProfileComponent : IComponent, Telegraph {
@@ -25,43 +22,38 @@ class ProfileComponent : IComponent, Telegraph {
 
     val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
 
-    var currentImmersionId : String?
-        get() = profile?.currentImmersionId
+    var currentImmersionId : String
+        get() = profile?.currentImmersionId ?: AssetManagerHandler.NoNarrativeLoaded
         set(value) { profile?.currentImmersionId = value }
 
-    var settings : MutableList<ProfileSetting>?
+    var settings : MutableList<ProfileSetting>
         get() = profile?.settings ?: mutableListOf()
         set(value) { profile?.settings = value }
 
-    fun cumlTime() = if (isInitialized) timerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
+    var cumlTime : String
+        get() = profile?.cumlTime ?: ImmersionTimer.CumlTimeZero
+        set(value) { profile?.cumlTime = value }
+
+    fun cumlComponentTime() = if (isInitialized) timerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
 
     override fun initialize(initData: Any?) {
 
         if (initData != null) {
-            super.initialize(initData)
-
             val profileComponentInit = IComponent.checkInitType<ProfileComponentInit>(initData)
 
-            if (profileComponentInit!!.profileAsset != null) {
-                profile = profileComponentInit.profileAsset!!.profile
+            if (profileComponentInit != null) {
 
-                timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profileComponentInit.profileAsset.profile!!.cumlTime()))
+                profile = profileComponentInit.profile
 
-                //pull flags from immersion asset
-                profile!!.settings = profileComponentInit.settings().toMutableList()
+                timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profileComponentInit.cumlTime()))
 
-            } else {
-                profile = Profile(name= NameTypes.COMMON.nextName())
+                super.initialize(initData)
+
+                activate()
+
+                //update kcop with current settings, including setting log timers
+                Switchboard.updateSettings(profileComponentInit.profile.settings)
             }
-
-            activate()
-
-            MessageChannel.PROFILE_BRIDGE.enableReceive(this)
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, this))
-
-        } else {
-            //allow empty component
-            super.initialize(null)
         }
     }
 
@@ -71,6 +63,9 @@ class ProfileComponent : IComponent, Telegraph {
             timerPair.instImmersionTimer!!.resetTimer()
             timerPair.instImmersionTimer.resumeTimer()
             timerPair.cumlImmersionTimer.resumeTimer()
+
+            MessageChannel.PROFILE_BRIDGE.enableReceive(this)
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, this))
         }
     }
 
@@ -92,31 +87,38 @@ class ProfileComponent : IComponent, Telegraph {
 
         if (msg != null) {
             when {
-                ( MessageChannel.PROFILE_BRIDGE.isType(msg.message) ) -> {
+                (MessageChannel.PROFILE_BRIDGE.isType(msg.message)) -> {
                     val profileMessage: ProfileMessage = MessageChannel.PROFILE_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if ( (profile != null) && isInitialized) {
+                    if (isValid(this)) {
                         when (profileMessage.profileMessageType) {
                             ProfileMessage.ProfileMessageType.UpdateImmersionId -> {
                                 if (profileMessage.immersionId != null) {
                                     currentImmersionId = profileMessage.immersionId
                                 }
                             }
+
                             ProfileMessage.ProfileMessageType.ReplaceCumlTimer -> {
-                                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(
+                                    null, EngineComponentMessage(
                                         EngineComponentMessageType.REPLACE_COMPONENT,
-                                        ProfileEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair))
+                                        ProfileEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair
+                                    )
+                                )
                             }
+
                             ProfileMessage.ProfileMessageType.UpdateSettings -> {
                                 if (profileMessage.settings != null) {
                                     settings = profileMessage.settings
                                 }
                             }
+
                             ProfileMessage.ProfileMessageType.UpdateProfile -> {
                                 if (profileMessage.profile != null) {
                                     profile = profileMessage.profile
                                 }
                             }
+
                             ProfileMessage.ProfileMessageType.Inactivate -> {
                                 inactivate()
                             }
@@ -132,9 +134,30 @@ class ProfileComponent : IComponent, Telegraph {
     companion object {
         fun has(entity : Entity?) : Boolean = entity?.components?.firstOrNull{ it is ProfileComponent } != null
         fun getFor(entity : Entity?) : ProfileComponent? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileComponent } as ProfileComponent else null
+
+        fun isValid(profileComponent: ProfileComponent?) : Boolean {
+            return (profileComponent?.profile != null && profileComponent.isInitialized)
+        }
+
+        fun ecsInit(profile : Profile = Profile()) {
+            //inactivate current narrative
+            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
+            //inactivate current profile
+            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.Inactivate))
+
+            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                EngineComponentMessageType.REPLACE_COMPONENT,
+                ProfileEntity.entityName, ProfileComponent::class.java,
+                ProfileComponentInit(profile)
+            ) )
+            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                EngineComponentMessageType.REPLACE_COMPONENT,
+                ProfileEntity.entityName, IRLTimeComponent::class.java
+            ) )
+        }
     }
 
-    data class ProfileComponentInit(val profileAsset: ProfileAsset? = null) {
-        fun settings() = profileAsset?.settings() ?: listOf()
+    data class ProfileComponentInit(val profile: Profile = Profile()) {
+        fun cumlTime() = profile.cumlTime
     }
 }

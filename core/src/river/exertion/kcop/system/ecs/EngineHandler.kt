@@ -8,7 +8,9 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.entity
 import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.IComponent
+import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.IEntity
+import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.messaging.*
 import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
 import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
@@ -26,6 +28,7 @@ class EngineHandler : Telegraph {
 
     val engine = PooledEngine().apply { SystemManager.init(this) }
     val entities = mutableMapOf<IEntity, Entity>()
+    val profileEntity = instantiateEntity(ProfileEntity::class.java).also { ProfileComponent.ecsInit() }
 
     fun entityByName(entityName : String) : Entity = entities.entries.firstOrNull{ it.key.entityName == entityName }?.value ?: throw Exception("entityByName:$entityName not found")
 

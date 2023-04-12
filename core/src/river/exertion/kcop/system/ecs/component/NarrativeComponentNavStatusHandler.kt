@@ -26,6 +26,10 @@ object NarrativeComponentNavStatusHandler {
 
             unpause()
 
+            MessageChannel.NARRATIVE_BRIDGE.enableReceive(this)
+
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
+
 //            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
 
             changed = true

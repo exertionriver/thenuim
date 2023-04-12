@@ -8,6 +8,7 @@ import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.system.profile.Profile
 
 object AssetManagerMessageHandler {
 
@@ -21,13 +22,13 @@ object AssetManagerMessageHandler {
                         AMHLoadMessage.AMHLoadMessageType.ReloadMenuProfiles -> {
                             reloadProfileAssets()
 
-                            val loadedProfileAssetTitles = if (profileAssets.values.isNotEmpty()) profileAssets.values.map { it.assetTitle() } else listOf("<no profiles found>")
+                            val loadedProfileAssetTitles = loadedProfileAssetTitles()
                             MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(loadedProfileAssetTitles, loadedProfileAssetTitles[0])))
                         }
                         AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives -> {
                             reloadNarrativeAssets()
 
-                            val loadedNarrativeAssetTitles = if (narrativeAssets.values.isNotEmpty()) narrativeAssets.values.map { it.assetTitle() } else listOf("<no narratives found>")
+                            val loadedNarrativeAssetTitles = loadedNarrativeAssetTitles()
                             MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(loadedNarrativeAssetTitles, loadedNarrativeAssetTitles[0])))
                         }
                         AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile -> {
@@ -47,13 +48,13 @@ object AssetManagerMessageHandler {
                             currentImmersionComponent = null
                         }
                         AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileAsset -> {
-                            reloadProfileAssets()
-                            reloadNarrativeImmersionAssets()
-
                             if (amhLoadMessage.selectedTitle != null) {
+                                reloadProfileAssets()
+                                reloadNarrativeImmersionAssets()
+
                                 selectedProfileAsset = profileAssets.byTitle(amhLoadMessage.selectedTitle)
 
-                                if (selectedProfileAsset != null && selectedProfileAsset!!.profile != null) {
+                                if (ProfileAsset.isValid(selectedProfileAsset) ) {
                                     selectedNarrativeAsset = narrativeAssets.byId(selectedProfileAsset!!.profile!!.currentImmersionId)
                                     selectedImmersionAsset = narrativeImmersionAssets.byIds(selectedProfileAsset?.assetId(), selectedNarrativeAsset?.assetId())
 
@@ -64,39 +65,41 @@ object AssetManagerMessageHandler {
                             }
                         }
                         AMHLoadMessage.AMHLoadMessageType.SetSelectedNarrativeAsset -> {
-                            reloadNarrativeAssets()
-                            reloadNarrativeImmersionAssets()
-
                             if (amhLoadMessage.selectedTitle != null) {
-                                selectedNarrativeAsset = narrativeAssets.byTitle(amhLoadMessage.selectedTitle)
-                                selectedImmersionAsset = narrativeImmersionAssets.byIds(selectedProfileAsset?.assetId(), selectedNarrativeAsset?.assetId())
+                                reloadNarrativeAssets()
+                                reloadNarrativeImmersionAssets()
 
-                                if (selectedNarrativeAsset != null) {
+                                selectedNarrativeAsset = narrativeAssets.byTitle(amhLoadMessage.selectedTitle)
+
+                                if (NarrativeAsset.isValid(selectedNarrativeAsset)) {
                                     MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(null, null, selectedNarrativeAsset!!.assetInfo(), selectedNarrativeAsset!!.assetName())))
                                 }
                             }
                         }
                         AMHLoadMessage.AMHLoadMessageType.RefreshSelectedProfile -> {
-                            if (selectedProfileAsset != null && currentProfileComponent != null && currentImmersionComponent != null) {
+                            if (ProfileAsset.isValid(selectedProfileAsset) && ProfileComponent.isValid(currentProfileComponent) && NarrativeComponent.isValid(currentImmersionComponent) ) {
 
-                                selectedProfileAsset?.update(currentProfileComponent, currentImmersionComponent)
+                                selectedProfileAsset!!.fullUpdate(currentProfileComponent!!)
+                                selectedProfileAsset!!.update(currentImmersionComponent!!)
 
-                                MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(selectedProfileAsset?.profile?.settings?.map { it.key }, null, selectedProfileAsset?.profile?.settings?.map { it.value })))
                                 MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, selectedProfileAsset!!.assetInfo(), selectedProfileAsset!!.assetName())))
+
+                                //workaround for settings key-value pairs
+                                MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(selectedProfileAsset?.profile?.settings?.map { it.key }, null, selectedProfileAsset?.profile?.settings?.map { it.value })))
                             }
                         }
                         AMHLoadMessage.AMHLoadMessageType.RefreshSelectedNarrative -> {
-                            if (selectedNarrativeAsset != null && currentImmersionComponent != null) {
+                            if (NarrativeAsset.isValid(selectedNarrativeAsset) && NarrativeComponent.isValid(currentImmersionComponent) ) {
 
                                 selectedNarrativeAsset!!.update(currentImmersionComponent)
 
                                 MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(null, null, selectedNarrativeAsset!!.assetInfo(), selectedNarrativeAsset!!.assetName())))
                             }
                         }
-                        AMHLoadMessage.AMHLoadMessageType.LoadSelectedProfile -> {
+                        AMHLoadMessage.AMHLoadMessageType.InitSelectedProfile -> {
                             initSelectedProfile()
                         }
-                        AMHLoadMessage.AMHLoadMessageType.LoadSelectedNarrative -> {
+                        AMHLoadMessage.AMHLoadMessageType.InitSelectedNarrative -> {
                             initSelectedNarrative()
                         }
                     }
@@ -108,81 +111,93 @@ object AssetManagerMessageHandler {
 
                     when (amhSaveMessage.messageType) {
                         AMHSaveMessage.AMHSaveMessageType.SaveOverwriteProfile -> {
-                            if (selectedProfileAsset != null && amhSaveMessage.saveName != null) {
+                            if (ProfileAsset.isValid(selectedProfileAsset)) {
 
-                                selectedProfileAsset!!.profile!!.name = amhSaveMessage.saveName
+                                selectedProfileAsset!!.profile!!.name = amhSaveMessage.saveName ?: Profile.genName()
 
                                 selectedProfileAsset!!.save(selectedProfileAsset!!.newAssetFilename())
                             }
                         }
                         AMHSaveMessage.AMHSaveMessageType.SaveMergeProfile -> {}
                         AMHSaveMessage.AMHSaveMessageType.NewProfile -> {
-                            if (amhSaveMessage.saveName != null) {
-                                selectedProfileAsset = ProfileAsset.new(amhSaveMessage.saveName)
+                            selectedProfileAsset = ProfileAsset.new(amhSaveMessage.saveName ?: Profile.genName())
 
-                                selectedProfileAsset!!.save()
+                            selectedProfileAsset!!.save()
 
-                                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateProfile, selectedProfileAsset!!.profile))
-
-                                Switchboard.noloadNarrative()
-                            }
+                            initSelectedProfile()
                         }
 
                         AMHSaveMessage.AMHSaveMessageType.PrepSaveProgress -> {
-                            reloadProfileAssets()
-                            reloadNarrativeAssets()
-                            reloadNarrativeImmersionAssets()
 
-                            if (currentProfileComponent != null) {
+                            //if a profile is inited and active
+                            if (ProfileComponent.isValid(currentProfileComponent)) {
+                                reloadProfileAssets()
+
                                 selectedProfileAsset = profileAssets.byId(currentProfileComponent!!.componentId())
 
-                                if (selectedProfileAsset != null) {
-                                    selectedProfileAsset!!.update(currentProfileComponent, currentImmersionComponent)
+                                //if an asset related to the profile is found, update, otherwise create an asset and update component with new profile
+                                if (ProfileAsset.isValid(selectedProfileAsset)) {
+                                    selectedProfileAsset!!.fullUpdate(currentProfileComponent!!)
+                                    selectedProfileAsset!!.update(currentImmersionComponent)
                                 } else {
                                     selectedProfileAsset = ProfileAsset.new()
 
-                                    MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateProfile, selectedProfileAsset!!.profile))
+                                    //pull over any settings or timer info from active profile
+                                    selectedProfileAsset!!.infoUpdate(currentProfileComponent!!)
                                 }
+                            //otherwise, create an asset and init a profile component
                             } else {
                                 selectedProfileAsset = ProfileAsset.new()
 
-                                selectedProfileAsset!!.initProfile()
                             }
 
-                            val profileInfo = selectedProfileAsset!!.assetInfo()
+                            //if a narrative is inited and active
+                            if (NarrativeComponent.isValid(currentImmersionComponent)) {
+                                reloadNarrativeAssets()
+                                reloadNarrativeImmersionAssets()
 
-                            //update from current immersion if one is active
-                            if (currentImmersionComponent != null) {
                                 selectedNarrativeAsset = narrativeAssets.byId(currentImmersionComponent!!.componentId())
 
-                                if (selectedNarrativeAsset != null) {
+                                //if an asset related to the narrative is found, update
+                                if (NarrativeAsset.isValid(selectedNarrativeAsset)) {
+
                                     selectedNarrativeAsset!!.update(currentImmersionComponent)
 
                                     selectedImmersionAsset = narrativeImmersionAssets.byIds(selectedProfileAsset!!.assetId(), selectedNarrativeAsset!!.assetId())
 
-                                    //create immersion asset if it does not exist
-                                    if (selectedImmersionAsset != null) {
+                                    //update immersion asset or create new if one does not exist
+                                    if (NarrativeImmersionAsset.isValid(selectedImmersionAsset)) {
                                         selectedImmersionAsset!!.update(currentImmersionComponent)
                                     } else {
-                                        selectedImmersionAsset = NarrativeImmersionAsset.new(currentProfileComponent!!, currentImmersionComponent!!)
-
-                                        MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.UpdateNarrativeImmersion, null, selectedImmersionAsset!!.narrativeImmersion))
+                                        selectedImmersionAsset = NarrativeImmersionAsset.new(currentImmersionComponent!!)
                                     }
                                 }
+
+                                selectedProfileAsset!!.update(currentImmersionComponent)
                             }
 
-                            MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, profileInfo), NarrativeMenuDataParams(null, null, null)))
+                            //profile asset info should be valid now, send info
+                            val profileInfo = selectedProfileAsset!!.assetInfo()
+                            MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, profileInfo)))
+
                         }
 
                         AMHSaveMessage.AMHSaveMessageType.SaveProgress -> {
-                            selectedProfileAsset!!.save()
-                            selectedImmersionAsset?.save()
+                            if (ProfileAsset.isValid(selectedProfileAsset) && NarrativeImmersionAsset.isValid(selectedImmersionAsset)) {
+                                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateProfile, selectedProfileAsset!!.profile))
+                                MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.UpdateNarrativeImmersion, null, selectedImmersionAsset!!.narrativeImmersion))
+
+                                selectedProfileAsset!!.save()
+                                selectedImmersionAsset!!.save()
+                            }
                         }
                         AMHSaveMessage.AMHSaveMessageType.RestartProgress -> {
-                            selectedImmersionAsset?.delete()
-                            selectedImmersionAsset = null
+                            if (NarrativeAsset.isValid(selectedNarrativeAsset) && NarrativeImmersionAsset.isValid(selectedImmersionAsset) ) {
+                                selectedImmersionAsset?.delete()
+                                selectedImmersionAsset = null
 
-                            initSelectedNarrative()
+                                initSelectedNarrative()
+                            }
                         }
                     }
                     return true

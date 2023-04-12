@@ -110,12 +110,12 @@ class AudioCtrl() : Telegraph {
                 val displayViewAudioMessage: DisplayViewAudioMessage = MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.receiveMessage(msg.extraInfo)
 
                 when (displayViewAudioMessage.messageType) {
-                    DisplayViewAudioMessageType.FADE_MUSIC_OUT -> fadeMusicOut()
-                    DisplayViewAudioMessageType.FADE_MUSIC_IN -> fadeMusicIn(displayViewAudioMessage.music)
-                    DisplayViewAudioMessageType.CROSS_FADE_MUSIC -> crossFadeMusic(displayViewAudioMessage.music)
-                    DisplayViewAudioMessageType.PLAY_MUSIC -> playMusic(displayViewAudioMessage.music)
-                    DisplayViewAudioMessageType.PLAY_SOUND -> playSound(displayViewAudioMessage.music)
-                    DisplayViewAudioMessageType.STOP_MUSIC -> stopMusic()
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_OUT -> fadeMusicOut()
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_IN -> fadeMusicIn(displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.CROSS_FADE_MUSIC -> crossFadeMusic(displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_MUSIC -> playMusic(displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_SOUND -> playSound(displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.STOP_MUSIC -> stopMusic()
                 }
                 return true
             }

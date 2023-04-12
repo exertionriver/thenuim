@@ -1,5 +1,6 @@
 package river.exertion.kcop.system.messaging
 
+import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.view.ctrl.LogViewCtrl
 import river.exertion.kcop.simulation.view.ctrl.TextViewCtrl
 import river.exertion.kcop.simulation.view.displayViewMenus.MainMenu
@@ -33,11 +34,11 @@ object Switchboard {
     }
 
     fun loadSelectedProfile() {
-        MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.LoadSelectedProfile))
+        MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.InitSelectedProfile))
     }
 
     fun loadSelectedNarrative() {
-        MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.LoadSelectedNarrative))
+        MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.InitSelectedNarrative))
     }
 
     fun saveOverwriteSelectedProfile(saveName : String) {
@@ -59,7 +60,7 @@ object Switchboard {
         MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessageType.REMOVE_COMPONENT,
                 ProfileEntity.entityName, ProfileComponent::class.java))
-        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, LogViewCtrl.NoProfileLoaded))
+        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, AssetManagerHandler.NoProfileLoaded))
         MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessageType.REMOVE_COMPONENT,
                 ProfileEntity.entityName, IRLTimeComponent::class.java))
@@ -70,7 +71,7 @@ object Switchboard {
         MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessageType.REMOVE_COMPONENT,
                 ProfileEntity.entityName, NarrativeComponent::class.java))
-        MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewCtrl.NoNarrativeLoaded))
+        MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(AssetManagerHandler.NoNarrativeLoaded))
         MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessageType.REMOVE_COMPONENT,
                 ProfileEntity.entityName, ImmersionTimerComponent::class.java))

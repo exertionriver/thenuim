@@ -9,7 +9,7 @@ data class AMHLoadMessage(val messageType : AMHLoadMessageType, val selectedTitl
         RefreshCurrentProfile, RefreshCurrentImmersion,
         RemoveCurrentProfile, RemoveCurrentImmersion,
         SetSelectedProfileAsset, SetSelectedNarrativeAsset,
-        LoadSelectedProfile, LoadSelectedNarrative,
+        InitSelectedProfile, InitSelectedNarrative,
         RefreshSelectedProfile, RefreshSelectedNarrative
     }
 }

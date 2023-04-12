@@ -70,12 +70,11 @@ class ProfileSettingsMenu(override var screenWidth: Float, override var screenHe
     override val navs = mutableListOf<ActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Save", {
+        ActionParam("Update", {
             Switchboard.closeMenu()
             Switchboard.updateSettings(profileSettings().entries.map { ProfileSetting(it.key, it.value) }.toMutableList())
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshSelectedProfile))
-            MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.SaveProgress))
-        }, "Progress Saved!"),
+        }, "Settings Updated!"),
         ActionParam("Cancel", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
     )
 

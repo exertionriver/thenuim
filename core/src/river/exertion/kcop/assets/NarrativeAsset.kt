@@ -34,14 +34,6 @@ class NarrativeAsset(var narrative : Narrative? = null) : IAsset {
         return returnList.toList()
     }
 
-    fun initNarrative(narrativeImmersionAsset: NarrativeImmersionAsset? = null) {
-        MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
-                EngineComponentMessageType.REPLACE_COMPONENT,
-                ProfileEntity.entityName, NarrativeComponent::class.java,
-                NarrativeComponent.NarrativeComponentInit(this, narrativeImmersionAsset)
-        ) )
-    }
-
     fun update(narrativeImmersionComponent : NarrativeComponent?) {
         narrative = narrativeImmersionComponent?.narrative
     }
@@ -50,6 +42,10 @@ class NarrativeAsset(var narrative : Narrative? = null) : IAsset {
         operator fun AssetManager.get(asset: NarrativeAsset) = getAsset<NarrativeAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
             if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
+        }
+
+        fun isValid(narrativeAsset: NarrativeAsset?) : Boolean {
+            return (narrativeAsset?.narrative != null && narrativeAsset.status == null)
         }
     }
 }

@@ -8,7 +8,7 @@ import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 
 @Serializable
 class NarrativeImmersion(
-        override var id : String = Id.randomId(),
+        override var id : String = genId(),
 
         var location : ImmersionLocation? = null,
 
@@ -22,5 +22,7 @@ class NarrativeImmersion(
 
     companion object {
         const val UnknownBlockId = "unknown"
+
+        fun genId(profileId : String? = null, narrativeId : String? = null) = "${profileId ?: Id.randomId()}_${narrativeId ?: Id.randomId()}"
     }
 }

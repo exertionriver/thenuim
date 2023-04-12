@@ -141,7 +141,7 @@ object NarrativeComponentEventHandler {
                     }
                     Event.EventType.PLAY_SOUND -> {
                         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                            DisplayViewAudioMessageType.PLAY_SOUND, null)
+                            DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_SOUND, null)
                         )
                     }
                     Event.EventType.PLAY_MUSIC -> {
@@ -149,7 +149,7 @@ object NarrativeComponentEventHandler {
 
                         if ( !currentMusicPlaying ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessageType.STOP_MUSIC, null)
+                                DisplayViewAudioMessage.DisplayViewAudioMessageType.STOP_MUSIC, null)
                             )
                         }
                     }
@@ -158,7 +158,7 @@ object NarrativeComponentEventHandler {
 
                         if ( !currentMusicPlaying ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessageType.FADE_MUSIC_OUT, null)
+                                DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_OUT, null)
                             )
                         }
                     }
@@ -250,7 +250,7 @@ object NarrativeComponentEventHandler {
                     Event.EventType.PLAY_SOUND -> {
                         if ( narrative!!.sounds.keys.contains(currentBlockEvent.param) ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessageType.PLAY_SOUND, narrative!!.sounds[currentBlockEvent.param]!!.asset)
+                                DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_SOUND, narrative!!.sounds[currentBlockEvent.param]!!.asset)
                             )
                         }
                     }
@@ -259,11 +259,11 @@ object NarrativeComponentEventHandler {
 
                         if ( narrative!!.music.keys.contains(currentBlockEvent.param) ) {
                                 MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessageType.PLAY_MUSIC, narrative!!.music[currentBlockEvent.param]!!.asset)
+                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_MUSIC, narrative!!.music[currentBlockEvent.param]!!.asset)
                                 )
                         } else if ( previousMusicPlaying ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessageType.STOP_MUSIC, null)
+                                DisplayViewAudioMessage.DisplayViewAudioMessageType.STOP_MUSIC, null)
                             )
                         }
                     }
@@ -273,16 +273,16 @@ object NarrativeComponentEventHandler {
                         if ( narrative!!.music.keys.contains(currentBlockEvent.param) ) {
                             if ( previousMusicPlaying ) {
                                 MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessageType.CROSS_FADE_MUSIC, narrative!!.music[currentBlockEvent.param]!!.asset)
+                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.CROSS_FADE_MUSIC, narrative!!.music[currentBlockEvent.param]!!.asset)
                                 )
                             } else {
                                 MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessageType.FADE_MUSIC_IN, narrative!!.music[currentBlockEvent.param]!!.asset)
+                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_IN, narrative!!.music[currentBlockEvent.param]!!.asset)
                                 )
                             }
                         } else if ( previousMusicPlaying ) {
                             MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessageType.FADE_MUSIC_OUT, null)
+                                DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_OUT, null)
                             )
                         }
                     }

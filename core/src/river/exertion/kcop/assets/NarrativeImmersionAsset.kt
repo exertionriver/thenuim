@@ -44,6 +44,7 @@ class NarrativeImmersionAsset(var narrativeImmersion : NarrativeImmersion? = nul
         Gdx.files.local(assetPath).writeString(jsonNarrativeImmersion.toString(), false)
     }
 
+    //TODO: append data rather than delete file
     fun delete() {
         Gdx.files.local(assetPath).delete()
     }
@@ -54,21 +55,17 @@ class NarrativeImmersionAsset(var narrativeImmersion : NarrativeImmersion? = nul
     }
 
     companion object {
-        fun genAssetId(profileId : String?, narrativeId : String?) = if (profileId != null && narrativeId != null) "${profileId}_${narrativeId}" else null
-
         operator fun AssetManager.get(asset: NarrativeImmersionAsset) = getAsset<NarrativeImmersionAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
             if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
         }
 
-        fun new(profileComponent : ProfileComponent, narrativeComponent: NarrativeComponent) : NarrativeImmersionAsset {
-            return NarrativeImmersionAsset(
-                    NarrativeImmersion(id = genAssetId(profileComponent.componentId(), narrativeComponent.componentId())!! ).apply {
-                        this.location = narrativeComponent.location
-                        this.flags = narrativeComponent.flags
-                        this.blockImmersionTimers = narrativeComponent.blockImmersionTimersStr()
-                    }
-            ).apply {
+        fun isValid(narrativeImmersionAsset: NarrativeImmersionAsset?) : Boolean {
+            return (narrativeImmersionAsset?.narrativeImmersion != null && narrativeImmersionAsset.status == null)
+        }
+
+        fun new(narrativeComponent: NarrativeComponent) : NarrativeImmersionAsset {
+            return NarrativeImmersionAsset(narrativeComponent.narrativeImmersion).apply {
                 this.assetPath = newAssetFilename()
             }
         }

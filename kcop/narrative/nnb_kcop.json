@@ -9,32 +9,32 @@
     {"id" : "demo_block6", "narrativeText" : ["sixth nav block"]}
   ], "promptBlocks" : [
     { "narrativeBlockId" : "demo_block1", "prompts" : [
-      { "id" : "first_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block2"},
-      { "id" : "first_prompt_b", "promptText" : "(J)ump", "promptKey" : "J", "promptNextId" : "demo_block5"}
+      { "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block2"},
+      { "promptText" : "(J)ump", "promptKey" : "J", "promptNextId" : "demo_block5"}
     ]},
     { "narrativeBlockId" : "demo_block2", "prompts" : [
-      { "id" : "second_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block3"},
-      { "id" : "second_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block1"},
-      { "id" : "second_prompt_c", "promptText" : "(J)ump", "promptKey" : "J", "promptNextId" : "demo_block6"}
+      { "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block3"},
+      { "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block1"},
+      { "promptText" : "(J)ump", "promptKey" : "J", "promptNextId" : "demo_block6"}
     ]},
     { "narrativeBlockId" : "demo_block3", "prompts" : [
-      { "id" : "third_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block4"},
-      { "id" : "third_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block2"},
-      { "id" : "third_prompt_c", "promptText" : "(R)andom Jump", "promptKey" : "R", "promptRandomId" : ["demo_block1", "demo_block4", "demo_block6"]}
+      { "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block4"},
+      { "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block2"},
+      { "promptText" : "(R)andom Jump", "promptKey" : "R", "promptRandomId" : ["demo_block1", "demo_block4", "demo_block6"]}
     ]},
     { "narrativeBlockId" : "demo_block4", "prompts" : [
-      { "id" : "fourth_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block5"},
-      { "id" : "fourth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block3"},
-      { "id" : "fourth_prompt_c", "promptText" : "(C)ycle", "promptKey" : "C", "promptNextId" : "demo_block4"}
+      { "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block5"},
+      { "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block3"},
+      { "promptText" : "(C)ycle", "promptKey" : "C", "promptNextId" : "demo_block4"}
     ]},
     { "narrativeBlockId" : "demo_block5", "prompts" : [
-      { "id" : "fifth_prompt_a", "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block6"},
-      { "id" : "fifth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block4"},
-      { "id" : "fifth_prompt_c", "promptText" : "Jump (B)ack", "promptKey" : "B", "promptNextId" : "demo_block1"}
+      { "promptText" : "(N)ext", "promptKey" : "N", "promptNextId" : "demo_block6"},
+      { "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block4"},
+      { "promptText" : "Jump (B)ack", "promptKey" : "B", "promptNextId" : "demo_block1"}
     ]},
     { "narrativeBlockId" : "demo_block6", "prompts" : [
-      { "id" : "sixth_prompt_b", "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block5"},
-      { "id" : "sixth_prompt_c", "promptText" : "Jump (B)ack", "promptKey" : "B", "promptNextId" : "demo_block2"}
+      { "promptText" : "(P)rev", "promptKey" : "P", "promptNextId" : "demo_block5"},
+      { "promptText" : "Jump (B)ack", "promptKey" : "B", "promptNextId" : "demo_block2"}
     ]}
   ],
   "eventBlocks" : [

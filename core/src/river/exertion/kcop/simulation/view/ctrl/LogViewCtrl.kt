@@ -217,8 +217,4 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         }
         return false
     }
-
-    companion object {
-        const val NoProfileLoaded = "No Profile Loaded"
-    }
 }

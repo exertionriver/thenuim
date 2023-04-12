@@ -206,15 +206,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
                     //to menus from elsewhere
-                    if (menuDataMessage.profileMenuDataParams != null && menuDataMessage.narrativeMenuDataParams != null) {
-                        displayViewMenus.filter { it is SaveProgressMenu }.forEach { saveProgressMenu ->
-
-                            val assetsInfo = (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo ?: listOf("")) + (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo ?: listOf(""))
-                            if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                (saveProgressMenu as SaveProgressMenu).progressAssetsInfo = assetsInfo
-                            }
-                        }
-                    } else {
                         if ( menuDataMessage.profileMenuDataParams != null ) {
                             displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
                                 if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null) {
@@ -245,6 +236,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                                     (profileSettingsMenu as ProfileSettingsMenu).profileSettings = menuDataMessage.profileMenuDataParams!!.profileAssetTitles!!.zip(menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo!!).toMap().toMutableMap()
                                 }
                             }
+                            displayViewMenus.filter { it is SaveProgressMenu }.forEach { saveProgressMenu ->
+                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
+                                    (saveProgressMenu as SaveProgressMenu).progressAssetsInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
+                                }
+                            }
+
                         } else {
                             displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
                                 (profileMenu as ProfileMenu).profileAssetTitles = null
@@ -260,7 +257,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                                 saveProfileMenu.selectedProfileAssetInfo = null
                                 saveProfileMenu.selectedProfileAssetName = null
 
-                            }
                         }
 
                         if ( menuDataMessage.narrativeMenuDataParams != null ) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.assets.NarrativeAsset
 import river.exertion.kcop.assets.NarrativeImmersionAsset
+import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrl
@@ -19,7 +20,9 @@ import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.system.profile.Profile
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -73,54 +76,50 @@ class NarrativeComponent : IComponent, Telegraph {
 
             if (narrativeComponentInit != null) {
 
-                narrative = narrativeComponentInit.narrative()
+                //set up narrative
+                narrative = narrativeComponentInit.narrative
 
-                if (narrative != null) {
-
-                    //add timers for each block
-                    narrative!!.narrativeBlocks.forEach { narrativeBlock ->
-                        blockImmersionTimers[narrativeBlock.id] = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
-                    }
-
-                    // set current profile narrative id
-                    MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateImmersionId,
-                        null, componentId()
-                    ))
-
-                    if (narrativeComponentInit.narrativeImmersionAsset != null) {
-                        narrativeImmersion = narrativeComponentInit.narrativeImmersion()
-
-                        narrative!!.init(narrativeImmersion!!.immersionBlockId())
-
-                        //set the narrative cumulative timer
-                        timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(narrativeComponentInit.cumlTime()))
-
-                        //set block cumulative timers
-                        narrativeComponentInit.immersionTimers().entries.forEach { timerEntry ->
-                            blockImmersionTimers[timerEntry.key]?.cumlImmersionTimer?.setPastStartTime(ImmersionTimer.inMilliseconds(timerEntry.value))
-                        }
-                    } else {
-                        narrativeImmersion = null
-                        narrative!!.init()
-                    }
-
-                    //set the narrative layout
-                    MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrative!!.layoutTag))
-                } else {
-                    narrativeImmersion = null
-                    MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewCtrl.NoNarrativeLoaded))
+                //add timers for each block
+                narrative!!.narrativeBlocks.forEach { narrativeBlock ->
+                    blockImmersionTimers[narrativeBlock.id] = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
                 }
+
+                //set the narrative layout
+                MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrative!!.layoutTag))
+
+                if (narrativeComponentInit.narrativeImmersion != null) {
+                    narrativeImmersion = narrativeComponentInit.narrativeImmersion
+
+                    narrative!!.init(narrativeImmersion!!.immersionBlockId())
+
+                    //set the narrative cumulative timer
+                    timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(narrativeComponentInit.cumlTime()))
+
+                    //set block cumulative timers
+                    narrativeComponentInit.blockImmersionTimers().entries.forEach { timerEntry ->
+                        blockImmersionTimers[timerEntry.key]?.cumlImmersionTimer?.setPastStartTime(ImmersionTimer.inMilliseconds(timerEntry.value))
+                    }
+                } else {
+                    narrativeImmersion = NarrativeImmersion(NarrativeImmersion.genId(narrativeComponentInit.profile.id, narrativeComponentInit.narrative.id)).apply {
+                        this.location = ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTime())
+                        this.flags = mutableListOf()
+                        this.blockImmersionTimers = blockImmersionTimersStr()
+                    }
+                    narrative!!.init()
+                }
+
+                // set current profile narrative id
+                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateImmersionId,
+                    null, componentId()
+                ))
 
                 super.initialize(initData)
 
-                //start timers
+                //start timers, enable message receipt
                 activate(narrativeCurrBlockId())
 
-                //when this timer component is added to the entity, it becomes the display timer for logCtrl
-                MessageChannel.NARRATIVE_BRIDGE.enableReceive(this)
-                MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
-
-                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(EngineComponentMessageType.ADD_COMPONENT, ProfileEntity.entityName, ImmersionTimerComponent::class.java, timerPair))
+                //update kcop with current settings, including setting log timers
+                Switchboard.updateSettings(narrativeComponentInit.profile.settings)
             }
         }
     }
@@ -156,14 +155,26 @@ class NarrativeComponent : IComponent, Telegraph {
     companion object {
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is NarrativeComponent } != null
         fun getFor(entity : Entity) : NarrativeComponent? = if (has(entity)) entity.components.first { it is NarrativeComponent } as NarrativeComponent else null
+
+        fun isValid(narrativeComponent: NarrativeComponent?) : Boolean {
+            return (narrativeComponent?.narrative != null && narrativeComponent.narrativeImmersion != null && narrativeComponent.isInitialized)
+        }
+
+        fun ecsInit(profile: Profile, narrative: Narrative, narrativeImmersion: NarrativeImmersion? = null) {
+            //inactivate current narrative
+            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
+
+            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+                EngineComponentMessageType.REPLACE_COMPONENT,
+                ProfileEntity.entityName, NarrativeComponent::class.java,
+                NarrativeComponentInit(profile, narrative, narrativeImmersion)
+            ) )
+        }
     }
 
-    data class NarrativeComponentInit(val narrativeAsset: NarrativeAsset? = null, val narrativeImmersionAsset: NarrativeImmersionAsset? = null) {
-
-        fun narrative() = narrativeAsset?.narrative
-        fun narrativeImmersion() = narrativeImmersionAsset?.narrativeImmersion
-        fun immersionTimers() = narrativeImmersionAsset?.timers() ?: mapOf()
-        fun cumlTime() = narrativeImmersionAsset?.narrativeImmersion?.cumlImmersionTime() ?: ImmersionTimer.CumlTimeZero
+    data class NarrativeComponentInit(val profile: Profile, val narrative: Narrative, val narrativeImmersion: NarrativeImmersion? = null) {
+        fun blockImmersionTimers() = narrativeImmersion?.blockImmersionTimers ?: mapOf()
+        fun cumlTime() = narrativeImmersion?.cumlImmersionTime() ?: ImmersionTimer.CumlTimeZero
     }
 
     // only need to replace in case of settings change

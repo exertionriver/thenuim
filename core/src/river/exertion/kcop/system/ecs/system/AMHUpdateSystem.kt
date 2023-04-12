@@ -7,7 +7,6 @@ import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
-import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
 
 class AMHUpdateSystem : IntervalIteratingSystem(oneOf(ProfileComponent::class, NarrativeComponent::class).get(), .1f) {
 
@@ -17,7 +16,7 @@ class AMHUpdateSystem : IntervalIteratingSystem(oneOf(ProfileComponent::class, N
         val narrativeComponent = NarrativeComponent.getFor(entity)
 
         if ( profileComponent != null ) {
-            profileComponent.profile?.cumlTime = profileComponent.cumlTime()
+            profileComponent.cumlTime = profileComponent.cumlComponentTime()
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, profileComponent))
         }
         if ( narrativeComponent != null ) {

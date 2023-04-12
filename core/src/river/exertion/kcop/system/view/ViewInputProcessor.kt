@@ -3,6 +3,7 @@ package river.exertion.kcop.system.view
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
 
 class ViewInputProcessor : InputProcessor {
@@ -14,6 +15,9 @@ class ViewInputProcessor : InputProcessor {
             event = InputViewMessageEvent.KeyDownEvent,
             eventParams = mapOf(InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
         )
+
+        if (keycode == Input.Keys.ESCAPE) Switchboard.closeMenu()
+
         return false
     }
 
