@@ -12,8 +12,8 @@ class ViewInputProcessor : InputProcessor {
         MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Next, Input.Keys.toString(keycode)))
 
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.KeyDownEvent,
-            eventParams = mapOf(InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
+            event = InputViewMessage.InputViewMessageEvent.KeyDownEvent,
+            eventParams = mapOf(InputViewMessage.InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
         )
 
         if (keycode == Input.Keys.ESCAPE) Switchboard.closeMenu()
@@ -23,28 +23,28 @@ class ViewInputProcessor : InputProcessor {
 
     override fun keyUp(keycode: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.KeyUpEvent,
-            eventParams = mapOf(InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
+            event = InputViewMessage.InputViewMessageEvent.KeyUpEvent,
+            eventParams = mapOf(InputViewMessage.InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
         )
         return false
     }
 
     override fun keyTyped(character: Char): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.KeyTypedEvent,
-            eventParams = mapOf(InputViewMessageParam.CharacterKey to character))
+            event = InputViewMessage.InputViewMessageEvent.KeyTypedEvent,
+            eventParams = mapOf(InputViewMessage.InputViewMessageParam.CharacterKey to character))
         )
         return false
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.TouchDownEvent,
+            event = InputViewMessage.InputViewMessageEvent.TouchDownEvent,
             eventParams = mapOf(
-                InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessageParam.ScreenYKey to screenY,
-                InputViewMessageParam.PointerKey to pointer,
-                InputViewMessageParam.ButtonKey to button)
+                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
+                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY,
+                InputViewMessage.InputViewMessageParam.PointerKey to pointer,
+                InputViewMessage.InputViewMessageParam.ButtonKey to button)
             )
         )
         return false
@@ -52,12 +52,12 @@ class ViewInputProcessor : InputProcessor {
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.TouchUpEvent,
+            event = InputViewMessage.InputViewMessageEvent.TouchUpEvent,
             eventParams = mapOf(
-                InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessageParam.ScreenYKey to screenY,
-                InputViewMessageParam.PointerKey to pointer,
-                InputViewMessageParam.ButtonKey to button)
+                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
+                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY,
+                InputViewMessage.InputViewMessageParam.PointerKey to pointer,
+                InputViewMessage.InputViewMessageParam.ButtonKey to button)
             )
         )
         return false
@@ -65,11 +65,11 @@ class ViewInputProcessor : InputProcessor {
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.TouchDraggedEvent,
+            event = InputViewMessage.InputViewMessageEvent.TouchDraggedEvent,
             eventParams = mapOf(
-                InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessageParam.ScreenYKey to screenY,
-                InputViewMessageParam.PointerKey to pointer)
+                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
+                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY,
+                InputViewMessage.InputViewMessageParam.PointerKey to pointer)
             )
         )
         return false
@@ -77,10 +77,10 @@ class ViewInputProcessor : InputProcessor {
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.MouseMovedEvent,
+            event = InputViewMessage.InputViewMessageEvent.MouseMovedEvent,
             eventParams = mapOf(
-                InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessageParam.ScreenYKey to screenY)
+                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
+                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY)
             )
         )
         return false
@@ -88,10 +88,10 @@ class ViewInputProcessor : InputProcessor {
 
     override fun scrolled(amountX: Float, amountY: Float): Boolean {
         MessageChannel.INPUT_VIEW_BRIDGE.send(null, InputViewMessage(
-            event = InputViewMessageEvent.ScrolledEvent,
+            event = InputViewMessage.InputViewMessageEvent.ScrolledEvent,
             eventParams = mapOf(
-                InputViewMessageParam.AmountXKey to amountX,
-                InputViewMessageParam.AmountYKey to amountY)
+                InputViewMessage.InputViewMessageParam.AmountXKey to amountX,
+                InputViewMessage.InputViewMessageParam.AmountYKey to amountY)
             )
         )
         return false

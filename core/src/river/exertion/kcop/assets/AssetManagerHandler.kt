@@ -20,8 +20,6 @@ import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
-import river.exertion.kcop.system.messaging.messages.NarrativeMessage
-import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 
@@ -145,10 +143,7 @@ class AssetManagerHandler : Telegraph {
                 reloadNarrativeImmersionAssets()
                 selectedImmersionAsset = narrativeImmersionAssets.byIds(selectedProfileAsset!!.assetId(), selectedNarrativeAsset!!.assetId())
             } else {
-                selectedProfileAsset = ProfileAsset.new()
-
-                //pull over any settings or timer info from active profile
-                selectedProfileAsset!!.infoUpdate(currentProfileComponent!!)
+                selectedProfileAsset = ProfileAsset.new(currentProfileComponent!!, currentImmersionComponent)
             }
 
             //init selected narrative

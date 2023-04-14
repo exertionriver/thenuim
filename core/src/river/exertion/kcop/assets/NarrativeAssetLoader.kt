@@ -8,8 +8,10 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
 import ktx.assets.load
-import river.exertion.kcop.narrative.structure.Event
 import river.exertion.kcop.narrative.structure.Narrative
+import river.exertion.kcop.narrative.structure.events.IImageEvent
+import river.exertion.kcop.narrative.structure.events.IMusicEvent
+import river.exertion.kcop.narrative.structure.events.ISoundEvent
 
 class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<NarrativeAsset?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {
@@ -33,8 +35,8 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             val errorStatus = "${narrative.name} not loaded"
 
             narrative.eventBlocks.forEach { eventBlock ->
-                eventBlock.events.forEach { event ->
-                    if ( !event.validateFields() ) {
+                eventBlock.events.forEachIndexed { idx, event ->
+/*                    if ( !event.validateFields() ) {
                         returnNarrativeAsset.status = errorStatus
                         val errorDetail = "invalid event type : ${event.eventType} in ${eventBlock.narrativeBlockId} for ${narrative.name}"
                         if (returnNarrativeAsset.statusDetail == null)
@@ -42,32 +44,53 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                         else
                             returnNarrativeAsset.statusDetail += "\n$errorDetail"
                     }
-                    if (Event.EventType.isImageEvent(event.eventType) && !narrative.textures.keys.contains(event.param)) {
-                        narrative.textures[event.param] = manager.load(event.param)
+*/
+                    if (event.id == null) {
+                        event.id = "${eventBlock.narrativeBlockId}_${idx}_${event.type}"
                     }
-                    if (Event.EventType.isSoundEvent(event.eventType) && !narrative.sounds.keys.contains(event.param)) {
-                        narrative.sounds[event.param] = manager.load(event.param)
+
+                    if (event.isImageEvent()) {
+                        val imageEvent = event as IImageEvent
+                        if (!narrative.textures.keys.contains(imageEvent.imageFile)) {
+                            narrative.textures[imageEvent.imageFile] = manager.load(imageEvent.imageFile)
+                        }
                     }
-                    if (Event.EventType.isMusicEvent(event.eventType) && !narrative.music.keys.contains(event.param)) {
-                        narrative.music[event.param] = manager.load(event.param)
+                    if (event.isSoundEvent()) {
+                        val soundEvent = event as ISoundEvent
+                        if (!narrative.sounds.keys.contains(soundEvent.musicFile)) {
+                            narrative.sounds[soundEvent.musicFile] = manager.load(soundEvent.musicFile)
+                        }
+                    }
+                    if (event.isMusicEvent()) {
+                        val musicEvent = event as IMusicEvent
+                        if (!narrative.music.keys.contains(musicEvent.musicFile)) {
+                            narrative.music[musicEvent.musicFile] = manager.load(musicEvent.musicFile)
+                        }
                     }
                 }
             }
 
             narrative.timelineEventBlocks.forEach { timelineEventBlock ->
-                timelineEventBlock.timelineEvents.forEach { timelineEvent ->
-                if ( !timelineEvent.validateFields() ) {
-                    returnNarrativeAsset.status = errorStatus
-                    val errorDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
-                    if (returnNarrativeAsset.statusDetail == null)
-                        returnNarrativeAsset.statusDetail = errorDetail
-                    else
-                        returnNarrativeAsset.statusDetail += "\n$errorDetail"                    }
-                }
+                timelineEventBlock.events.forEachIndexed { idx, timelineEvent ->
+                    if (timelineEvent.id == null) {
+                        timelineEvent.id = "${timelineEventBlock.narrativeBlockId}_${idx}_${timelineEvent.type}"
+                    }
+
+                    /*                if ( !timelineEvent.validateFields() ) {
+                                        returnNarrativeAsset.status = errorStatus
+                                        val errorDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
+                                        if (returnNarrativeAsset.statusDetail == null)
+                                            returnNarrativeAsset.statusDetail = errorDetail
+                                        else
+                                            returnNarrativeAsset.statusDetail += "\n$errorDetail"                    }
+                      */              }
             }
 
-            narrative.timelineEvents.forEach { timelineEvent ->
-                if ( !timelineEvent.validateFields() ) {
+            narrative.timelineEvents.forEachIndexed { idx, timelineEvent ->
+                if (timelineEvent.id == null) {
+                    timelineEvent.id = "${narrative.name}_${idx}_${timelineEvent.type}"
+                }
+                /*               if ( !timelineEvent.validateFields() ) {
                     returnNarrativeAsset.status = errorStatus
                     val errorDetail = "invalid event type : ${timelineEvent.eventType} in <timelineEvents> for ${narrative.name}"
                     if (returnNarrativeAsset.statusDetail == null)
@@ -75,7 +98,7 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                     else
                         returnNarrativeAsset.statusDetail += "\n$errorDetail"
                 }
-            }
+   */         }
 
             narrative.promptBlocks.forEach { promptBlock ->
                 promptBlock.prompts.forEach { prompt ->

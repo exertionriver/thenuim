@@ -19,10 +19,13 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
         if (narrativeComponent.isInitialized) {
 
-            var currentText = narrativeComponent.currentText()
-            currentText += narrativeComponent.executeReadyTimelineEvents()
-            currentText += narrativeComponent.executeReadyBlockEvents()
-            currentText += narrativeComponent.currentBlockTimer()
+            narrativeComponent.executeReadyTimelineEvents()
+
+            if (narrativeComponent.changed) {
+                narrativeComponent.executeReadyBlockEvents()
+            }
+
+            val currentText = narrativeComponent.currentText() + narrativeComponent.currentBlockTimer()
 
             if (narrativeComponent.changed) {
                 MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrativeComponent.layoutTag(), narrativeComponent.currentDisplayText(), narrativeComponent.currentFontSize()))

@@ -29,9 +29,10 @@ interface DisplayViewLayout {
     val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
 
     val paneTextures : MutableMap<Int, Texture?>
+    val paneBgTextures : MutableMap<Int, Texture?>
+
     val paneTextureMaskAlpha : MutableMap<Int, Float?>
     val paneRefiners : MutableMap<Int, Vector2?>
-    val paneImageFading : MutableMap<Int, Boolean?>
 
     //TODO: flag for enabling / disabling text continuation across adjacency
 
@@ -152,6 +153,8 @@ interface DisplayViewLayout {
         val paneText = if (currentText.isNotBlank()) paneText(bitmapFont, currentText, currentFontSize) else mutableMapOf()
 
         definePanes().entries.sortedBy { it.key }.forEach { displayViewPane ->
+            paneBgTextures[displayViewPane.key] = paneColorTexture(batch, displayViewPane, null).texture
+
             paneCtrls[displayViewPane.key] =
                 Stack().apply {
                     if (layoutMode) { //fill each pane with random color
@@ -222,7 +225,7 @@ interface DisplayViewLayout {
                         }
                         if (!contentRendered) { //background black
                             val innerTable = Table()
-                            innerTable.add(Image(TextureRegionDrawable(paneColorTexture(batch, displayViewPane, null)))).size(
+                            innerTable.add(Image(TextureRegionDrawable(paneBgTextures[displayViewPane.key]))).size(
                                 displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                                 displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                             ).grow()

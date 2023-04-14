@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.ecs.component
+package river.exertion.kcop.narrative.structure
 
 import kotlinx.serialization.Serializable
 

@@ -9,44 +9,44 @@
     {"id" : "demo_block6", "narrativeText" : ["sixth timeline block"]}
   ], "eventBlocks" : [
     { "narrativeBlockId" : "demo_block2", "events" : [
-      { "id" : "optional_id", "eventTrigger" : "onEntry", "eventType" : "setFlag", "param" : "demo_block2" },
-      { "eventType" : "minusCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
+      { "type" : "setFlag", "trigger" : "onEntry", "flagKey" : "demo_block2" },
+      { "type" : "minusCounter", "trigger" : "onEntry", "counterKey" : "navCountDown" }
     ]},
     { "narrativeBlockId" : "demo_block4", "events" : [
-      { "eventType" : "text", "eventTrigger" : "onEntry", "param" : "entered demo_block4" },
-      { "eventType" : "log", "eventTrigger" : "onEntry", "param" : "entered demo_block4" },
-      { "eventType" : "text", "eventTrigger" : "onExit", "param" : "exited demo_block4" },
-      { "eventType" : "log", "eventTrigger" : "onExit", "param" : "exited demo_block4" },
-      { "eventType" : "unsetFlag", "eventTrigger" : "onEntry", "param" : "demo_block2" },
-      { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block4" },
-      { "eventType" : "plusCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
+      { "type" : "text", "trigger" : "onEntry", "report" : "entered demo_block4" },
+      { "type" : "log", "trigger" : "onEntry", "report" : "entered demo_block4" },
+      { "type" : "text", "trigger" : "onExit", "report" : "exited demo_block4" },
+      { "type" : "log", "trigger" : "onExit", "report" : "exited demo_block4" },
+      { "type" : "unsetFlag", "trigger" : "onEntry", "flagKey" : "demo_block2" },
+      { "type" : "setFlag", "trigger" : "onExit", "flagKey" : "demo_block4" },
+      { "type" : "plusCounter", "trigger" : "onEntry", "counterKey" : "navCountDown" }
     ]},
     { "narrativeBlockId" : "demo_block6", "events" : [
-      { "eventType" : "log", "eventTrigger" : "onEntry", "param" : "entered demo_block6"},
-      { "eventType" : "text", "eventTrigger" : "onEntry", "param" : "entered demo_block6"},
-      { "eventType" : "unsetFlag", "eventTrigger" : "onEntry", "param" : "demo_block2"},
-      { "eventType" : "unsetFlag", "eventTrigger" : "onEntry", "param" : "demo_block6"},
-      { "eventType" : "setFlag", "eventTrigger" : "onExit", "param" : "demo_block6"},
-      { "eventType" : "zeroCounter", "eventTrigger" : "onEntry", "param" : "navCountDown" }
+      { "type" : "log", "trigger" : "onEntry", "report" : "entered demo_block6"},
+      { "type" : "text", "trigger" : "onEntry", "report" : "entered demo_block6"},
+      { "type" : "unsetFlag", "trigger" : "onEntry", "flagKey" : "demo_block2"},
+      { "type" : "unsetFlag", "trigger" : "onEntry", "flagKey" : "demo_block6"},
+      { "type" : "setFlag", "trigger" : "onExit", "flagKey" : "demo_block6"},
+      { "type" : "zeroCounter", "trigger" : "onEntry", "counterKey" : "navCountDown" }
     ]}
   ], "timelineEvents" : [
-    { "id" : "timeline_event_a", "immersionTime" : "00:00:30", "eventType" : "text", "param" : "timeline_event_a @ :30"},
-    { "id" : "timeline_event_b", "immersionTime" : "00:01:00", "eventType" : "log", "param" : "timeline_event_b @ 1:00"},
-    { "id" : "timeline_event_c", "immersionTime" : "00:01:30", "eventType" : "text", "param" : "timeline_event_c @ 1:30"}
+    { "type" : "text", "trigger" : "00:00:30", "report" : "timeline_event_a @ :30"},
+    { "type" : "log", "trigger" : "00:01:00", "report" : "timeline_event_b @ 1:00"},
+    { "type" : "text", "trigger" : "00:01:30",  "report" : "timeline_event_c @ 1:30"}
   ], "timelineEventBlocks" : [
-    { "narrativeBlockId" : "demo_block2", "timelineEvents" : [
-      { "id" : "demo_block2_event_a", "immersionTime" : "00:00:05", "eventType" : "log", "param" : "demo_block2_event_a @ :05"},
-      { "id" : "demo_block2_event_b", "immersionTime" : "00:01:05", "eventType" : "log", "param" : "demo_block2_event_b @ 1:05"}
+    { "narrativeBlockId" : "demo_block2", "events" : [
+      { "type" : "log", "trigger" : "00:00:05", "report" : "demo_block2_event_a @ :05"},
+      { "type" : "log", "trigger" : "00:01:05", "report" : "demo_block2_event_b @ 1:05"}
     ]},
-    { "narrativeBlockId" : "demo_block4", "timelineEvents" : [
-      { "id" : "demo_block4_event_a", "immersionTime" : "00:00:05", "eventType" : "text", "param" : "demo_block4_event_a @ :05"},
-      { "id" : "demo_block4_event_b", "immersionTime" : "00:00:35", "eventType" : "text", "param" : "demo_block4_event_b @ :35"},
-      { "id" : "demo_block4_event_c", "immersionTime" : "00:01:05", "eventType" : "text", "param" : "demo_block4_event_c @ 1:05"}
+    { "narrativeBlockId" : "demo_block4", "events" : [
+      { "type" : "text", "trigger" : "00:00:05", "report" : "demo_block4_event_a @ :05"},
+      { "type" : "text", "trigger" : "00:00:35", "report" : "demo_block4_event_b @ :35"},
+      { "type" : "text", "trigger" : "00:01:05", "report" : "demo_block4_event_c @ 1:05"}
     ]},
-    { "narrativeBlockId" : "demo_block6", "timelineEvents" : [
-      { "id" : "demo_block6_event_a", "immersionTime" : "00:00:05", "eventType" : "log", "param" : "demo_block6_event_a @ :05"},
-      { "id" : "demo_block6_event_b", "immersionTime" : "00:00:25", "eventType" : "text", "param" : "demo_block6_event_b @ :25"},
-      { "id" : "demo_block6_event_c", "immersionTime" : "00:00:45", "eventType" : "log", "param" : "demo_block6_event_c @ :45"}
+    { "narrativeBlockId" : "demo_block6", "events" : [
+      { "type" : "log", "trigger" : "00:00:05", "report" : "demo_block6_event_a @ :05"},
+      { "type" : "text", "trigger" : "00:00:25", "report" : "demo_block6_event_b @ :25"},
+      { "type" : "log", "trigger" : "00:00:45", "report" : "demo_block6_event_c @ :45"}
     ]}
   ]
 }

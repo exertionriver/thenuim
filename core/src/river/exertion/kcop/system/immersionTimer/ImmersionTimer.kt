@@ -49,17 +49,27 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
         pausedAtTime = 0
     }
 
-    fun onOrPast(timeString : String) : Boolean {
-        return immersionTimeSeconds() >= inSeconds(timeString)
+    fun onOrPast(timeString : String?) : Boolean {
+        return if (timeString == null) {
+            false
+        } else {
+            immersionTimeSeconds() >= inSeconds(timeString)
+        }
     }
 
     companion object {
 
         const val CumlTimeZero = "00:00:00"
 
-        fun inSeconds(timeString : String) : Long {
-            val timeSplit = timeString.split(":")
-            return timeSplit[0].toInt() * 3600L + timeSplit[1].toInt() * 60L + timeSplit[2].toInt()
+        fun isValidTime(timeString : String) : Boolean = "^[0-9]{2}:[0-9]{2}:[0-9]{2}\$".toRegex().matches(timeString)
+
+        fun inSeconds(timeString : String?) : Long {
+            return if (timeString == null) {
+                0L
+            } else {
+                val timeSplit = timeString.split(":")
+                timeSplit[0].toInt() * 3600L + timeSplit[1].toInt() * 60L + timeSplit[2].toInt()
+            }
         }
 
         fun inMilliseconds(timeString : String? = CumlTimeZero) : Long = inSeconds(timeString!!) * 1000L

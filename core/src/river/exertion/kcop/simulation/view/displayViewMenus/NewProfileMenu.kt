@@ -12,6 +12,7 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
+import river.exertion.kcop.system.profile.Profile
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class NewProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
@@ -20,21 +21,20 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
 
     override val backgroundColor = ColorPalette.of("olive")
 
-    var selectedProfileAssetName : String? = null
+    var newName : String? = null
 
-    fun selectedProfileAssetName() = selectedProfileAssetName ?: NameTypes.COMMON.nextName()
+    fun newName() = newName ?: Profile.genName()
 
     override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
-        selectedProfileAssetName = selectedProfileAssetName()
+        newName = newName()
 
         this.add(Label("profile name: ", Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-        val nameTextField = TextField(selectedProfileAssetName(), TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
+        val nameTextField = TextField(newName, TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
 //                this.alignment = Align.top
         }
         nameTextField.setTextFieldListener {
-           textField, _ -> selectedProfileAssetName = textField.text
-           this@NewProfileMenu.actions.firstOrNull { it.label == "Create" }?.apply { this.log = "Profile Created : $selectedProfileAssetName" }
+           textField, _ -> newName = textField.text
         }
         this.add(nameTextField).growX().top()
         this.row()
@@ -54,8 +54,8 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
     override val actions = mutableListOf(
         ActionParam("Create", {
             Switchboard.closeMenu()
-            Switchboard.newProfile(selectedProfileAssetName())
-        }, "Profile Created!"),
+            Switchboard.newProfile(newName())
+        }, "Profile Created: ${newName()}"),
         //go back a menu
         ActionParam("Cancel", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
     )

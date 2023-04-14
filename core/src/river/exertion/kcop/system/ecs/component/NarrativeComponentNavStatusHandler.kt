@@ -1,5 +1,6 @@
 package river.exertion.kcop.system.ecs.component
 
+import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
@@ -27,10 +28,11 @@ object NarrativeComponentNavStatusHandler {
             unpause()
 
             MessageChannel.NARRATIVE_BRIDGE.enableReceive(this)
+            MessageChannel.NARRATIVE_STATUS_BRIDGE.enableReceive(this)
+            MessageChannel.NARRATIVE_FLAGS_BRIDGE.enableReceive(this)
+            MessageChannel.NARRATIVE_MEDIA_BRIDGE.enableReceive(this)
 
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
-
-//            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.ADD_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
 
             changed = true
         }
@@ -51,10 +53,12 @@ object NarrativeComponentNavStatusHandler {
 
             pause()
 
-//            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.REMOVE_STATUS, sequentialStatusKey()))
-            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessageType.CLEAR_ALL))
+            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessage.DisplayViewTextureMessageType.ClearAll))
 
             MessageChannel.NARRATIVE_BRIDGE.disableReceive(this)
+            MessageChannel.NARRATIVE_STATUS_BRIDGE.disableReceive(this)
+            MessageChannel.NARRATIVE_FLAGS_BRIDGE.disableReceive(this)
+            MessageChannel.NARRATIVE_MEDIA_BRIDGE.disableReceive(this)
 
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentImmersion))
 
@@ -80,7 +84,7 @@ object NarrativeComponentNavStatusHandler {
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
 
-//                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessageType.UPDATE_STATUS, sequentialStatusKey(), seqNarrativeProgress()))
+                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.UpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
 
                 changed = true
             }

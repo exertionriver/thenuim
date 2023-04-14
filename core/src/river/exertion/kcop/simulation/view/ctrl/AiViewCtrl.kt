@@ -11,7 +11,6 @@ import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
-import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 
 class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.AI, screenWidth, screenHeight) {
 
@@ -44,7 +43,7 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
 
         innerButton.onClick {
             this@AiViewCtrl.isChecked = !this@AiViewCtrl.isChecked
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "AI set to: ${if (this.isChecked) "On" else "Off"}" ))
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "AI set to: ${if (this.isChecked) "On" else "Off"}" ))
         }
 
         return innerButton

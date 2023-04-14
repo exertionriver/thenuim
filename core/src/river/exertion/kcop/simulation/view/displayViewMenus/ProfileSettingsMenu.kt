@@ -9,18 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
-import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.ecs.component.PSSelection
-import river.exertion.kcop.system.ecs.component.PSShowTimer
-import river.exertion.kcop.system.ecs.component.ProfileSetting
+import river.exertion.kcop.system.profile.PSSelection
+import river.exertion.kcop.system.profile.settings.PSShowTimer
+import river.exertion.kcop.system.profile.ProfileSetting
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
-import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
+import river.exertion.kcop.system.profile.settings.PSCompStatus
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class ProfileSettingsMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
@@ -34,7 +33,7 @@ class ProfileSettingsMenu(override var screenWidth: Float, override var screenHe
     fun profileSettings() = profileSettings
 
     var psSelections: List<PSSelection> = listOf(
-        PSShowTimer
+        PSShowTimer, PSCompStatus
     )
 
     val scrollNine = NinePatch(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
@@ -44,7 +43,7 @@ class ProfileSettingsMenu(override var screenWidth: Float, override var screenHe
     override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
 
         psSelections.forEach { selection ->
-            this.add(Label(selection.selectionLabel, Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
+            this.add(Label(selection.selectionLabel, Label.LabelStyle(bitmapFont, backgroundColor.label().color())).apply { this.wrap } ).left()
             this.add(SelectBox<String>(SelectBox.SelectBoxStyle(
                     bitmapFont, backgroundColor.label().color(), null,
                     scrollPaneStyle,
@@ -73,7 +72,7 @@ class ProfileSettingsMenu(override var screenWidth: Float, override var screenHe
         ActionParam("Update", {
             Switchboard.closeMenu()
             Switchboard.updateSettings(profileSettings().entries.map { ProfileSetting(it.key, it.value) }.toMutableList())
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshSelectedProfile))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.UpdateSelectedProfileFromComponents))
         }, "Settings Updated!"),
         ActionParam("Cancel", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
     )

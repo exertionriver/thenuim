@@ -3,7 +3,9 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.*
+import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
@@ -15,7 +17,6 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
-import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 
@@ -188,21 +189,21 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                     val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when {
-                        (logMessage.messageType == LogViewMessageType.ResetTime) -> {
+                        (logMessage.messageType == LogViewMessage.LogViewMessageType.ResetTime) -> {
                             updateInstImmersionTime(initTimeStr)
                             updateCumlImmersionTime(initTimeStr)
                             updateLocalTime(initTimeStr)
                             rebuildTextTimeReadout()
                         }
                         else -> if (logMessage.message != null) {
-                            if (logMessage.messageType == LogViewMessageType.LogEntry) {
+                            if (logMessage.messageType == LogViewMessage.LogViewMessageType.LogEntry) {
                                 addLog(logMessage.message)
                                 build()
                             } else {
                                 when (logMessage.messageType) {
-                                    LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
-                                    LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
-                                    LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
+                                    LogViewMessage.LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
+                                    LogViewMessage.LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
+                                    LogViewMessage.LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
                                     else -> {}
                                 }
                                 rebuildTextTimeReadout()

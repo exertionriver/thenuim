@@ -8,9 +8,9 @@ data class AMHLoadMessage(val messageType : AMHLoadMessageType, val selectedTitl
         ReloadMenuProfiles, ReloadMenuNarratives,
         RefreshCurrentProfile, RefreshCurrentImmersion,
         RemoveCurrentProfile, RemoveCurrentImmersion,
-        SetSelectedProfileAsset, SetSelectedNarrativeAsset,
+        SetSelectedProfileFromAsset, SetSelectedNarrativeFromAsset,
         InitSelectedProfile, InitSelectedNarrative,
-        RefreshSelectedProfile, RefreshSelectedNarrative
+        UpdateSelectedProfileFromComponents, UpdateSelectedNarrativeFromComponent
     }
 }
 

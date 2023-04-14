@@ -6,16 +6,13 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.entity
-import river.exertion.kcop.assets.ProfileAsset
 import river.exertion.kcop.system.ecs.component.IComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.IEntity
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
-import river.exertion.kcop.system.messaging.*
+import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
 import river.exertion.kcop.system.messaging.messages.EngineEntityMessage
-import river.exertion.kcop.system.messaging.messages.EngineEntityMessageType
 import kotlin.reflect.KClass
 import kotlin.reflect.full.valueParameters
 
@@ -117,10 +114,10 @@ class EngineHandler : Telegraph {
                     val engineEntityMessage: EngineEntityMessage = MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (engineEntityMessage.messageType) {
-                        EngineEntityMessageType.INSTANTIATE_ENTITY -> {
+                        EngineEntityMessage.EngineEntityMessageType.InstantiateEntity -> {
                             instantiateEntity(engineEntityMessage.entityClass, engineEntityMessage.initInfo)
                         }
-                        EngineEntityMessageType.REMOVE_ENTITY -> {
+                        EngineEntityMessage.EngineEntityMessageType.RemoveEntity -> {
                             removeEntity(engineEntityMessage.entityClass)
                         }
                         else -> {}
@@ -130,13 +127,13 @@ class EngineHandler : Telegraph {
                     val engineComponentMessage: EngineComponentMessage = MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (engineComponentMessage.messageType) {
-                        EngineComponentMessageType.ADD_COMPONENT -> {
+                        EngineComponentMessage.EngineComponentMessageType.AddComponent -> {
                             addComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
                         }
-                        EngineComponentMessageType.REMOVE_COMPONENT -> {
+                        EngineComponentMessage.EngineComponentMessageType.RemoveComponent -> {
                             removeComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass)
                         }
-                        EngineComponentMessageType.REPLACE_COMPONENT -> {
+                        EngineComponentMessage.EngineComponentMessageType.ReplaceComponent -> {
                             replaceComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
                         }
                     }

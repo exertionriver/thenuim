@@ -14,7 +14,6 @@ import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
-import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class NarrativeMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
@@ -61,11 +60,11 @@ class NarrativeMenu(override var screenWidth: Float, override var screenHeight: 
 
     override val navs = mutableListOf(
         ActionParam("Load >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedNarrativeAsset, selectedNarrativeAssetTitle))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedNarrativeFromAsset, selectedNarrativeAssetTitle))
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(LoadNarrativeMenu.tag, selectedNarrativeAssetTitle)))
         }),
         ActionParam("Restart >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedNarrativeAsset, selectedNarrativeAssetTitle))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedNarrativeFromAsset, selectedNarrativeAssetTitle))
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(RestartProgressMenu.tag, selectedNarrativeAssetTitle)))
         }),
     )

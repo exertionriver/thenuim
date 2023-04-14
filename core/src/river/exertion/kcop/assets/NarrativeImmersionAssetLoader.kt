@@ -7,9 +7,6 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
-import ktx.assets.load
-import river.exertion.kcop.narrative.structure.Event
-import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
 
 class NarrativeImmersionAssetLoader(resolver: FileHandleResolver?) :

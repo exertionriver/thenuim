@@ -4,18 +4,13 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.assets.NarrativeAsset
-import river.exertion.kcop.assets.NarrativeImmersionAsset
-import river.exertion.kcop.assets.ProfileAsset
+import river.exertion.kcop.narrative.structure.ImmersionLocation
+import river.exertion.kcop.narrative.structure.ImmersionStatus
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrl
-import river.exertion.kcop.simulation.view.ctrl.TextViewCtrl
+import river.exertion.kcop.system.ecs.component.NarrativeComponentMessageHandler.messageHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.activate
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.next
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.pause
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.unpause
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
@@ -66,8 +61,8 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun currentFontSize() = if (isInitialized) narrative!!.currentFontSize() else FontSize.TEXT
 
-//    fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)
-//    fun sequentialStatusKey() : String = "progress(${narrativeName().subSequence(0, 3)})"
+    fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)
+    fun sequentialStatusKey() : String = "progress(${narrativeName().subSequence(0, 3)})"
 
     override fun initialize(initData: Any?) {
 
@@ -113,6 +108,9 @@ class NarrativeComponent : IComponent, Telegraph {
                     null, componentId()
                 ))
 
+                // clear statuses
+                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.ClearStatuses))
+
                 super.initialize(initData)
 
                 //start timers, enable message receipt
@@ -124,33 +122,7 @@ class NarrativeComponent : IComponent, Telegraph {
         }
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-
-        if (msg != null) {
-            if (MessageChannel.NARRATIVE_BRIDGE.isType(msg.message) && isInitialized ) {
-                val narrativeMessage: NarrativeMessage = MessageChannel.NARRATIVE_BRIDGE.receiveMessage(msg.extraInfo)
-
-                when (narrativeMessage.narrativeMessageType) {
-                    NarrativeMessage.NarrativeMessageType.UpdateNarrativeImmersion -> {
-                        if (narrativeMessage.narrativeImmersion != null) {
-                            narrativeImmersion = narrativeMessage.narrativeImmersion
-                        }
-                    }
-                    NarrativeMessage.NarrativeMessageType.ReplaceCumlTimer -> {
-                        MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
-                                EngineComponentMessageType.REPLACE_COMPONENT,
-                                ProfileEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair))
-                    }
-                    NarrativeMessage.NarrativeMessageType.Pause -> pause()
-                    NarrativeMessage.NarrativeMessageType.Unpause -> unpause()
-                    NarrativeMessage.NarrativeMessageType.Inactivate -> inactivate()
-                    NarrativeMessage.NarrativeMessageType.Next -> if (narrativeMessage.promptNext != null) next(narrativeMessage.promptNext)
-                }
-                return true
-            }
-        }
-        return false
-    }
+    override fun handleMessage(msg: Telegram?): Boolean = this.messageHandler(msg)
 
     companion object {
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is NarrativeComponent } != null
@@ -165,7 +137,7 @@ class NarrativeComponent : IComponent, Telegraph {
             MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
 
             MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
-                EngineComponentMessageType.REPLACE_COMPONENT,
+                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 ProfileEntity.entityName, NarrativeComponent::class.java,
                 NarrativeComponentInit(profile, narrative, narrativeImmersion)
             ) )

@@ -14,12 +14,11 @@ import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
-import river.exertion.kcop.system.messaging.messages.LogViewMessageType
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
+import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 interface DisplayViewMenu {
 
@@ -58,7 +57,7 @@ interface DisplayViewMenu {
                 TextButton(actionEntry.label, TextButton.TextButtonStyle().apply { this.font = bitmapFont} ).apply {
                     this.onClick {
                         if (actionEntry.log != null)
-                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, actionEntry.log!!))
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, actionEntry.log!!))
                         actionEntry.action()
                     }
                 }

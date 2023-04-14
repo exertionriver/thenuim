@@ -11,6 +11,7 @@ import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Profile
+import river.exertion.kcop.system.profile.ProfileSetting
 
 class ProfileComponent : IComponent, Telegraph {
 
@@ -101,7 +102,7 @@ class ProfileComponent : IComponent, Telegraph {
                             ProfileMessage.ProfileMessageType.ReplaceCumlTimer -> {
                                 MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(
                                     null, EngineComponentMessage(
-                                        EngineComponentMessageType.REPLACE_COMPONENT,
+                                        EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                                         ProfileEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair
                                     )
                                 )
@@ -146,12 +147,12 @@ class ProfileComponent : IComponent, Telegraph {
             MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.Inactivate))
 
             MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
-                EngineComponentMessageType.REPLACE_COMPONENT,
+                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 ProfileEntity.entityName, ProfileComponent::class.java,
                 ProfileComponentInit(profile)
             ) )
             MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
-                EngineComponentMessageType.REPLACE_COMPONENT,
+                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 ProfileEntity.entityName, IRLTimeComponent::class.java
             ) )
         }

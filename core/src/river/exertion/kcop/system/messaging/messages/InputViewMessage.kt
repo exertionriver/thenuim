@@ -10,18 +10,20 @@ data class InputViewMessage(val event : InputViewMessageEvent, val eventParams :
     fun getScreenY(): Int = eventParams[InputViewMessageParam.ScreenYKey]?.toString()?.toInt() ?: 0
 
     fun getButton(): Int = eventParams[InputViewMessageParam.ButtonKey]?.toString()?.toInt() ?: 0
+
+    enum class InputViewMessageEvent {
+        KeyDownEvent, KeyUpEvent, KeyTypedEvent, TouchDownEvent, TouchUpEvent, TouchDraggedEvent, MouseMovedEvent, ScrolledEvent;
+
+        fun isPressEvent() = listOf(KeyDownEvent, TouchDownEvent).contains(this)
+        fun isReleaseEvent() = listOf(KeyUpEvent, TouchUpEvent).contains(this)
+
+        fun isKeyEvent() = listOf(KeyDownEvent, KeyUpEvent, KeyTypedEvent).contains(this)
+        fun isTouchEvent() = listOf(TouchDownEvent, TouchUpEvent, TouchDraggedEvent).contains(this)
+    }
+
+    enum class InputViewMessageParam {
+        KeycodeStrKey, CharacterKey, ScreenXKey, ScreenYKey, PointerKey, ButtonKey, AmountXKey, AmountYKey
+    }
 }
 
-enum class InputViewMessageEvent {
-    KeyDownEvent, KeyUpEvent, KeyTypedEvent, TouchDownEvent, TouchUpEvent, TouchDraggedEvent, MouseMovedEvent, ScrolledEvent;
 
-    fun isPressEvent() = listOf(KeyDownEvent, TouchDownEvent).contains(this)
-    fun isReleaseEvent() = listOf(KeyUpEvent, TouchUpEvent).contains(this)
-
-    fun isKeyEvent() = listOf(KeyDownEvent, KeyUpEvent, KeyTypedEvent).contains(this)
-    fun isTouchEvent() = listOf(TouchDownEvent, TouchUpEvent, TouchDraggedEvent).contains(this)
-}
-
-enum class InputViewMessageParam {
-    KeycodeStrKey, CharacterKey, ScreenXKey, ScreenYKey, PointerKey, ButtonKey, AmountXKey, AmountYKey
-}

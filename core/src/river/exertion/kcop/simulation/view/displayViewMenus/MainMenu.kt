@@ -29,7 +29,7 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(ProfileMenu.tag)))
         }),
         ActionParam("Settings >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshSelectedProfile))
+            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.UpdateSelectedProfileFromComponents))
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(ProfileSettingsMenu.tag)))
         }),
         ActionParam("Narrative >", {

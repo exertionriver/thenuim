@@ -1,8 +1,10 @@
-package river.exertion.kcop.system.ecs.component
+package river.exertion.kcop.system.profile.settings
 
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.NarrativeMessage
 import river.exertion.kcop.system.messaging.messages.ProfileMessage
+import river.exertion.kcop.system.profile.PSOption
+import river.exertion.kcop.system.profile.PSSelection
 
 object PSShowTimer : PSSelection {
 

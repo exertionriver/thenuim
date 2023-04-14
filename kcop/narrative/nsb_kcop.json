@@ -11,21 +11,21 @@
   {"id" : "demo_block6", "narrativeText" : ["sixth seq block"]}
 ], "eventBlocks" : [
   { "narrativeBlockId" : "demo_block2", "events" : [
-    { "id" : "optional_id", "eventTrigger" : "onEntry", "eventType" : "showImage", "param" : "images/kobold64.png", "param2" : "2" }
+    { "type" : "showImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "2" }
   ]},
   { "narrativeBlockId" : "demo_block3", "events" : [
-    { "eventType" : "playMusic", "eventTrigger" : "onEntry", "param" : "music/navajo_clip.wav" }
+    { "type" : "playMusic", "musicFile" : "music/navajo_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block4", "events" : [
-    { "eventType" : "fadeImage", "eventTrigger" : "onEntry", "param" : "images/kobold64b.png", "param2" : "4" },
-    { "eventType" : "fadeMusic", "eventTrigger" : "onEntry", "param" : "music/mystery_clip.wav" }
+    { "type" : "fadeImage", "imageFile" : "images/kobold64b.png", "layoutPaneIdx" : "4" },
+    { "type" : "fadeMusic", "musicFile" : "music/mystery_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block5", "events" : [
-    { "eventType" : "fadeImage", "eventTrigger" : "onEntry", "param" : "images/kobold64b.png", "param2" : "12" }
+    { "type" : "fadeImage", "imageFile" : "images/kobold64b.png", "layoutPaneIdx" : "12" }
   ]},
   { "narrativeBlockId" : "demo_block6", "events" : [
-    { "eventType" : "fadeImage", "eventTrigger" : "onEntry", "param" : "images/kobold64.png", "param2" : "12" },
-    { "eventType" : "showImage", "eventTrigger" : "onEntry", "param" : "images/kobold64c.png", "param2" : "16" },
-    { "eventType" : "playSound", "eventTrigger" : "onEntry", "param" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
+    { "type" : "fadeImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "12" },
+    { "type" : "showImage", "imageFile" : "images/kobold64c.png", "layoutPaneIdx" : "16" },
+    { "type" : "playSound", "trigger" : "onEntry", "musicFile" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
   ]}
 ]}

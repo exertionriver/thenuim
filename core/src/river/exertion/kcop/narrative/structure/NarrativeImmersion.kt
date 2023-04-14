@@ -2,8 +2,6 @@ package river.exertion.kcop.narrative.structure
 
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.Id
-import river.exertion.kcop.system.ecs.component.ImmersionLocation
-import river.exertion.kcop.system.ecs.component.ImmersionStatus
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 
 @Serializable
@@ -20,8 +18,12 @@ class NarrativeImmersion(
     fun immersionBlockId() = location?.immersionBlockId ?: UnknownBlockId
     fun cumlImmersionTime() = if (location != null) location!!.cumlImmersionTime else ImmersionTimer.CumlTimeZero
 
+    fun eventFired(id : String) = flags.any { it.key == id && it.value == EventFiredValue }
+
     companion object {
         const val UnknownBlockId = "unknown"
+        const val EventFiredValue = "fired"
+        const val FlagSetValue = "set"
 
         fun genId(profileId : String? = null, narrativeId : String? = null) = "${profileId ?: Id.randomId()}_${narrativeId ?: Id.randomId()}"
     }

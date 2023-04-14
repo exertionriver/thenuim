@@ -30,13 +30,13 @@
   ], "fontSize" :  "small"}
   ], "eventBlocks" : [
     { "narrativeBlockId" : "demo_block1", "events" : [
-      { "eventTrigger" : "onEntry", "eventType" : "showImage", "param" : "images/kobold64.png", "param2" : "0" }
+      { "type" : "showImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "0" }
     ]},
     { "narrativeBlockId" : "demo_block2", "events" : [
-      { "eventTrigger" : "onEntry", "eventType" : "showImage", "param" : "images/kobold64.png", "param2" : "0" }
+      { "type" : "showImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "0" }
     ]},
     { "narrativeBlockId" : "demo_block3", "events" : [
-      { "eventTrigger" : "onEntry", "eventType" : "showImage", "param" : "images/kobold64.png", "param2" : "0" }
+      { "type" : "showImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "0" }
     ]}
   ]
 }

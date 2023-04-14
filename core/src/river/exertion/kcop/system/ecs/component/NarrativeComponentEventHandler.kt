@@ -1,7 +1,8 @@
 package river.exertion.kcop.system.ecs.component
 
-import river.exertion.kcop.narrative.structure.Event
-import river.exertion.kcop.narrative.structure.TimelineEvent
+import river.exertion.kcop.narrative.structure.events.Event
+import river.exertion.kcop.narrative.structure.events.ITriggerEvent
+import river.exertion.kcop.narrative.structure.events.ReportTextEvent
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
@@ -9,41 +10,55 @@ import river.exertion.kcop.system.messaging.messages.*
 object NarrativeComponentEventHandler {
 
     fun NarrativeComponent.currentText() : String {
-        return if (isInitialized) narrative!!.currentText() else ""
-    }
-
-    //outputs aggregate text
-    fun NarrativeComponent.executeReadyTimelineEvents() : String {
 
         var returnText = ""
 
         if (isInitialized) {
+            returnText += narrative!!.currentText()
 
-            readyTimelineEvents(timerPair.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).forEach { timelineEvent ->
+            readyCurrentBlockEvents().filter { event ->
+                (event is ReportTextEvent) &&
+                narrativeImmersion!!.eventFired(event.id!!)
+            }.sortedBy {
+                it.id
+            }.forEach { event ->
+                returnText += "\n${(event as ReportTextEvent).report}"
+            }
 
-                when (timelineEvent.eventType()) {
-                    Event.EventType.LOG -> {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, timelineEvent.param) )
-
-                        narrative!!.timelineEventBlocks.firstOrNull { it.narrativeBlockId == narrativeCurrBlockId() }?.timelineEvents?.remove(timelineEvent)
-                        narrative!!.timelineEvents.remove(timelineEvent)
-                    }
-                    Event.EventType.TEXT -> { returnText += "\n${timelineEvent.param}" }
-                    else -> {}
-                }
+            readyTimelineEvents(timerPair.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).filter { timelineEvent ->
+                timelineEvent is ReportTextEvent && narrativeImmersion!!.eventFired(timelineEvent.id!!)
+            }.sortedBy {
+                it.id
+            }.forEach { timelineEvent ->
+                returnText += "\n${(timelineEvent as ReportTextEvent).report}"
             }
         }
 
         return returnText
     }
 
-    private fun NarrativeComponent.readyTimelineEvents(narrativeCumulativeTimer : ImmersionTimer, blockCumulativeTimer : ImmersionTimer) : List<TimelineEvent> {
+    //outputs aggregate text
+    fun NarrativeComponent.executeReadyTimelineEvents() {
 
         if (isInitialized) {
-            val narrativeTimelineEvents = narrative!!.timelineEvents.filter {
-                narrativeCumulativeTimer.onOrPast(it.immersionTime)
-            }.sortedBy {
-                ImmersionTimer.inSeconds(it.immersionTime)
+
+            readyTimelineEvents(timerPair.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).filter { timelineEvent ->
+                !narrativeImmersion!!.eventFired(timelineEvent.id!!)
+            }.forEach { timelineEvent ->
+                timelineEvent.execEvent()
+            }
+        }
+    }
+
+    private fun NarrativeComponent.readyTimelineEvents(narrativeCumulativeTimer : ImmersionTimer, blockCumulativeTimer : ImmersionTimer) : List<Event> {
+
+        if (isInitialized) {
+            val narrativeTimelineEvents = narrative!!.timelineEvents.filter { timelineEvent ->
+                (timelineEvent is ITriggerEvent) &&
+                timelineEvent.timeTrigger() != null &&
+                narrativeCumulativeTimer.onOrPast(timelineEvent.timeTrigger())
+            }.sortedBy {timelineEvent ->
+                ImmersionTimer.inSeconds((timelineEvent as ITriggerEvent).timeTrigger())
             }
 
             if (narrative!!.currentTimelineEventBlock() != null) {
@@ -59,10 +74,7 @@ object NarrativeComponentEventHandler {
     }
 
     @Suppress("NewApi")
-    fun NarrativeComponent.executeReadyBlockEvents() : String {
-
-        var returnText = ""
-        var counterVal : Int
+    fun NarrativeComponent.executeReadyBlockEvents() {
 
         if (isInitialized) {
 
@@ -70,228 +82,17 @@ object NarrativeComponentEventHandler {
             val currentBlockEvents = readyCurrentBlockEvents()
 
             previousBlockEvents.forEach { previousBlockEvent ->
-
-                when (previousBlockEvent.eventType()) {
-                    Event.EventType.LOG -> {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, previousBlockEvent.param) )
-                        narrative!!.eventBlocks.firstOrNull { it.narrativeBlockId == narrativePrevBlockId() }?.events?.remove(previousBlockEvent)
-                    }
-                    Event.EventType.TEXT -> { returnText += "\n${previousBlockEvent.param}" }
-                    Event.EventType.SET_FLAG -> {
-                        if (!flags.map { it.key }.contains(previousBlockEvent.param)) {
-                            flags.add(ImmersionStatus(previousBlockEvent.param))
-                        }
-                    }
-                    Event.EventType.UNSET_FLAG -> {
-                        flags.removeIf { it.key == previousBlockEvent.param }
-                    }
-                    Event.EventType.ZERO_COUNTER -> {
-                        if (!flags.map { it.key }.contains("fired_${previousBlockEvent.param}")) {
-                            counterVal = 0
-                            if (!flags.map { it.key }.contains(previousBlockEvent.param)) {
-                                flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
-                            } else {
-                                flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
-                            }
-
-                            flags.add(ImmersionStatus("fired_${previousBlockEvent.param}"))
-                        }
-                    }
-                    Event.EventType.PLUS_COUNTER -> {
-                        if (!flags.map { it.key }.contains("fired_${previousBlockEvent.param}")) {
-                            if (!flags.map { it.key }.contains(previousBlockEvent.param)) {
-                                counterVal = 1
-                                flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
-                            } else {
-                                counterVal = flags.first { it.key == previousBlockEvent.param }.value!!.toInt().plus(1)
-                                flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
-                            }
-                            flags.add(ImmersionStatus("fired_${previousBlockEvent.param}"))
-                        }
-                    }
-                    Event.EventType.MINUS_COUNTER -> {
-                        if ( !flags.map { it.key }.contains("fired_${previousBlockEvent.param}") ) {
-                            if ( !flags.map { it.key }.contains(previousBlockEvent.param) ) {
-                                counterVal = -1
-                                flags.add(ImmersionStatus(previousBlockEvent.param, counterVal.toString()))
-                            } else {
-                                counterVal = flags.first { it.key == previousBlockEvent.param }.value!!.toInt().minus(1)
-                                flags.first { it.key == previousBlockEvent.param }.value = counterVal.toString()
-                            }
-                            flags.add(ImmersionStatus("fired_${previousBlockEvent.param}"))
-                        }
-                    }
-                    Event.EventType.SHOW_IMAGE -> {
-                        val currentImageEventInSamePane = currentBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == previousBlockEvent.param2) } != null
-
-                        if ( !currentImageEventInSamePane ) {
-                            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
-                                DisplayViewTextureMessageType.SHOW_IMAGE, previousBlockEvent.param2.toInt(), null)
-                            )
-                        }
-                    }
-                    Event.EventType.FADE_IMAGE -> {
-                        val currentImageEventInSamePane = currentBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == previousBlockEvent.param2) } != null
-
-                        if ( !currentImageEventInSamePane ) {
-                            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
-                                DisplayViewTextureMessageType.FADE_IMAGE_OUT, previousBlockEvent.param2.toInt(), null)
-                            )
-                        }
-                    }
-                    Event.EventType.PLAY_SOUND -> {
-                        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                            DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_SOUND, null)
-                        )
-                    }
-                    Event.EventType.PLAY_MUSIC -> {
-                        val currentMusicPlaying = currentBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
-
-                        if ( !currentMusicPlaying ) {
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessage.DisplayViewAudioMessageType.STOP_MUSIC, null)
-                            )
-                        }
-                    }
-                    Event.EventType.FADE_MUSIC -> {
-                        val currentMusicPlaying = currentBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
-
-                        if ( !currentMusicPlaying ) {
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_OUT, null)
-                            )
-                        }
-                    }
-                    else -> {}
-                }
+                if (!narrativeImmersion!!.eventFired(previousBlockEvent.id!!)) previousBlockEvent.resolveEvent(
+                    currentBlockEvents.firstOrNull { it.isLikeEvent(previousBlockEvent) }
+                )
             }
 
             currentBlockEvents.forEach { currentBlockEvent ->
-                when (currentBlockEvent.eventType()) {
-                    Event.EventType.LOG -> {
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, currentBlockEvent.param) )
-                        narrative!!.eventBlocks.firstOrNull { it.narrativeBlockId == narrativeCurrBlockId() }?.events?.remove(currentBlockEvent)
-                    }
-                    Event.EventType.TEXT -> { returnText += "\n${currentBlockEvent.param}" }
-                    Event.EventType.SET_FLAG -> {
-                        if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                            flags.add(ImmersionStatus(currentBlockEvent.param))
-//                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag set: ${currentBlockEvent.param}") )
-                        }
-                    }
-                    Event.EventType.UNSET_FLAG -> {
-                        if ( flags.map { it.key }.contains(currentBlockEvent.param) ) {
-//                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "flag found: ${currentBlockEvent.param}, unsetting") )
-                            flags.removeIf { it.key == currentBlockEvent.param }
-                        }
-                    }
-                    Event.EventType.ZERO_COUNTER -> {
-                        if ( !flags.map { it.key }.contains("fired_${currentBlockEvent.param}") ) {
-                            counterVal = 0
-                            if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                                flags.add(ImmersionStatus(currentBlockEvent.param, counterVal.toString()))
-                            } else {
-                                flags.first { it.key == currentBlockEvent.param }.value = counterVal.toString()
-                            }
-
-                            flags.add(ImmersionStatus("fired_${currentBlockEvent.param}"))
-                        }
-                    }
-                    Event.EventType.PLUS_COUNTER -> {
-                        if ( !flags.map { it.key }.contains("fired_${currentBlockEvent.param}") ) {
-                            if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                                counterVal = 1
-                                flags.add(ImmersionStatus(currentBlockEvent.param, counterVal.toString()))
-                            } else {
-                                counterVal = flags.first { it.key == currentBlockEvent.param }.value!!.toInt().plus(1)
-                                flags.first { it.key == currentBlockEvent.param }.value = counterVal.toString()
-                            }
-                            flags.add(ImmersionStatus("fired_${currentBlockEvent.param}"))
-                        }
-                    }
-                    Event.EventType.MINUS_COUNTER -> {
-                        if ( !flags.map { it.key }.contains("fired_${currentBlockEvent.param}") ) {
-                            if ( !flags.map { it.key }.contains(currentBlockEvent.param) ) {
-                                counterVal = -1
-                                flags.add(ImmersionStatus(currentBlockEvent.param, counterVal.toString()))
-                            } else {
-                                counterVal = flags.first { it.key == currentBlockEvent.param }.value!!.toInt().minus(1)
-                                flags.first { it.key == currentBlockEvent.param }.value = counterVal.toString()
-                            }
-                            flags.add(ImmersionStatus("fired_${currentBlockEvent.param}"))
-                        }
-                    }
-                    Event.EventType.SHOW_IMAGE -> {
-                        val previousImageEventInSamePane = previousBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == currentBlockEvent.param2) } != null
-
-                        if ( narrative!!.textures.keys.contains(currentBlockEvent.param) ) {
-                            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
-                                DisplayViewTextureMessageType.SHOW_IMAGE, currentBlockEvent.param2.toInt(), narrative!!.textures[currentBlockEvent.param]!!.asset)
-                            )
-                        } else if (previousImageEventInSamePane) {
-                            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
-                                DisplayViewTextureMessageType.SHOW_IMAGE, currentBlockEvent.param2.toInt(), null)
-                            )
-                        }
-                    }
-                    Event.EventType.FADE_IMAGE -> {
-                        val previousImageEventInSamePane = previousBlockEvents.firstOrNull { Event.EventType.isImageEvent(it.eventType) && (it.param2 == currentBlockEvent.param2) } != null
-
-                        if ( narrative!!.textures.keys.contains(currentBlockEvent.param) ) {
-                            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
-                                DisplayViewTextureMessageType.CROSSFADE_IMAGE, currentBlockEvent.param2.toInt(), narrative!!.textures[currentBlockEvent.param]!!.asset)
-                            )
-                        } else if (previousImageEventInSamePane) {
-                            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
-                                DisplayViewTextureMessageType.FADE_IMAGE_OUT, currentBlockEvent.param2.toInt(), null)
-                            )
-                        }
-                    }
-                    Event.EventType.PLAY_SOUND -> {
-                        if ( narrative!!.sounds.keys.contains(currentBlockEvent.param) ) {
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_SOUND, narrative!!.sounds[currentBlockEvent.param]!!.asset)
-                            )
-                        }
-                    }
-                    Event.EventType.PLAY_MUSIC -> {
-                        val previousMusicPlaying = previousBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
-
-                        if ( narrative!!.music.keys.contains(currentBlockEvent.param) ) {
-                                MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_MUSIC, narrative!!.music[currentBlockEvent.param]!!.asset)
-                                )
-                        } else if ( previousMusicPlaying ) {
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessage.DisplayViewAudioMessageType.STOP_MUSIC, null)
-                            )
-                        }
-                    }
-                    Event.EventType.FADE_MUSIC -> {
-                        val previousMusicPlaying = previousBlockEvents.firstOrNull { Event.EventType.isMusicEvent(it.eventType) } != null
-
-                        if ( narrative!!.music.keys.contains(currentBlockEvent.param) ) {
-                            if ( previousMusicPlaying ) {
-                                MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.CROSS_FADE_MUSIC, narrative!!.music[currentBlockEvent.param]!!.asset)
-                                )
-                            } else {
-                                MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_IN, narrative!!.music[currentBlockEvent.param]!!.asset)
-                                )
-                            }
-                        } else if ( previousMusicPlaying ) {
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_OUT, null)
-                            )
-                        }
-                    }
-                    else -> {}
-                }
+                if (!narrativeImmersion!!.eventFired(currentBlockEvent.id!!)) currentBlockEvent.execEvent(
+                    previousBlockEvents.firstOrNull { it.isLikeEvent(currentBlockEvent) }
+                )
             }
         }
-
-        return returnText
     }
 
     fun NarrativeComponent.currentBlockTimer() : String {
@@ -305,15 +106,11 @@ object NarrativeComponentEventHandler {
 
         if (isInitialized) {
             narrative!!.previousEventBlock()?.events?.filter {
-                it.eventTrigger() == Event.EventTrigger.ON_EXIT
+                it.isImageEvent()
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
 
             narrative!!.previousEventBlock()?.events?.filter {
-                Event.EventType.isImageEvent(it.eventType)
-            }.let { previousBlockEvents.addAll(it ?: emptyList()) }
-
-            narrative!!.previousEventBlock()?.events?.filter {
-                Event.EventType.isMusicEvent(it.eventType)
+                it.isMusicEvent()
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
         }
 
@@ -325,8 +122,18 @@ object NarrativeComponentEventHandler {
         val currentBlockEvents = mutableListOf<Event>()
 
         if (isInitialized) {
+            narrative!!.previousEventBlock()?.events?.filter {
+                (it is ITriggerEvent) &&
+                (it as ITriggerEvent).blockTrigger() == ITriggerEvent.EventTrigger.ON_EXIT
+            }.let { currentBlockEvents.addAll(it ?: emptyList()) }
+
             narrative!!.currentEventBlock()?.events?.filter {
-                it.eventTrigger() == Event.EventTrigger.ON_ENTRY
+                (it is ITriggerEvent) &&
+                (it as ITriggerEvent).blockTrigger() == ITriggerEvent.EventTrigger.ON_ENTRY
+            }.let { currentBlockEvents.addAll(it ?: emptyList()) }
+
+            narrative!!.currentEventBlock()?.events?.filter {
+                (it !is ITriggerEvent)
             }.let { currentBlockEvents.addAll(it ?: emptyList()) }
         }
 

@@ -9,6 +9,11 @@ import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.clearImages
+import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.crossFadeImage
+import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.fadeImageIn
+import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.fadeImageOut
+import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.showImage
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
@@ -65,71 +70,9 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         currentMenuIdx = displayViewMenus.indexOf(displayViewMenus.firstOrNull { it.tag() == tag } ?: displayViewMenus[currentMenuIdx])
     }
 
-    //clears if texture is null
-    fun showImage(layoutPaneIdx : Int, texture : Texture?) {
-
-        if (texture != null) {
-            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
-            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
-        } else {
-            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
-        }
-    }
-
-    fun fadeImageIn(layoutPaneIdx : Int, texture : Texture?) {
-        if (displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] != texture && displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] != true) {
-            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
-            displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = true
-            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
-            Timer.schedule(object : Timer.Task() {
-                override fun run() {
-                    if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! >= .1f)
-                        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] =
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]?.minus(.1f)
-                    else {
-                        displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = false
-                        this.cancel()
-                    }
-                    this@DisplayViewCtrl.build()
-                }
-            }, 0f, .05f)
-        }
-    }
-
-    fun fadeImageOut(layoutPaneIdx : Int, texture : Texture?) {
-        if (displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] != texture && displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] != true) {
-            displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = true
-            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
-            Timer.schedule(object : Timer.Task() {
-                override fun run() {
-                    if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! <= .9f)
-                        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] =
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]?.plus(.1f)
-                    else {
-                        displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
-                        displayViewLayouts[currentLayoutIdx].paneImageFading[layoutPaneIdx] = false
-                        this.cancel()
-                    }
-                    this@DisplayViewCtrl.build()
-                }
-            }, 0f, .05f)
-        }
-    }
-
-    //TODO: look into fade
-    fun crossFadeImage(layoutPaneIdx : Int, texture : Texture?) {
-            showImage(layoutPaneIdx, texture)
-    }
-
-    fun clearImages() {
-        displayViewLayouts[currentLayoutIdx].paneTextures.clear()
-        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.entries.forEach { it.setValue(1f) }
-    }
-
     fun clearText() {
         currentText = ""
     }
-
 
     override fun buildCtrl() {
         this.add(
@@ -169,11 +112,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     val displayViewTextureMessage: DisplayViewTextureMessage = MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (displayViewTextureMessage.messageType) {
-                        DisplayViewTextureMessageType.SHOW_IMAGE -> showImage(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessageType.FADE_IMAGE_IN -> fadeImageIn(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessageType.FADE_IMAGE_OUT -> fadeImageOut(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessageType.CROSSFADE_IMAGE -> crossFadeImage(displayViewTextureMessage.layoutPaneIdx, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessageType.CLEAR_ALL -> { clearImages(); clearText(); audioCtrl.stopMusic() }
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.ShowImage -> showImage(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.HideImage -> showImage(displayViewTextureMessage.layoutPaneIdx!!, null)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeInImage -> fadeImageIn(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeOutImage -> fadeImageOut(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.CrossFadeImage -> crossFadeImage(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.ClearAll -> { clearImages(); clearText(); audioCtrl.stopMusic() }
                         }
 
                     if (!menuOpen) build()
@@ -184,19 +128,19 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
 
                     if (displayViewMenuMessage.menuButtonIdx == 0) {
                         menuOpen = (displayViewMenuMessage.isChecked)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
                     }
                     if (displayViewMenuMessage.menuButtonIdx == 1) {
                         currentLayoutMode = (displayViewMenuMessage.isChecked)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Background Box" else "Wireframe"}" ))
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Background Box" else "Wireframe"}" ))
                     }
                     if (displayViewMenuMessage.menuButtonIdx == 2) {
                         currentLayoutIdx = if (currentLayoutIdx < displayViewLayouts.size - 1) currentLayoutIdx + 1 else 0
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Layout set to: ${displayViewLayouts[currentLayoutIdx].tag}" ))
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${displayViewLayouts[currentLayoutIdx].tag}" ))
                     }
                     if (displayViewMenuMessage.menuButtonIdx == 3) {
                         currentMenuIdx = if (currentMenuIdx < displayViewMenus.size - 1) currentMenuIdx + 1 else 0
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessageType.LogEntry, "Menu set to: ${displayViewMenus[currentMenuIdx].tag()}" ))
+                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu set to: ${displayViewMenus[currentMenuIdx].tag()}" ))
                     }
 
                     build()

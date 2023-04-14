@@ -1,4 +1,4 @@
-package river.exertion.kcop.system.ecs.component
+package river.exertion.kcop.system.profile
 
 interface PSSelection {
 

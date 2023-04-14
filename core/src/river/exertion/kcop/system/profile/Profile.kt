@@ -5,24 +5,16 @@ import kotlinx.serialization.Transient
 import river.exertion.kcop.Id
 import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.narrative.character.NameTypes
-import river.exertion.kcop.narrative.structure.NarrativeImmersion
-import river.exertion.kcop.simulation.view.ctrl.TextViewCtrl
-import river.exertion.kcop.system.ecs.component.IRLTimeComponent
-import river.exertion.kcop.system.ecs.component.PSShowTimer
-import river.exertion.kcop.system.ecs.component.ProfileComponent
-import river.exertion.kcop.system.ecs.component.ProfileSetting
-import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
+import river.exertion.kcop.system.profile.settings.PSCompStatus
+import river.exertion.kcop.system.profile.settings.PSShowTimer
 
 @Serializable
 data class Profile(
     override var id : String = Id.randomId(),
     var name : String = genName(),
     var cumlTime : String = ImmersionTimer.CumlTimeZero,
-    var currentImmersionId : String = AssetManagerHandler.NoNarrativeLoaded,
+    var currentImmersionId : String? = AssetManagerHandler.NoNarrativeLoaded,
     var settings : MutableList<ProfileSetting> = defaultSettings()
     ) : Id {
 
@@ -55,7 +47,8 @@ data class Profile(
     companion object {
         fun defaultSettings() : MutableList<ProfileSetting> {
             return mutableListOf(
-                ProfileSetting(PSShowTimer.selectionKey, PSShowTimer.options[0].optionValue)
+                ProfileSetting(PSShowTimer.selectionKey, PSShowTimer.options[0].optionValue),
+                ProfileSetting(PSCompStatus.selectionKey, PSCompStatus.options[0].optionValue)
             )
         }
 

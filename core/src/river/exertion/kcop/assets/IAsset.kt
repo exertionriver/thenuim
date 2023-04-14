@@ -10,5 +10,9 @@ interface IAsset {
     fun assetTitle() : String
     fun assetInfo() : List<String>
 
-    fun newAssetFilename() = "${assetName()}_${assetId().substring(0, 4)}"
+    fun newAssetFilename() = newAssetFilename(assetName(), assetId())
+
+    companion object {
+        fun newAssetFilename(assetName : String, assetId : String) = "${assetName}_${assetId.substring(0, 4)}"
+    }
 }

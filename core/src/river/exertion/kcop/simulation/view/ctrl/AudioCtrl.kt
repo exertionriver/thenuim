@@ -4,83 +4,74 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.utils.Timer
-import river.exertion.kcop.simulation.view.displayViewMenus.*
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.*
 
-class AudioCtrl() : Telegraph {
+class AudioCtrl : Telegraph {
 
     init {
         MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.enableReceive(this)
     }
 
     var currentMusic : Music? = null
+    var musicLock : Timer.Task? = null
+
     var currentSound : Music? = null
 
-    fun fadeMusicOut() {
-        //https://stackoverflow.com/questions/35744181/libgdx-how-to-get-sfx-to-fade-out
-        Timer.schedule(object : Timer.Task() {
-            override fun run() {
-                if ( (currentMusic?.volume ?: 0f) >= .1) currentMusic?.volume = currentMusic?.volume?.minus(.1f) ?: 0f
-                else {
-                    currentMusic?.stop()
-                    currentMusic = null
-                    this.cancel()
-                }
-            }
-        }, 0f, .3f)
-    }
+    fun crossfadeMusic(prevMusic : Music?, newMusic : Music?) {
+        if (prevMusic != newMusic) {
+            newMusic?.isLooping = true
+            newMusic?.volume = 0f
+            newMusic?.play()
 
-    fun fadeMusicIn(music : Music?) {
-        if (music != currentMusic) {
-            currentMusic?.stop()
-            currentMusic = music
-            currentMusic?.isLooping = true
-            currentMusic?.volume = 0f
-            currentMusic?.play()
+            var fadedOut = false
+            var fadedIn = false
+            this@AudioCtrl.currentMusic = newMusic
 
             Timer.schedule(object : Timer.Task() {
                 override fun run() {
-                    if ( (currentMusic?.volume ?: 1f) <= .9) currentMusic?.volume = currentMusic?.volume?.plus(.1f) ?: 1f
-                    else {
+//                    println("musicLock:${this@AudioCtrl.musicLock} current:${currentMusic?.volume}, prev:${prevMusic?.volume}, new:${newMusic?.volume}")
+                    if (this@AudioCtrl.musicLock != null && this@AudioCtrl.musicLock == this) {
+                        if (prevMusic != null) {
+                            if (prevMusic.volume >= .1) {
+                                prevMusic.volume -= .1f
+                            } else {
+                                fadedOut = true
+                                prevMusic.stop()
+                            }
+                        } else {
+                            fadedOut = true
+                        }
+
+                        if (newMusic != null) {
+                            if (newMusic.volume <= .9) {
+                                newMusic.volume += .1f
+                            } else {
+                                fadedIn = true
+                            }
+                        } else {
+                            fadedIn = true
+                        }
+
+                        if (fadedIn && fadedOut) {
+                            musicLock = null
+                            this.cancel()
+                        }
+                    } else {
+                        if (prevMusic != currentMusic) prevMusic?.stop()
+                        newMusic?.volume = .1f
                         this.cancel()
                     }
                 }
-            }, 0f, .3f)
+            }.apply { this@AudioCtrl.musicLock = this }, 0f, .3f)
         }
     }
 
-    fun crossFadeMusic(music : Music?) {
-        if (music != currentMusic) {
-            //fade current music out
-            val prevMusic = currentMusic
-            Timer.schedule(object : Timer.Task() {
-                override fun run() {
-                    if ( (prevMusic?.volume ?: 0f) >= .1) prevMusic?.volume = prevMusic?.volume?.minus(.1f) ?: 0f
-                    else {
-                        prevMusic?.stop()
-                        this.cancel()
-                    }
-                }
-            }, 0f, .3f)
-            currentMusic = music
-            currentMusic?.isLooping = true
-            currentMusic?.volume = 0f
-            currentMusic?.play()
-
-            Timer.schedule(object : Timer.Task() {
-                override fun run() {
-                    if ( (currentMusic?.volume ?: 1f) <= .9) currentMusic?.volume = currentMusic?.volume?.plus(.1f) ?: 1f
-                    else {
-                        this.cancel()
-                    }
-                }
-            }, 0f, .3f)
-        }
-    }
 
     fun playMusic(music : Music?) {
         if (music != currentMusic) {
+            musicLock = null
+
             currentMusic?.stop()
             currentMusic = music
             currentMusic?.isLooping = true
@@ -90,6 +81,8 @@ class AudioCtrl() : Telegraph {
     }
 
     fun stopMusic() {
+        musicLock = null
+
         currentMusic?.stop()
         currentMusic = null
     }
@@ -110,12 +103,12 @@ class AudioCtrl() : Telegraph {
                 val displayViewAudioMessage: DisplayViewAudioMessage = MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.receiveMessage(msg.extraInfo)
 
                 when (displayViewAudioMessage.messageType) {
-                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_OUT -> fadeMusicOut()
-                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FADE_MUSIC_IN -> fadeMusicIn(displayViewAudioMessage.music)
-                    DisplayViewAudioMessage.DisplayViewAudioMessageType.CROSS_FADE_MUSIC -> crossFadeMusic(displayViewAudioMessage.music)
-                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_MUSIC -> playMusic(displayViewAudioMessage.music)
-                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PLAY_SOUND -> playSound(displayViewAudioMessage.music)
-                    DisplayViewAudioMessage.DisplayViewAudioMessageType.STOP_MUSIC -> stopMusic()
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FadeOutMusic -> crossfadeMusic(currentMusic, null)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.FadeInMusic-> crossfadeMusic(null, displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.CrossFadeMusic -> crossfadeMusic(currentMusic, displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PlayMusic -> playMusic(displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound -> playSound(displayViewAudioMessage.music)
+                    DisplayViewAudioMessage.DisplayViewAudioMessageType.StopMusic -> stopMusic()
                 }
                 return true
             }

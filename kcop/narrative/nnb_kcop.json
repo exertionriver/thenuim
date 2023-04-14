@@ -39,10 +39,10 @@
   ],
   "eventBlocks" : [
     { "narrativeBlockId" : "demo_block2", "events" : [
-      { "eventType" : "plusCounter", "eventTrigger" : "onEntry", "param" : "navCountUp" }
+      { "type" : "plusCounter", "trigger" : "onEntry", "counterKey" : "navCountUp" }
     ]},
     { "narrativeBlockId" : "demo_block5", "events" : [
-      { "eventType" : "zeroCounter", "eventTrigger" : "onEntry", "param" : "navCountUp" }
+      { "type" : "zeroCounter", "trigger" : "onEntry", "counterKey" : "navCountUp" }
     ]}
   ]
 }

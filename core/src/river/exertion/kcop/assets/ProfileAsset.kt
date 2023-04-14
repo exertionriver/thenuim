@@ -3,18 +3,11 @@ package river.exertion.kcop.assets
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import kotlinx.serialization.json.encodeToJsonElement
-import ktx.app.profile
 import ktx.assets.getAsset
-import river.exertion.kcop.narrative.character.NameTypes
-import river.exertion.kcop.system.ecs.component.IRLTimeComponent
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
-import river.exertion.kcop.system.ecs.component.ProfileSetting
-import river.exertion.kcop.system.ecs.entity.ProfileEntity
+import river.exertion.kcop.system.profile.ProfileSetting
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
 import river.exertion.kcop.system.profile.Profile
 
 class ProfileAsset(var profile : Profile? = null) : IAsset {
@@ -63,25 +56,20 @@ class ProfileAsset(var profile : Profile? = null) : IAsset {
         }
     }
 
-    fun update(narrativeAsset: NarrativeAsset?, narrativeImmersionAsset: NarrativeImmersionAsset?) {
+    //when loading profileAsset
+    fun updateFromImmersionAssets(narrativeAsset: NarrativeAsset?, narrativeImmersionAsset: NarrativeImmersionAsset?) {
         profile!!.currentImmersionName = narrativeAsset?.assetName()
         profile!!.currentImmersionBlockId = narrativeImmersionAsset?.narrativeCurrBlockId()
         profile!!.currentImmersionTime = narrativeImmersionAsset?.cumlImmersionTime()
     }
 
-    fun fullUpdate(profileComponent: ProfileComponent) {
+    fun update(profileComponent: ProfileComponent, narrativeImmersionComponent : NarrativeComponent?) {
         profile = profileComponent.profile
-    }
-
-    fun infoUpdate(profileComponent: ProfileComponent) {
-        profile!!.settings = profileComponent.settings
-        profile!!.cumlTime = profileComponent.cumlTime
-    }
-
-    fun update(narrativeImmersionComponent : NarrativeComponent?) {
         profile!!.currentImmersionName = narrativeImmersionComponent?.narrativeName()
         profile!!.currentImmersionBlockId = narrativeImmersionComponent?.narrativeCurrBlockId()
         profile!!.currentImmersionTime = narrativeImmersionComponent?.cumlImmersionTime()
+
+        this.assetPath = this.newAssetFilename()
     }
 
     companion object {
@@ -99,6 +87,14 @@ class ProfileAsset(var profile : Profile? = null) : IAsset {
                 this.name = saveName ?: this.name
             } ).apply {
                 this.assetPath = this.newAssetFilename()
+            }
+        }
+
+        fun new(profileComponent: ProfileComponent, narrativeImmersionComponent : NarrativeComponent?) : ProfileAsset {
+            return ProfileAsset(Profile().apply {
+                this.name = profileComponent.profile!!.name
+            } ).apply {
+                this.update(profileComponent, narrativeImmersionComponent)
             }
         }
     }

@@ -4,18 +4,14 @@ import com.badlogic.gdx.assets.AssetManager
 import ktx.assets.getAsset
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
-import river.exertion.kcop.system.ecs.entity.ProfileEntity
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
-import river.exertion.kcop.system.messaging.messages.EngineComponentMessageType
 
 class NarrativeAsset(var narrative : Narrative? = null) : IAsset {
     override lateinit var assetPath : String
     override var status : String? = null
     override var statusDetail : String? = null
 
-    override fun assetId() = if (narrative != null) narrative?.id!! else throw Exception("NarrativeAsset::assetId() narrative is null")
-    override fun assetName() = if (narrative != null) narrative?.name!! else throw Exception("NarrativeAsset::assetName() narrative is null")
+    override fun assetId() : String = if (narrative != null) narrative?.id!! else throw Exception("NarrativeAsset::assetId() narrative is null")
+    override fun assetName() : String = if (narrative != null) narrative?.name!! else throw Exception("NarrativeAsset::assetName() narrative is null")
     override fun assetTitle() = assetPath
 
     override fun newAssetFilename(): String = NarrativeAssets.narrativeAssetPath(super.newAssetFilename())
@@ -32,10 +28,6 @@ class NarrativeAsset(var narrative : Narrative? = null) : IAsset {
         }
 
         return returnList.toList()
-    }
-
-    fun update(narrativeImmersionComponent : NarrativeComponent?) {
-        narrative = narrativeImmersionComponent?.narrative
     }
 
     companion object {

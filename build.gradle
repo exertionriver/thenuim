@@ -31,6 +31,7 @@ allprojects {
         gdxControllersVersion = '2.2.1'
         ktxVersion = '1.11.0-rc5'
         kotlinxVersion = '1.6.1'
+        kotlinxCoroutineVersion = '1.7.0-Beta'
         kotlinxSerializationVersion = '1.4.1'
         gltfVersion = '2.0.0-rc.1'
         shapedrawerVersion = '2.6.0' //https://github.com/earlygrey/shapedrawer
@@ -98,6 +99,7 @@ project(":core") {
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
         implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion"
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
