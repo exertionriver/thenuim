@@ -10,6 +10,7 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
+import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
@@ -71,9 +72,35 @@ class SaveProfileMenu(override var screenWidth: Float, override var screenHeight
             Switchboard.saveProfile(selectedProfileAsset!!, AssetManagerHandler.SaveType.Merge)
         }, "Profile Saved : ${selectedProfileAsset?.profile?.name}"),
  */        //go back a menu
-        ActionParam("Cancel", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
+        ActionParam("Cancel", {
+            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(breadcrumbEntries.keys.toList()[0]) )
+        })
     )
 
+/*
+    (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message) ) -> {
+         val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
+
+ //to menus from elsewhere
+ if ( menuDataMessage.profileMenuDataParams != null ) {
+     displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
+         if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
+             (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
+         }
+         if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
+             (saveProfileMenu as SaveProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
+         }
+     }
+ } else {
+     displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
+         (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = null
+         saveProfileMenu.selectedProfileAssetInfo = null
+         saveProfileMenu.selectedProfileAssetName = null
+     }
+ }
+ return true
+}
+*/
     override fun tag() = tag
     override fun label() = label
 

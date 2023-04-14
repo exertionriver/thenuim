@@ -30,8 +30,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
-        MessageChannel.INTRA_MENU_BRIDGE.enableReceive(this)
-        MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
         MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
@@ -126,141 +124,23 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage: DisplayViewMenuMessage = MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    if (displayViewMenuMessage.menuButtonIdx == 0) {
-                        menuOpen = (displayViewMenuMessage.isChecked)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
-                    }
-                    if (displayViewMenuMessage.menuButtonIdx == 1) {
-                        currentLayoutMode = (displayViewMenuMessage.isChecked)
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Background Box" else "Wireframe"}" ))
-                    }
-                    if (displayViewMenuMessage.menuButtonIdx == 2) {
-                        currentLayoutIdx = if (currentLayoutIdx < displayViewLayouts.size - 1) currentLayoutIdx + 1 else 0
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${displayViewLayouts[currentLayoutIdx].tag}" ))
-                    }
-                    if (displayViewMenuMessage.menuButtonIdx == 3) {
-                        currentMenuIdx = if (currentMenuIdx < displayViewMenus.size - 1) currentMenuIdx + 1 else 0
-                        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu set to: ${displayViewMenus[currentMenuIdx].tag()}" ))
-                    }
-
-                    build()
-                    return true
-                }
-                (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message) ) -> {
-                    val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
-
-                    //to menus from elsewhere
-                        if ( menuDataMessage.profileMenuDataParams != null ) {
-                            displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
-                                if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null) {
-                                    (profileMenu as ProfileMenu).profileAssetTitles = menuDataMessage.profileMenuDataParams!!.profileAssetTitles
-                                }
-                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle != null) {
-                                    (profileMenu as ProfileMenu).selectedProfileAssetTitle = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle
-                                }
-                            }
-                            displayViewMenus.filter { it is LoadProfileMenu }.forEach { loadProfileMenu ->
-                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                    (loadProfileMenu as LoadProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
-                                }
-                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
-                                    (loadProfileMenu as LoadProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
-                                }
-                            }
-                            displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
-                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                    (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
-                                }
-                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName != null) {
-                                    (saveProfileMenu as SaveProfileMenu).selectedProfileAssetName = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetName
-                                }
-                            }
-                            displayViewMenus.filter { it is ProfileSettingsMenu }.forEach { profileSettingsMenu ->
-                                if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null && menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                    (profileSettingsMenu as ProfileSettingsMenu).profileSettings = menuDataMessage.profileMenuDataParams!!.profileAssetTitles!!.zip(menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo!!).toMap().toMutableMap()
-                                }
-                            }
-                            displayViewMenus.filter { it is SaveProgressMenu }.forEach { saveProgressMenu ->
-                                if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo != null) {
-                                    (saveProgressMenu as SaveProgressMenu).progressAssetsInfo = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetInfo
-                                }
-                            }
-
-                        } else {
-                            displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
-                                (profileMenu as ProfileMenu).profileAssetTitles = null
-                                profileMenu.selectedProfileAssetTitle = null
-                            }
-                            displayViewMenus.filter { it is LoadProfileMenu }.forEach { loadProfileMenu ->
-                                (loadProfileMenu as LoadProfileMenu).selectedProfileAssetInfo = null
-                                loadProfileMenu.selectedProfileAssetInfo = null
-                                loadProfileMenu.selectedProfileAssetName = null
-                            }
-                            displayViewMenus.filter { it is SaveProfileMenu }.forEach { saveProfileMenu ->
-                                (saveProfileMenu as SaveProfileMenu).selectedProfileAssetInfo = null
-                                saveProfileMenu.selectedProfileAssetInfo = null
-                                saveProfileMenu.selectedProfileAssetName = null
-
+                    if (displayViewMenuMessage.menuButtonIdx != null) {
+                        if (displayViewMenuMessage.menuButtonIdx == 0) {
+                            menuOpen = (displayViewMenuMessage.isChecked)
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
                         }
-
-                        if ( menuDataMessage.narrativeMenuDataParams != null ) {
-                            displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
-                                if (menuDataMessage.narrativeMenuDataParams!!.narrativeAssetTitles != null) {
-                                    (narrativeMenu as NarrativeMenu).narrativeAssetTitles = menuDataMessage.narrativeMenuDataParams!!.narrativeAssetTitles
-                                }
-                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetTitle != null) {
-                                    (narrativeMenu as NarrativeMenu).selectedNarrativeAssetTitle = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetTitle
-                                }
-                            }
-                            displayViewMenus.filter { it is LoadNarrativeMenu }.forEach { loadNarrativeMenu ->
-                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
-                                    (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
-                                }
-                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName != null) {
-                                    (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetName = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName
-                                }
-                            }
-                            displayViewMenus.filter { it is RestartProgressMenu }.forEach { restartProgressMenu ->
-
-                                if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
-                                    (restartProgressMenu as RestartProgressMenu).progressAssetsInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
-                                }
-                            }
-                        } else {
-                            displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
-                                (narrativeMenu as NarrativeMenu).narrativeAssetTitles = null
-                                narrativeMenu.selectedNarrativeAssetTitle = null
-                            }
-                            displayViewMenus.filter { it is LoadNarrativeMenu }.forEach { loadNarrativeMenu ->
-                                (loadNarrativeMenu as LoadNarrativeMenu).selectedNarrativeAssetInfo = null
-                                loadNarrativeMenu.selectedNarrativeAssetName = null
-                            }
+                        if (displayViewMenuMessage.menuButtonIdx == 1) {
+                            currentLayoutMode = (displayViewMenuMessage.isChecked)
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Background Box" else "Wireframe"}" ))
+                        }
+                        if (displayViewMenuMessage.menuButtonIdx == 2) {
+                            currentLayoutIdx = if (currentLayoutIdx < displayViewLayouts.size - 1) currentLayoutIdx + 1 else 0
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${displayViewLayouts[currentLayoutIdx].tag}" ))
                         }
                     }
 
-                    build()
-                    return true
-                }
-                (MessageChannel.INTRA_MENU_BRIDGE.isType(msg.message) ) -> {
-                    val menuNavMessage: MenuNavMessage = MessageChannel.INTRA_MENU_BRIDGE.receiveMessage(msg.extraInfo)
-
-                    //between menus
-                    if (menuNavMessage.menuNavParams != null) {
-                        setMenuIdxByTag(menuNavMessage.menuNavParams!!.targetMenuTag)
-
-                        displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
-                            (profileMenu as ProfileMenu).selectedProfileAssetTitle = menuNavMessage.menuNavParams!!.selectedAssetTitle
-                        }
-                        displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
-                            (narrativeMenu as NarrativeMenu).selectedNarrativeAssetTitle = menuNavMessage.menuNavParams!!.selectedAssetTitle
-                        }
-                    } else {
-                        displayViewMenus.filter { it is ProfileMenu }.forEach { profileMenu ->
-                            (profileMenu as ProfileMenu).selectedProfileAssetTitle = null
-                        }
-                        displayViewMenus.filter { it is NarrativeMenu }.forEach { narrativeMenu ->
-                            (narrativeMenu as NarrativeMenu).selectedNarrativeAssetTitle = null
-                        }
+                    if (displayViewMenuMessage.targetMenuTag != null) {
+                        setMenuIdxByTag(displayViewMenuMessage.targetMenuTag)
                     }
 
                     build()

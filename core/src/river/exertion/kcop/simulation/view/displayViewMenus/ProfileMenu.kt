@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -14,10 +16,17 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
+import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
+import river.exertion.kcop.system.messaging.messages.MenuDataMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
-class ProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
+class ProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
+
+    init {
+        MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
+        MessageChannel.INTRA_MENU_BRIDGE.enableReceive(this)
+    }
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
 
@@ -65,7 +74,9 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
     override val navs = mutableListOf(
         ActionParam("Load >", {
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileFromAsset, selectedProfileAssetTitle))
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(LoadProfileMenu.tag, selectedProfileAssetTitle)))
+            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(selectedProfileAssetTitle)))
+            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(LoadProfileMenu.tag))
+
         }),
 /*  No longer used, Save progress instead
 ActionParam("Save >", {
@@ -74,11 +85,47 @@ ActionParam("Save >", {
             MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(SaveProfileMenu.tag, selectedProfileAssetTitle)))
         }),*/
         ActionParam("New >", {
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(NewProfileMenu.tag, null)))
+            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(NewProfileMenu.tag))
         })
     )
 
     override val actions = mutableListOf<ActionParam>()
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            when {
+                (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {
+                    val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    if ( menuDataMessage.profileMenuDataParams != null ) {
+                        if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null) {
+                            profileAssetTitles = menuDataMessage.profileMenuDataParams!!.profileAssetTitles
+                        }
+                        if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle != null) {
+                            selectedProfileAssetTitle = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle
+                        }
+                    } else {
+                        profileAssetTitles = null
+                        selectedProfileAssetTitle = null
+                    }
+                    return true
+                }
+                (MessageChannel.INTRA_MENU_BRIDGE.isType(msg.message)) -> {
+                    val menuNavMessage: MenuNavMessage = MessageChannel.INTRA_MENU_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    //between menus
+                    selectedProfileAssetTitle = if (menuNavMessage.menuNavParams != null) {
+                        menuNavMessage.menuNavParams!!.selectedAssetTitle
+                    } else {
+                        null
+                    }
+
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     override fun tag() = tag
     override fun label() = label

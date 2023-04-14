@@ -1,5 +1,7 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
@@ -9,10 +11,16 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
+import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
+import river.exertion.kcop.system.messaging.messages.MenuDataMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
-class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
+class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
+
+    init {
+        MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
+    }
 
     override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
 
@@ -54,8 +62,36 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
             Switchboard.loadSelectedNarrative()
         }, "Narrative Loaded!"),
         //go back a menu
-        ActionParam("No", { MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(breadcrumbEntries.keys.toList()[0]) ))})
+        ActionParam("No", {
+            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(breadcrumbEntries.keys.toList()[0]) )
+        })
     )
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            when {
+                (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {
+                    val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
+
+                    if ( menuDataMessage.narrativeMenuDataParams != null ) {
+
+                        if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
+                            selectedNarrativeAssetInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
+                        }
+                        if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName != null) {
+                            selectedNarrativeAssetName = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName
+                        }
+                    } else {
+                        selectedNarrativeAssetInfo = null
+                        selectedNarrativeAssetName = null
+                    }
+
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     override fun tag() = tag
     override fun label() = label

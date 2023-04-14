@@ -14,9 +14,9 @@ object Switchboard {
 
     fun closeMenu() {
         //reset UI controls
-        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(0, false))
+        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, 0, false))
         MessageChannel.PAUSE_VIEW_BRIDGE.send(null, PauseViewMessage(false))
-        MessageChannel.MENU_VIEW_BRIDGE.send(null, DisplayViewMenuMessage(0, false))
+        MessageChannel.MENU_VIEW_BRIDGE.send(null, DisplayViewMenuMessage(null, 0, false))
     }
 
     fun clearMenu() {
@@ -24,14 +24,14 @@ object Switchboard {
         MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage())
         MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage())
         //put nav back on main menu
-        MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(MainMenu.tag)))
+        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(MainMenu.tag))
     }
 
     fun openMenu() {
         clearMenu()
-        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(0, true))
+        MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, 0, true))
         MessageChannel.PAUSE_VIEW_BRIDGE.send(null, PauseViewMessage(true))
-        MessageChannel.MENU_VIEW_BRIDGE.send(null, DisplayViewMenuMessage(0, true))
+        MessageChannel.MENU_VIEW_BRIDGE.send(null, DisplayViewMenuMessage(null, 0, true))
     }
 
     fun loadSelectedProfile() {

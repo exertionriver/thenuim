@@ -56,7 +56,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                         Switchboard.closeMenu()
                 }
                 else
-                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(idx, this@MenuViewCtrl.isChecked[idx]!!))
+                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, idx, this@MenuViewCtrl.isChecked[idx]!!))
             }
 
             buttonList.add(innerButton)
@@ -101,7 +101,9 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                 (MessageChannel.MENU_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage : DisplayViewMenuMessage = MessageChannel.MENU_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    this@MenuViewCtrl.isChecked[displayViewMenuMessage.menuButtonIdx] = displayViewMenuMessage.isChecked
+                    if (displayViewMenuMessage.menuButtonIdx != null) {
+                        this@MenuViewCtrl.isChecked[displayViewMenuMessage.menuButtonIdx] = displayViewMenuMessage.isChecked
+                    }
 
                     build()
                     return true
