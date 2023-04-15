@@ -72,7 +72,7 @@ object Switchboard {
         MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.RemoveComponent,
                 ProfileEntity.entityName, NarrativeComponent::class.java))
-        MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(AssetManagerHandler.NoNarrativeLoaded))
+        MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewMessage.TextViewMessageType.ReportText, AssetManagerHandler.NoNarrativeLoaded))
         MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.RemoveComponent,
                 ProfileEntity.entityName, ImmersionTimerComponent::class.java))

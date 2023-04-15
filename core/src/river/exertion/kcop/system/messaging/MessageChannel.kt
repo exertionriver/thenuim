@@ -23,7 +23,7 @@ enum class MessageChannel {
     STATUS_VIEW_BRIDGE { override val messageClass = StatusViewMessage::class },
     MENU_VIEW_BRIDGE { override val messageClass = DisplayViewMenuMessage::class },
     INPUT_VIEW_BRIDGE { override val messageClass = InputViewMessage::class },
-    AI_VIEW_BRIDGE { override val messageClass = AiViewMessage::class },
+    AI_VIEW_BRIDGE { override val messageClass = AiHintMessage::class },
     PAUSE_VIEW_BRIDGE { override val messageClass = PauseViewMessage::class },
     NARRATIVE_BRIDGE { override val messageClass = NarrativeMessage::class },
     NARRATIVE_STATUS_BRIDGE { override val messageClass = NarrativeStatusMessage::class },

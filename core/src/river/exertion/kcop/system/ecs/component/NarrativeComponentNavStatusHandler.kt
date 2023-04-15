@@ -1,5 +1,6 @@
 package river.exertion.kcop.system.ecs.component
 
+import river.exertion.kcop.narrative.structure.events.HintTextEvent
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
@@ -61,6 +62,8 @@ object NarrativeComponentNavStatusHandler {
             MessageChannel.NARRATIVE_MEDIA_BRIDGE.disableReceive(this)
 
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentImmersion))
+            MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
+//            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.ClearStatuses))
 
             isInitialized = false
 
@@ -85,6 +88,7 @@ object NarrativeComponentNavStatusHandler {
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
 
                 MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.UpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
+                MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
 
                 changed = true
             }

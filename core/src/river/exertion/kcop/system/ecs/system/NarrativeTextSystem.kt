@@ -20,10 +20,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
         if (narrativeComponent.isInitialized) {
 
             narrativeComponent.executeReadyTimelineEvents()
-
-            if (narrativeComponent.changed) {
-                narrativeComponent.executeReadyBlockEvents()
-            }
+            narrativeComponent.executeReadyBlockEvents()
 
             val currentText = narrativeComponent.currentText() + narrativeComponent.currentBlockTimer()
 
@@ -32,7 +29,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
                 NarrativeComponent.getFor(entity)!!.changed = false
             }
 
-            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(currentText, narrativeComponent.currentPrompts()))
+            MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewMessage.TextViewMessageType.ReportText, currentText, narrativeComponent.currentPrompts()))
         }
     }
 }

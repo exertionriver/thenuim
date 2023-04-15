@@ -28,7 +28,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    val displayStatuses : MutableList<DisplayStatus> = mutableListOf()
+    val displayStatuses : MutableSet<DisplayStatus> = mutableSetOf()
 
     var vScrollKnobTexture : Texture? = null
 

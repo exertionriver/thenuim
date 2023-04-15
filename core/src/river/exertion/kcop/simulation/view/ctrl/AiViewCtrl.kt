@@ -8,9 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
+import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.AiHintMessage
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.messages.TextViewMessage
 
 class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.AI, screenWidth, screenHeight) {
 
@@ -18,6 +21,10 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
         MessageChannel.AI_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
     }
+
+    var hintTextEntries : MutableMap<String, String> = mutableMapOf()
+
+    fun hintText() = hintTextEntries.values.reduceOrNull { acc, s -> acc + "\n$s"} ?: ""
 
     var aiUpImage : Texture? = null
     var aiDownImage : Texture? = null
@@ -43,7 +50,13 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
 
         innerButton.onClick {
             this@AiViewCtrl.isChecked = !this@AiViewCtrl.isChecked
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "AI set to: ${if (this.isChecked) "On" else "Off"}" ))
+            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "AI character set to: ${if (this.isChecked) "On" else "Off"}" ))
+
+            if (isChecked) {
+                MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewMessage.TextViewMessageType.HintText, hintText()))
+            } else {
+                MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewMessage.TextViewMessageType.HintText))
+            }
         }
 
         return innerButton
@@ -63,9 +76,22 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
                     return true
                 }
                 (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) -> {
-//                val logMessage : LogViewMessage = MessageChannel.LOG_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
+                    val aiHintMessage: AiHintMessage = MessageChannel.AI_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    build()
+                    when (aiHintMessage.aiHintMessageType) {
+                        AiHintMessage.AiHintMessageType.ClearHints -> hintTextEntries.clear()
+                        AiHintMessage.AiHintMessageType.AddHint -> {
+                            if (aiHintMessage.aiHintEventId != null && aiHintMessage.aiHintEventReport != null)
+                                hintTextEntries[aiHintMessage.aiHintEventId] = aiHintMessage.aiHintEventReport
+                        }
+                    }
+
+                    if (isChecked) {
+                        MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewMessage.TextViewMessageType.HintText, hintText()))
+                    } else {
+                        MessageChannel.TEXT_VIEW_BRIDGE.send(null, TextViewMessage(TextViewMessage.TextViewMessageType.HintText))
+                    }
+
                     return true
                 }
             }

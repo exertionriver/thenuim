@@ -38,7 +38,8 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
 //                this.alignment = Align.top
         }
         nameTextField.setTextFieldListener {
-           textField, _ -> newName = textField.text
+           textField, _ -> this@NewProfileMenu.newName = textField.text
+            this@NewProfileMenu.actions.first { it.label == "Create"}.log = "Profile Created: ${this@NewProfileMenu.newName}"
         }
         this.add(nameTextField).growX().top()
         this.row()

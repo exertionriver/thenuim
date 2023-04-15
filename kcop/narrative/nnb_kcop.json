@@ -38,11 +38,24 @@
     ]}
   ],
   "eventBlocks" : [
+    { "narrativeBlockId" : "demo_block1", "events" : [
+      { "type" : "hintText", "trigger" : "onEntry", "report" : "testing hints" }
+    ]},
     { "narrativeBlockId" : "demo_block2", "events" : [
       { "type" : "plusCounter", "trigger" : "onEntry", "counterKey" : "navCountUp" }
     ]},
+    { "narrativeBlockId" : "demo_block3", "events" : [
+      { "type" : "hintText", "trigger" : "onEntry", "report" : "testing hints again" }
+    ]},
     { "narrativeBlockId" : "demo_block5", "events" : [
-      { "type" : "zeroCounter", "trigger" : "onEntry", "counterKey" : "navCountUp" }
+      { "type" : "zeroCounter", "trigger" : "onEntry", "counterKey" : "navCountUp" },
+      { "type" : "hintText", "trigger" : "00:00:15", "report" : "testing block time hint" }
+    ]},
+    { "narrativeBlockId" : "demo_block6", "events" : [
+      { "type" : "hintText", "trigger" : "onExit", "report" : "one more hint test" }
     ]}
+  ],
+  "timelineEvents" : [
+    { "type" : "hintText", "trigger" : "00:00:30",  "report" : "timeline_hint @ 0:30"}
   ]
 }

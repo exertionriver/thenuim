@@ -1,6 +1,7 @@
 package river.exertion.kcop.system.ecs.component
 
 import river.exertion.kcop.narrative.structure.events.Event
+import river.exertion.kcop.narrative.structure.events.HintTextEvent
 import river.exertion.kcop.narrative.structure.events.ITriggerEvent
 import river.exertion.kcop.narrative.structure.events.ReportTextEvent
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
@@ -16,7 +17,7 @@ object NarrativeComponentEventHandler {
         if (isInitialized) {
             returnText += narrative!!.currentText()
 
-            readyCurrentBlockEvents().filter { event ->
+            readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
                 (event is ReportTextEvent) &&
                 narrativeImmersion!!.eventFired(event.id!!)
             }.sortedBy {
@@ -25,12 +26,28 @@ object NarrativeComponentEventHandler {
                 returnText += "\n${(event as ReportTextEvent).report}"
             }
 
-            readyTimelineEvents(timerPair.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).filter { timelineEvent ->
-                timelineEvent is ReportTextEvent && narrativeImmersion!!.eventFired(timelineEvent.id!!)
+            readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
+                (event is HintTextEvent) && narrativeImmersion!!.eventFired(event.id!!)
+            }.sortedBy {
+                it.id
+            }.forEach { event ->
+                MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.AddHint, event.id, (event as HintTextEvent).report))
+            }
+
+            readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
+                (timelineEvent is ReportTextEvent) && narrativeImmersion!!.eventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
             }.forEach { timelineEvent ->
                 returnText += "\n${(timelineEvent as ReportTextEvent).report}"
+            }
+
+            readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
+                (timelineEvent is HintTextEvent) && narrativeImmersion!!.eventFired(timelineEvent.id!!)
+            }.sortedBy {
+                it.id
+            }.forEach { timelineEvent ->
+                MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.AddHint, timelineEvent.id, (timelineEvent as HintTextEvent).report))
             }
         }
 
@@ -42,7 +59,7 @@ object NarrativeComponentEventHandler {
 
         if (isInitialized) {
 
-            readyTimelineEvents(timerPair.cumlImmersionTimer, blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer).filter { timelineEvent ->
+            readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
                 !narrativeImmersion!!.eventFired(timelineEvent.id!!)
             }.forEach { timelineEvent ->
                 timelineEvent.execEvent()
@@ -50,7 +67,7 @@ object NarrativeComponentEventHandler {
         }
     }
 
-    private fun NarrativeComponent.readyTimelineEvents(narrativeCumulativeTimer : ImmersionTimer, blockCumulativeTimer : ImmersionTimer) : List<Event> {
+    private fun NarrativeComponent.readyTimelineEvents(narrativeCumulativeTimer : ImmersionTimer) : List<Event> {
 
         if (isInitialized) {
             val narrativeTimelineEvents = narrative!!.timelineEvents.filter { timelineEvent ->
@@ -59,12 +76,6 @@ object NarrativeComponentEventHandler {
                 narrativeCumulativeTimer.onOrPast(timelineEvent.timeTrigger())
             }.sortedBy {timelineEvent ->
                 ImmersionTimer.inSeconds((timelineEvent as ITriggerEvent).timeTrigger())
-            }
-
-            if (narrative!!.currentTimelineEventBlock() != null) {
-                return narrativeTimelineEvents.plus(
-                    narrative!!.currentTimelineEventBlock()!!.readyTimelineBlockEvents(blockCumulativeTimer)
-                )
             }
 
             return narrativeTimelineEvents
@@ -79,7 +90,7 @@ object NarrativeComponentEventHandler {
         if (isInitialized) {
 
             val previousBlockEvents = readyPreviousBlockEvents()
-            val currentBlockEvents = readyCurrentBlockEvents()
+            val currentBlockEvents = readyCurrentBlockEvents(cumlBlockImmersionTimer())
 
             previousBlockEvents.forEach { previousBlockEvent ->
                 if (!narrativeImmersion!!.eventFired(previousBlockEvent.id!!)) previousBlockEvent.resolveEvent(
@@ -117,7 +128,7 @@ object NarrativeComponentEventHandler {
         return previousBlockEvents
     }
 
-    private fun NarrativeComponent.readyCurrentBlockEvents() : MutableList<Event> {
+    private fun NarrativeComponent.readyCurrentBlockEvents(blockCumulativeTimer : ImmersionTimer) : MutableList<Event> {
 
         val currentBlockEvents = mutableListOf<Event>()
 
@@ -130,6 +141,12 @@ object NarrativeComponentEventHandler {
             narrative!!.currentEventBlock()?.events?.filter {
                 (it is ITriggerEvent) &&
                 (it as ITriggerEvent).blockTrigger() == ITriggerEvent.EventTrigger.ON_ENTRY
+            }.let { currentBlockEvents.addAll(it ?: emptyList()) }
+
+            narrative!!.currentEventBlock()?.events?.filter {
+                (it is ITriggerEvent) &&
+                (it.timeTrigger() != null) &&
+                blockCumulativeTimer.onOrPast(it.timeTrigger())
             }.let { currentBlockEvents.addAll(it ?: emptyList()) }
 
             narrative!!.currentEventBlock()?.events?.filter {

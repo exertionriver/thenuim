@@ -51,6 +51,8 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun cumlImmersionTime() = timerPair.cumlImmersionTimer.immersionTime()
 
+    fun cumlBlockImmersionTimer() = blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer
+
     var changed = false
 
     fun currentPrompts() = if (isInitialized) narrative!!.currentPrompts() else listOf()

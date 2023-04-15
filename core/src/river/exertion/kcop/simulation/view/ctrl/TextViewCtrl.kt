@@ -27,6 +27,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
     }
 
     var currentText : String = AssetManagerHandler.NoNarrativeLoaded
+    var currentHintText : String = ""
     var currentPrompts : List<String>? = null
 
     var vScrollKnobTexture : Texture? = null
@@ -46,8 +47,15 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         )
 
         val textLabel = Label(currentText, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+        val hintLabel = Label(currentHintText, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.triad().first.label().color()))
+
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
+
+        if (!currentHintText.isBlank()) {
+            innerTable.row()
+            innerTable.add(hintLabel).growX()
+        }
 
         innerTable.top()
 //        innerTable.debug()
@@ -124,8 +132,18 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                 (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val textViewMessage: TextViewMessage = MessageChannel.TEXT_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    currentText = textViewMessage.narrativeText
-                    currentPrompts = textViewMessage.prompts
+                    when (textViewMessage.textViewMessageType) {
+                        TextViewMessage.TextViewMessageType.ReportText ->
+                            if (textViewMessage.narrativeText != null && textViewMessage.prompts != null) {
+                                currentText = textViewMessage.narrativeText
+                                currentPrompts = textViewMessage.prompts
+                            } else {
+                                currentText = ""
+                                currentPrompts = null
+                            }
+                        TextViewMessage.TextViewMessageType.HintText ->
+                            currentHintText = textViewMessage.narrativeText ?: ""
+                    }
 
                     build()
                     return true

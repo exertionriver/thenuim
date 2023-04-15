@@ -20,7 +20,6 @@ data class Narrative(
         val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
         val eventBlocks : MutableList<EventBlock> = mutableListOf(),
         val timelineEvents : MutableList<Event> = mutableListOf(),
-        val timelineEventBlocks : MutableList<TimelineEventBlock> = mutableListOf(),
     ) : Id {
 
     @Transient
@@ -75,8 +74,6 @@ data class Narrative(
 
     fun previousEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == previousBlockId }
     fun currentEventBlock() = eventBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }
-
-    fun currentTimelineEventBlock() = timelineEventBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }
 
     fun next(promptKey : String) {
         val possiblePreviousId = currentBlockId

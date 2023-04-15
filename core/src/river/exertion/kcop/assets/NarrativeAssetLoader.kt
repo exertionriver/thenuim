@@ -70,22 +70,6 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                 }
             }
 
-            narrative.timelineEventBlocks.forEach { timelineEventBlock ->
-                timelineEventBlock.events.forEachIndexed { idx, timelineEvent ->
-                    if (timelineEvent.id == null) {
-                        timelineEvent.id = "${timelineEventBlock.narrativeBlockId}_${idx}_${timelineEvent.type}"
-                    }
-
-                    /*                if ( !timelineEvent.validateFields() ) {
-                                        returnNarrativeAsset.status = errorStatus
-                                        val errorDetail = "invalid event type : ${timelineEvent.eventType} in ${timelineEventBlock.narrativeBlockId} for ${narrative.name}"
-                                        if (returnNarrativeAsset.statusDetail == null)
-                                            returnNarrativeAsset.statusDetail = errorDetail
-                                        else
-                                            returnNarrativeAsset.statusDetail += "\n$errorDetail"                    }
-                      */              }
-            }
-
             narrative.timelineEvents.forEachIndexed { idx, timelineEvent ->
                 if (timelineEvent.id == null) {
                     timelineEvent.id = "${narrative.name}_${idx}_${timelineEvent.type}"

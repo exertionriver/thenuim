@@ -14,7 +14,7 @@ data class Profile(
     override var id : String = Id.randomId(),
     var name : String = genName(),
     var cumlTime : String = ImmersionTimer.CumlTimeZero,
-    var currentImmersionId : String? = AssetManagerHandler.NoNarrativeLoaded,
+    var currentImmersionId : String = AssetManagerHandler.NoNarrativeLoaded,
     var settings : MutableList<ProfileSetting> = defaultSettings()
     ) : Id {
 

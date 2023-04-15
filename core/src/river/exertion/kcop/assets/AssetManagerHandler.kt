@@ -156,7 +156,7 @@ class AssetManagerHandler : Telegraph {
     override fun handleMessage(msg: Telegram?): Boolean = this.messageHandler(msg)
 
     companion object {
-        val json = Json { ignoreUnknownKeys = true }
+        val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
         const val NoProfileLoaded = "No Profile Loaded"
         const val NoNarrativeLoaded = "No Narrative Loaded"

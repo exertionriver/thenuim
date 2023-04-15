@@ -13,6 +13,14 @@ interface IAsset {
     fun newAssetFilename() = newAssetFilename(assetName(), assetId())
 
     companion object {
-        fun newAssetFilename(assetName : String, assetId : String) = "${assetName}_${assetId.substring(0, 4)}"
+
+        val replaceChars = """[.@{}!\\`´"^=()&\[\]$'~#%*:+<>?/|, ]"""
+        val reduceUnderscores = """_+"""
+
+        fun replaceFileName(assetName : String) = assetName.replace(replaceChars.toRegex(), "_")
+
+        fun reduceFilename(assetName: String) = assetName.replace(reduceUnderscores.toRegex(), "_")
+
+        fun newAssetFilename(assetName : String, assetId : String) = "${reduceFilename(replaceFileName(assetName))}_${assetId.substring(0, 4)}"
     }
 }
