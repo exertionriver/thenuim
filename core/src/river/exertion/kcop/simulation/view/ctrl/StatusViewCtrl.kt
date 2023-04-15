@@ -115,7 +115,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                     val statusViewMessage: StatusViewMessage = MessageChannel.STATUS_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (statusViewMessage.messageType) {
-                        StatusViewMessage.StatusViewMessageType.AddOrUpdateStatus -> {
+                        StatusViewMessage.StatusViewMessageType.AddStatus -> {
                             if (statusViewMessage.statusKey != null) {
                                 displayStatuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
                             }
@@ -126,6 +126,11 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                         StatusViewMessage.StatusViewMessageType.RemoveStatus -> {
                             if (statusViewMessage.statusKey != null) {
                                 displayStatuses.remove(statusViewMessage.statusKey)
+                            }
+                        }
+                        StatusViewMessage.StatusViewMessageType.UpdateStatus -> {
+                            if (statusViewMessage.statusKey != null && displayStatuses.containsKey(statusViewMessage.statusKey)) {
+                                displayStatuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
                             }
                         }
                     }

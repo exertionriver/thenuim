@@ -87,7 +87,7 @@ object NarrativeComponentNavStatusHandler {
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
 
-                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.AddOrUpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
+                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.UpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
                 MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
 
                 changed = true
