@@ -1,6 +1,12 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.10 - Immersion state persist, profile settings, AI hints
+
+https://user-images.githubusercontent.com/13192685/232177215-5eb3a67b-3306-42b3-8a57-ab05a2e6ec5f.mp4
+
+---
+
 <b>v0.9 - Save profile, load narrative, counter support for immersions
 
 https://user-images.githubusercontent.com/13192685/229291860-9279153a-adc8-419d-9a29-73c634c6a6fb.mp4
