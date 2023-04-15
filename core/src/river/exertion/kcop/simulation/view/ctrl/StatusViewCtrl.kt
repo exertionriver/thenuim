@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.simulation.view.DisplayStatus
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -28,7 +27,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         MessageChannel.FONT_BRIDGE.enableReceive(this)
     }
 
-    val displayStatuses : MutableSet<DisplayStatus> = mutableSetOf()
+    val displayStatuses : MutableMap<String, Float> = mutableMapOf()
 
     var vScrollKnobTexture : Texture? = null
 
@@ -116,19 +115,18 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                     val statusViewMessage: StatusViewMessage = MessageChannel.STATUS_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (statusViewMessage.messageType) {
-                        StatusViewMessage.StatusViewMessageType.AddStatus -> {
+                        StatusViewMessage.StatusViewMessageType.AddOrUpdateStatus -> {
                             if (statusViewMessage.statusKey != null) {
-                                displayStatuses.add(DisplayStatus(statusViewMessage.statusKey, (statusViewMessage.statusValue ?: 0f)))
+                                displayStatuses[statusViewMessage.statusKey] = statusViewMessage.statusValue ?: 0f
                             }
                         }
                         StatusViewMessage.StatusViewMessageType.ClearStatuses -> {
                             displayStatuses.clear()
                         }
                         StatusViewMessage.StatusViewMessageType.RemoveStatus -> {
-                            displayStatuses.removeIf { it.key == statusViewMessage.statusKey }
-                        }
-                        StatusViewMessage.StatusViewMessageType.UpdateStatus -> {
-                            displayStatuses.firstOrNull { it.key == statusViewMessage.statusKey }?.value = statusViewMessage.statusValue ?: 0f
+                            if (statusViewMessage.statusKey != null) {
+                                displayStatuses.remove(statusViewMessage.statusKey)
+                            }
                         }
                     }
 

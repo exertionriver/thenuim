@@ -43,7 +43,7 @@ object NarrativeComponentMessageHandler {
                     NarrativeStatusMessage.NarrativeFlagsMessageType.AddStatus -> {
                         //completion status
                         if (narrativeStatusMessage.key == null) {
-                            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.AddStatus, sequentialStatusKey(), seqNarrativeProgress()))
+                            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.AddOrUpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
                         }
                     }
                     NarrativeStatusMessage.NarrativeFlagsMessageType.RemoveStatus -> {
