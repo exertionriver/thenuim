@@ -2,27 +2,31 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 import river.exertion.kcop.system.messaging.messages.MenuDataMessage
-import river.exertion.kcop.system.messaging.messages.MenuNavMessage
-import river.exertion.kcop.system.view.ShapeDrawerConfig
+import river.exertion.kcop.system.view.SdcHandler
 
 class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
 
     init {
         MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
-    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
+    override lateinit var sdcHandler : SdcHandler
+    override lateinit var fontPackage : FontPackage
+    override lateinit var menuSkin: Skin
 
     override val backgroundColor = ColorPalette.of("teal")
 
@@ -31,10 +35,12 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
 
     fun selectedNarrativeAssetName() = selectedNarrativeAssetName ?: throw Exception("LoadNarrativeMenu requires valid selectNarrativeAssetTitle")
 
-    override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
+    override fun menuPane() = Table().apply {
         if (selectedNarrativeAssetInfo != null) {
             selectedNarrativeAssetInfo!!.forEach { profileEntry ->
-                this.add(Label(profileEntry, LabelStyle(bitmapFont, backgroundColor.label().color())).apply {
+                this.add(Label(profileEntry, menuSkin)
+                        //LabelStyle(bitmapFont, backgroundColor.label().color()))
+                        .apply {
                     this.wrap = true
                 }).growX().left()
                 this.row()
@@ -42,7 +48,8 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
 //        this.debug()
             this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${selectedNarrativeAssetName()}" }
         } else {
-            this.add(Label("no narrative info found", LabelStyle(bitmapFont, backgroundColor.label().color()))
+            this.add(Label("no narrative info found", menuSkin)
+                    //LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()
             this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
         }
@@ -70,6 +77,19 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+
                 (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {
                     val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 

@@ -1,22 +1,34 @@
 package river.exertion.kcop.simulation.view.displayViewLayouts
 
-import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.DisplayViewPane
-import river.exertion.kcop.system.view.ShapeDrawerConfig
+import river.exertion.kcop.simulation.view.FontPackage
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.view.SdcHandler
 
-class DVLBasicPictureNarrative(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewLayout {
+class DVLBasicPictureNarrative(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewLayout {
+
+    init {
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+    }
 
     override val tag = Companion.tag
 
-    override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
+    override lateinit var sdcHandler : SdcHandler
+    override lateinit var fontPackage : FontPackage
+    override lateinit var skin: Skin
 
-    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
+//    override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
+
+//    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
     override val paneBgTextures : MutableMap<Int, Texture?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
     override val paneTextureMaskAlpha : MutableMap<Int, Float?> = mutableMapOf()
@@ -59,9 +71,9 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
     override fun imagePanes() : List<Int> = listOf(0)
     override fun textPanes() : List<Int> = listOf(1, 2)
 
-    override fun buildPaneTable(bitmapFont : BitmapFont, batch : Batch, layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table {
+    override fun buildPaneTable(layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table {
 
-        val panes = buildPaneCtrls(bitmapFont, batch, layoutMode, currentText, currentFontSize)
+        val panes = buildPaneCtrls(layoutMode, currentText, currentFontSize)
 
         val innerTable = Table()
 
@@ -78,6 +90,27 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         innerTable.validate()
         innerTable.layout()
         return innerTable
+    }
+
+    @Suppress("NewApi")
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            when {
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    skin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     companion object {

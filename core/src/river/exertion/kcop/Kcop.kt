@@ -16,15 +16,20 @@ import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.ProfileSimulator
 import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.view.SdcHandler
 
 class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     init {
         MessageChannel.TWO_BATCH_BRIDGE.enableProvider(this)
+
+        MessageChannel.SDC_BRIDGE.enableProvider(this)
         MessageChannel.FONT_BRIDGE.enableProvider(this)
+        MessageChannel.SKIN_BRIDGE.enableProvider(this)
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
+    lateinit var sdcHandler : SdcHandler
     lateinit var assetManagerHandler : AssetManagerHandler
 //    val threeBatch = ModelBatch()
 
@@ -40,6 +45,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         twoBatch = PolygonSpriteBatch()
         val stage = Stage(viewport, twoBatch)
 
+        sdcHandler = SdcHandler(twoBatch)
         val engineHandler = EngineHandler()
         assetManagerHandler = AssetManagerHandler()
 
@@ -62,14 +68,16 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         val initViewportWidth = 1280F
         val initViewportHeight = 720F
 
-        val title = "koboldCave Operating Platform (kcop) v0.10"
+        val title = "koboldCave Operating Platform (kcop) v0.11"
         val loglevel = LOG_DEBUG
     }
 
     override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {
         if (msg == MessageChannel.TWO_BATCH_BRIDGE.id()) return twoBatch
-        if (msg == MessageChannel.FONT_BRIDGE.id()) return assetManagerHandler.fontPackage()
 
+        if (msg == MessageChannel.SDC_BRIDGE.id()) return sdcHandler
+        if (msg == MessageChannel.FONT_BRIDGE.id()) return assetManagerHandler.fontPackage()
+        if (msg == MessageChannel.SKIN_BRIDGE.id()) return assetManagerHandler.skin()
         return false
     }
 }

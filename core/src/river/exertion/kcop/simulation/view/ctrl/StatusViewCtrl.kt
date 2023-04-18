@@ -2,20 +2,12 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.StatusViewMessage
-import river.exertion.kcop.system.view.ShapeDrawerConfig
 import kotlin.math.roundToInt
 
 
@@ -23,25 +15,22 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
 
     init {
         MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
     val displayStatuses : MutableMap<String, Float> = mutableMapOf()
 
-    var vScrollKnobTexture : Texture? = null
+//    var vScrollKnobTexture : Texture? = null
 
     private lateinit var scrollPane : ScrollPane
 
     fun statusColorTexture(overrideColor : ColorPalette? = null) : TextureRegion {
-
-        if (overrideColor == null)
-            this.sdc = ShapeDrawerConfig(batch, backgroundColor.color())
-        else
-            this.sdc = ShapeDrawerConfig(batch, overrideColor.color())
-
-        return sdc!!.textureRegion.apply {this.setRegion(0, 0, ViewType.padWidth(screenWidth)
-            .roundToInt(), ViewType.padHeight(screenHeight).roundToInt()) }
+        return sdcHandler.get("statusColor", overrideColor ?: backgroundColor).textureRegion().apply {
+            this.setRegion(0, 0, ViewType.padWidth(screenWidth).roundToInt(), ViewType.padHeight(screenHeight).roundToInt())
+        }
     }
 
     fun textScrollPane() : ScrollPane {
@@ -58,14 +47,16 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
             val barStack = Stack()
 
             barStack.add(
-                ProgressBar(0f, 1f, .01f, false, ProgressBar.ProgressBarStyle(
+                ProgressBar(0f, 1f, .01f, false, skin
+                        /*ProgressBar.ProgressBarStyle(
                     NinePatchDrawable(NinePatch(statusColorTexture())),
                     null
                 ).apply { this.knobBefore = NinePatchDrawable(NinePatch(statusColorTexture(backgroundColor.triad().first)))}
-            ).apply { this.value = it.value }
+      */      ).apply { this.value = it.value }
             )
             barStack.add(
-                Label(it.key, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().incr(2).color()))
+                Label(it.key, skin)
+                        //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().incr(2).color()))
             )
 
             innerTable.add(barStack)
@@ -75,10 +66,11 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         innerTable.top()
 //        innerTable.debug()
 
-        val scrollNine = NinePatch(statusColorTexture(backgroundColor.triad().second.incr(2)))
-        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(statusColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
+//        val scrollNine = NinePatch(statusColorTexture(backgroundColor.triad().second.incr(2)))
+//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(statusColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
 
-        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
+//        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
+            val scrollPane = ScrollPane(innerTable, skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -93,7 +85,11 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
     }
 
     override fun buildCtrl() {
-        this.add(textScrollPane()).size(this.tableWidth(), this.tableHeight())
+        this.add(Stack().apply {
+            this.add(backgroundColorImg())
+            this.add(textScrollPane())
+        } ).size(this.tableWidth(), this.tableHeight())
+
         this.clip()
     }
 
@@ -101,14 +97,16 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.batch = twoBatch
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.fontPackage = fontPackage
+                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {

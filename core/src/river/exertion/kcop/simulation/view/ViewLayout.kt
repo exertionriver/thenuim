@@ -25,36 +25,26 @@ class ViewLayout(var width : Float, var height : Float) {
         return displayViewCtrl
     }
 
-    fun createTextViewCtrl(vScrollKnobImage : Texture) : TextViewCtrl {
-        textViewCtrl.vScrollKnobTexture = vScrollKnobImage
+    fun createTextViewCtrl() : TextViewCtrl {
 
         textViewCtrl.build()
 
         return textViewCtrl
     }
-    fun createLogViewCtrl(vScrollImage : Texture, vScrollKnobImage : Texture) : LogViewCtrl {
-        logViewCtrl.vScrollTexture = vScrollImage
-        logViewCtrl.vScrollKnobTexture = vScrollKnobImage
+    fun createLogViewCtrl() : LogViewCtrl {
 
         logViewCtrl.build()
 
         return logViewCtrl
     }
-    fun createStatusViewCtrl(vScrollKnobImage : Texture) : StatusViewCtrl {
-        statusViewCtrl.vScrollKnobTexture = vScrollKnobImage
+    fun createStatusViewCtrl() : StatusViewCtrl {
 
         statusViewCtrl.build()
 
         return statusViewCtrl
     }
 
-    fun createMenuViewCtrl(upImage : Texture, downImage : Texture, checkedImage : Texture) : MenuViewCtrl {
-
-        (0..5).forEach {
-            menuViewCtrl.menuUpImage[it] = upImage
-            menuViewCtrl.menuDownImage[it] = downImage
-            menuViewCtrl.menuCheckedImage[it] = checkedImage
-        }
+    fun createMenuViewCtrl() : MenuViewCtrl {
 
         menuViewCtrl.build()
 
@@ -70,20 +60,14 @@ class ViewLayout(var width : Float, var height : Float) {
 
         return inputsViewCtrl
     }
-    fun createAiViewCtrl(upImage : Texture, downImage : Texture, checkedImage: Texture) : AiViewCtrl {
-        aiViewCtrl.aiUpImage = upImage
-        aiViewCtrl.aiDownImage = downImage
-        aiViewCtrl.aiCheckedImage = checkedImage
+    fun createAiViewCtrl() : AiViewCtrl {
 
         aiViewCtrl.build()
 
         return aiViewCtrl
     }
 
-    fun createPauseViewCtrl(upImage : Texture, downImage : Texture, checkedImage : Texture) : PauseViewCtrl {
-        pauseViewCtrl.pauseUpImage = upImage
-        pauseViewCtrl.pauseDownImage = downImage
-        pauseViewCtrl.pauseCheckedImage = checkedImage
+    fun createPauseViewCtrl() : PauseViewCtrl {
 
         pauseViewCtrl.build()
 
@@ -92,14 +76,14 @@ class ViewLayout(var width : Float, var height : Float) {
 
     fun build(stage: Stage, assetManagerHandler: AssetManagerHandler) {
         stage.addActor(this.createDisplayViewCtrl())
-        stage.addActor(this.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(this.createLogViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB]))
-        stage.addActor(this.createStatusViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
-        stage.addActor(this.createMenuViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
+        stage.addActor(this.createTextViewCtrl())
+        stage.addActor(this.createLogViewCtrl())
+        stage.addActor(this.createStatusViewCtrl())
+        stage.addActor(this.createMenuViewCtrl())
         stage.addActor(this.createInputsViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(this.createAiViewCtrl(assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere], assetManagerHandler.assets[TextureAssets.BlueSphere]))
-        stage.addActor(this.createPauseViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA], assetManagerHandler.assets[TextureAssets.KoboldB], assetManagerHandler.assets[TextureAssets.KoboldC]))
-        stage.addActor(this.createTextViewCtrl(assetManagerHandler.assets[TextureAssets.KoboldA]))
+        stage.addActor(this.createAiViewCtrl())
+        stage.addActor(this.createPauseViewCtrl())
+        stage.addActor(this.createTextViewCtrl())
     }
 
     fun dispose() {

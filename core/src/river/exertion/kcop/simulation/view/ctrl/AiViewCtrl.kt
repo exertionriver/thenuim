@@ -2,13 +2,10 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.scenes.scene2d.ui.Stack
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onClick
-import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.AiHintMessage
@@ -19,22 +16,25 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
 
     init {
         MessageChannel.AI_VIEW_BRIDGE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
     var hintTextEntries : MutableMap<String, String> = mutableMapOf()
 
     fun hintText() = hintTextEntries.values.reduceOrNull { acc, s -> acc + "\n$s"} ?: ""
 
-    var aiUpImage : Texture? = null
-    var aiDownImage : Texture? = null
-    var aiCheckedImage : Texture? = null
+//    var aiUpImage : Texture? = null
+//    var aiDownImage : Texture? = null
+//    var aiCheckedImage : Texture? = null
 
     var isChecked = false
 
     fun clickButton() : Button {
 
-        var buttonStyle = ButtonStyle()
+/*        var buttonStyle = ButtonStyle()
 
         if (aiUpImage != null && aiDownImage != null && aiCheckedImage != null) {
             buttonStyle = ButtonStyle(
@@ -44,7 +44,8 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
         }
 
         val innerButton = Button(buttonStyle)
-
+*/
+        val innerButton = Button(viewSkin)
         //override from ctrl
         innerButton.isChecked = this@AiViewCtrl.isChecked
 
@@ -63,16 +64,27 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
     }
 
     override fun buildCtrl() {
-        this.add(clickButton()).width(this.tableWidth()).height(this.tableHeight())
+        this.add(Stack().apply {
+            this.add(backgroundColorImg())
+            this.add(Table().apply {this.add(clickButton()).padTop(3f).height(this@AiViewCtrl.tableHeight()) })
+        } ).size(this.tableWidth(), this.tableHeight())
+
         this.clip()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.batch = twoBatch
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) -> {

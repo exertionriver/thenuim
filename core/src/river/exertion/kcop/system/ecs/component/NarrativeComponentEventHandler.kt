@@ -19,7 +19,7 @@ object NarrativeComponentEventHandler {
 
             readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
                 (event is ReportTextEvent) &&
-                narrativeImmersion!!.eventFired(event.id!!)
+                narrativeImmersion!!.persistEventFired(event.id!!)
             }.sortedBy {
                 it.id
             }.forEach { event ->
@@ -27,7 +27,7 @@ object NarrativeComponentEventHandler {
             }
 
             readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
-                (event is HintTextEvent) && narrativeImmersion!!.eventFired(event.id!!)
+                (event is HintTextEvent) && narrativeImmersion!!.persistEventFired(event.id!!)
             }.sortedBy {
                 it.id
             }.forEach { event ->
@@ -35,7 +35,7 @@ object NarrativeComponentEventHandler {
             }
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
-                (timelineEvent is ReportTextEvent) && narrativeImmersion!!.eventFired(timelineEvent.id!!)
+                (timelineEvent is ReportTextEvent) && narrativeImmersion!!.persistEventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
             }.forEach { timelineEvent ->
@@ -43,7 +43,7 @@ object NarrativeComponentEventHandler {
             }
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
-                (timelineEvent is HintTextEvent) && narrativeImmersion!!.eventFired(timelineEvent.id!!)
+                (timelineEvent is HintTextEvent) && narrativeImmersion!!.persistEventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
             }.forEach { timelineEvent ->
@@ -60,7 +60,7 @@ object NarrativeComponentEventHandler {
         if (isInitialized) {
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
-                !narrativeImmersion!!.eventFired(timelineEvent.id!!)
+                !narrativeImmersion!!.persistEventFired(timelineEvent.id!!)
             }.forEach { timelineEvent ->
                 timelineEvent.execEvent()
             }
@@ -93,15 +93,17 @@ object NarrativeComponentEventHandler {
             val currentBlockEvents = readyCurrentBlockEvents(cumlBlockImmersionTimer())
 
             previousBlockEvents.forEach { previousBlockEvent ->
-                if (!narrativeImmersion!!.eventFired(previousBlockEvent.id!!)) previousBlockEvent.resolveEvent(
-                    currentBlockEvents.firstOrNull { it.isLikeEvent(previousBlockEvent) }
-                )
+                if (!narrativeImmersion!!.persistEventFired(previousBlockEvent.id!!) && !eventFired("resolve_${previousBlockEvent.id!!}" ) )
+                    previousBlockEvent.resolveEvent(currentBlockEvents.firstOrNull {
+                        it.isLikeEvent(previousBlockEvent)
+                    })
             }
 
             currentBlockEvents.forEach { currentBlockEvent ->
-                if (!narrativeImmersion!!.eventFired(currentBlockEvent.id!!)) currentBlockEvent.execEvent(
-                    previousBlockEvents.firstOrNull { it.isLikeEvent(currentBlockEvent) }
-                )
+                if (!narrativeImmersion!!.persistEventFired(currentBlockEvent.id!!) && !eventFired("exec_${currentBlockEvent.id!!}" ) )
+                    currentBlockEvent.execEvent(previousBlockEvents.firstOrNull {
+                        it.isLikeEvent(currentBlockEvent)
+                    })
             }
         }
     }

@@ -2,15 +2,12 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -19,28 +16,35 @@ import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 import river.exertion.kcop.system.messaging.messages.MenuDataMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
-import river.exertion.kcop.system.view.ShapeDrawerConfig
+import river.exertion.kcop.system.view.SdcHandler
 
 class ProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
 
     init {
         MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
         MessageChannel.INTRA_MENU_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
-    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
+    override lateinit var sdcHandler : SdcHandler
+    override lateinit var fontPackage : FontPackage
+    override lateinit var menuSkin: Skin
 
     override val backgroundColor = ColorPalette.of("green")
 
     var profileAssetTitles: List<String>? = null
     var selectedProfileAssetTitle : String? = null
 
-    override fun menuPane(bitmapFont: BitmapFont) : Table {
+    override fun menuPane() : Table {
 
-        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(ListStyle().apply {
-            this.font = bitmapFont
-            this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
-        })
+        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(menuSkin)
+                //ListStyle().apply {
+//            this.font = bitmapFont
+//            this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
+ //       })
 
         if (profileAssetTitles != null) {
             selectedProfileAssetTitle = profileAssetTitles!![0]
@@ -94,6 +98,18 @@ ActionParam("Save >", {
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
                 (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {
                     val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 

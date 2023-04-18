@@ -2,35 +2,28 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
-import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 
 class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.LOG, screenWidth, screenHeight) {
 
     init {
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
     var currentLog : MutableList<String>? = null
-    var textTimeSdc : ShapeDrawerConfig? = null
-
+    //var textTimeSdc : ShapeDrawerConfig? = null
 
     val initTimeStr = ImmersionTimer.CumlTimeZero
 
@@ -38,17 +31,17 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     var cumlImmersionTimeStr = initTimeStr
     var localTimeStr = initTimeStr
 
-    var vScrollTexture : Texture? = null
-    var vScrollKnobTexture : Texture? = null
+//    var vScrollTexture : Texture? = null
+//    var vScrollKnobTexture : Texture? = null
 
     var textTimePaneDimensions = Vector2(this.tableWidth() / 4, this.tableWidth() / 13)
 
     private lateinit var scrollPane : ScrollPane
 
-    fun textTimebackgroundColorTexture() : TextureRegion {
-        if (this.textTimeSdc == null) this.textTimeSdc = ShapeDrawerConfig(batch, backgroundColor.triad().second.color())
-
-        return textTimeSdc!!.textureRegion.apply {this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1) }
+    fun textTimeBackgroundColorTexture() : TextureRegion {
+        return sdcHandler.get("textTime", backgroundColor.triad().second).textureRegion().apply {
+            this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
+        }
     }
 
     fun isLog() = !currentLog.isNullOrEmpty()
@@ -76,18 +69,22 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
         innerTable.add(
             Stack().apply {
-                this.add(Image(textTimebackgroundColorTexture()))
+                this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {this.add(
-                    Label(instImmersionTimeStr, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color())).apply { this.setAlignment(Align.center)})
+                    Label(instImmersionTimeStr, viewSkin)
+                            //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+                            .apply { this.setAlignment(Align.center)})
                     .padRight(ViewType.padWidth(width))
                 })
             }).size(this.textTimePaneDimensions.x, this.textTimePaneDimensions.y)
 
         innerTable.add(
             Stack().apply {
-                this.add(Image(textTimebackgroundColorTexture()))
+                this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {this.add(
-                    Label(cumlImmersionTimeStr, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color())).apply { this.setAlignment(Align.center)})
+                    Label(cumlImmersionTimeStr, viewSkin)
+                            //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+                            .apply { this.setAlignment(Align.center)})
                     .padLeft(this@LogViewCtrl.textTimePaneDimensions.y).padRight(this@LogViewCtrl.textTimePaneDimensions.y)
                     .size(this@LogViewCtrl.textTimePaneDimensions.x, this@LogViewCtrl.textTimePaneDimensions.y)
                 })
@@ -95,9 +92,11 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
         innerTable.add(
             Stack().apply {
-                this.add(Image(textTimebackgroundColorTexture()))
+                this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {this.add(
-                    Label(localTimeStr, Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color())).apply { this.setAlignment(Align.center)})
+                    Label(localTimeStr, viewSkin)
+                            //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+                            .apply { this.setAlignment(Align.center)})
                     .padRight(ViewType.padWidth(width))
                 })
             }).size(this.textTimePaneDimensions.x, this.textTimePaneDimensions.y)
@@ -115,7 +114,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
             this.add(Table().apply {
                 this.add(textTimeReadout())
                 this.row()
-                this.add(scrollPane)
+                this.add(scrollPane).grow()
             })
         })
     }
@@ -132,7 +131,8 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
         if (isLog()) {
             (currentLog!!.size - 1 downTo 0).forEach { revEntryIdx ->
-                val logLabel = Label(currentLog!![revEntryIdx], Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+                val logLabel = Label(currentLog!![revEntryIdx], viewSkin)
+                        //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).growX()
                 innerTable.row()
@@ -142,10 +142,11 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         innerTable.top()
 //        innerTable.debug()
 
-        val scrollNine = NinePatch(TextureRegion(vScrollKnobTexture, 20, 20, 20, 20))
-        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
+//        val scrollNine = NinePatch(TextureRegion(vScrollKnobTexture, 20, 20, 20, 20))
+//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
 
-        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
+//        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
+          val scrollPane = ScrollPane(innerTable, viewSkin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -166,7 +167,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
             this.add(Table().apply {
                 this.add(textTimeReadout())
                 this.row()
-                this.add(textScrollPane())
+                this.add(textScrollPane()).grow()
             })
         }).size(this.tableWidth(), this.tableHeight())
         this.clip()
@@ -175,14 +176,16 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.batch = twoBatch
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.fontPackage = fontPackage
+                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) -> {

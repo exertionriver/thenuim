@@ -2,12 +2,9 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
+import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -18,12 +15,15 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
     init {
         MessageChannel.MENU_VIEW_BRIDGE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
-    var menuUpImage : MutableMap<Int, Texture?> = mutableMapOf()
-    var menuDownImage : MutableMap<Int, Texture?> = mutableMapOf()
-    var menuCheckedImage : MutableMap<Int, Texture?> = mutableMapOf()
+//    var menuUpImage : MutableMap<Int, Texture?> = mutableMapOf()
+//    var menuDownImage : MutableMap<Int, Texture?> = mutableMapOf()
+//    var menuCheckedImage : MutableMap<Int, Texture?> = mutableMapOf()
 
     var isChecked : MutableMap<Int, Boolean> = mutableMapOf()
 
@@ -33,7 +33,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         (0..5).forEach { idx ->
 
-            var buttonStyle = ButtonStyle()
+/*            var buttonStyle = ButtonStyle()
 
             if (menuUpImage[idx] != null && menuDownImage[idx] != null && menuCheckedImage[idx] != null) {
                 buttonStyle = ButtonStyle(
@@ -43,7 +43,8 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
             }
 
             val innerButton = Button(buttonStyle)
-
+*/
+            val innerButton = Button(viewSkin)
             //override from ctrl
             innerButton.isChecked = this@MenuViewCtrl.isChecked[idx] == true
 
@@ -66,12 +67,12 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         buttonSubLayout1.add(buttonList[1]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
         buttonSubLayout1.add(buttonList[2]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
         buttonSubLayout1.row()
-        buttonSubLayout1.add(buttonList[0]).colspan(2).size(ViewType.sixthWidth(screenWidth), ViewType.sixthHeight(screenHeight))
+        buttonSubLayout1.add(buttonList[0]).colspan(2).size(ViewType.sixthWidth(screenWidth), ViewType.sixthHeight(screenHeight) + 1).padTop(1f)
 
         val buttonSubLayout2 = Table()
         buttonSubLayout2.add(buttonList[3]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
         buttonSubLayout2.row()
-        buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
+        buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight)).padTop(1f)
         buttonSubLayout2.row()
         buttonSubLayout2.add(buttonList[5]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
 
@@ -86,18 +87,30 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
     }
 
     override fun buildCtrl() {
-        this.add(buttonLayout()).width(this.tableWidth()).height(this.tableHeight())
+        this.add(Stack().apply {
+            this.add(backgroundColorImg())
+            this.add(buttonLayout())
+        } ).size(this.tableWidth(), this.tableHeight())
+
         this.clip()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.batch = twoBatch
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+
                 (MessageChannel.MENU_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage : DisplayViewMenuMessage = MessageChannel.MENU_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 

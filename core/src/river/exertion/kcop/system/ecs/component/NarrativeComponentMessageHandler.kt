@@ -59,11 +59,18 @@ object NarrativeComponentMessageHandler {
                 val narrativeFlagsMessage: NarrativeFlagsMessage = MessageChannel.NARRATIVE_FLAGS_BRIDGE.receiveMessage(msg.extraInfo)
 
                 when (narrativeFlagsMessage.narrativeFlagsMessageType) {
-                    NarrativeFlagsMessage.NarrativeFlagsMessageType.SetFlag -> {
+                    NarrativeFlagsMessage.NarrativeFlagsMessageType.SetPersistFlag -> {
                         if (narrativeImmersion!!.flags.any { it.key == narrativeFlagsMessage.key }) {
                             narrativeImmersion!!.flags.first { it.key == narrativeFlagsMessage.key }.value = narrativeFlagsMessage.value
                         } else {
                             narrativeImmersion!!.flags.add(ImmersionStatus(narrativeFlagsMessage.key, narrativeFlagsMessage.value))
+                        }
+                    }
+                    NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag -> {
+                        if (blockFlags.any { it.key == narrativeFlagsMessage.key }) {
+                            blockFlags.first { it.key == narrativeFlagsMessage.key }.value = narrativeFlagsMessage.value
+                        } else {
+                            blockFlags.add(ImmersionStatus(narrativeFlagsMessage.key, narrativeFlagsMessage.value))
                         }
                     }
                     NarrativeFlagsMessage.NarrativeFlagsMessageType.AddToCounter -> {
@@ -74,7 +81,7 @@ object NarrativeComponentMessageHandler {
                             narrativeImmersion!!.flags.add(ImmersionStatus(narrativeFlagsMessage.key, narrativeFlagsMessage.value))
                         }
                     }
-                    NarrativeFlagsMessage.NarrativeFlagsMessageType.UnsetFlag -> {
+                    NarrativeFlagsMessage.NarrativeFlagsMessageType.UnsetPersistFlag -> {
                         narrativeImmersion!!.flags.removeIf { it.key == narrativeFlagsMessage.key }
                     }
                 }

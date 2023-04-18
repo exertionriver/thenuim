@@ -2,26 +2,30 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
-import river.exertion.kcop.assets.AssetManagerHandler
-import river.exertion.kcop.narrative.character.NameTypes
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
-import river.exertion.kcop.system.messaging.messages.MenuDataMessage
-import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.profile.Profile
-import river.exertion.kcop.system.view.ShapeDrawerConfig
+import river.exertion.kcop.system.view.SdcHandler
 
-class NewProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
+class NewProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
 
-    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
+    init {
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+    }
+
+    override lateinit var sdcHandler : SdcHandler
+    override lateinit var fontPackage : FontPackage
+    override lateinit var menuSkin: Skin
 
     override val backgroundColor = ColorPalette.of("olive")
 
@@ -29,14 +33,16 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
 
     fun newName() = newName ?: Profile.genName()
 
-    override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
+    override fun menuPane() = Table().apply {
         newName = newName()
 
-        this.add(Label("profile name: ", Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
+        this.add(Label("profile name: ", menuSkin))
+                //Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-        val nameTextField = TextField(newName, TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
+        val nameTextField = TextField(newName, menuSkin)
+        //TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
 //                this.alignment = Align.top
-        }
+//        }
         nameTextField.setTextFieldListener {
            textField, _ -> this@NewProfileMenu.newName = textField.text
             this@NewProfileMenu.actions.first { it.label == "Create"}.log = "Profile Created: ${this@NewProfileMenu.newName}"
@@ -66,6 +72,26 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
             MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(breadcrumbEntries.keys.toList()[0]) )
         })
     )
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            when {
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     override fun tag() = tag
     override fun label() = label

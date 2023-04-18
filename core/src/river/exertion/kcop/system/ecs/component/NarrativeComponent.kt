@@ -43,6 +43,9 @@ class NarrativeComponent : IComponent, Telegraph {
         get() = narrativeImmersion?.location ?: ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTime())
         set(value) { narrativeImmersion?.location = value }
 
+    var blockFlags : MutableList<ImmersionStatus> = mutableListOf()
+    fun eventFired(id : String) = blockFlags.any { it.key == id && it.value == NarrativeImmersion.EventFiredValue }
+
     val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
 
     var blockImmersionTimers : MutableMap<String, ImmersionTimerPair> = mutableMapOf()

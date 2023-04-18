@@ -1,26 +1,35 @@
 package river.exertion.kcop.simulation.view.displayViewMenus
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
-import river.exertion.kcop.system.view.ShapeDrawerConfig
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
 import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
-import river.exertion.kcop.system.messaging.messages.MenuNavMessage
+import river.exertion.kcop.system.view.SdcHandler
 import kotlin.system.exitProcess
 
-class MainMenu(override var screenWidth: Float, override var screenHeight: Float) : DisplayViewMenu {
+class MainMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
 
-    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
+    init {
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+    }
+
+    override lateinit var sdcHandler : SdcHandler
+    override lateinit var fontPackage : FontPackage
+    override lateinit var menuSkin: Skin
 
     override val backgroundColor = ColorPalette.of("blue")
 
-    override fun menuPane(bitmapFont: BitmapFont) = null
+    override fun menuPane() = null
 
     override val breadcrumbEntries = mapOf<String, String>()
 
@@ -52,6 +61,26 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
             Switchboard.closeMenu()
         })
     )
+
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            when {
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     override fun tag() = tag
     override fun label() = label

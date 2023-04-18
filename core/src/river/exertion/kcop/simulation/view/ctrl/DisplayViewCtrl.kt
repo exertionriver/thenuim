@@ -2,12 +2,8 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.clearImages
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.crossFadeImage
@@ -19,8 +15,10 @@ import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
 import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.*
 import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.Switchboard
-import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
+import river.exertion.kcop.system.messaging.messages.DisplayViewTextMessage
+import river.exertion.kcop.system.messaging.messages.DisplayViewTextureMessage
+import river.exertion.kcop.system.messaging.messages.LogViewMessage
 
 class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.DISPLAY, screenWidth, screenHeight) {
 
@@ -30,8 +28,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
     var displayViewLayouts : MutableList<DisplayViewLayout> = mutableListOf(
@@ -43,7 +43,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MainMenu(screenWidth, screenHeight),
         ProfileMenu(screenWidth, screenHeight),
         LoadProfileMenu(screenWidth, screenHeight),
-        SaveProfileMenu(screenWidth, screenHeight),
         NarrativeMenu(screenWidth, screenHeight),
         LoadNarrativeMenu(screenWidth, screenHeight),
         NewProfileMenu(screenWidth, screenHeight),
@@ -75,8 +74,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     override fun buildCtrl() {
         this.add(
             Stack().apply {
-                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(fontPackage.font(FontSize.SMALL), batch, currentLayoutMode, currentText, currentFontSize))
-                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout(batch, fontPackage.font(FontSize.SMALL)))
+                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(currentLayoutMode, currentText, currentFontSize))
+                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout())
             }).size(this.tableWidth(), this.tableHeight())
 
         this.clip()
@@ -85,20 +84,23 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.batch = twoBatch
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    val fontPackage: FontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.fontPackage = fontPackage
+                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.isType(msg.message) ) -> {
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
 
                     setLayoutIdxByTag(displayViewTextMessage.layoutTag)
+                    displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
                     if (displayViewTextMessage.displayText != null) currentText = displayViewTextMessage.displayText
                     if (displayViewTextMessage.displayFontSize != null) currentFontSize = displayViewTextMessage.displayFontSize
 
@@ -131,6 +133,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         }
                         if (displayViewMenuMessage.menuButtonIdx == 1) {
                             currentLayoutMode = (displayViewMenuMessage.isChecked)
+                            displayViewLayouts[currentLayoutIdx].paneTextures.clear()
+                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Background Box" else "Wireframe"}" ))
                         }
                         if (displayViewMenuMessage.menuButtonIdx == 2) {

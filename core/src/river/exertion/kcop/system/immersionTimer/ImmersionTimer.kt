@@ -35,6 +35,7 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
 
     fun resetTimer() {
         startTime = TimeUtils.millis()
+        pausedDurationMillis = 0
         pausedAtTime = if (stateMachine.currentState == ImmersionTimerState.PAUSED) startTime else 0
     }
 

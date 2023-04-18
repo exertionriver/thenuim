@@ -35,6 +35,7 @@ object NarrativeComponentNavStatusHandler {
 
             MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
 
+            blockFlags.clear()
             changed = true
         }
     }
@@ -90,6 +91,7 @@ object NarrativeComponentNavStatusHandler {
                 MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.UpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
                 MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
 
+                blockFlags.clear()
                 changed = true
             }
 

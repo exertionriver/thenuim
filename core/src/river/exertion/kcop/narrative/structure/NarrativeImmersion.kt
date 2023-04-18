@@ -18,7 +18,7 @@ class NarrativeImmersion(
     fun immersionBlockId() = location?.immersionBlockId ?: UnknownBlockId
     fun cumlImmersionTime() = if (location != null) location!!.cumlImmersionTime else ImmersionTimer.CumlTimeZero
 
-    fun eventFired(id : String) = flags.any { it.key == id && it.value == EventFiredValue }
+    fun persistEventFired(id : String) = flags.any { it.key == id && it.value == EventFiredValue }
 
     companion object {
         const val UnknownBlockId = "unknown"

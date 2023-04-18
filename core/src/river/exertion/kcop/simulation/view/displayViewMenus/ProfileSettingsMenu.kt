@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
+import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -24,15 +25,22 @@ import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
 import river.exertion.kcop.system.messaging.messages.MenuDataMessage
 import river.exertion.kcop.system.messaging.messages.MenuNavMessage
 import river.exertion.kcop.system.profile.settings.PSCompStatus
+import river.exertion.kcop.system.view.SdcHandler
 import river.exertion.kcop.system.view.ShapeDrawerConfig
 
 class ProfileSettingsMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
 
     init {
         MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
-    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
+    override lateinit var sdcHandler : SdcHandler
+    override lateinit var fontPackage : FontPackage
+    override lateinit var menuSkin: Skin
 
     override val backgroundColor = ColorPalette.of("olive")
 
@@ -44,22 +52,25 @@ class ProfileSettingsMenu(override var screenWidth: Float, override var screenHe
         PSShowTimer, PSCompStatus
     )
 
-    val scrollNine = NinePatch(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
-    val scrollBG = TextureRegionDrawable(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
-    val scrollPaneStyle = ScrollPane.ScrollPaneStyle(scrollBG, null, null, null, NinePatchDrawable(scrollNine))
+//    val scrollNine = NinePatch(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
+//    val scrollBG = TextureRegionDrawable(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
+//    val scrollPaneStyle = ScrollPane.ScrollPaneStyle(scrollBG, null, null, null, NinePatchDrawable(scrollNine))
 
-    override fun menuPane(bitmapFont: BitmapFont) = Table().apply {
+    override fun menuPane() = Table().apply {
 
         psSelections.forEach { selection ->
-            this.add(Label(selection.selectionLabel, Label.LabelStyle(bitmapFont, backgroundColor.label().color())).apply { this.wrap } ).left()
-            this.add(SelectBox<String>(SelectBox.SelectBoxStyle(
-                    bitmapFont, backgroundColor.label().color(), null,
-                    scrollPaneStyle,
-                    com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle().apply {
-                        this.font = bitmapFont
-                        this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
-                    }
-            )).apply {
+            this.add(Label(selection.selectionLabel, menuSkin)
+//                    Label.LabelStyle(bitmapFont, backgroundColor.label().color()))
+            .apply { this.wrap } ).left()
+            this.add(SelectBox<String>(menuSkin
+                    //, SelectBox.SelectBoxStyle(
+                   // bitmapFont, backgroundColor.label().color(), null,
+                   // scrollPaneStyle,
+                   // com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle().apply {
+                   //     this.font = bitmapFont
+                   //     this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
+                   // }
+            ).apply {
                 this.items = selection.options.map { it.optionValue }.toGdxArray()
                 this.selected = profileSettings[selection.selectionKey]
                 this.onChange { this@ProfileSettingsMenu.profileSettings[selection.selectionKey] = this.selected }
@@ -90,6 +101,18 @@ class ProfileSettingsMenu(override var screenWidth: Float, override var screenHe
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
                 (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {
                     val menuDataMessage: MenuDataMessage = MessageChannel.INTER_MENU_BRIDGE.receiveMessage(msg.extraInfo)
 

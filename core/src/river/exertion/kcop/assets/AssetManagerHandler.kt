@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import kotlinx.serialization.json.Json
 import ktx.assets.load
 import ktx.assets.unloadSafely
@@ -45,6 +46,7 @@ class AssetManagerHandler : Telegraph {
         assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(ifhr))
         FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
+        SkinAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
@@ -67,6 +69,8 @@ class AssetManagerHandler : Telegraph {
                 assets[FreeTypeFontAssets.ImmortalLarge].apply { this.data.setScale(FreeTypeFontAssets.ImmortalLarge.baseFontSize().fontScale())}
         )
     }
+
+    fun skin() : Skin = assets[SkinAssets.CleanCrispyUi]
 
     inline fun <reified T:IAsset>reloadAssets(assetLoadLocation : String): List<T> {
 

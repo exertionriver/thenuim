@@ -12,11 +12,10 @@ object DisplayViewCtrlTextureHandler {
 
         if (texture != null) {
             displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
-            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
         } else {
             displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = displayViewLayouts[currentLayoutIdx].paneBgTextures[layoutPaneIdx]
-            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
         }
+//        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
     }
 
     fun DisplayViewCtrl.fadeImageIn(layoutPaneIdx : Int, texture : Texture?) {
@@ -30,9 +29,9 @@ object DisplayViewCtrlTextureHandler {
                     if (this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] != null &&
                             this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] == this) {
 
-                        if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! >= .1f) {
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] =
-                                    displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]?.minus(.1f)
+                        val alpha = displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] ?: 1f
+                        if (alpha >= .1f) {
+                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = alpha - .1f
                         } else {
                             this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] = null
                             this.cancel()
@@ -41,6 +40,7 @@ object DisplayViewCtrlTextureHandler {
                     } else {
 //                        println("texture unlocked! [$layoutPaneIdx]")
                         displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
+                        this@fadeImageIn.build()
                         this.cancel()
                     }
                 }
@@ -58,18 +58,20 @@ object DisplayViewCtrlTextureHandler {
                     if (this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] != null &&
                             this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] == this) {
 
-                        if (displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]!! <= .9f) {
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] =
-                                    displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]?.plus(.1f)
+                        val alpha = displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] ?: 0f
+                        if (alpha <= .9f) {
+                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = alpha + .1f
                         } else {
                             this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] = null
-                            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
+                            displayViewLayouts[currentLayoutIdx].paneTextures.remove(layoutPaneIdx)
+//                            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
                             this.cancel()
                         }
                         this@fadeImageOut.build()
                     } else {
 //                        println("texture unlocked! [$layoutPaneIdx]")
                         displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
+                        this@fadeImageOut.build()
                         this.cancel()
                     }
                 }

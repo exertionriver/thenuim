@@ -4,9 +4,11 @@ import com.badlogic.gdx.ai.msg.MessageManager
 import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.system.view.SdcHandler
 import kotlin.reflect.KClass
 
 enum class MessageChannel {
@@ -35,7 +37,9 @@ enum class MessageChannel {
     ECS_ENGINE_COMPONENT_BRIDGE { override val messageClass = EngineComponentMessage::class },
 
     TWO_BATCH_BRIDGE { override val messageClass = PolygonSpriteBatch::class },
+    SDC_BRIDGE { override val messageClass = SdcHandler::class },
     FONT_BRIDGE { override val messageClass = FontPackage::class },
+    SKIN_BRIDGE { override val messageClass = Skin::class },
     AMH_LOAD_BRIDGE { override val messageClass = AMHLoadMessage::class },
     AMH_SAVE_BRIDGE { override val messageClass = AMHSaveMessage::class }
     ;

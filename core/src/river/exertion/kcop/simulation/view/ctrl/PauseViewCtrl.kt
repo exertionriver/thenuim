@@ -2,11 +2,9 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.scenes.scene2d.ui.Stack
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -18,18 +16,21 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     init {
         MessageChannel.PAUSE_VIEW_BRIDGE.enableReceive(this)
         MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.enableReceive(this)
-        MessageChannel.TWO_BATCH_BRIDGE.enableReceive(this)
+
+        MessageChannel.SDC_BRIDGE.enableReceive(this)
+        MessageChannel.FONT_BRIDGE.enableReceive(this)
+        MessageChannel.SKIN_BRIDGE.enableReceive(this)
     }
 
-    var pauseUpImage : Texture? = null
-    var pauseDownImage : Texture? = null
-    var pauseCheckedImage : Texture? = null
+//    var pauseUpImage : Texture? = null
+//    var pauseDownImage : Texture? = null
+//    var pauseCheckedImage : Texture? = null
 
     var isChecked = false
 
     fun clickButton() : Button {
 
-        var buttonStyle = ButtonStyle()
+/*        var buttonStyle = ButtonStyle()
 
         if (pauseUpImage != null && pauseDownImage != null && pauseCheckedImage != null) {
             buttonStyle = ButtonStyle(
@@ -39,7 +40,8 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
         }
 
         val innerButton = Button(buttonStyle)
-
+*/
+        val innerButton = Button(viewSkin)
         //override from ctrl
         innerButton.isChecked = this@PauseViewCtrl.isChecked
 
@@ -57,16 +59,27 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     }
 
     override fun buildCtrl() {
-        this.add(clickButton()).width(this.tableWidth()).height(this.tableHeight())
+        this.add(Stack().apply {
+            this.add(backgroundColorImg())
+            this.add(Table().apply {this.add(clickButton()).padTop(3f).height(this@PauseViewCtrl.tableHeight()) })
+        } ).size(this.tableWidth(), this.tableHeight())
+
         this.clip()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.TWO_BATCH_BRIDGE.isType(msg.message) ) -> {
-                    val twoBatch: PolygonSpriteBatch = MessageChannel.TWO_BATCH_BRIDGE.receiveMessage(msg.extraInfo)
-                    super.batch = twoBatch
+                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
+                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
+                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.PAUSE_VIEW_BRIDGE.isType(msg.message) ) -> {
