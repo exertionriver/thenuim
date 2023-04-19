@@ -120,4 +120,12 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
         }
         return false
     }
+
+    fun dispose() {
+        sampleSwatchesCtrl.dispose()
+        baseSwatchesCtrl.dispose()
+        compSwatchesCtrl.dispose()
+        triadFirstSwatchesCtrl.dispose()
+        triadSecondSwatchesCtrl.dispose()
+    }
 }

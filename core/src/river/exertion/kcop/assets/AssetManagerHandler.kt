@@ -70,7 +70,7 @@ class AssetManagerHandler : Telegraph {
         )
     }
 
-    fun skin() : Skin = assets[SkinAssets.CleanCrispyUi]
+    fun skin() : Skin = assets[SkinAssets.KcopUi]
 
     inline fun <reified T:IAsset>reloadAssets(assetLoadLocation : String): List<T> {
 

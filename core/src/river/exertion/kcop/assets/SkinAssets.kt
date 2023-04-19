@@ -9,7 +9,8 @@ import ktx.assets.getAsset
 import ktx.assets.load
 
 enum class SkinAssets(val path: String) {
-    CleanCrispyUi("skin/clean-crispy-ui.json")
+    CleanCrispyUi("skin/clean-crispy-ui.json"),
+    KcopUi("skin/kcop-ui.json")
 }
 
 fun AssetManager.load(asset: SkinAssets) = load<Skin>(asset.path)

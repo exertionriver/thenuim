@@ -10,27 +10,27 @@ enum class ViewType {
         override fun defaultColor() = firstDefaultColor
     },
     TEXT {
-        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), thirdHeight(screenHeight), secondWidth(screenWidth), secondHeight(screenHeight))
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), thirdHeight(screenHeight) - 2, secondWidth(screenWidth), secondHeight(screenHeight) + 2)
         override fun defaultColor() = firstDefaultColor.comp().triad().first
     },
     LOG {
-        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fourthWidth(screenWidth) + 1, 0f, thirdWidth(screenWidth), thirdHeight(screenHeight) + 1)
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fourthWidth(screenWidth), 0f, thirdWidth(screenWidth) + 1, thirdHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor.triad().first
     },
     STATUS {
-        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), 0f, fourthWidth(screenWidth) + 1, fourthHeight(screenHeight))
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), 0f, fourthWidth(screenWidth), fourthHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor.triad().second
     },
     MENU {
-        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), fourthHeight(screenHeight), fifthWidth(screenWidth), fifthHeight(screenHeight))
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), fourthHeight(screenHeight), fifthWidth(screenWidth), fifthHeight(screenHeight) - 1)
         override fun defaultColor() = secondDefaultColor
     },
     INPUT {
-        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fifthWidth(screenWidth), fourthHeight(screenHeight) + seventhHeight(screenHeight), sixthWidth(screenWidth) + 1, sixthHeight(screenHeight))
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fifthWidth(screenWidth), fourthHeight(screenHeight) + seventhHeight(screenHeight), sixthWidth(screenWidth), sixthHeight(screenHeight) - 1.3f)
         override fun defaultColor() = secondDefaultColor.comp()
     },
     AI {
-        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fifthWidth(screenWidth) + seventhWidth(screenWidth), fourthHeight(screenHeight), seventhWidth(screenWidth) + 1, seventhHeight(screenHeight))
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth) + fifthWidth(screenWidth) + seventhWidth(screenWidth), fourthHeight(screenHeight), seventhWidth(screenWidth), seventhHeight(screenHeight))
         override fun defaultColor() = secondDefaultColor.triad().first
     },
     PAUSE {

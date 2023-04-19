@@ -2,15 +2,9 @@ package river.exertion.kcop.simulation.colorPalette
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.*
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g3d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.*
 import ktx.app.KtxScreen
-import ktx.scene2d.*
-import river.exertion.kcop.*
 import river.exertion.kcop.assets.*
 
 
@@ -18,7 +12,7 @@ class ColorPaletteSimulator(private val stage: Stage,
                             private val assetManagerHandler: AssetManagerHandler,
                             private val orthoCamera: OrthographicCamera) : KtxScreen {
 
-    val cpLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -29,17 +23,17 @@ class ColorPaletteSimulator(private val stage: Stage,
         stage.draw()
 
         when {
-            Gdx.input.isKeyJustPressed(Input.Keys.R) -> { cpLayout.colorBaseIncrR() }
-            Gdx.input.isKeyJustPressed(Input.Keys.G) -> { cpLayout.colorBaseIncrG() }
-            Gdx.input.isKeyJustPressed(Input.Keys.B) -> { cpLayout.colorBaseIncrB() }
-            Gdx.input.isKeyJustPressed(Input.Keys.E) -> { cpLayout.colorBaseDecrR() }
-            Gdx.input.isKeyJustPressed(Input.Keys.F) -> { cpLayout.colorBaseDecrG() }
-            Gdx.input.isKeyJustPressed(Input.Keys.V) -> { cpLayout.colorBaseDecrB()}
+            Gdx.input.isKeyJustPressed(Input.Keys.R) -> { colorPaletteLayout.colorBaseIncrR() }
+            Gdx.input.isKeyJustPressed(Input.Keys.G) -> { colorPaletteLayout.colorBaseIncrG() }
+            Gdx.input.isKeyJustPressed(Input.Keys.B) -> { colorPaletteLayout.colorBaseIncrB() }
+            Gdx.input.isKeyJustPressed(Input.Keys.E) -> { colorPaletteLayout.colorBaseDecrR() }
+            Gdx.input.isKeyJustPressed(Input.Keys.F) -> { colorPaletteLayout.colorBaseDecrG() }
+            Gdx.input.isKeyJustPressed(Input.Keys.V) -> { colorPaletteLayout.colorBaseDecrB()}
 
-            Gdx.input.isKeyJustPressed(Input.Keys.UP) -> { cpLayout.colorBaseIncr() }
-            Gdx.input.isKeyJustPressed(Input.Keys.DOWN) -> { cpLayout.colorBaseDecr() }
-            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { cpLayout.colorSamplePrev() }
-            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { cpLayout.colorSampleNext() }
+            Gdx.input.isKeyJustPressed(Input.Keys.UP) -> { colorPaletteLayout.colorBaseIncr() }
+            Gdx.input.isKeyJustPressed(Input.Keys.DOWN) -> { colorPaletteLayout.colorBaseDecr() }
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> { colorPaletteLayout.colorSamplePrev() }
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> { colorPaletteLayout.colorSampleNext() }
         }
     }
 
@@ -49,11 +43,11 @@ class ColorPaletteSimulator(private val stage: Stage,
     override fun show() {
         Gdx.input.inputProcessor = stage
 
-        stage.addActor(cpLayout.createSampleSwatchesCtrl())
-        stage.addActor(cpLayout.createBaseSwatchesCtrl())
-        stage.addActor(cpLayout.createCompSwatchesCtrl())
-        stage.addActor(cpLayout.createTriadFirstSwatchesCtrl())
-        stage.addActor(cpLayout.createTriadSecondSwatchesCtrl())
+        stage.addActor(colorPaletteLayout.createSampleSwatchesCtrl())
+        stage.addActor(colorPaletteLayout.createBaseSwatchesCtrl())
+        stage.addActor(colorPaletteLayout.createCompSwatchesCtrl())
+        stage.addActor(colorPaletteLayout.createTriadFirstSwatchesCtrl())
+        stage.addActor(colorPaletteLayout.createTriadSecondSwatchesCtrl())
     }
 
     override fun pause() {
@@ -70,5 +64,6 @@ class ColorPaletteSimulator(private val stage: Stage,
 
     override fun dispose() {
         assetManagerHandler.dispose()
+        colorPaletteLayout.dispose()
     }
 }

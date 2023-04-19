@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import ktx.style.label
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
@@ -38,8 +39,6 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
 
     fun clearTable(heightOverride : Float = tableHeight(), posYOverride : Float = tablePosY()) {
         this.clearChildren()
-
-        sdcHandler.dispose()
 
         this.setSize(tableWidth(), heightOverride)
         this.setPosition(tablePosX(), posYOverride)
@@ -82,8 +81,7 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
             }
         }
 
-        val swatchLabel = Label(colorPaletteEntry.key, skin)
-                //Label.LabelStyle(bitmapFont, colorPaletteEntry.value.label().color()))
+        val swatchLabel = Label(colorPaletteEntry.key, skin.apply { this.label { this.font = fontPackage.text; this.fontColor = colorPaletteEntry.value.label().color()  }})
         swatchLabel.setAlignment(Align.center)
 
         stack.add(swatchImg)
@@ -110,5 +108,9 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
             }
         }
         return false
+    }
+
+    fun dispose() {
+        sdcHandler.dispose()
     }
 }

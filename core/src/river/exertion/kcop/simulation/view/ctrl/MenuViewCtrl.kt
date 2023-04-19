@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -67,18 +68,18 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         buttonSubLayout1.add(buttonList[1]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
         buttonSubLayout1.add(buttonList[2]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
         buttonSubLayout1.row()
-        buttonSubLayout1.add(buttonList[0]).colspan(2).size(ViewType.sixthWidth(screenWidth), ViewType.sixthHeight(screenHeight) + 1).padTop(1f)
+        buttonSubLayout1.add(buttonList[0]).align(Align.center).colspan(2).size(ViewType.sixthWidth(screenWidth) - 3, ViewType.sixthHeight(screenHeight) - 3)
 
         val buttonSubLayout2 = Table()
-        buttonSubLayout2.add(buttonList[3]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
+        buttonSubLayout2.add(buttonList[3]).align(Align.center).size(ViewType.seventhWidth(screenWidth) - 5, ViewType.seventhHeight(screenHeight) - 5)
         buttonSubLayout2.row()
         buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight)).padTop(1f)
         buttonSubLayout2.row()
         buttonSubLayout2.add(buttonList[5]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
 
         val buttonLayout = Table()
-        buttonLayout.add(buttonSubLayout1)
-        buttonLayout.add(buttonSubLayout2)
+        buttonLayout.add(buttonSubLayout1).padTop(2f).padLeft(2f).padBottom(2f)
+        buttonLayout.add(buttonSubLayout2).padTop(2f).padRight(1f).padBottom(2f)
 
         buttonLayout.validate()
         buttonLayout.layout()

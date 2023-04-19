@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -61,7 +62,9 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     override fun buildCtrl() {
         this.add(Stack().apply {
             this.add(backgroundColorImg())
-            this.add(Table().apply {this.add(clickButton()).padTop(3f).height(this@PauseViewCtrl.tableHeight()) })
+            this.add(Table().apply {
+                this.add(clickButton()).align(Align.center).size(this@PauseViewCtrl.tableWidth() - 5, this@PauseViewCtrl.tableHeight() - 5)
+            })
         } ).size(this.tableWidth(), this.tableHeight())
 
         this.clip()
