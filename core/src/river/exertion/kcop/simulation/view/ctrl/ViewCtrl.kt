@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -13,10 +14,9 @@ import river.exertion.kcop.system.view.SdcHandler
 open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
 
     lateinit var sdcHandler : SdcHandler
-    lateinit var fontPackage : FontPackage
-    var viewSkin : Skin
-        get() = super.getSkin()
-        set(value) = super.setSkin(value)
+    lateinit var kcopSkin : KcopSkin
+
+    fun skin() = kcopSkin.skin
 
     fun viewRect() = viewType.viewRect(screenWidth, screenHeight)
 
@@ -33,7 +33,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
         }
     }
 
-    fun backgroundColorImg() : Image = Image(backgroundColorTexture())
+    fun backgroundColorImg() : Image = Image(backgroundColorTexture()).apply { this.setFillParent(true) }
 
     private fun clearTable() {
         this.clearChildren()
@@ -51,7 +51,7 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     open fun buildCtrl() {
         val stack = Stack()
 
-        val viewLabel = Label(viewType.name, viewSkin)
+        val viewLabel = Label(viewType.name, skin)
                 //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
         viewLabel.setAlignment(Align.center)
 
@@ -69,6 +69,6 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
 
     open fun dispose() {
         sdcHandler.dispose()
-        viewSkin.dispose()
+        kcopSkin.dispose()
     }
 }

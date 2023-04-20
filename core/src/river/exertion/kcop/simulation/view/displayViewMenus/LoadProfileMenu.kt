@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -20,13 +21,11 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
         MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override lateinit var sdcHandler : SdcHandler
-    override lateinit var fontPackage : FontPackage
-    override lateinit var menuSkin: Skin
+    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("teal")
 
@@ -39,7 +38,7 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
 
         if (selectedProfileAssetInfo != null) {
             selectedProfileAssetInfo!!.forEach { profileEntry ->
-                this.add(Label(profileEntry, menuSkin)
+                this.add(Label(profileEntry, skin())
                         //LabelStyle(bitmapFont, backgroundColor.label().color()))
                         .apply {
                     this.wrap = true
@@ -49,7 +48,7 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
 //        this.debug()
             this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Profile Loaded : ${selectedProfileAssetName()}" }
         } else {
-            this.add(Label("no profile info found", menuSkin)
+            this.add(Label("no profile info found", skin())
 //                    LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()
             this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
@@ -82,12 +81,8 @@ class LoadProfileMenu(override var screenWidth: Float, override var screenHeight
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {

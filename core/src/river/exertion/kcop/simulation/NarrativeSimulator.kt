@@ -68,7 +68,7 @@ class NarrativeSimulator(private val stage: Stage,
         multiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = multiplexer
 
-        viewLayout.build(stage, assetManagerHandler)
+        viewLayout.build(stage)
 
         defaultProfileComponent = ProfileComponent.getFor(engineHandler.profileEntity)!!
 

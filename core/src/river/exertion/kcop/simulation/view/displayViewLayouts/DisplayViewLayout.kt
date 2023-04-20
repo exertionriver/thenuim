@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.DisplayViewPane
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
@@ -21,8 +22,9 @@ interface DisplayViewLayout {
     var screenHeight : Float
 
     var sdcHandler : SdcHandler
-    var fontPackage : FontPackage
-    var skin : Skin
+    var kcopSkin : KcopSkin
+
+    fun skin() = kcopSkin.skin
 
 //    val maskPixmap : Pixmap
 //    val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
@@ -88,7 +90,7 @@ interface DisplayViewLayout {
                 while (!rowParsed) {
                     val dvpRowWidth = (textDVPs.values.toList()[currentDVPIdx]!!.width(screenWidth) - 2 * ViewType.padWidth(screenWidth))
 
-                    var textLabel = Label(dvpText, skin)
+                    var textLabel = Label(dvpText, skin())
                             //Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
 
                     val dvpPaneModHeight = dvpPaneHeight + extraRow * textLabel.height
@@ -103,7 +105,7 @@ interface DisplayViewLayout {
                         if (dvpText.contains("\n") ) {
                             dvpText = dvpText.substring(0, dvpText.indexOf("\n"))
                             //recalc text label, removing \n
-                            textLabel = Label(dvpText, skin)
+                            textLabel = Label(dvpText, skin())
                                     //Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
                             currentTextRemaining = currentTextRemaining.substring(dvpText.length + 1, currentTextRemaining.length)
                         } else {
@@ -166,7 +168,7 @@ interface DisplayViewLayout {
                         ).grow()
                         innerTableBg.debug = layoutMode
                         val innerTableFg = Table()
-                        val innerLabel = Label(label, skin)
+                        val innerLabel = Label(label, skin())
                                 //Label.LabelStyle(bitmapFont, randomColor.label().color()))
                         innerLabel.setAlignment(Align.center)
                         innerTableFg.add(innerLabel).size(
@@ -198,7 +200,7 @@ interface DisplayViewLayout {
                         //text present
                         if (paneText[displayViewPane.key] != null) {
                          //   bitmapFont.data.setScale(currentFontSize.fontScale())
-                            val textLabel = Label(paneText[displayViewPane.key], skin)
+                            val textLabel = Label(paneText[displayViewPane.key], skin())
                                     //Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
                                     .apply { this.setAlignment(Align.topLeft) }
                             textLabel.setAlignment(Align.topLeft)
@@ -239,7 +241,7 @@ interface DisplayViewLayout {
 
     fun dispose() {
         sdcHandler.dispose()
-        skin.dispose()
+        kcopSkin.dispose()
         paneTextures.values.forEach { it?.dispose() }
         paneBgTextures.values.forEach { it?.dispose() }
     }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.DisplayViewPane
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -16,15 +17,13 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
 
     init {
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override val tag = Companion.tag
 
     override lateinit var sdcHandler : SdcHandler
-    override lateinit var fontPackage : FontPackage
-    override lateinit var skin: Skin
+    override lateinit var kcopSkin : KcopSkin
 
 //    override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
 
@@ -100,12 +99,8 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    skin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
             }

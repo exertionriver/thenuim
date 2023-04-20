@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -19,13 +20,11 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
 
     init {
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override lateinit var sdcHandler : SdcHandler
-    override lateinit var fontPackage : FontPackage
-    override lateinit var menuSkin: Skin
+    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("blue")
 
@@ -69,12 +68,8 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
             }

@@ -19,30 +19,14 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
         MessageChannel.NARRATIVE_BRIDGE_PAUSE_GATE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
-
-//    var pauseUpImage : Texture? = null
-//    var pauseDownImage : Texture? = null
-//    var pauseCheckedImage : Texture? = null
 
     var isChecked = false
 
     fun clickButton() : Button {
 
-/*        var buttonStyle = ButtonStyle()
-
-        if (pauseUpImage != null && pauseDownImage != null && pauseCheckedImage != null) {
-            buttonStyle = ButtonStyle(
-                TextureRegionDrawable(pauseUpImage!!)
-                , TextureRegionDrawable(pauseDownImage!!)
-                , TextureRegionDrawable(pauseCheckedImage!!))
-        }
-
-        val innerButton = Button(buttonStyle)
-*/
-        val innerButton = Button(viewSkin)
+        val innerButton = Button(skin())
         //override from ctrl
         innerButton.isChecked = this@PauseViewCtrl.isChecked
 
@@ -77,12 +61,9 @@ class PauseViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.PAUSE_VIEW_BRIDGE.isType(msg.message) ) -> {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -17,8 +18,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     val displayStatuses : MutableMap<String, Float> = mutableMapOf()
@@ -47,16 +47,9 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
             val barStack = Stack()
 
             barStack.add(
-                ProgressBar(0f, 1f, .01f, false, skin
-                        /*ProgressBar.ProgressBarStyle(
-                    NinePatchDrawable(NinePatch(statusColorTexture())),
-                    null
-                ).apply { this.knobBefore = NinePatchDrawable(NinePatch(statusColorTexture(backgroundColor.triad().first)))}
-      */      ).apply { this.value = it.value }
-            )
+                ProgressBar(0f, 1f, .01f, false, skin()).apply { this.value = it.value } )
             barStack.add(
-                Label(it.key, skin)
-                        //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().incr(2).color()))
+                Label(it.key, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().incr(2).color()))
             )
 
             innerTable.add(barStack)
@@ -66,11 +59,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
         innerTable.top()
 //        innerTable.debug()
 
-//        val scrollNine = NinePatch(statusColorTexture(backgroundColor.triad().second.incr(2)))
-//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(statusColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
-
-//        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
-            val scrollPane = ScrollPane(innerTable, skin).apply {
+            val scrollPane = ScrollPane(innerTable, skin()).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -101,12 +90,8 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {

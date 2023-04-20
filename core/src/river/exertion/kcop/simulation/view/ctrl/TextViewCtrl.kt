@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.AssetManagerHandler
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.TextViewMessage
@@ -18,15 +19,12 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         MessageChannel.TEXT_VIEW_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     var currentText : String = AssetManagerHandler.NoNarrativeLoaded
     var currentHintText : String = ""
     var currentPrompts : List<String>? = null
-
-//    var vScrollKnobTexture : Texture? = null
 
     private lateinit var scrollPane : ScrollPane
 
@@ -42,10 +40,8 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
             ViewType.padHeight(height)
         )
 
-        val textLabel = Label(currentText, viewSkin)
-                //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
-        val hintLabel = Label(currentHintText, viewSkin)
-                //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.triad().first.label().color()))
+        val textLabel = Label(currentText, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+        val hintLabel = Label(currentHintText, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.triad().first.label().color()))
 
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
@@ -58,11 +54,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         innerTable.top()
 //        innerTable.debug()
 
-   //     val scrollNine = NinePatch(TextureRegion(vScrollKnobTexture, 20, 20, 20, 20))
-   //     val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
-
-//        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
-        val scrollPane = ScrollPane(innerTable, viewSkin).apply {
+        val scrollPane = ScrollPane(innerTable, skin()).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -88,8 +80,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, viewSkin)
-                        //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+                val logLabel = Label(entry, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()
@@ -123,12 +114,8 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.TEXT_VIEW_BRIDGE.isType(msg.message) ) -> {

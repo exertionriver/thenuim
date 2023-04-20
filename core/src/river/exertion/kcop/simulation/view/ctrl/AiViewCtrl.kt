@@ -19,34 +19,18 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
         MessageChannel.AI_VIEW_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     var hintTextEntries : MutableMap<String, String> = mutableMapOf()
 
     fun hintText() = hintTextEntries.values.reduceOrNull { acc, s -> acc + "\n$s"} ?: ""
 
-//    var aiUpImage : Texture? = null
-//    var aiDownImage : Texture? = null
-//    var aiCheckedImage : Texture? = null
-
     var isChecked = false
 
     fun clickButton() : Button {
 
-/*        var buttonStyle = ButtonStyle()
-
-        if (aiUpImage != null && aiDownImage != null && aiCheckedImage != null) {
-            buttonStyle = ButtonStyle(
-                TextureRegionDrawable(aiUpImage!!)
-                , TextureRegionDrawable(aiDownImage!!)
-                , TextureRegionDrawable(aiCheckedImage!!))
-        }
-
-        val innerButton = Button(buttonStyle)
-*/
-        val innerButton = Button(viewSkin)
+        val innerButton = Button(skin())
         //override from ctrl
         innerButton.isChecked = this@AiViewCtrl.isChecked
 
@@ -82,12 +66,8 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) -> {

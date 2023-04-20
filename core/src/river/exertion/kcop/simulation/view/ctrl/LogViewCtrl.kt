@@ -2,10 +2,15 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -18,12 +23,10 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     var currentLog : MutableList<String>? = null
-    //var textTimeSdc : ShapeDrawerConfig? = null
 
     val initTimeStr = ImmersionTimer.CumlTimeZero
 
@@ -31,12 +34,9 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     var cumlImmersionTimeStr = initTimeStr
     var localTimeStr = initTimeStr
 
-//    var vScrollTexture : Texture? = null
-//    var vScrollKnobTexture : Texture? = null
-
     var textTimePaneDimensions = Vector2(this.tableWidth() / 4, this.tableWidth() / 13)
 
-    private lateinit var scrollPane : ScrollPane
+    private var scrollPane : ScrollPane = textScrollPane()
 
     fun textTimeBackgroundColorTexture() : TextureRegion {
         return sdcHandler.get("textTime", backgroundColor.triad().second).textureRegion().apply {
@@ -47,8 +47,11 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     fun isLog() = !currentLog.isNullOrEmpty()
 
     fun addLog(logEntry : String) {
-        if (currentLog == null) currentLog = mutableListOf()
-        currentLog!!.add(logEntry)
+        if (currentLog != null) {
+            currentLog!!.add(logEntry)
+        } else {
+            currentLog = mutableListOf()
+        }
     }
 
     fun updateInstImmersionTime(newImmersionTimeStr : String) {
@@ -65,26 +68,28 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
     fun textTimeReadout() : Table {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(ViewType.padHeight(height)).padBottom(ViewType.padHeight(height))
+        val innerTable = Table().padLeft(ViewType.padWidth(tableWidth())).padRight(ViewType.padWidth(tableWidth())).padTop(ViewType.padHeight(tableHeight())).padBottom(ViewType.padHeight(tableHeight()))
 
         innerTable.add(
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
-                this.add(Table().apply {this.add(
-                    Label(instImmersionTimeStr, viewSkin)
-                            //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
-                            .apply { this.setAlignment(Align.center)})
-                    .padRight(ViewType.padWidth(width))
+                this.add(Table().apply {
+                    this.add(Label(instImmersionTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                    .apply {
+                        this.setAlignment(Align.center)
+                    })
+                    .padRight(ViewType.padWidth(tableWidth()))
                 })
             }).size(this.textTimePaneDimensions.x, this.textTimePaneDimensions.y)
 
         innerTable.add(
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
-                this.add(Table().apply {this.add(
-                    Label(cumlImmersionTimeStr, viewSkin)
-                            //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
-                            .apply { this.setAlignment(Align.center)})
+                this.add(Table().apply {
+                    this.add(Label(cumlImmersionTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                    .apply {
+                        this.setAlignment(Align.center)
+                    })
                     .padLeft(this@LogViewCtrl.textTimePaneDimensions.y).padRight(this@LogViewCtrl.textTimePaneDimensions.y)
                     .size(this@LogViewCtrl.textTimePaneDimensions.x, this@LogViewCtrl.textTimePaneDimensions.y)
                 })
@@ -93,15 +98,16 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         innerTable.add(
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
-                this.add(Table().apply {this.add(
-                    Label(localTimeStr, viewSkin)
-                            //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
-                            .apply { this.setAlignment(Align.center)})
-                    .padRight(ViewType.padWidth(width))
+                this.add(Table().apply {
+                    this.add(Label(localTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                    .apply {
+                        this.setAlignment(Align.center)
+                    })
+                    .padRight(ViewType.padWidth(tableWidth()))
                 })
             }).size(this.textTimePaneDimensions.x, this.textTimePaneDimensions.y)
 
-//        innerTable.debug()
+       // innerTable.debug()
 
         return innerTable
     }
@@ -110,29 +116,30 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         this.clearChildren()
 
         this.add(Stack().apply {
-            this.add(backgroundColorImg())
+            this.add(Table().apply {
+                this.add(backgroundColorImg()).grow()
+            })
             this.add(Table().apply {
                 this.add(textTimeReadout())
                 this.row()
                 this.add(scrollPane).grow()
             })
-        })
+        }).size(this.tableWidth(), this.tableHeight())
+        this.clip()
     }
 
     fun textScrollPane() : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
-            ViewType.padHeight(
-                height
-            )
-        ).padBottom(
-            ViewType.padHeight(height)
+        val innerTable = Table()
+            .padLeft(ViewType.padWidth(tableWidth()))
+            .padRight(ViewType.padWidth(tableWidth()))
+            .padTop(ViewType.padHeight(tableHeight()))
+            .padBottom(ViewType.padHeight(tableHeight())
         )
 
         if (isLog()) {
             (currentLog!!.size - 1 downTo 0).forEach { revEntryIdx ->
-                val logLabel = Label(currentLog!![revEntryIdx], viewSkin)
-                        //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
+                val logLabel = Label(currentLog!![revEntryIdx], kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).growX()
                 innerTable.row()
@@ -142,17 +149,14 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         innerTable.top()
 //        innerTable.debug()
 
-//        val scrollNine = NinePatch(TextureRegion(vScrollKnobTexture, 20, 20, 20, 20))
-//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(TextureRegionDrawable(backgroundColorTexture()), null, null, null, NinePatchDrawable(scrollNine))
-
-//        val scrollPane = ScrollPane(innerTable, scrollPaneStyle).apply {
-          val scrollPane = ScrollPane(innerTable, viewSkin).apply {
+        val scrollPane = ScrollPane(innerTable, skin()).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
             this.validate()
             //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
             this.layout()
+//            this.debug()
         }
 
         this.scrollPane = scrollPane
@@ -163,12 +167,16 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     override fun buildCtrl() {
 
         this.add(Stack().apply {
-            this.add(backgroundColorImg())
             this.add(Table().apply {
+                this.add(backgroundColorImg()).grow()
+            })
+            this.add(Table().apply {
+//                this.debug()
                 this.add(textTimeReadout())
                 this.row()
                 this.add(textScrollPane()).grow()
             })
+ //           this.debug()
         }).size(this.tableWidth(), this.tableHeight())
         this.clip()
     }
@@ -180,12 +188,8 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) -> {

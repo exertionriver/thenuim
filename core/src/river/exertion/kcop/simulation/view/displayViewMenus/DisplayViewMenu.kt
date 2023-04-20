@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
@@ -16,8 +17,9 @@ import river.exertion.kcop.system.view.SdcHandler
 interface DisplayViewMenu {
 
     var sdcHandler : SdcHandler
-    var fontPackage : FontPackage
-    var menuSkin : Skin
+    var kcopSkin : KcopSkin
+
+    fun skin() = kcopSkin.skin
 
     var screenWidth : Float
     var screenHeight : Float
@@ -35,7 +37,7 @@ interface DisplayViewMenu {
 
         this@DisplayViewMenu.navs.forEach { navEntry ->
             this.add(
-                TextButton(navEntry.label, menuSkin)
+                TextButton(navEntry.label, skin())
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
                         .apply {
                     this.onClick {
@@ -53,7 +55,7 @@ interface DisplayViewMenu {
 
         this@DisplayViewMenu.actions.forEach { actionEntry ->
             this.add(
-                TextButton(actionEntry.label, menuSkin)
+                TextButton(actionEntry.label, skin())
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
                         .apply {
                     this.onClick {
@@ -71,7 +73,7 @@ interface DisplayViewMenu {
 
         //TODO : singleton with three-sized bitmap fonts
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
-            this.add(Label("${menuLabel.value} > ", menuSkin)
+            this.add(Label("${menuLabel.value} > ", skin())
                     //Label.LabelStyle(bitmapFont.apply {this.data.setScale(FontSize.SMALL.fontScale())}
                 //, backgroundColor.label().color()))
                 .apply {
@@ -93,13 +95,6 @@ interface DisplayViewMenu {
 
     fun menuLayout() : Table {
 
-//        val scrollBackground = TextureRegionDrawable(
-//            sdcMap[1]!!.textureRegion.apply {this.setRegion(0, 0, 20, 20) }
-//        )
-
-//        val scrollNine = NinePatch(TextureRegion(TextureRegion(Texture("images/kobold64.png")), 20, 20, 20, 20))
-//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle(scrollBackground, null, null, null, NinePatchDrawable(scrollNine))
-
         val menuPane = menuPane()
 
         return Table().apply {
@@ -109,7 +104,7 @@ interface DisplayViewMenu {
                     Table().apply {
                         this.add(breadcrumbPane()).right().growX()
                         this.add(
-                            Table().apply { this.add(Label(this@DisplayViewMenu.label(), menuSkin)
+                            Table().apply { this.add(Label(this@DisplayViewMenu.label(), skin())
                                     //Label.LabelStyle(bitmapFont.apply { this.data.setScale(FontSize.MEDIUM.fontScale()) }, backgroundColor.label().color()))
                                     .apply {
                                 this.setAlignment(Align.center)
@@ -121,7 +116,7 @@ interface DisplayViewMenu {
                             if (menuPane == null) { Table() }
                             else {
 //                                ScrollPane(menuPane, scrollPaneStyle).apply {
-                                ScrollPane(menuPane, menuSkin).apply {
+                                ScrollPane(menuPane, skin()).apply {
                                     // https://github.com/raeleus/skin-composer/wiki/ScrollPane
                                     this.fadeScrollBars = false
                                     this.setFlickScroll(false)
@@ -130,8 +125,8 @@ interface DisplayViewMenu {
                                     this.layout()
                                 }
                             }
-                        ).height(ViewType.secondHeight(screenHeight) - 3 * fontPackage.large.lineHeight)
-                            .width(ViewType.secondWidth(screenWidth) - 3 * fontPackage.large.lineHeight)
+                        ).height(ViewType.secondHeight(screenHeight) - 3 * kcopSkin.fontPackage.large.lineHeight)
+                            .width(ViewType.secondWidth(screenWidth) - 3 * kcopSkin.fontPackage.large.lineHeight)
                             .growY().top()
                         this.add(navButtonPane()).top()
                         this.row()
@@ -147,13 +142,8 @@ interface DisplayViewMenu {
     fun tag() : String //= tag //need to override this in implementing menu
     fun label() : String //= label //need to override this in implementing menu
 
-/*    companion object {
-        const val tag = "DisplayViewMenu"
-        const val label = "DisplayViewMenu"
-    }
-*/
     fun dispose() {
         sdcHandler.dispose()
-        menuSkin.dispose()
+        kcopSkin.dispose()
     }
 }

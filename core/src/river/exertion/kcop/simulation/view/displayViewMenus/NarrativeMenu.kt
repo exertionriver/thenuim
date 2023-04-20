@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.simulation.view.displayViewMenus.params.MenuNavParams
@@ -24,13 +25,11 @@ class NarrativeMenu(override var screenWidth: Float, override var screenHeight: 
         MessageChannel.INTRA_MENU_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override lateinit var sdcHandler : SdcHandler
-    override lateinit var fontPackage : FontPackage
-    override lateinit var menuSkin: Skin
+    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("green")
 
@@ -39,7 +38,7 @@ class NarrativeMenu(override var screenWidth: Float, override var screenHeight: 
 
     override fun menuPane() : Table {
 
-        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(menuSkin)
+        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(skin())
 //                ListStyle().apply {
 //            this.font = bitmapFont
 //            this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
@@ -94,12 +93,8 @@ class NarrativeMenu(override var screenWidth: Float, override var screenHeight: 
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {

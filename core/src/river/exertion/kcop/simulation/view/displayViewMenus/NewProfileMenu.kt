@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.system.colorPalette.ColorPalette
@@ -19,13 +20,11 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
 
     init {
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override lateinit var sdcHandler : SdcHandler
-    override lateinit var fontPackage : FontPackage
-    override lateinit var menuSkin: Skin
+    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("olive")
 
@@ -36,10 +35,10 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
     override fun menuPane() = Table().apply {
         newName = newName()
 
-        this.add(Label("profile name: ", menuSkin))
+        this.add(Label("profile name: ", skin()))
                 //Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-        val nameTextField = TextField(newName, menuSkin)
+        val nameTextField = TextField(newName, skin())
         //TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
 //                this.alignment = Align.top
 //        }
@@ -80,12 +79,8 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
             }

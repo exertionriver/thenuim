@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.InputViewMessage
@@ -16,8 +17,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     var clickImage : Texture? = null
@@ -39,7 +39,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
     }
 
     fun keyEvent(keyPress : String) {
-        currentImage = keyPressImage
+//        currentImage = keyPressImage
         currentKey = keyPress
     }
 
@@ -62,14 +62,12 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
         val innerTable = Table()
 
-        innerTable.add(Label(keyText(), viewSkin) )
-                //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color())))
+        innerTable.add(Label(keyText(), kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color())))
         .expandY()
 
         innerTable.row()
 
-        if (isTouchEvent()) innerTable.add(Label(touchText(), viewSkin) )
-                //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color())))
+        if (isTouchEvent()) innerTable.add(Label(touchText(), kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color())))
 
 //        innerTable.debug()
 
@@ -78,7 +76,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
     override fun buildCtrl() {
 
-        if ( (currentImage != null) && (isTouchEvent() || isKeyEvent()) ) {
+        if ( (isTouchEvent() || isKeyEvent()) ) {
             this.add(Stack().apply {
                 this.add(backgroundColorImg())
                 this.add(textTable())
@@ -96,12 +94,8 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.INPUT_VIEW_BRIDGE.isType(msg.message) ) -> {

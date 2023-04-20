@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import ktx.style.label
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
@@ -16,21 +17,13 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
 
     init {
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     lateinit var sdcHandler : SdcHandler
-    lateinit var fontPackage : FontPackage
-    var ctrlSkin : Skin
-        get() = super.getSkin()
-        set(value) = super.setSkin(value)
+    lateinit var kcopSkin : KcopSkin
 
     var swatchEntries: Map<String, ColorPalette> = mapOf()
-//    val sdcList = mutableListOf<ShapeDrawerConfig>()
-
-//    lateinit var bitmapFont : BitmapFont
-//    lateinit var batch : Batch
 
     fun tableWidth() = swatchWidth
     fun tableHeight() = swatchHeight * swatchEntries.size
@@ -81,7 +74,7 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
             }
         }
 
-        val swatchLabel = Label(colorPaletteEntry.key, skin.apply { this.label { this.font = fontPackage.text; this.fontColor = colorPaletteEntry.value.label().color()  }})
+        val swatchLabel = Label(colorPaletteEntry.key, skin.apply { this.label { this.font = kcopSkin.fontPackage.text; this.fontColor = colorPaletteEntry.value.label().color()  }})
         swatchLabel.setAlignment(Align.center)
 
         stack.add(swatchImg)
@@ -97,12 +90,9 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    ctrlSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    super.setSkin(kcopSkin.skin)
                     return true
                 }
             }

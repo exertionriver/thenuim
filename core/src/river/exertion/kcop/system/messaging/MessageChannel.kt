@@ -4,7 +4,7 @@ import com.badlogic.gdx.ai.msg.MessageManager
 import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.system.messaging.messages.*
@@ -38,8 +38,7 @@ enum class MessageChannel {
 
     TWO_BATCH_BRIDGE { override val messageClass = PolygonSpriteBatch::class },
     SDC_BRIDGE { override val messageClass = SdcHandler::class },
-    FONT_BRIDGE { override val messageClass = FontPackage::class },
-    SKIN_BRIDGE { override val messageClass = Skin::class },
+    KCOP_SKIN_BRIDGE { override val messageClass = KcopSkin::class },
     AMH_LOAD_BRIDGE { override val messageClass = AMHLoadMessage::class },
     AMH_SAVE_BRIDGE { override val messageClass = AMHSaveMessage::class }
     ;

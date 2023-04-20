@@ -42,7 +42,7 @@ class ViewSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        viewLayout.build(stage, assetManagerHandler)
+        viewLayout.build(stage)
 
         //experiments for border
 //        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = 0f; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })

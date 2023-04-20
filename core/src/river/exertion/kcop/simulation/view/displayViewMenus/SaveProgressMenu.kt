@@ -3,9 +3,8 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.simulation.view.FontPackage
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
@@ -21,13 +20,11 @@ class SaveProgressMenu(override var screenWidth: Float, override var screenHeigh
         MessageChannel.INTER_MENU_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override lateinit var sdcHandler : SdcHandler
-    override lateinit var fontPackage : FontPackage
-    override lateinit var menuSkin: Skin
+    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("olive")
 
@@ -36,7 +33,7 @@ class SaveProgressMenu(override var screenWidth: Float, override var screenHeigh
     override fun menuPane() = Table().apply {
 
         progressAssetsInfo!!.forEach { profileEntry ->
-            this.add(Label(profileEntry, menuSkin
+            this.add(Label(profileEntry, skin()
             //        Label.LabelStyle(bitmapFont, backgroundColor.label().color())
             ).apply {
                 this.wrap = true
@@ -70,12 +67,8 @@ class SaveProgressMenu(override var screenWidth: Float, override var screenHeigh
                     sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    menuSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.INTER_MENU_BRIDGE.isType(msg.message)) -> {

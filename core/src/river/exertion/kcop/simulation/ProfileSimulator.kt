@@ -40,7 +40,7 @@ class ProfileSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        viewLayout.build(stage, assetManagerHandler)
+        viewLayout.build(stage)
     }
 
     override fun pause() {

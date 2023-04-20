@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import kotlinx.serialization.json.Json
 import ktx.assets.load
 import ktx.assets.unloadSafely
@@ -70,7 +69,7 @@ class AssetManagerHandler : Telegraph {
         )
     }
 
-    fun skin() : Skin = assets[SkinAssets.KcopUi]
+    fun kcopSkin() : KcopSkin = KcopSkin(assets[SkinAssets.KcopUi], fontPackage())
 
     inline fun <reified T:IAsset>reloadAssets(assetLoadLocation : String): List<T> {
 

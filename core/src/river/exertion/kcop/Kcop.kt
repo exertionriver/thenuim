@@ -24,8 +24,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         MessageChannel.TWO_BATCH_BRIDGE.enableProvider(this)
 
         MessageChannel.SDC_BRIDGE.enableProvider(this)
-        MessageChannel.FONT_BRIDGE.enableProvider(this)
-        MessageChannel.SKIN_BRIDGE.enableProvider(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableProvider(this)
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
@@ -76,8 +75,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         if (msg == MessageChannel.TWO_BATCH_BRIDGE.id()) return twoBatch
 
         if (msg == MessageChannel.SDC_BRIDGE.id()) return sdcHandler
-        if (msg == MessageChannel.FONT_BRIDGE.id()) return assetManagerHandler.fontPackage()
-        if (msg == MessageChannel.SKIN_BRIDGE.id()) return assetManagerHandler.skin()
+        if (msg == MessageChannel.KCOP_SKIN_BRIDGE.id()) return assetManagerHandler.kcopSkin()
         return false
     }
 }

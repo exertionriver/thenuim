@@ -18,13 +18,8 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
         MessageChannel.MENU_VIEW_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.FONT_BRIDGE.enableReceive(this)
-        MessageChannel.SKIN_BRIDGE.enableReceive(this)
+        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
-
-//    var menuUpImage : MutableMap<Int, Texture?> = mutableMapOf()
-//    var menuDownImage : MutableMap<Int, Texture?> = mutableMapOf()
-//    var menuCheckedImage : MutableMap<Int, Texture?> = mutableMapOf()
 
     var isChecked : MutableMap<Int, Boolean> = mutableMapOf()
 
@@ -34,18 +29,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         (0..5).forEach { idx ->
 
-/*            var buttonStyle = ButtonStyle()
-
-            if (menuUpImage[idx] != null && menuDownImage[idx] != null && menuCheckedImage[idx] != null) {
-                buttonStyle = ButtonStyle(
-                    TextureRegionDrawable(menuUpImage[idx])
-                    , TextureRegionDrawable(menuDownImage[idx])
-                    , TextureRegionDrawable(menuCheckedImage[idx]))
-            }
-
-            val innerButton = Button(buttonStyle)
-*/
-            val innerButton = Button(viewSkin)
+            val innerButton = Button(skin())
             //override from ctrl
             innerButton.isChecked = this@MenuViewCtrl.isChecked[idx] == true
 
@@ -103,12 +87,8 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                     super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.FONT_BRIDGE.isType(msg.message) ) -> {
-                    super.fontPackage = MessageChannel.FONT_BRIDGE.receiveMessage(msg.extraInfo)
-                    return true
-                }
-                (MessageChannel.SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.viewSkin = MessageChannel.SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
 
