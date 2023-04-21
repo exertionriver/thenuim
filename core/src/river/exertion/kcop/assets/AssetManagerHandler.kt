@@ -46,6 +46,7 @@ class AssetManagerHandler : Telegraph {
         FreeTypeFontAssets.values().forEach { assets.load(it) }
         TextureAssets.values().forEach { assets.load(it) }
         SkinAssets.values().forEach { assets.load(it) }
+        SoundAssets.values().forEach { assets.load(it) }
         assets.finishLoading()
 
         assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
@@ -69,7 +70,11 @@ class AssetManagerHandler : Telegraph {
         )
     }
 
-    fun kcopSkin() : KcopSkin = KcopSkin(assets[SkinAssets.KcopUi], fontPackage())
+    fun kcopSkin() : KcopSkin = KcopSkin(assets[SkinAssets.KcopUi], fontPackage()).apply {
+        this.uiSounds[KcopSkin.UiSounds.Click] = assets[SoundAssets.Click]
+        this.uiSounds[KcopSkin.UiSounds.Enter] = assets[SoundAssets.Enter]
+        this.uiSounds[KcopSkin.UiSounds.Swoosh] = assets[SoundAssets.Swoosh]
+    }
 
     inline fun <reified T:IAsset>reloadAssets(assetLoadLocation : String): List<T> {
 

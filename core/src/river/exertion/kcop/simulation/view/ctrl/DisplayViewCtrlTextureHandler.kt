@@ -2,6 +2,7 @@ package river.exertion.kcop.simulation.view.ctrl
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.utils.Timer
+import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.fadeImageOut
 
 object DisplayViewCtrlTextureHandler {
 
@@ -13,7 +14,7 @@ object DisplayViewCtrlTextureHandler {
         if (texture != null) {
             displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
         } else {
-            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = displayViewLayouts[currentLayoutIdx].paneBgTextures[layoutPaneIdx]
+            displayViewLayouts[currentLayoutIdx].paneTextures.remove(layoutPaneIdx)
         }
 //        displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f
     }
@@ -32,11 +33,12 @@ object DisplayViewCtrlTextureHandler {
                         val alpha = displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] ?: 1f
                         if (alpha >= .1f) {
                             displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = alpha - .1f
+                            this@fadeImageIn.build()
                         } else {
                             this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] = null
+                            this@fadeImageIn.build()
                             this.cancel()
                         }
-                        this@fadeImageIn.build()
                     } else {
 //                        println("texture unlocked! [$layoutPaneIdx]")
                         displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 0f
@@ -61,13 +63,14 @@ object DisplayViewCtrlTextureHandler {
                         val alpha = displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] ?: 0f
                         if (alpha <= .9f) {
                             displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = alpha + .1f
+                            this@fadeImageOut.build()
                         } else {
                             this@DisplayViewCtrlTextureHandler.textureLock[layoutPaneIdx] = null
                             displayViewLayouts[currentLayoutIdx].paneTextures.remove(layoutPaneIdx)
-//                            displayViewLayouts[currentLayoutIdx].paneTextures[layoutPaneIdx] = texture
+                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.remove(layoutPaneIdx)
+                            this@fadeImageOut.build()
                             this.cancel()
                         }
-                        this@fadeImageOut.build()
                     } else {
 //                        println("texture unlocked! [$layoutPaneIdx]")
                         displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx] = 1f

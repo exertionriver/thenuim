@@ -16,14 +16,13 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
 
     init {
         MessageChannel.STATUS_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_MODE_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     val displayStatuses : MutableMap<String, Float> = mutableMapOf()
-
-//    var vScrollKnobTexture : Texture? = null
 
     private lateinit var scrollPane : ScrollPane
 
@@ -92,6 +91,11 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
                 }
                 (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
                     super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
+                    build()
                     return true
                 }
                 (MessageChannel.STATUS_VIEW_BRIDGE.isType(msg.message) ) -> {

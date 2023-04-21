@@ -25,10 +25,6 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
     override lateinit var sdcHandler : SdcHandler
     override lateinit var kcopSkin: KcopSkin
 
-    //override val maskPixmap = Pixmap(16, 16, Pixmap.Format.RGBA8888)
-
-//    override val sdcMap : MutableMap<Int, ShapeDrawerConfig?> = mutableMapOf()
-    override val paneBgTextures : MutableMap<Int, Texture?> = mutableMapOf()
     override val paneTextures : MutableMap<Int, Texture?> = mutableMapOf()
     override val paneTextureMaskAlpha : MutableMap<Int, Float?> = mutableMapOf()
 

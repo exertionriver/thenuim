@@ -26,12 +26,7 @@ interface DisplayViewLayout {
 
     fun skin() = kcopSkin.skin
 
-//    val maskPixmap : Pixmap
-//    val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
-
     val paneTextures : MutableMap<Int, Texture?>
-    val paneBgTextures : MutableMap<Int, Texture?>
-
     val paneTextureMaskAlpha : MutableMap<Int, Float?>
     val paneRefiners : MutableMap<Int, Vector2?>
 
@@ -60,7 +55,6 @@ interface DisplayViewLayout {
     }
 
     fun paneText(currentText: String, currentFontSize: FontSize) : MutableMap<Int, String?> {
-//        bitmapFont.data.setScale(currentFontSize.fontScale())
 
         val returnMap : MutableMap<Int, String?> = mutableMapOf()
 
@@ -90,8 +84,7 @@ interface DisplayViewLayout {
                 while (!rowParsed) {
                     val dvpRowWidth = (textDVPs.values.toList()[currentDVPIdx]!!.width(screenWidth) - 2 * ViewType.padWidth(screenWidth))
 
-                    var textLabel = Label(dvpText, skin())
-                            //Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
+                    var textLabel = Label(dvpText, kcopSkin.labelStyle(currentFontSize, ColorPalette.of("cyan").color()))
 
                     val dvpPaneModHeight = dvpPaneHeight + extraRow * textLabel.height
 
@@ -105,8 +98,8 @@ interface DisplayViewLayout {
                         if (dvpText.contains("\n") ) {
                             dvpText = dvpText.substring(0, dvpText.indexOf("\n"))
                             //recalc text label, removing \n
-                            textLabel = Label(dvpText, skin())
-                                    //Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
+                            textLabel = Label(dvpText, kcopSkin.labelStyle(currentFontSize, ColorPalette.of("cyan").color()))
+
                             currentTextRemaining = currentTextRemaining.substring(dvpText.length + 1, currentTextRemaining.length)
                         } else {
                             currentTextRemaining = currentTextRemaining.substring(dvpText.length, currentTextRemaining.length)
@@ -149,27 +142,27 @@ interface DisplayViewLayout {
         val paneText = if (currentText.isNotBlank()) paneText(currentText, currentFontSize) else mutableMapOf()
 
         definePanes().entries.sortedBy { it.key }.forEach { displayViewPane ->
-            paneBgTextures[displayViewPane.key] = if (layoutMode) {
-                paneColorTexture(displayViewPane, ColorPalette.randomW3cBasic()).texture
-            } else {
-                paneColorTexture(displayViewPane, null).texture
-            }
 
             paneCtrls[displayViewPane.key] =
                 Stack().apply {
+                    this.add(Table().apply {
+                        this.add(Table()).size(
+                            displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
+                            displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
+                        )
+                    })
                     if (layoutMode) { //fill each pane with random color
-//                        paneTextureMaskAlpha.remove(displayViewPane.key)
+                        val randomColor = ColorPalette.randomW3cBasic()
                         val label = displayViewPane.key.toString() + if (textPanes().contains(displayViewPane.key)) ":T" else if (imagePanes().contains(displayViewPane.key)) ":I" else ""
 //                        bitmapFont.data.setScale(FontSize.TEXT.fontScale())
                         val innerTableBg = Table()
-                        innerTableBg.add(Image(TextureRegionDrawable(paneBgTextures[displayViewPane.key]))).size(
+                        innerTableBg.add(Image(TextureRegionDrawable(paneColorTexture(displayViewPane, randomColor).texture))).size(
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
                             displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
                         ).grow()
                         innerTableBg.debug = layoutMode
                         val innerTableFg = Table()
-                        val innerLabel = Label(label, skin())
-                                //Label.LabelStyle(bitmapFont, randomColor.label().color()))
+                        val innerLabel = Label(label, kcopSkin.labelStyle(currentFontSize, randomColor.label().color()))
                         innerLabel.setAlignment(Align.center)
                         innerTableFg.add(innerLabel).size(
                             displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
@@ -179,14 +172,6 @@ interface DisplayViewLayout {
                         this.add(innerTableBg)
                         this.add(innerTableFg)
                     } else { //draw specified content or black
-                        //draw 'black' background
-                        val innerTableBg = Table()
-                        innerTableBg.add(Image(TextureRegionDrawable(paneBgTextures[displayViewPane.key]))).size(
-                            displayViewPane.value.width(screenWidth) + (paneRefiners[displayViewPane.key]?.x ?: 0f),
-                            displayViewPane.value.height(screenHeight) + (paneRefiners[displayViewPane.key]?.y ?: 0f)
-                        ).grow()
-                        innerTableBg.debug = layoutMode
-                        this.add(innerTableBg)
                         //image present
                         if (paneTextures[displayViewPane.key] != null) {
                             val innerTable = Table()
@@ -199,9 +184,7 @@ interface DisplayViewLayout {
                         }
                         //text present
                         if (paneText[displayViewPane.key] != null) {
-                         //   bitmapFont.data.setScale(currentFontSize.fontScale())
-                            val textLabel = Label(paneText[displayViewPane.key], skin())
-                                    //Label.LabelStyle(bitmapFont, ColorPalette.of("cyan").color()))
+                            val textLabel = Label(paneText[displayViewPane.key], kcopSkin.labelStyle(currentFontSize, ColorPalette.of("cyan").color()))
                                     .apply { this.setAlignment(Align.topLeft) }
                             textLabel.setAlignment(Align.topLeft)
                             textLabel.debug = layoutMode
@@ -243,6 +226,5 @@ interface DisplayViewLayout {
         sdcHandler.dispose()
         kcopSkin.dispose()
         paneTextures.values.forEach { it?.dispose() }
-        paneBgTextures.values.forEach { it?.dispose() }
     }
 }

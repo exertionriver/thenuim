@@ -38,9 +38,12 @@ enum class MessageChannel {
 
     TWO_BATCH_BRIDGE { override val messageClass = PolygonSpriteBatch::class },
     SDC_BRIDGE { override val messageClass = SdcHandler::class },
+    KCOP_BRIDGE { override val messageClass = KcopMessage::class },
     KCOP_SKIN_BRIDGE { override val messageClass = KcopSkin::class },
     AMH_LOAD_BRIDGE { override val messageClass = AMHLoadMessage::class },
-    AMH_SAVE_BRIDGE { override val messageClass = AMHSaveMessage::class }
+    AMH_SAVE_BRIDGE { override val messageClass = AMHSaveMessage::class },
+
+    DISPLAY_MODE_BRIDGE { override val messageClass = Boolean::class}
     ;
 
     abstract val messageClass : KClass<*>

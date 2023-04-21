@@ -15,6 +15,7 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
     init {
         MessageChannel.INPUT_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_MODE_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
@@ -96,6 +97,11 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
                 }
                 (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
                     super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
+                    build()
                     return true
                 }
                 (MessageChannel.INPUT_VIEW_BRIDGE.isType(msg.message) ) -> {

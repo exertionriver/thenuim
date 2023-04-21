@@ -17,6 +17,7 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
 
     init {
         MessageChannel.AI_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_MODE_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
@@ -31,6 +32,8 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
     fun clickButton() : Button {
 
         val innerButton = Button(skin())
+
+        kcopSkin.addOnClick(innerButton)
         //override from ctrl
         innerButton.isChecked = this@AiViewCtrl.isChecked
 
@@ -68,6 +71,11 @@ class AiViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
                 }
                 (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
                     super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
+                    build()
                     return true
                 }
                 (MessageChannel.AI_VIEW_BRIDGE.isType(msg.message) ) -> {

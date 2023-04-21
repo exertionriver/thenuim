@@ -88,12 +88,10 @@ class AudioCtrl : Telegraph {
     }
 
     fun playSound(sound : Music?) {
-        if (sound != currentSound) {
-            currentSound = sound
-            currentSound?.isLooping = false
-            currentSound?.volume = 1f
-            currentSound?.play()
-        }
+        currentSound = sound
+        currentSound?.isLooping = false
+        currentSound?.volume = 1f
+        currentSound?.play()
     }
 
     @Suppress("NewApi")

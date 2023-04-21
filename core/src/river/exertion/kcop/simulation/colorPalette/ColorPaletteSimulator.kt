@@ -2,10 +2,18 @@ package river.exertion.kcop.simulation.colorPalette
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.ai.msg.Telegram
+import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Button
+import ktx.actors.onClick
 import ktx.app.KtxScreen
 import river.exertion.kcop.assets.*
+import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.AiHintMessage
+import river.exertion.kcop.system.messaging.messages.KcopMessage
+import river.exertion.kcop.system.messaging.messages.TextViewMessage
 
 
 class ColorPaletteSimulator(private val stage: Stage,
@@ -66,4 +74,5 @@ class ColorPaletteSimulator(private val stage: Stage,
         assetManagerHandler.dispose()
         colorPaletteLayout.dispose()
     }
+
 }

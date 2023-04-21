@@ -3,6 +3,7 @@ package river.exertion.kcop.simulation.view.ctrl
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.clearImages
@@ -29,6 +30,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.enableReceive(this)
         MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.enableReceive(this)
 
+        MessageChannel.DISPLAY_MODE_BRIDGE.enableReceive(this)
+
         MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
@@ -54,7 +57,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     var currentMenuIdx = 0
     var currentLayoutIdx = 0
 
-    var currentLayoutMode = false
     var currentText = ""
     var currentFontSize = FontSize.SMALL
 
@@ -73,6 +75,9 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     override fun buildCtrl() {
         this.add(
             Stack().apply {
+                this.add(Table().apply {
+                    this.add(backgroundColorImg()).grow()
+                })
                 this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(currentLayoutMode, currentText, currentFontSize))
                 if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout())
             }).size(this.tableWidth(), this.tableHeight())
@@ -89,6 +94,15 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 }
                 (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
                     super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
+                    displayViewLayouts[currentLayoutIdx].paneTextures.clear()
+                    displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
+                    MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Layout" else "Clear"}" ))
+
+                    build()
                     return true
                 }
                 (MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.isType(msg.message) ) -> {
@@ -116,6 +130,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         }
 
                     if (!menuOpen) build()
+
                     return true
                 }
                 (MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.isType(msg.message) ) -> {
@@ -125,12 +140,6 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                         if (displayViewMenuMessage.menuButtonIdx == 0) {
                             menuOpen = (displayViewMenuMessage.isChecked)
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
-                        }
-                        if (displayViewMenuMessage.menuButtonIdx == 1) {
-                            currentLayoutMode = (displayViewMenuMessage.isChecked)
-                            displayViewLayouts[currentLayoutIdx].paneTextures.clear()
-                            displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
-                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Background Box" else "Wireframe"}" ))
                         }
                         if (displayViewMenuMessage.menuButtonIdx == 2) {
                             currentLayoutIdx = if (currentLayoutIdx < displayViewLayouts.size - 1) currentLayoutIdx + 1 else 0

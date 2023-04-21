@@ -11,11 +11,13 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
+import river.exertion.kcop.system.messaging.messages.KcopMessage
 
 class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewCtrl(ViewType.MENU, screenWidth, screenHeight) {
 
     init {
         MessageChannel.MENU_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_MODE_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
@@ -29,20 +31,24 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         (0..5).forEach { idx ->
 
-            val innerButton = Button(skin())
+            val innerButton = Button(skin())//.apply {kcopSkin.addOnEnter(this); kcopSkin.addOnClick(this)}
+
             //override from ctrl
             innerButton.isChecked = this@MenuViewCtrl.isChecked[idx] == true
 
             innerButton.onClick {
                 this@MenuViewCtrl.isChecked[idx] = !(this@MenuViewCtrl.isChecked[idx] ?: false)
-                if (idx == 0) {
-                    if (this@MenuViewCtrl.isChecked[idx] == true)
-                        Switchboard.openMenu()
-                    else
-                        Switchboard.closeMenu()
+                when (idx) {
+                    0 -> {
+                        if (this@MenuViewCtrl.isChecked[idx] == true)
+                            Switchboard.openMenu()
+                        else
+                            Switchboard.closeMenu()
+                    }
+                    1 -> MessageChannel.DISPLAY_MODE_BRIDGE.send(null, this@MenuViewCtrl.isChecked[idx]!!)
+                    3 -> MessageChannel.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.FullScreen))
+                    else -> MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, idx, this@MenuViewCtrl.isChecked[idx]!!))
                 }
-                else
-                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, idx, this@MenuViewCtrl.isChecked[idx]!!))
             }
 
             buttonList.add(innerButton)
@@ -91,7 +97,11 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                     super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-
+                (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
+                    build()
+                    return true
+                }
                 (MessageChannel.MENU_VIEW_BRIDGE.isType(msg.message) ) -> {
                     val displayViewMenuMessage : DisplayViewMenuMessage = MessageChannel.MENU_VIEW_BRIDGE.receiveMessage(msg.extraInfo)
 

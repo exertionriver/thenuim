@@ -2,6 +2,7 @@ package river.exertion.kcop
 
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -14,15 +15,18 @@ import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.assets.AssetManagerHandler
 import river.exertion.kcop.simulation.ProfileSimulator
+import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
 import river.exertion.kcop.system.ecs.EngineHandler
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.AiHintMessage
+import river.exertion.kcop.system.messaging.messages.KcopMessage
+import river.exertion.kcop.system.messaging.messages.TextViewMessage
 import river.exertion.kcop.system.view.SdcHandler
 
 class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     init {
         MessageChannel.TWO_BATCH_BRIDGE.enableProvider(this)
-
         MessageChannel.SDC_BRIDGE.enableProvider(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableProvider(this)
     }
@@ -54,7 +58,7 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
             bindSingleton(engineHandler)
             bindSingleton(assetManagerHandler)
 
-//            addScreen(ColorPaletteSimulator( inject(), inject(), inject() ) )
+            addScreen(ColorPaletteSimulator( inject(), inject(), inject() ) )
 //            addScreen(ViewSimulator( inject(), inject(), inject(), inject() ) )
             addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
 //            addScreen(NarrativeSimulator( inject(), inject(), inject(), inject() ) )

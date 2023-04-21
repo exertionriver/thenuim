@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.ViewType
@@ -25,7 +26,6 @@ interface DisplayViewMenu {
     var screenHeight : Float
 
     val backgroundColor : ColorPalette
-//    val sdcMap : MutableMap<Int, ShapeDrawerConfig?>
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
     val navs : MutableList<ActionParam> //Button Label -> action
@@ -73,10 +73,8 @@ interface DisplayViewMenu {
 
         //TODO : singleton with three-sized bitmap fonts
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
-            this.add(Label("${menuLabel.value} > ", skin())
-                    //Label.LabelStyle(bitmapFont.apply {this.data.setScale(FontSize.SMALL.fontScale())}
-                //, backgroundColor.label().color()))
-                .apply {
+            this.add(Label("${menuLabel.value} > ", kcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label().color()))
+                    .apply {
                 this.onClick {
                     MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(menuLabel.key) )
                 }
@@ -104,9 +102,9 @@ interface DisplayViewMenu {
                     Table().apply {
                         this.add(breadcrumbPane()).right().growX()
                         this.add(
-                            Table().apply { this.add(Label(this@DisplayViewMenu.label(), skin())
-                                    //Label.LabelStyle(bitmapFont.apply { this.data.setScale(FontSize.MEDIUM.fontScale()) }, backgroundColor.label().color()))
-                                    .apply {
+                            Table().apply {
+                                this.add(Label(this@DisplayViewMenu.label(), kcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label().color()))
+                            .apply {
                                 this.setAlignment(Align.center)
                             }).padRight(ViewType.padWidth(screenWidth))
                             }
@@ -115,7 +113,6 @@ interface DisplayViewMenu {
                         this.add(
                             if (menuPane == null) { Table() }
                             else {
-//                                ScrollPane(menuPane, scrollPaneStyle).apply {
                                 ScrollPane(menuPane, skin()).apply {
                                     // https://github.com/raeleus/skin-composer/wiki/ScrollPane
                                     this.fadeScrollBars = false

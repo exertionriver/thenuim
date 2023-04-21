@@ -9,6 +9,10 @@ enum class ViewType {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(0f, 0f, firstWidth(screenWidth), firstHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor
     },
+    DISPLAY_FULLSCREEN {
+        override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(secondWidth(screenWidth) / 2, 0f, firstWidth(screenWidth), firstHeight(screenHeight))
+        override fun defaultColor() = firstDefaultColor
+    },
     TEXT {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(firstWidth(screenWidth), thirdHeight(screenHeight) - 2, secondWidth(screenWidth), secondHeight(screenHeight) + 2)
         override fun defaultColor() = firstDefaultColor.comp().triad().first

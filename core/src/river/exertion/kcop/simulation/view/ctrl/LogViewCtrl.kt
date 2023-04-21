@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.LogViewMessage
@@ -21,6 +22,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
     init {
         MessageChannel.LOG_VIEW_BRIDGE.enableReceive(this)
+        MessageChannel.DISPLAY_MODE_BRIDGE.enableReceive(this)
 
         MessageChannel.SDC_BRIDGE.enableReceive(this)
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
@@ -39,8 +41,14 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     private var scrollPane : ScrollPane = textScrollPane()
 
     fun textTimeBackgroundColorTexture() : TextureRegion {
-        return sdcHandler.get("textTime", backgroundColor.triad().second).textureRegion().apply {
-            this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
+        return if (currentLayoutMode) {
+            sdcHandler.get("textTime", backgroundColor.triad().second).textureRegion().apply {
+                this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
+            }
+        } else {
+            sdcHandler.get("textTime", ColorPalette.of("black")).textureRegion().apply {
+                this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
+            }
         }
     }
 
@@ -50,7 +58,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         if (currentLog != null) {
             currentLog!!.add(logEntry)
         } else {
-            currentLog = mutableListOf()
+            currentLog = mutableListOf(logEntry)
         }
     }
 
@@ -190,6 +198,11 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                 }
                 (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
                     super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    return true
+                }
+                (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
+                    build()
                     return true
                 }
                 (MessageChannel.LOG_VIEW_BRIDGE.isType(msg.message) ) -> {

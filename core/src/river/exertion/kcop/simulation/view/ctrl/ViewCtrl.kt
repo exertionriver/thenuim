@@ -11,7 +11,7 @@ import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.view.SdcHandler
 
-open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
+open class ViewCtrl(var viewType : ViewType, var screenWidth: Float = 50f, var screenHeight: Float = 50f) : Table() {
 
     lateinit var sdcHandler : SdcHandler
     lateinit var kcopSkin : KcopSkin
@@ -25,11 +25,19 @@ open class ViewCtrl(val viewType : ViewType, var screenWidth: Float = 50f, var s
     fun tablePosX() = viewRect().x
     fun tablePosY() = viewRect().y
 
+    var currentLayoutMode = false
+
     var backgroundColor : ColorPalette = viewType.defaultColor()
 
     fun backgroundColorTexture() : TextureRegion {
-        return sdcHandler.get("background_${viewType}", backgroundColor).textureRegion().apply {
-            this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
+        return if (currentLayoutMode) {
+            sdcHandler.get("background_${viewType}", backgroundColor).textureRegion().apply {
+                this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
+            }
+        } else {
+            sdcHandler.get("background_${viewType}", ColorPalette.of("black")).textureRegion().apply {
+                this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
+            }
         }
     }
 
