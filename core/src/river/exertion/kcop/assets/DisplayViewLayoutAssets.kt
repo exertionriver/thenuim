@@ -5,7 +5,8 @@ import ktx.assets.getAsset
 import ktx.assets.load
 
 enum class DisplayViewLayoutAssets(val path: String) {
-    BasicPictureNarrative("kcop/layout/layoutBasicPictureNarrative.json")
+//    BasicPictureNarrative("kcop/layout/layoutBasicPictureNarrative.json"),
+    GoldenRatio("kcop/layout/layoutGoldenRatio.json")
 }
 
 fun AssetManager.load(asset: DisplayViewLayoutAssets) = load<DisplayViewLayoutAsset>(asset.path)

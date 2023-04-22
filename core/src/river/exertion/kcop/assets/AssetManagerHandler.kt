@@ -48,8 +48,8 @@ class AssetManagerHandler : Telegraph {
         SkinAssets.values().forEach { assets.load(it) }
         SoundAssets.values().forEach { assets.load(it) }
 
-//        assets.setLoader(DisplayViewLayoutAsset::class.java, DisplayViewLayoutAssetLoader(lfhr))
-//        DisplayViewLayoutAssets.values().forEach { assets.load(it) }
+        assets.setLoader(DisplayViewLayoutAsset::class.java, DisplayViewLayoutAssetLoader(lfhr))
+        DisplayViewLayoutAssets.values().forEach { assets.load(it) }
 
         assets.finishLoading()
 
