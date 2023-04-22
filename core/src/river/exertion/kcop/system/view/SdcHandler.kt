@@ -1,6 +1,7 @@
 package river.exertion.kcop.system.view
 
 import com.badlogic.gdx.graphics.g2d.Batch
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPalette.Companion.randomW3cBasic
 
@@ -13,7 +14,7 @@ class SdcHandler(var batch : Batch) {
     fun getBlackAlpha(tag : String, alpha: Float? = 1f) : ShapeDrawerConfig {
         return if ( sdcRegister.containsKey(tag) ) sdcRegister[tag]!!.apply { this.setAlpha(alpha!!) }
         else {
-            add(tag, ColorPalette.of("black"), alpha)
+            add(tag, KcopSkin.BackgroundColor, alpha)
             sdcRegister[tag]!!
         }
     }

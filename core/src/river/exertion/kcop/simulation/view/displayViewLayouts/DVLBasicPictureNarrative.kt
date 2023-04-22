@@ -4,16 +4,14 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.assets.KcopSkin
-import river.exertion.kcop.simulation.view.DisplayViewPane
-import river.exertion.kcop.simulation.view.FontPackage
+import river.exertion.kcop.simulation.view.DisplayViewPaneType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.view.SdcHandler
 
-class DVLBasicPictureNarrative(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewLayout {
+class DVLBasicPictureNarrative(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, IDisplayViewLayout {
 
     init {
         MessageChannel.SDC_BRIDGE.enableReceive(this)
@@ -21,6 +19,10 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
     }
 
     override val tag = Companion.tag
+
+    override var currentLayoutMode = false
+    override var currentText = ""
+    override var currentFontSize = FontSize.SMALL
 
     override lateinit var sdcHandler : SdcHandler
     override lateinit var kcopSkin : KcopSkin
@@ -50,15 +52,15 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
         else -> 2 to 0
     })
 
-    override fun definePanes() : MutableMap<Int, DisplayViewPane> {
-        val panes : MutableMap<Int, DisplayViewPane> = mutableMapOf()
+    override fun definePanes() : DisplayViewPanes {
+        val panes = DisplayViewPanes()
 
         //picture
-        panes[0] = DisplayViewPane.LARGE_BY_LARGE
+        panes.data[0] = DisplayViewPaneType.LARGE_BY_LARGE
 
         //text blocks
-        panes[1] = DisplayViewPane.TITLE_BY_LARGE
-        panes[2] = DisplayViewPane.FULL_BY_TITLE
+        panes.data[1] = DisplayViewPaneType.TITLE_BY_LARGE
+        panes.data[2] = DisplayViewPaneType.FULL_BY_TITLE
 
         return panes
     }
@@ -66,9 +68,9 @@ class DVLBasicPictureNarrative(override var screenWidth: Float, override var scr
     override fun imagePanes() : List<Int> = listOf(0)
     override fun textPanes() : List<Int> = listOf(1, 2)
 
-    override fun buildPaneTable(layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table {
+    override fun buildPaneTable() : Table {
 
-        val panes = buildPaneCtrls(layoutMode, currentText, currentFontSize)
+        val panes = buildPaneCtrls()
 
         val innerTable = Table()
 

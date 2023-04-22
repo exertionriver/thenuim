@@ -3,6 +3,7 @@ package river.exertion.kcop.simulation.view
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -52,8 +53,8 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
-    fun kcopScreen() {
-        displayViewCtrl.addAction(Actions.sequence(Actions.moveTo(ViewType.DISPLAY.viewRect(width, height).x, ViewType.DISPLAY.viewRect(width, height).y, .25f, Interpolation.linear)))
+    fun kcopScreen(offset : Vector2) {
+        displayViewCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
         displayViewCtrl.viewType = ViewType.DISPLAY
         textViewCtrl.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(VisWindow.FADE_TIME, Interpolation.fade)))
         logViewCtrl.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(VisWindow.FADE_TIME, Interpolation.fade)))
@@ -63,12 +64,10 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         aiViewCtrl.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(VisWindow.FADE_TIME, Interpolation.fade)))
         pauseViewCtrl.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(VisWindow.FADE_TIME, Interpolation.fade)))
         kcopButton.addAction(Actions.sequence(Actions.hide()))
-        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh]))
     }
 
-    fun fullScreen() {
-        displayViewCtrl.addAction(Actions.sequence(Actions.moveTo(ViewType.DISPLAY_FULLSCREEN.viewRect(width, height).x, ViewType.DISPLAY_FULLSCREEN.viewRect(width, height).y, .25f, Interpolation.linear)))
+    fun fullScreen(offset : Vector2) {
+        displayViewCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
         displayViewCtrl.viewType = ViewType.DISPLAY_FULLSCREEN
         textViewCtrl.addAction(Actions.sequence(Actions.fadeOut(VisWindow.FADE_TIME, Interpolation.fade), Actions.hide()))
         logViewCtrl.addAction(Actions.sequence(Actions.fadeOut(VisWindow.FADE_TIME, Interpolation.fade), Actions.hide()))
@@ -78,8 +77,6 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         aiViewCtrl.addAction(Actions.sequence(Actions.fadeOut(VisWindow.FADE_TIME, Interpolation.fade), Actions.hide()))
         pauseViewCtrl.addAction(Actions.sequence(Actions.fadeOut(VisWindow.FADE_TIME, Interpolation.fade), Actions.hide()))
         kcopButton.addAction(Actions.sequence(Actions.show()))
-        MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh]))
     }
 
     fun dispose() {

@@ -8,12 +8,13 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.assets.*
-import river.exertion.kcop.simulation.colorPalette.ColorPaletteSimulator
+import river.exertion.kcop.simulation.colorPalette.ColorPaletteInputProcessor
+import river.exertion.kcop.simulation.colorPalette.ColorPaletteLayout
 import river.exertion.kcop.simulation.view.ViewLayout
+import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.ecs.EngineHandler
-import river.exertion.kcop.system.ecs.component.ProfileComponent
-import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.messages.DisplayViewAudioMessage
 import river.exertion.kcop.system.messaging.messages.KcopMessage
 import river.exertion.kcop.system.view.ViewInputProcessor
 
@@ -28,6 +29,15 @@ class ProfileSimulator(private val stage: Stage,
     }
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight). apply { this.hide() }
+    val colorPaletteInputProcessor = ColorPaletteInputProcessor()
+    lateinit var inputMultiplexer : InputMultiplexer
+
+    /*  //for in-sim narrative nav
+        lateinit var defaultProfileComponent : ProfileComponent
+        var narrativesIdx = 0
+        lateinit var narrativesBlock : NarrativeAssets
+    */
 
     @Suppress("NewApi")
     override fun render(delta: Float) {
@@ -38,18 +48,46 @@ class ProfileSimulator(private val stage: Stage,
         stage.draw()
 
         engineHandler.engine.update(delta)
+
+/*      //for in-sim narrative nav
+        when {
+            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
+                val prevNarrativesIdx = narrativesIdx
+                narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
+                if (prevNarrativesIdx != narrativesIdx) {
+                    NarrativeComponent.getFor(engineHandler.profileEntity)!!.inactivate()
+                    NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
+                }
+            }
+            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
+                val prevNarrativesIdx = narrativesIdx
+                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.values.size - 1)
+                if (prevNarrativesIdx != narrativesIdx) {
+                    NarrativeComponent.getFor(engineHandler.profileEntity)!!.inactivate()
+                    NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
+                }
+            }
+        }*/
     }
 
     override fun hide() {
     }
 
     override fun show() {
-        val inputMultiplexer = InputMultiplexer()
+        inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(ViewInputProcessor())
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
         viewLayout.build(stage)
+        colorPaletteLayout.build(stage)
+
+/*      //for in-sim narrative nav
+
+        defaultProfileComponent = ProfileComponent.getFor(engineHandler.profileEntity)!!
+        narrativesBlock = assetManagerHandler.narrativeAssets
+        NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
+*/
     }
 
     override fun pause() {
@@ -76,8 +114,26 @@ class ProfileSimulator(private val stage: Stage,
                     val kcopMessage: KcopMessage = MessageChannel.KCOP_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (kcopMessage.kcopMessageType) {
-                        KcopMessage.KcopMessageType.FullScreen -> viewLayout.fullScreen()
-                        KcopMessage.KcopMessageType.KcopScreen -> viewLayout.kcopScreen()
+                        KcopMessage.KcopMessageType.FullScreen -> {
+                            viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            colorPaletteLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
+                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh]))
+                        }
+                        KcopMessage.KcopMessageType.KcopScreen -> {
+                            viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            colorPaletteLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
+                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh]))
+                        }
+                        KcopMessage.KcopMessageType.ShowColorPalette -> {
+                            colorPaletteLayout.show()
+                            inputMultiplexer.addProcessor(colorPaletteInputProcessor)
+                        }
+                        KcopMessage.KcopMessageType.HideColorPalette -> {
+                            colorPaletteLayout.hide()
+                            inputMultiplexer.removeProcessor(colorPaletteInputProcessor)
+                        }
                     }
 
                     return true

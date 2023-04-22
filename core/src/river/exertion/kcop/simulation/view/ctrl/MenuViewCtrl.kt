@@ -31,7 +31,7 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         (0..5).forEach { idx ->
 
-            val innerButton = Button(skin())//.apply {kcopSkin.addOnEnter(this); kcopSkin.addOnClick(this)}
+            val innerButton = Button(skin()).apply {kcopSkin.addOnEnter(this); kcopSkin.addOnClick(this)}
 
             //override from ctrl
             innerButton.isChecked = this@MenuViewCtrl.isChecked[idx] == true
@@ -47,6 +47,13 @@ class MenuViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
                     }
                     1 -> MessageChannel.DISPLAY_MODE_BRIDGE.send(null, this@MenuViewCtrl.isChecked[idx]!!)
                     3 -> MessageChannel.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.FullScreen))
+                    4 -> {
+                        if (this@MenuViewCtrl.isChecked[idx]!!) {
+                            MessageChannel.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.ShowColorPalette))
+                        } else {
+                            MessageChannel.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.HideColorPalette))
+                        }
+                    }
                     else -> MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, idx, this@MenuViewCtrl.isChecked[idx]!!))
                 }
             }

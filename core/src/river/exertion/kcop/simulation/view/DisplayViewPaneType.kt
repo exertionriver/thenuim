@@ -1,10 +1,10 @@
 package river.exertion.kcop.simulation.view
 
-enum class DisplayViewPane {
+enum class DisplayViewPaneType {
 
     // MEDIUM through TINY are best for font
 
-    // FULL
+    // FULL == 0
 
     FULL_BY_FULL {
         override fun width(screenWidth: Float) = ViewType.firstWidth(screenWidth)
@@ -59,7 +59,7 @@ enum class DisplayViewPane {
         override fun height(screenHeight: Float) = ViewType.firstHeight(screenHeight)
     },
 
-    // TITLE
+    // TITLE == 1
 
     TITLE_BY_TITLE {
         override fun width(screenWidth: Float) = ViewType.secondWidth(screenWidth)
@@ -106,7 +106,7 @@ enum class DisplayViewPane {
         override fun height(screenHeight: Float) = ViewType.secondHeight(screenHeight)
     },
 
-    // LARGE
+    // LARGE == 2
 
     LARGE_BY_LARGE {
         override fun width(screenWidth: Float) = ViewType.thirdWidth(screenWidth)
@@ -145,7 +145,7 @@ enum class DisplayViewPane {
         override fun height(screenHeight: Float) = ViewType.thirdHeight(screenHeight)
     },
 
-    // MEDIUM
+    // MEDIUM == 3
 
     MEDIUM_BY_MEDIUM {
         override fun width(screenWidth: Float) = ViewType.fourthWidth(screenWidth)
@@ -176,7 +176,7 @@ enum class DisplayViewPane {
         override fun height(screenHeight: Float) = ViewType.fourthHeight(screenHeight)
     },
 
-    // SMALL
+    // SMALL == 4
 
     SMALL_BY_SMALL {
         override fun width(screenWidth: Float) = ViewType.fifthWidth(screenWidth)
@@ -199,7 +199,7 @@ enum class DisplayViewPane {
         override fun height(screenHeight: Float) = ViewType.fifthHeight(screenHeight)
     },
 
-    // TINY
+    // TINY == 5
 
     TINY_BY_TINY {
         override fun width(screenWidth: Float) = ViewType.sixthWidth(screenWidth)
@@ -214,7 +214,7 @@ enum class DisplayViewPane {
         override fun height(screenHeight: Float) = ViewType.sixthHeight(screenHeight)
     },
 
-    // UNIT
+    // UNIT == 6
 
     UNIT_BY_UNIT {
         override fun width(screenWidth: Float) = ViewType.seventhWidth(screenWidth)

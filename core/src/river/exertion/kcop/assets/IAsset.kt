@@ -13,7 +13,6 @@ interface IAsset {
     fun newAssetFilename() = newAssetFilename(assetName(), assetId())
 
     companion object {
-
         val replaceChars = """[.@{}!\\`´"^=()&\[\]$'~#%*:+<>?/|, ]"""
         val reduceUnderscores = """_+"""
 

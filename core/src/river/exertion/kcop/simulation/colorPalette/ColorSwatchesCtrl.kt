@@ -70,7 +70,7 @@ class ColorSwatchesCtrl(var topX: Float = 0f, var topY: Float = 0f, var swatchWi
 
         if (colorPaletteEntry.key != null) {
             stack.onClick {
-                MessageChannel.COLOR_PALETTE_BRIDGE.send(null, ColorPaletteMessage(colorPaletteEntry.key!!, colorPaletteEntry.value))
+                MessageChannel.COLOR_PALETTE_BRIDGE.send(null, ColorPaletteMessage(ColorPaletteMessage.ColorPaletteMessageType.SetBaseColor, colorPaletteEntry.key!!, colorPaletteEntry.value))
             }
         }
 

@@ -4,16 +4,14 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.assets.KcopSkin
-import river.exertion.kcop.simulation.view.DisplayViewPane
-import river.exertion.kcop.simulation.view.FontPackage
+import river.exertion.kcop.simulation.view.DisplayViewPaneType
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.view.SdcHandler
 
-class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewLayout {
+class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, IDisplayViewLayout {
 
     init {
         MessageChannel.SDC_BRIDGE.enableReceive(this)
@@ -21,6 +19,10 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
     }
 
     override val tag = Companion.tag
+
+    override var currentLayoutMode = false
+    override var currentText = ""
+    override var currentFontSize = FontSize.SMALL
 
     override lateinit var sdcHandler : SdcHandler
     override lateinit var kcopSkin: KcopSkin
@@ -52,53 +54,53 @@ class DVLGoldenRatio(override var screenWidth: Float, override var screenHeight:
     override fun adjacencyPaneRows(currentFontSize: FontSize) : MutableMap<Int, Int?> = mutableMapOf()
     override fun adjacencyTopPadOffset(currentFontSize: FontSize) : MutableMap<Int, Int?> = mutableMapOf()
 
-    override fun definePanes() : MutableMap<Int, DisplayViewPane> {
-        val panes : MutableMap<Int, DisplayViewPane> = mutableMapOf()
+    override fun definePanes() : DisplayViewPanes {
+        val panes = DisplayViewPanes()
 
-        panes[0] = DisplayViewPane.MEDIUM_BY_MEDIUM
-        panes[1] = DisplayViewPane.LARGE_BY_LARGE
-        panes[2] = DisplayViewPane.LARGE_BY_LARGE
-        panes[3] = DisplayViewPane.LARGE_BY_LARGE
-        panes[4] = DisplayViewPane.MEDIUM_BY_MEDIUM
-        panes[5] = DisplayViewPane.MEDIUM_BY_MEDIUM
-        panes[6] = DisplayViewPane.MEDIUM_BY_MEDIUM
-        panes[7] = DisplayViewPane.MEDIUM_BY_MEDIUM
-        panes[8] = DisplayViewPane.MEDIUM_BY_MEDIUM
-        panes[9] = DisplayViewPane.SMALL_BY_SMALL
-        panes[10] = DisplayViewPane.SMALL_BY_SMALL
-        panes[11] = DisplayViewPane.SMALL_BY_SMALL
-        panes[12] = DisplayViewPane.SMALL_BY_SMALL
-        panes[13] = DisplayViewPane.SMALL_BY_SMALL
-        panes[14] = DisplayViewPane.SMALL_BY_SMALL
-        panes[15] = DisplayViewPane.SMALL_BY_SMALL
-        panes[16] = DisplayViewPane.TINY_BY_TINY
-        panes[17] = DisplayViewPane.TINY_BY_TINY
-        panes[18] = DisplayViewPane.TINY_BY_TINY
-        panes[19] = DisplayViewPane.TINY_BY_TINY
-        panes[20] = DisplayViewPane.TINY_BY_TINY
-        panes[21] = DisplayViewPane.TINY_BY_TINY
-        panes[22] = DisplayViewPane.UNIT_BY_UNIT
-        panes[23] = DisplayViewPane.UNIT_BY_UNIT
-        panes[24] = DisplayViewPane.UNIT_BY_UNIT
-        panes[25] = DisplayViewPane.UNIT_BY_UNIT
-        panes[26] = DisplayViewPane.UNIT_BY_UNIT
-        panes[27] = DisplayViewPane.UNIT_BY_UNIT
-        panes[28] = DisplayViewPane.UNIT_BY_UNIT
-        panes[29] = DisplayViewPane.UNIT_BY_UNIT
-        panes[30] = DisplayViewPane.UNIT_BY_UNIT
-        panes[31] = DisplayViewPane.UNIT_BY_UNIT
-        panes[32] = DisplayViewPane.UNIT_BY_UNIT
-        panes[33] = DisplayViewPane.UNIT_BY_UNIT
+        panes.data[0] = DisplayViewPaneType.MEDIUM_BY_MEDIUM
+        panes.data[1] = DisplayViewPaneType.LARGE_BY_LARGE
+        panes.data[2] = DisplayViewPaneType.LARGE_BY_LARGE
+        panes.data[3] = DisplayViewPaneType.LARGE_BY_LARGE
+        panes.data[4] = DisplayViewPaneType.MEDIUM_BY_MEDIUM
+        panes.data[5] = DisplayViewPaneType.MEDIUM_BY_MEDIUM
+        panes.data[6] = DisplayViewPaneType.MEDIUM_BY_MEDIUM
+        panes.data[7] = DisplayViewPaneType.MEDIUM_BY_MEDIUM
+        panes.data[8] = DisplayViewPaneType.MEDIUM_BY_MEDIUM
+        panes.data[9] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[10] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[11] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[12] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[13] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[14] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[15] = DisplayViewPaneType.SMALL_BY_SMALL
+        panes.data[16] = DisplayViewPaneType.TINY_BY_TINY
+        panes.data[17] = DisplayViewPaneType.TINY_BY_TINY
+        panes.data[18] = DisplayViewPaneType.TINY_BY_TINY
+        panes.data[19] = DisplayViewPaneType.TINY_BY_TINY
+        panes.data[20] = DisplayViewPaneType.TINY_BY_TINY
+        panes.data[21] = DisplayViewPaneType.TINY_BY_TINY
+        panes.data[22] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[23] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[24] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[25] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[26] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[27] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[28] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[29] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[30] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[31] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[32] = DisplayViewPaneType.UNIT_BY_UNIT
+        panes.data[33] = DisplayViewPaneType.UNIT_BY_UNIT
 
         return panes
     }
 
-    override fun imagePanes() : List<Int> = definePanes().keys.toList()
+    override fun imagePanes() : List<Int> = definePanes().data.keys.toList()
     override fun textPanes() : List<Int> = listOf()
 
-    override fun buildPaneTable(layoutMode : Boolean, currentText : String, currentFontSize: FontSize) : Table {
+    override fun buildPaneTable() : Table {
 
-        val panes = buildPaneCtrls(layoutMode, currentText, currentFontSize)
+        val panes = buildPaneCtrls()
 
         val innerTable = Table()
 

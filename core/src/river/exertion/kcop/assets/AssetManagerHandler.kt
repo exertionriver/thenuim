@@ -47,6 +47,10 @@ class AssetManagerHandler : Telegraph {
         TextureAssets.values().forEach { assets.load(it) }
         SkinAssets.values().forEach { assets.load(it) }
         SoundAssets.values().forEach { assets.load(it) }
+
+//        assets.setLoader(DisplayViewLayoutAsset::class.java, DisplayViewLayoutAssetLoader(lfhr))
+//        DisplayViewLayoutAssets.values().forEach { assets.load(it) }
+
         assets.finishLoading()
 
         assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
@@ -164,7 +168,7 @@ class AssetManagerHandler : Telegraph {
     override fun handleMessage(msg: Telegram?): Boolean = this.messageHandler(msg)
 
     companion object {
-        val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+        val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; isLenient = true }
 
         const val NoProfileLoaded = "No Profile Loaded"
         const val NoNarrativeLoaded = "No Narrative Loaded"

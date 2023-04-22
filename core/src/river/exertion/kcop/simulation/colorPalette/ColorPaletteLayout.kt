@@ -2,17 +2,18 @@ package river.exertion.kcop.simulation.colorPalette
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.assets.FontSize
-import river.exertion.kcop.simulation.view.FontPackage
+import com.kotcrab.vis.ui.widget.VisWindow
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.colorPalette.ColorPaletteMessage
 import river.exertion.kcop.simulation.view.ViewType
-import kotlin.reflect.jvm.javaMethod
+import river.exertion.kcop.system.messaging.messages.DisplayViewAudioMessage
 
 class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
 
@@ -104,16 +105,99 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     fun colorBaseDecrG() = setColorBase(baseColor.decrG())
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
+    fun build(stage: Stage) {
+        stage.addActor(createSampleSwatchesCtrl())
+        stage.addActor(createBaseSwatchesCtrl())
+        stage.addActor(createCompSwatchesCtrl())
+        stage.addActor(createTriadFirstSwatchesCtrl())
+        stage.addActor(createTriadSecondSwatchesCtrl())
+    }
+
+    fun hide() {
+        sampleSwatchesCtrl.addAction(Actions.hide())
+        baseSwatchesCtrl.addAction(Actions.hide())
+        compSwatchesCtrl.addAction(Actions.hide())
+        triadFirstSwatchesCtrl.addAction(Actions.hide())
+        triadSecondSwatchesCtrl.addAction(Actions.hide())
+    }
+
+    fun show() {
+        sampleSwatchesCtrl.addAction(Actions.show())
+        baseSwatchesCtrl.addAction(Actions.show())
+        compSwatchesCtrl.addAction(Actions.show())
+        triadFirstSwatchesCtrl.addAction(Actions.show())
+        triadSecondSwatchesCtrl.addAction(Actions.show())
+    }
+
+    fun kcopScreen(offset : Vector2) {
+        sampleSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
+        baseSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
+        compSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
+        triadFirstSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
+        triadSecondSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
+
+        sampleSwatchesCtrl.topX -= offset.x
+        sampleSwatchesCtrl.topY -= offset.y
+        baseSwatchesCtrl.topX -= offset.x
+        baseSwatchesCtrl.topY -= offset.y
+        compSwatchesCtrl.topX -= offset.x
+        compSwatchesCtrl.topY -= offset.y
+        triadFirstSwatchesCtrl.topX -= offset.x
+        triadFirstSwatchesCtrl.topY -= offset.y
+        triadSecondSwatchesCtrl.topX -= offset.x
+        triadSecondSwatchesCtrl.topY -= offset.y
+    }
+
+    fun fullScreen(offset : Vector2) {
+        sampleSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
+        baseSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
+        compSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
+        triadFirstSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
+        triadSecondSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
+
+        sampleSwatchesCtrl.topX += offset.x
+        sampleSwatchesCtrl.topY += offset.y
+        baseSwatchesCtrl.topX += offset.x
+        baseSwatchesCtrl.topY += offset.y
+        compSwatchesCtrl.topX += offset.x
+        compSwatchesCtrl.topY += offset.y
+        triadFirstSwatchesCtrl.topX += offset.x
+        triadFirstSwatchesCtrl.topY += offset.y
+        triadSecondSwatchesCtrl.topX += offset.x
+        triadSecondSwatchesCtrl.topY += offset.y
+    }
+
+
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
                 (MessageChannel.COLOR_PALETTE_BRIDGE.isType(msg.message) ) -> {
                     val colorPaletteMessage : ColorPaletteMessage = MessageChannel.COLOR_PALETTE_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    baseColor = colorPaletteMessage.colorPalette
-                    baseColorName = colorPaletteMessage.name
+                    when (colorPaletteMessage.colorPaletteMessageType) {
+                        ColorPaletteMessage.ColorPaletteMessageType.SetBaseColor -> {
+                            baseColor = colorPaletteMessage.baseCp ?: baseColor
+                            baseColorName = colorPaletteMessage.baseColorName ?: baseColor.tags()[0]
 
-                    recreateSpectrumSwatches()
+                            recreateSpectrumSwatches()
+                        }
+                        ColorPaletteMessage.ColorPaletteMessageType.ModifyBaseColor -> {
+                            when (colorPaletteMessage.modifyType) {
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrR -> colorBaseIncrR()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrG -> colorBaseIncrG()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrB -> colorBaseIncrB()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrR -> colorBaseDecrR()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrG -> colorBaseDecrG()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrB -> colorBaseDecrB()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncr -> colorBaseIncr()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecr -> colorBaseDecr()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorSamplePrev -> colorSamplePrev()
+                                ColorPaletteMessage.ColorPaletteModifyType.ColorSampleNext -> colorSampleNext()
+                                else -> {}
+                            }
+                        }
+
+                    }
                     return true
                 }
             }

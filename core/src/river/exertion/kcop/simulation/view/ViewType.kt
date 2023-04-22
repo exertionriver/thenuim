@@ -1,6 +1,7 @@
 package river.exertion.kcop.simulation.view
 
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import river.exertion.kcop.system.colorPalette.ColorPalette
 
 enum class ViewType {
@@ -42,12 +43,13 @@ enum class ViewType {
         override fun defaultColor() = secondDefaultColor.triad().second
     }
     ;
-    
+
+    fun viewPosition(screenWidth : Float, screenHeight : Float) : Vector2 = Vector2(viewRect(screenWidth, screenHeight).x, viewRect(screenWidth, screenHeight).y)
     abstract fun viewRect(screenWidth : Float, screenHeight : Float) : Rectangle
     abstract fun defaultColor() : ColorPalette
 
-    val firstDefaultColor = ColorPalette.Color402
-    val secondDefaultColor = ColorPalette.Color635
+    val firstDefaultColor = ColorPalette.Color100
+    val secondDefaultColor = ColorPalette.Color012
 
     companion object {
         val widths = listOf(34, 21, 13, 8, 5, 3, 2, 1)

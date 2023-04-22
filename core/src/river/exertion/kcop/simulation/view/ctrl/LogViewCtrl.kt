@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.assets.FontSize
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
@@ -46,7 +47,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                 this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
             }
         } else {
-            sdcHandler.get("textTime", ColorPalette.of("black")).textureRegion().apply {
+            sdcHandler.get("textTime", KcopSkin.BackgroundColor).textureRegion().apply {
                 this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
             }
         }

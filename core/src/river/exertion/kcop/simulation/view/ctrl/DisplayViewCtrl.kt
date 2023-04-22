@@ -13,7 +13,7 @@ import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.fa
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.showImage
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
 import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
-import river.exertion.kcop.simulation.view.displayViewLayouts.DisplayViewLayout
+import river.exertion.kcop.simulation.view.displayViewLayouts.IDisplayViewLayout
 import river.exertion.kcop.simulation.view.displayViewMenus.*
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
@@ -36,7 +36,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
-    var displayViewLayouts : MutableList<DisplayViewLayout> = mutableListOf(
+    var IDisplayViewLayouts : MutableList<IDisplayViewLayout> = mutableListOf(
         DVLGoldenRatio(screenWidth, screenHeight),
         DVLBasicPictureNarrative(screenWidth, screenHeight),
     )
@@ -61,7 +61,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     var currentFontSize = FontSize.SMALL
 
     fun setLayoutIdxByTag(tag : String) {
-        currentLayoutIdx = displayViewLayouts.indexOf(displayViewLayouts.firstOrNull { it.tag == tag } ?: displayViewLayouts[currentLayoutIdx])
+        currentLayoutIdx = IDisplayViewLayouts.indexOf(IDisplayViewLayouts.firstOrNull { it.tag == tag } ?: IDisplayViewLayouts[currentLayoutIdx])
     }
 
     fun setMenuIdxByTag(tag : String) {
@@ -78,7 +78,12 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-                this.add(displayViewLayouts[currentLayoutIdx].buildPaneTable(currentLayoutMode, currentText, currentFontSize))
+                this.add(IDisplayViewLayouts[currentLayoutIdx].run {
+                    this.currentLayoutMode = this@DisplayViewCtrl.currentLayoutMode
+                    this.currentText = this@DisplayViewCtrl.currentText
+                    this.currentFontSize = this@DisplayViewCtrl.currentFontSize
+                    this.buildPaneTable()
+                })
                 if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout())
             }).size(this.tableWidth(), this.tableHeight())
 
@@ -89,17 +94,17 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         if (msg != null) {
             when {
                 (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
-                    super.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                    this.sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
-                    super.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                    this.kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
                 (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
                     this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
-                    displayViewLayouts[currentLayoutIdx].paneTextures.clear()
-                    displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
+                    IDisplayViewLayouts[currentLayoutIdx].paneTextures.clear()
+                    IDisplayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
                     MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Layout" else "Clear"}" ))
 
                     build()
@@ -109,7 +114,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
 
                     setLayoutIdxByTag(displayViewTextMessage.layoutTag)
-                    displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
+                    IDisplayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
                     if (displayViewTextMessage.displayText != null) currentText = displayViewTextMessage.displayText
                     if (displayViewTextMessage.displayFontSize != null) currentFontSize = displayViewTextMessage.displayFontSize
 
@@ -142,8 +147,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
                         }
                         if (displayViewMenuMessage.menuButtonIdx == 2) {
-                            currentLayoutIdx = if (currentLayoutIdx < displayViewLayouts.size - 1) currentLayoutIdx + 1 else 0
-                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${displayViewLayouts[currentLayoutIdx].tag}" ))
+                            currentLayoutIdx = if (currentLayoutIdx < IDisplayViewLayouts.size - 1) currentLayoutIdx + 1 else 0
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${IDisplayViewLayouts[currentLayoutIdx].tag}" ))
                         }
                     }
 
@@ -164,7 +169,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
     }
 
     override fun dispose() {
-        displayViewLayouts.forEach { it.dispose() }
+        IDisplayViewLayouts.forEach { it.dispose() }
         displayViewMenus.forEach { it.dispose() }
         audioCtrl.dispose()
     }

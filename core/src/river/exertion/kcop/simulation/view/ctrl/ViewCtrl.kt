@@ -35,7 +35,7 @@ open class ViewCtrl(var viewType : ViewType, var screenWidth: Float = 50f, var s
                 this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
             }
         } else {
-            sdcHandler.get("background_${viewType}", ColorPalette.of("black")).textureRegion().apply {
+            sdcHandler.get("background_${viewType}", KcopSkin.BackgroundColor).textureRegion().apply {
                 this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
             }
         }

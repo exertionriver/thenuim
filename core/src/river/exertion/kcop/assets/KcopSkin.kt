@@ -10,6 +10,7 @@ import ktx.actors.onClick
 import ktx.actors.onEnter
 import ktx.assets.disposeSafely
 import river.exertion.kcop.simulation.view.FontPackage
+import river.exertion.kcop.system.colorPalette.ColorPalette
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.DisplayViewAudioMessage
 
@@ -29,6 +30,14 @@ class KcopSkin(var skin : Skin, var fontPackage: FontPackage) {
         Enter, Click, Swoosh
     }
 
+    //experiments for border
+//        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = 0f; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })
+//        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = ViewType.firstWidth(orthoCamera.viewportWidth) - 10; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })
+
+    //        layout.displayViewCtrl.recreate()
+    companion object {
+        val BackgroundColor = ColorPalette.of("black")
+    }
 
     fun dispose() {
         skin.disposeSafely()
