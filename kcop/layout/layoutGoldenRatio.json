@@ -2,13 +2,101 @@
   "name" : "goldenRatioLayout",
   "layout" : [
     {"tableIdx" :  "tlSpiral0",
-      "panes" :  [{"idx" : "30"}, {"idx" : "24"}]
+      "panes" :  [{"idx" : "30", "width" : "unit", "height" : "unit"}, {"idx" : "24", "width" :  "unit", "height" : "unit"}]
     },
     {"tableIdx" :  "tlSpiral1",
-      "panes" :  [{"tableIdx" : "tlSpiral0"}, {}, {"idx" : "18"}]
+      "panes" :  [{"tableIdx" : "tlSpiral0"}, {}, {"idx" : "18", "width" : "tiny", "height" : "tiny"}]
     },
     {"tableIdx" :  "tlSpiral2",
-      "panes" :  [{"tableIdx" : "tlSpiral1"}, {"idx" : "11"}]
+      "panes" :  [{"tableIdx" : "tlSpiral1"}, {"idx" : "11", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "tlSpiral3",
+      "panes" :  [{"idx" : "7", "width" : "medium", "height" : "medium", "refineX" : "1", "refineY" : "0"}, {}, {"tableIdx" : "tlSpiral2"}]
+    },
+    {"tableIdx" :  "tlSpiral4",
+      "panes" :  [{"idx" : "2", "width" : "large", "height" : "large", "refineX" : "1", "refineY" : "0"}, {"tableIdx" : "tlSpiral3"}]
+    },
+    {"tableIdx" :  "trSpiral0a",
+      "panes" :  [{"idx" : "33", "width" : "unit", "height" : "unit"}, {}, {"idx" : "27", "width" : "unit", "height" : "unit"}]
+    },
+    {"tableIdx" :  "trSpiral0b",
+      "panes" :  [{"idx" : "26", "width" : "unit", "height" : "unit"}, {"idx" : "32", "width" : "unit", "height" : "unit"}]
+    },
+    {"tableIdx" :  "tlSpiral1a",
+      "panes" :  [{"idx" : "21", "width" : "tiny", "height" : "tiny", "refineX" : "0", "refineY" : "1"}, {}, {"tableIdx" : "trSpiral0a"}]
+    },
+    {"tableIdx" :  "tlSpiral1b",
+      "panes" :  [{"tableIdx" : "trSpiral0b"}, {}, {"idx" : "20", "width" : "tiny", "height" : "tiny"}]
+    },
+    {"tableIdx" :  "trSpiral2a",
+      "panes" :  [{"idx" : "14", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "0"}, {},
+        {"tableIdx" : "tlSpiral1a"}, {}, {"idx" : "15", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "trSpiral2b",
+      "panes" :  [{"tableIdx" : "trSpiral1b"}, {"idx" : "13", "width" : "small", "height" : "small", "refineX" : "0", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "trSpiral3b",
+      "panes" :  [{"idx" : "4", "width" : "medium", "height" : "medium", "refineX" : "0", "refineY" : "1"}, {}, {"tableIdx" : "trSpiral2b"}]
+    },
+    {"tableIdx" :  "trSpiral4",
+      "panes" :  [{"tableIdx" : "trSpiral2a"}, {"tableIdx" : "trSpiral3b"}]
+    },
+    {"tableIdx" :  "topRow",
+      "panes" :  [{"tableIdx" : "tlSpiral4", "colspan" : "13"}, {"tableIdx" : "trSpiral4", "colspan" : "8"}]
+    },
+    {"tableIdx" :  "lSpiral0",
+      "panes" :  [{"idx" : "28", "width" : "unit", "height" : "unit"}, {}, {"idx" : "22", "width" : "unit", "height" : "unit"}]
+    },
+    {"tableIdx" :  "lSpiral1",
+      "panes" :  [{"tableIdx" : "lSpiral0"}, {"idx" : "16", "width" : "tiny", "height" : "tiny", "refineX" : "0", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "lSpiral2",
+      "panes" :  [{"idx" : "9", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "0"}, {}, {"tableIdx" : "lSpiral1"}]
+    },
+    {"tableIdx" :  "lSpiral3",
+      "panes" :  [{"idx" : "5", "width" : "medium", "height" : "medium", "refineX" : "0", "refineY" : "1"}, {"tableIdx" : "lSpiral2"}]
+    },
+    {"tableIdx" :  "rSpiral0",
+      "panes" :  [{"idx" : "31", "width" : "unit", "height" : "unit"}, {}, {"idx" : "25", "width" : "unit", "height" : "unit"}]
+    },
+    {"tableIdx" :  "rSpiral1",
+      "panes" :  [{"idx" : "19", "width" : "tiny", "height" : "tiny", "refineX" : "0", "refineY" : "1"}, {"tableIdx" : "rSpiral0"}]
+    },
+    {"tableIdx" :  "rSpiral2",
+      "panes" :  [{"tableIdx" : "rSpiral1"}, {}, {"idx" : "12", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "0"}]
+    },
+    {"tableIdx" :  "rSpiral3",
+      "panes" :  [{"tableIdx" : "rSpiral2"}, {"idx" : "8", "width" : "medium", "height" : "medium", "refineX" : "0", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "middlePane",
+      "panes" :  [{"idx" : "0", "width" : "medium", "height" : "medium", "refineX" : "1", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "middleRow",
+      "panes" :  [{"tableIdx" : "lSpiral3", "colspan" : "8"}, {"tableIdx" : "middlePane", "colspan" : "5"}, {"tableIdx" : "rSpiral3", "colspan" : "8"}]
+    },
+    {"tableIdx" :  "blPane",
+      "panes" :  [{"idx" : "1", "width" : "large", "height" : "large", "refineX" : "1", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "brSpiral0",
+      "panes" :  [{"idx" : "23", "width" : "unit", "height" : "unit"}, {"idx" : "29", "width" : "unit", "height" : "unit"}]
+    },
+    {"tableIdx" :  "brSpiral1",
+      "panes" :  [{"tableIdx" : "brSpiral0"}, {}, {"idx" : "17", "width" : "tiny", "height" : "tiny"}]
+    },
+    {"tableIdx" :  "brSpiral2",
+      "panes" :  [{"idx" : "10", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "1"}, {"tableIdx" : "brSpiral1"}]
+    },
+    {"tableIdx" :  "brSpiral3",
+      "panes" :  [{"tableIdx" : "brSpiral2"}, {}, {"idx" : "6", "width" : "medium", "height" : "medium", "refineX" : "1", "refineY" : "0"}]
+    },
+    {"tableIdx" :  "brPane",
+      "panes" :  [{"idx" : "3", "width" : "large", "height" : "large", "refineX" : "1", "refineY" : "1"}]
+    },
+    {"tableIdx" :  "bottomRow",
+      "panes" :  [{"tableIdx" : "blPane", "colspan" : "8"}, {"tableIdx" : "brSpiral3", "colspan" : "5"}, {"tableIdx" : "brPane", "colspan" : "8"}]
+    },
+    {"tableIdx" :  "layout",
+      "panes" :  [{"tableIdx" : "topRow"}, {}, {"tableIdx" : "middleRow"}, {}, {"tableIdx" : "bottomRow"}]
     }
   ]
 }

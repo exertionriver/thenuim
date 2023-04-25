@@ -213,7 +213,7 @@ interface IDisplayViewLayout {
         }
     }
 
-    fun placeholderPane(displayViewPaneIdx : Int, displayViewPaneType : DisplayViewPaneType) : Table {
+    fun emptyPane(displayViewPaneIdx : Int, displayViewPaneType : DisplayViewPaneType) : Table {
         return Table().apply {
             this.add(Table()).size(
                     displayViewPaneType.width(screenWidth) + (paneRefiners[displayViewPaneIdx]?.x ?: 0f),
@@ -229,17 +229,17 @@ interface IDisplayViewLayout {
 
         val paneText = if (currentText.isNotBlank()) paneText(panes).data else mutableMapOf()
 
-
         panes.data.entries.sortedBy { it.key }.forEach { displayViewPane ->
 
             paneCtrls[displayViewPane.key] =
                 Stack().apply {
-                    //holds place for pane size
-                    this.add(placeholderPane(displayViewPane.key, displayViewPane.value))
 
                     if (currentLayoutMode) { //fill each pane with random color
                         this.add(layoutPane(displayViewPane.key, displayViewPane.value))
                     } else { //draw specific content if present
+                        //holds place for pane size
+                        this.add(emptyPane(displayViewPane.key, displayViewPane.value))
+
                         //image present
                         if (paneTextures[displayViewPane.key] != null) {
                             this.add(imagePane(displayViewPane.key, displayViewPane.value))

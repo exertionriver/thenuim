@@ -6,12 +6,8 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.json.decodeFromJsonElement
+import river.exertion.kcop.simulation.view.displayViewLayouts.DVLayout
 
 class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<DisplayViewLayoutAsset?, DisplayViewLayoutAssetLoader.DisplayViewLayoutAssetParameter?>(resolver) {
@@ -29,10 +25,10 @@ class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
         try {
             rawData = file.readString()
             val jsonElement = AssetManagerHandler.json.parseToJsonElement(rawData)
-            val displayViewLayout = AssetManagerHandler.json.decodeFromJsonElement(jsonElement) as DisplayViewLayout
+            val DVLayout = AssetManagerHandler.json.decodeFromJsonElement(jsonElement) as DVLayout
 
-            val returnDisplayViewLayoutAsset = DisplayViewLayoutAsset(displayViewLayout).apply { this.assetPath = fileName }
-            val errorStatus = "${displayViewLayout.name} not loaded"
+            val returnDisplayViewLayoutAsset = DisplayViewLayoutAsset(DVLayout).apply { this.assetPath = fileName }
+            val errorStatus = "${DVLayout.name} not loaded"
 
             return returnDisplayViewLayoutAsset
 
