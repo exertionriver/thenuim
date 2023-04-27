@@ -78,6 +78,7 @@ class AssetManagerHandler : Telegraph {
         this.uiSounds[KcopSkin.UiSounds.Click] = assets[SoundAssets.Click]
         this.uiSounds[KcopSkin.UiSounds.Enter] = assets[SoundAssets.Enter]
         this.uiSounds[KcopSkin.UiSounds.Swoosh] = assets[SoundAssets.Swoosh]
+        DisplayViewLayoutAssets.values().forEach { this.layouts.add(assets[it].DVLayout!!) }
     }
 
     inline fun <reified T:IAsset>reloadAssets(assetLoadLocation : String): List<T> {

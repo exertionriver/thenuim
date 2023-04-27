@@ -48,7 +48,7 @@ class StatusViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tele
             barStack.add(
                 ProgressBar(0f, 1f, .01f, false, skin()).apply { this.value = it.value } )
             barStack.add(
-                Label(it.key, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().incr(2).color()))
+                Label(it.key, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.incr(2)))
             )
 
             innerTable.add(barStack)

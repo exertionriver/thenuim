@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view.displayViewLayouts
+package river.exertion.kcop.simulation.view.displayViewLayout
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer

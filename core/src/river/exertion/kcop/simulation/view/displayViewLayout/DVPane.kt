@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view.displayViewLayouts
+package river.exertion.kcop.simulation.view.displayViewLayout
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -7,22 +7,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.Id
+import kotlinx.serialization.Transient
 import river.exertion.kcop.simulation.view.DisplayViewPaneType
 
-@Serializable
-sealed class DVPane(
-    override var idx : String? = Id.randomId(), //set in asset loader, allowing sequential assignment?
-    override var cellType: DVLCellTypes = DVLCellTypes.PANE,
-    open val type: String = DVPaneTypes.IMAGE.tag(),
-    val width : String? = null,
-    val height : String? = null,
-    val refineX : String? = null,
-    val refineY : String? = null
-) : DVLayoutCell() {
+@Serializable(with = DVPaneSerializer::class)
+sealed class DVPane : DVLayoutCell() {
+
+    override var idx : String? = null
+    override var cellType: DVLCellTypes = DVLCellTypes.PANE
+    abstract val width : String?
+    abstract val height : String?
+    abstract val refineX : String?
+    abstract val refineY : String?
+
+    abstract var paneType: String?
 
     @Transient
-    var alphaMask : Float = 1f
+    var alphaMask : Float = 0f
 
     fun idx() = idx?.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!")
 
@@ -31,7 +32,7 @@ sealed class DVPane(
 
     fun dvpType() = DisplayViewPaneType.byTags(width, height)
 
-    open fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String) : Stack {
+    open fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String? = "") : Stack {
         val label = idx.toString() + paneLabel
 
         val innerTableBg = Table()

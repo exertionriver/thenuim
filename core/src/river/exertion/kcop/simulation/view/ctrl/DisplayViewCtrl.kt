@@ -6,14 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.clearImages
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.crossFadeImage
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.fadeImageIn
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.fadeImageOut
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrlTextureHandler.showImage
-import river.exertion.kcop.simulation.view.displayViewLayouts.DVLBasicPictureNarrative
-import river.exertion.kcop.simulation.view.displayViewLayouts.DVLGoldenRatio
-import river.exertion.kcop.simulation.view.displayViewLayouts.IDisplayViewLayout
+import river.exertion.kcop.simulation.view.displayViewLayout.DVLayoutHandler
 import river.exertion.kcop.simulation.view.displayViewMenus.*
 import river.exertion.kcop.system.messaging.MessageChannel
 import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
@@ -36,10 +29,7 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
-    var IDisplayViewLayouts : MutableList<IDisplayViewLayout> = mutableListOf(
-        DVLGoldenRatio(screenWidth, screenHeight),
-        DVLBasicPictureNarrative(screenWidth, screenHeight),
-    )
+    var dvLayoutHandler = DVLayoutHandler(screenWidth, screenHeight)
 
     var displayViewMenus : MutableList<DisplayViewMenu> = mutableListOf(
         MainMenu(screenWidth, screenHeight),
@@ -55,14 +45,9 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
 
     var menuOpen = false
     var currentMenuIdx = 0
-    var currentLayoutIdx = 0
 
     var currentText = ""
     var currentFontSize = FontSize.SMALL
-
-    fun setLayoutIdxByTag(tag : String) {
-        currentLayoutIdx = IDisplayViewLayouts.indexOf(IDisplayViewLayouts.firstOrNull { it.tag == tag } ?: IDisplayViewLayouts[currentLayoutIdx])
-    }
 
     fun setMenuIdxByTag(tag : String) {
         currentMenuIdx = displayViewMenus.indexOf(displayViewMenus.firstOrNull { it.tag() == tag } ?: displayViewMenus[currentMenuIdx])
@@ -78,11 +63,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-                this.add(IDisplayViewLayouts[currentLayoutIdx].run {
+                this.add(dvLayoutHandler.run {
                     this.currentLayoutMode = this@DisplayViewCtrl.currentLayoutMode
                     this.currentText = this@DisplayViewCtrl.currentText
                     this.currentFontSize = this@DisplayViewCtrl.currentFontSize
-                    this.buildPaneTable()
+                    this.buildLayout()
                 })
                 if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout())
             }).size(this.tableWidth(), this.tableHeight())
@@ -103,8 +88,11 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 }
                 (MessageChannel.DISPLAY_MODE_BRIDGE.isType(msg.message) ) -> {
                     this.currentLayoutMode = MessageChannel.DISPLAY_MODE_BRIDGE.receiveMessage(msg.extraInfo)
-                    IDisplayViewLayouts[currentLayoutIdx].paneTextures.clear()
-                    IDisplayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
+
+                    dvLayoutHandler.currentDvLayout?.clearImagePaneContent()
+                    dvLayoutHandler.currentDvLayout?.clearTextPaneContent()
+                    dvLayoutHandler.currentDvLayout?.clearAlphaPaneContent()
+
                     MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Layout" else "Clear"}" ))
 
                     build()
@@ -113,8 +101,10 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                 (MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.isType(msg.message) ) -> {
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.receiveMessage(msg.extraInfo)
 
-                    setLayoutIdxByTag(displayViewTextMessage.layoutTag)
-                    IDisplayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha.clear()
+                    if (dvLayoutHandler.currentDvLayout == null || dvLayoutHandler.currentDvLayout!!.name != displayViewTextMessage.layoutTag ) {
+                        dvLayoutHandler.currentDvLayout = kcopSkin.layoutByName(displayViewTextMessage.layoutTag)
+                    }
+
                     if (displayViewTextMessage.displayText != null) currentText = displayViewTextMessage.displayText
                     if (displayViewTextMessage.displayFontSize != null) currentFontSize = displayViewTextMessage.displayFontSize
 
@@ -126,13 +116,20 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                     val displayViewTextureMessage: DisplayViewTextureMessage = MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (displayViewTextureMessage.messageType) {
-                        DisplayViewTextureMessage.DisplayViewTextureMessageType.ShowImage -> showImage(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessage.DisplayViewTextureMessageType.HideImage -> showImage(displayViewTextureMessage.layoutPaneIdx!!, null)
-                        DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeInImage -> fadeImageIn(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeOutImage -> fadeImageOut(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessage.DisplayViewTextureMessageType.CrossFadeImage -> crossFadeImage(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
-                        DisplayViewTextureMessage.DisplayViewTextureMessageType.ClearAll -> { clearImages(); clearText(); audioCtrl.stopMusic() }
-                        }
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.ShowImage -> dvLayoutHandler.setImagePaneContent(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.HideImage -> dvLayoutHandler.setImagePaneContent(displayViewTextureMessage.layoutPaneIdx!!, null)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeInImage -> dvLayoutHandler.fadeImageIn(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeOutImage -> dvLayoutHandler.fadeImageOut(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.CrossFadeImage -> dvLayoutHandler.setImagePaneContent(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                            //crossFadeImage(displayViewTextureMessage.layoutPaneIdx!!, displayViewTextureMessage.texture)
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.ClearAll -> {
+                                dvLayoutHandler.currentDvLayout?.clearImagePaneContent()
+                                dvLayoutHandler.currentDvLayout?.clearTextPaneContent()
+                                dvLayoutHandler.currentDvLayout?.clearAlphaPaneContent()
+                                audioCtrl.stopMusic()
+                            }
+                        DisplayViewTextureMessage.DisplayViewTextureMessageType.Rebuild -> { } // rebuild the display
+                    }
 
                     if (!menuOpen) build()
 
@@ -147,8 +144,9 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
                             MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Menu ${if (menuOpen) "Opened" else "Closed"}" ))
                         }
                         if (displayViewMenuMessage.menuButtonIdx == 2) {
-                            currentLayoutIdx = if (currentLayoutIdx < IDisplayViewLayouts.size - 1) currentLayoutIdx + 1 else 0
-                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${IDisplayViewLayouts[currentLayoutIdx].tag}" ))
+                            dvLayoutHandler.currentDvLayout = kcopSkin.nextLayout(dvLayoutHandler.currentDvLayout!!.name)
+
+                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "Layout set to: ${dvLayoutHandler.currentDvLayout!!.name}" ))
                         }
                     }
 
@@ -164,12 +162,8 @@ class DisplayViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Tel
         return false
     }
 
-    companion object {
-        const val defaultLayoutTag = DVLGoldenRatio.tag
-    }
-
     override fun dispose() {
-        IDisplayViewLayouts.forEach { it.dispose() }
+        dvLayoutHandler.dispose()
         displayViewMenus.forEach { it.dispose() }
         audioCtrl.dispose()
     }

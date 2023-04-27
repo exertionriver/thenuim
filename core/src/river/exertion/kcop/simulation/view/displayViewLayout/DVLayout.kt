@@ -1,11 +1,11 @@
-package river.exertion.kcop.simulation.view.displayViewLayouts
+package river.exertion.kcop.simulation.view.displayViewLayout
 
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.Id
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.simulation.view.ViewType
-import river.exertion.kcop.system.colorPalette.ColorPalette
 
 @Serializable
 data class DVLayout(
@@ -20,25 +20,47 @@ data class DVLayout(
     fun panes() = layout.flatMap { it.panes }.filter { it.cellType == DVLayoutCell.DVLCellTypes.PANE } as List<DVPane>
 
     @Suppress("UNCHECKED_CAST")
-    fun textPanes() = panes().filter { it.type == DVPane.DVPaneTypes.TEXT.tag() } as List<DVTextPane>
+    fun imagePanes() = panes().filter { it.paneType == DVPane.DVPaneTypes.IMAGE.tag() } as List<DVImagePane>
 
-    fun setAdjacencies(fontSize : FontSize) {
+    @Suppress("UNCHECKED_CAST")
+    fun textPanes() = panes().filter { it.paneType == DVPane.DVPaneTypes.TEXT.tag() } as List<DVTextPane>
+
+    fun setAdjacencies(fontSize: FontSize) {
         textPanes().forEach { dvTextPane ->
-            dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.idx == dvTextPane.idx }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset() ?: 0
-            dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.idx == dvTextPane.idx }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows() ?: 0
+            dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.idx == dvTextPane.idx }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
+                    ?: 0
+            dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.idx == dvTextPane.idx }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows()
+                    ?: 0
         }
     }
 
-    fun clearAdjacencies() {
-        textPanes().forEach { dvTextPane ->
-            dvTextPane.adjacencyTopPadOffset = 0
-            dvTextPane.adjacencyAllowedRows = 0
-        }
+    fun setImagePaneContent(paneIdx : Int, texture : Texture?) {
+        imagePanes().firstOrNull { it.idx() == paneIdx }?.paneTexture = texture
     }
 
-    fun buildTextPanes(screenWidth : Float, screenHeight : Float, currentText : String, sizingLabelStyle : Label.LabelStyle? = null) {
+    fun fadeImageIn(paneIdx : Int, texture : Texture?) {
+        imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageIn(texture)
+    }
 
-        val returnMap = DisplayTextPanes()
+    fun fadeImageOut(paneIdx : Int, texture : Texture?) {
+        imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageOut(texture)
+    }
+
+    fun clearImagePaneContent() {
+        imagePanes().forEach { dvImagePane -> dvImagePane.paneTexture = null }
+    }
+
+    fun clearAlphaPaneContent() {
+        panes().forEach { dvPane -> dvPane.alphaMask = 1f }
+    }
+
+    fun setTextLabelStyle(textLabelStyle: Label.LabelStyle) {
+        textPanes().forEach { it.textLabelStyle = textLabelStyle }
+    }
+
+    fun setTextPaneContent(screenWidth: Float, screenHeight: Float, currentText: String) {
+
+        val textContentMap = mutableMapOf<Int, String?>()
 
         var textParsed = false
 
@@ -48,7 +70,7 @@ data class DVLayout(
         val textDVPs = textPanes()
         var dvpText = currentTextRemaining
 
-        var extraRow : Int
+        var extraRow: Int
 
         while (!textParsed && currentText.isNotBlank() && textDVPs.isNotEmpty()) {
             var paneParsed = false
@@ -63,7 +85,7 @@ data class DVLayout(
                 while (!rowParsed) {
                     val dvpRowWidth = (textDVPs[currentDVPIdx].dvpType().height(screenWidth) - 2 * ViewType.padWidth(screenWidth))
 
-                    var textLabel = Label(dvpText, sizingLabelStyle)
+                    var textLabel = Label(dvpText, textDVPs[currentDVPIdx].textLabelStyle)
 
                     val dvpPaneModHeight = dvpPaneHeight + extraRow * textLabel.height
 
@@ -74,10 +96,10 @@ data class DVLayout(
                         dvpText = dvpText.substring(0, lastSpaceIdx)
                     } else {
 
-                        if (dvpText.contains("\n") ) {
+                        if (dvpText.contains("\n")) {
                             dvpText = dvpText.substring(0, dvpText.indexOf("\n"))
                             //recalc text label, removing \n
-                            textLabel = Label(dvpText, sizingLabelStyle)
+                            textLabel = Label(dvpText, textDVPs[currentDVPIdx].textLabelStyle)
 
                             currentTextRemaining = currentTextRemaining.substring(dvpText.length + 1, currentTextRemaining.length)
                         } else {
@@ -91,16 +113,16 @@ data class DVLayout(
                         if (currentTextRemaining.isEmpty()) {
                             textParsed = true
                         } else { //end of text fields
-                            if ( (currentDVPIdx == textDVPs.size - 1) && paneParsed) {
+                            if ((currentDVPIdx == textDVPs.size - 1) && paneParsed) {
                                 dvpText += "..."
                                 textParsed = true
                             }
                         }
 
-                        if (returnMap.data[currentDVPIdx] == null) {
-                            returnMap.data[currentDVPIdx] = dvpText.trim() + "\n"
+                        if (textContentMap[currentDVPIdx] == null) {
+                            textContentMap[currentDVPIdx] = dvpText.trim() + "\n"
                         } else {
-                            returnMap.data[currentDVPIdx] += dvpText.trim() + "\n"
+                            textContentMap[currentDVPIdx] += dvpText.trim() + "\n"
                         }
 
                         dvpText = currentTextRemaining
@@ -112,9 +134,17 @@ data class DVLayout(
             currentDVPIdx += 1
         }
 
-        if (returnMap.data.isNotEmpty()) {
-            textPanes().forEachIndexed {idx, dvTextPane -> dvTextPane.paneText = returnMap.data[idx] }
+        if (textContentMap.isNotEmpty()) {
+            textPanes().forEachIndexed { idx, dvTextPane -> dvTextPane.paneText = textContentMap[idx] }
         }
+    }
+
+    fun clearTextPaneContent() {
+        textPanes().forEach { dvTextPane -> dvTextPane.paneText = "" }
+    }
+
+    companion object {
+        fun dvLayout() = DVLayout(name="emptyLayout")
     }
 }
 

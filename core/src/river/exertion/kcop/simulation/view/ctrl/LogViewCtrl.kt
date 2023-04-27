@@ -83,7 +83,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(instImmersionTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                    this.add(Label(instImmersionTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -95,7 +95,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(cumlImmersionTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                    this.add(Label(cumlImmersionTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -108,7 +108,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(localTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                    this.add(Label(localTimeStr, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -148,7 +148,7 @@ class LogViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
 
         if (isLog()) {
             (currentLog!!.size - 1 downTo 0).forEach { revEntryIdx ->
-                val logLabel = Label(currentLog!![revEntryIdx], kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                val logLabel = Label(currentLog!![revEntryIdx], kcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
                 logLabel.wrap = true
                 innerTable.add(logLabel).growX()
                 innerTable.row()

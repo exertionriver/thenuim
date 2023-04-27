@@ -7,7 +7,7 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
-import river.exertion.kcop.simulation.view.displayViewLayouts.DVLayout
+import river.exertion.kcop.simulation.view.displayViewLayout.DVLayout
 
 class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<DisplayViewLayoutAsset?, DisplayViewLayoutAssetLoader.DisplayViewLayoutAssetParameter?>(resolver) {

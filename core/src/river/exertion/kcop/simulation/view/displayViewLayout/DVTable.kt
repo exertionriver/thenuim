@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view.displayViewLayouts
+package river.exertion.kcop.simulation.view.displayViewLayout
 
 import kotlinx.serialization.Serializable
 
@@ -8,4 +8,8 @@ data class DVTable(
     override var cellType: DVLCellTypes = DVLCellTypes.TABLE,
     val colspan : String? = null,
     val panes : MutableList<DVLayoutCell> = mutableListOf()
-) : DVLayoutCell()
+) : DVLayoutCell() {
+
+    fun colspan() = colspan?.toIntOrNull() ?: 1
+
+}

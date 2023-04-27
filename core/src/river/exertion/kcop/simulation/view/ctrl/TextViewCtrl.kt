@@ -41,8 +41,8 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
             ViewType.padHeight(height)
         )
 
-        val textLabel = Label(currentText, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
-        val hintLabel = Label(currentHintText, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.triad().first.label().color()))
+        val textLabel = Label(currentText, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
+        val hintLabel = Label(currentHintText, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.triad().first))
 
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
@@ -81,7 +81,7 @@ class TextViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegr
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color()))
+                val logLabel = Label(entry, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()

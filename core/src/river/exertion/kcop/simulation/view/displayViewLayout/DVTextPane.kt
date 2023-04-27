@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view.displayViewLayouts
+package river.exertion.kcop.simulation.view.displayViewLayout
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -6,18 +6,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import river.exertion.kcop.simulation.view.ViewType
 
-@SerialName("text")
-class DVTextPane(
-    override val type: String = ""
-) : DVPane() {
+@Serializable
+class DVTextPane : DVPane() {
+
+    override var idx : String? = null
+    override val width : String? = null
+    override val height : String? = null
+    override val refineX : String? = null
+    override val refineY : String? = null
+
+    @Transient
+    override var paneType: String? = DVPaneTypes.TEXT.tag()
 
     @Transient
     var paneText : String? = null
 
     @Transient
+    @Contextual
     var textLabelStyle : LabelStyle? = null
 
     //pixels padding the top of pane
@@ -28,8 +38,7 @@ class DVTextPane(
     @Transient
     var adjacencyAllowedRows : Int? = 0
 
-
-    override fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String) : Stack {
+    override fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String?) : Stack {
         return super.layoutPane(screenWidth, screenHeight, randomColorImage, randomColorLabelStyle,  DVPaneTypes.TEXT.layoutTag())
     }
 

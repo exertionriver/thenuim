@@ -73,7 +73,7 @@ interface DisplayViewMenu {
 
         //TODO : singleton with three-sized bitmap fonts
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
-            this.add(Label("${menuLabel.value} > ", kcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label().color()))
+            this.add(Label("${menuLabel.value} > ", kcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
                     .apply {
                 this.onClick {
                     MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(menuLabel.key) )
@@ -103,7 +103,7 @@ interface DisplayViewMenu {
                         this.add(breadcrumbPane()).right().growX()
                         this.add(
                             Table().apply {
-                                this.add(Label(this@DisplayViewMenu.label(), kcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label().color()))
+                                this.add(Label(this@DisplayViewMenu.label(), kcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label()))
                             .apply {
                                 this.setAlignment(Align.center)
                             }).padRight(ViewType.padWidth(screenWidth))

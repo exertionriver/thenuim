@@ -22,15 +22,15 @@
     {"tableIdx" :  "trSpiral0b",
       "panes" :  [{"idx" : "26", "width" : "unit", "height" : "unit"}, {"idx" : "32", "width" : "unit", "height" : "unit"}]
     },
-    {"tableIdx" :  "tlSpiral1a",
-      "panes" :  [{"idx" : "21", "width" : "tiny", "height" : "tiny", "refineX" : "0", "refineY" : "1"}, {}, {"tableIdx" : "trSpiral0a"}]
+    {"tableIdx" :  "trSpiral1a",
+      "panes" :  [{"idx" : "21", "width" : "tiny", "height" : "tiny", "refineX" : "0", "refineY" : "1"}, {"tableIdx" : "trSpiral0a"}]
     },
-    {"tableIdx" :  "tlSpiral1b",
+    {"tableIdx" :  "trSpiral1b",
       "panes" :  [{"tableIdx" : "trSpiral0b"}, {}, {"idx" : "20", "width" : "tiny", "height" : "tiny"}]
     },
     {"tableIdx" :  "trSpiral2a",
       "panes" :  [{"idx" : "14", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "0"}, {},
-        {"tableIdx" : "tlSpiral1a"}, {}, {"idx" : "15", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "1"}]
+        {"tableIdx" : "trSpiral1a"}, {}, {"idx" : "15", "width" : "small", "height" : "small", "refineX" : "1", "refineY" : "1"}]
     },
     {"tableIdx" :  "trSpiral2b",
       "panes" :  [{"tableIdx" : "trSpiral1b"}, {"idx" : "13", "width" : "small", "height" : "small", "refineX" : "0", "refineY" : "1"}]

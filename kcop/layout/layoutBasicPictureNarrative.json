@@ -2,10 +2,10 @@
   "name" : "basicPictureNarrative",
   "layout" : [
   {"tableIdx" : "tlRow0",
-    "panes" : [{"idx" : "0", "width" : "large", "height" : "large"}, {"idx" : "1", "width" :  "title", "height" : "large"}]
+    "panes" : [{"idx" : "0", "width" : "large", "height" : "large"}, {"idx" : "1", "type": "text", "width" : "title", "height" : "large"}]
   },
   {"tableIdx" : "layout",
-    "panes" : [{"tableIdx" : "tlRow0"}, {}, {"idx" : "2", "width" : "full", "height" : "large"}]
+    "panes" : [{"tableIdx" : "tlRow0"}, {}, {"idx" : "2", "type": "text", "width" : "full", "height" : "title"}]
   }],
   "textAdjacencyRows" : [
     {"idx" : "1", "fontRows" : [

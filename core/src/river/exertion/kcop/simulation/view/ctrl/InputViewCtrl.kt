@@ -63,12 +63,12 @@ class InputViewCtrl(screenWidth: Float = 50f, screenHeight: Float = 50f) : Teleg
 
         val innerTable = Table()
 
-        innerTable.add(Label(keyText(), kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color())))
+        innerTable.add(Label(keyText(), kcopSkin.labelStyle(FontSize.TEXT, backgroundColor)))
         .expandY()
 
         innerTable.row()
 
-        if (isTouchEvent()) innerTable.add(Label(touchText(), kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.label().color())))
+        if (isTouchEvent()) innerTable.add(Label(touchText(), kcopSkin.labelStyle(FontSize.TEXT, backgroundColor)))
 
 //        innerTable.debug()
 

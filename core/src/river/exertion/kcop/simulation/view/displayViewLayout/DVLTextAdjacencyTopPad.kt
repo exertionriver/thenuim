@@ -1,4 +1,4 @@
-package river.exertion.kcop.simulation.view.displayViewLayouts
+package river.exertion.kcop.simulation.view.displayViewLayout
 
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.Id

@@ -2,7 +2,7 @@ package river.exertion.kcop.assets
 
 import com.badlogic.gdx.assets.AssetManager
 import ktx.assets.getAsset
-import river.exertion.kcop.simulation.view.displayViewLayouts.DVLayout
+import river.exertion.kcop.simulation.view.displayViewLayout.DVLayout
 
 class DisplayViewLayoutAsset(var DVLayout: DVLayout? = null) : IAsset {
     override lateinit var assetPath : String
