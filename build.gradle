@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 buildscript {
-    ext.kotlinVersion = '1.8.10'
+    ext.kotlinVersion = '1.8.21'
 
     repositories {
         mavenLocal()
@@ -53,8 +56,8 @@ project(":desktop") {
     apply plugin: "kotlin"
 
     compileKotlin {
-        kotlinOptions.jvmTarget = "16"
-        kotlinOptions.languageVersion = "1.8"
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_16)
+        compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
     }
     dependencies {
         implementation project(":core")
@@ -90,6 +93,48 @@ project(":android") {
 }
 
 project(":core") {
+    apply plugin: "kotlin"
+
+    test {
+        useJUnitPlatform()
+    }
+    dependencies {
+        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion"
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        api "io.github.libktx:ktx-actors:$ktxVersion"
+        api "io.github.libktx:ktx-app:$ktxVersion"
+        api "io.github.libktx:ktx-ashley:$ktxVersion"
+        api "io.github.libktx:ktx-assets:$ktxVersion"
+        api "io.github.libktx:ktx-box2d:$ktxVersion"
+        api "io.github.libktx:ktx-collections:$ktxVersion"
+        api "io.github.libktx:ktx-graphics:$ktxVersion"
+        api "io.github.libktx:ktx-inject:$ktxVersion"
+        api "io.github.libktx:ktx-log:$ktxVersion"
+        api "io.github.libktx:ktx-math:$ktxVersion"
+        api "io.github.libktx:ktx-scene2d:$ktxVersion"
+        api "io.github.libktx:ktx-vis:$ktxVersion"
+        api "io.github.libktx:ktx-vis-style:$ktxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion"
+        implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+        testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxVersion"
+        implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        implementation "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
+    }
+}
+
+project(":ColorPaletteSim") {
     apply plugin: "kotlin"
 
     test {

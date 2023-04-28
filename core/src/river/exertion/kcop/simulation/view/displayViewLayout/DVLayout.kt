@@ -144,7 +144,8 @@ data class DVLayout(
     }
 
     companion object {
-        fun dvLayout() = DVLayout(name="emptyLayout")
+        const val DvLayoutTag = "emptyLayout"
+        fun dvLayout() = DVLayout(name=DvLayoutTag)
     }
 }
 

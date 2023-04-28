@@ -9,6 +9,7 @@ import river.exertion.kcop.narrative.structure.ImmersionStatus
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
 import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrl
+import river.exertion.kcop.simulation.view.displayViewLayout.DVLayout
 import river.exertion.kcop.system.ecs.component.NarrativeComponentMessageHandler.messageHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.activate
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
@@ -60,7 +61,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun currentPrompts() = if (isInitialized) narrative!!.currentPrompts() else listOf()
 
-    fun layoutTag() = if (isInitialized) narrative!!.layoutTag else DisplayViewCtrl.defaultLayoutTag
+    fun layoutTag() = if (isInitialized) narrative!!.layoutTag else DVLayout.DvLayoutTag
 
     fun currentDisplayText() = if (isInitialized) narrative!!.currentDisplayText() else "<no display text>"
 
