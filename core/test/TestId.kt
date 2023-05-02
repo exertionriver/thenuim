@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.Id
+import river.exertion.kcop.messaging.Id
 
 class TestId {
 

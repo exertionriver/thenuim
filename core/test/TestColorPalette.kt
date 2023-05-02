@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.system.colorPalette.ColorPalette
+import river.exertion.kcop.view.ColorPalette
 import kotlin.math.pow
 import kotlin.test.assertEquals
 

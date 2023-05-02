@@ -3,7 +3,7 @@ package river.exertion.kcop.system.ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.oneOf
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
@@ -17,13 +17,13 @@ class AMHUpdateSystem : IntervalIteratingSystem(oneOf(ProfileComponent::class, N
 
         if ( profileComponent != null ) {
             profileComponent.cumlTime = profileComponent.cumlComponentTime()
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, profileComponent))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, profileComponent))
         }
         if ( narrativeComponent != null ) {
             narrativeComponent.narrativeImmersion?.location?.immersionBlockId = narrativeComponent.narrativeCurrBlockId()
             narrativeComponent.narrativeImmersion?.location?.cumlImmersionTime = narrativeComponent.cumlImmersionTime()
             narrativeComponent.narrativeImmersion?.blockImmersionTimers = narrativeComponent.blockImmersionTimersStr()
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, narrativeComponent))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, narrativeComponent))
        }
     }
 }

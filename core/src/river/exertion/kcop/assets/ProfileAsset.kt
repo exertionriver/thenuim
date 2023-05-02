@@ -44,7 +44,7 @@ class ProfileAsset(var profile : Profile? = null) : IAsset {
     }
 
     fun save(renameAssetPath : String? = null) {
-        val jsonProfile = AssetManagerHandler.json.encodeToJsonElement(this.profile)
+        val jsonProfile = AssetManagerHandlerCl.json.encodeToJsonElement(this.profile)
 
         if (renameAssetPath == null) {
             Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)

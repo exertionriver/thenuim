@@ -3,8 +3,8 @@ package river.exertion.kcop.narrative.structure.events
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.MessageChannelEnum
+import river.exertion.kcop.view.messaging.LogViewMessage
 import river.exertion.kcop.system.messaging.messages.NarrativeFlagsMessage
 
 @Serializable
@@ -16,7 +16,7 @@ class ReportLogEvent(
 ) : Event(), ITriggerEvent {
 
     override fun execEvent(previousEvent : Event?) {
-        MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, report) )
-        MessageChannel.NARRATIVE_FLAGS_BRIDGE.send(null, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetPersistFlag, id!!, NarrativeImmersion.EventFiredValue) )
+        MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, report) )
+        MessageChannelEnum.NARRATIVE_FLAGS_BRIDGE.send(null, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetPersistFlag, id!!, NarrativeImmersion.EventFiredValue) )
     }
 }

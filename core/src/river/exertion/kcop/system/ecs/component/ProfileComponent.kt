@@ -3,11 +3,11 @@ package river.exertion.kcop.system.ecs.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.assets.AssetManagerHandler
+import river.exertion.kcop.assets.AssetManagerHandlerCl
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Profile
@@ -24,7 +24,7 @@ class ProfileComponent : IComponent, Telegraph {
     val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
 
     var currentImmersionId : String
-        get() = profile?.currentImmersionId ?: AssetManagerHandler.NoNarrativeLoaded
+        get() = profile?.currentImmersionId ?: AssetManagerHandlerCl.NoNarrativeLoaded
         set(value) { profile?.currentImmersionId = value }
 
     var settings : MutableList<ProfileSetting>
@@ -65,8 +65,8 @@ class ProfileComponent : IComponent, Telegraph {
             timerPair.instImmersionTimer.resumeTimer()
             timerPair.cumlImmersionTimer.resumeTimer()
 
-            MessageChannel.PROFILE_BRIDGE.enableReceive(this)
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, this))
+            MessageChannelEnum.PROFILE_BRIDGE.enableReceive(this)
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, this))
         }
     }
 
@@ -76,8 +76,8 @@ class ProfileComponent : IComponent, Telegraph {
             timerPair.instImmersionTimer!!.pauseTimer()
             timerPair.cumlImmersionTimer.pauseTimer()
 
-            MessageChannel.PROFILE_BRIDGE.disableReceive(this)
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentProfile))
+            MessageChannelEnum.PROFILE_BRIDGE.disableReceive(this)
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentProfile))
 
             isInitialized = false
         }
@@ -88,8 +88,8 @@ class ProfileComponent : IComponent, Telegraph {
 
         if (msg != null) {
             when {
-                (MessageChannel.PROFILE_BRIDGE.isType(msg.message)) -> {
-                    val profileMessage: ProfileMessage = MessageChannel.PROFILE_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.PROFILE_BRIDGE.isType(msg.message)) -> {
+                    val profileMessage: ProfileMessage = MessageChannelEnum.PROFILE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     if (isValid(this)) {
                         when (profileMessage.profileMessageType) {
@@ -100,7 +100,7 @@ class ProfileComponent : IComponent, Telegraph {
                             }
 
                             ProfileMessage.ProfileMessageType.ReplaceCumlTimer -> {
-                                MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(
+                                MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.send(
                                     null, EngineComponentMessage(
                                         EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                                         ProfileEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair
@@ -142,16 +142,16 @@ class ProfileComponent : IComponent, Telegraph {
 
         fun ecsInit(profile : Profile = Profile()) {
             //inactivate current narrative
-            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
+            MessageChannelEnum.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
             //inactivate current profile
-            MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.Inactivate))
+            MessageChannelEnum.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.Inactivate))
 
-            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+            MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 ProfileEntity.entityName, ProfileComponent::class.java,
                 ProfileComponentInit(profile)
             ) )
-            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+            MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 ProfileEntity.entityName, IRLTimeComponent::class.java
             ) )

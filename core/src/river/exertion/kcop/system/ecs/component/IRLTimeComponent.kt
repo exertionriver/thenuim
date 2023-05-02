@@ -1,8 +1,7 @@
 package river.exertion.kcop.system.ecs.component
 
 import com.badlogic.ashley.core.Entity
-import ktx.ashley.mapperFor
-import river.exertion.kcop.Id
+import river.exertion.kcop.messaging.Id
 import java.time.LocalDateTime
 import java.util.*
 

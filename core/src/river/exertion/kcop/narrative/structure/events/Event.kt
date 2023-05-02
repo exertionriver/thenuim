@@ -1,8 +1,6 @@
 package river.exertion.kcop.narrative.structure.events
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.Id
-import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 
 @Serializable
 sealed class Event {

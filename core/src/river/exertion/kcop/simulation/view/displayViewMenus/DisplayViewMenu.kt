@@ -6,14 +6,13 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.assets.FontSize
 import river.exertion.kcop.assets.KcopSkin
-import river.exertion.kcop.simulation.view.FontPackage
-import river.exertion.kcop.simulation.view.ViewType
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
-import river.exertion.kcop.system.messaging.messages.LogViewMessage
-import river.exertion.kcop.system.view.SdcHandler
+import river.exertion.kcop.system.messaging.MessageChannelEnum
+import river.exertion.kcop.view.messaging.MenuViewMessage
+import river.exertion.kcop.view.messaging.LogViewMessage
+import river.exertion.kcop.view.ColorPalette
+import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.layout.ViewType
 
 interface DisplayViewMenu {
 
@@ -60,7 +59,7 @@ interface DisplayViewMenu {
                         .apply {
                     this.onClick {
                         if (actionEntry.log != null)
-                            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, actionEntry.log!!))
+                            MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, actionEntry.log!!))
                         actionEntry.action()
                     }
                 }
@@ -76,7 +75,7 @@ interface DisplayViewMenu {
             this.add(Label("${menuLabel.value} > ", kcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
                     .apply {
                 this.onClick {
-                    MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(menuLabel.key) )
+                    MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, MenuViewMessage(menuLabel.key) )
                 }
             } )
         }

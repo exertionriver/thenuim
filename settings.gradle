@@ -2,3 +2,11 @@ rootProject.name = 'kcop'
 
 include 'desktop', 'android', 'core'
 include 'ColorPaletteSim'
+include 'ColorPalette'
+include 'base'
+include 'view'
+include 'messaging'
+include 'asset'
+include 'plugin'
+include 'NarrativeSim'
+

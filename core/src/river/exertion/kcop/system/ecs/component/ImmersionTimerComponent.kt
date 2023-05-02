@@ -2,7 +2,7 @@ package river.exertion.kcop.system.ecs.component
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.TimeUtils
-import river.exertion.kcop.Id
+import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerState

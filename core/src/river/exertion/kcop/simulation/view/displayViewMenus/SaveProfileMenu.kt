@@ -4,13 +4,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
-import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.Switchboard
-import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
-import river.exertion.kcop.system.view.SdcHandler
+import river.exertion.kcop.view.messaging.MenuViewMessage
+import river.exertion.kcop.view.ColorPalette
 
 //no longer used
 class SaveProfileMenu(var screenWidth: Float, var screenHeight: Float)  {
@@ -78,7 +76,7 @@ class SaveProfileMenu(var screenWidth: Float, var screenHeight: Float)  {
         }, "Profile Saved : ${selectedProfileAsset?.profile?.name}"),
  */        //go back a menu
         ActionParam("Cancel", {
-            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(breadcrumbEntries.keys.toList()[0]) )
+            MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, MenuViewMessage(breadcrumbEntries.keys.toList()[0]) )
         })
     )
 

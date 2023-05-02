@@ -8,29 +8,27 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.assets.*
-import river.exertion.kcop.simulation.colorPalette.ColorPaletteInputProcessor
-import river.exertion.kcop.simulation.colorPalette.ColorPaletteLayout
-import river.exertion.kcop.simulation.view.ViewLayout
-import river.exertion.kcop.simulation.view.ViewType
+import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.system.ecs.EngineHandler
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.DisplayViewAudioMessage
-import river.exertion.kcop.system.messaging.messages.KcopMessage
-import river.exertion.kcop.system.view.ViewInputProcessor
+import river.exertion.kcop.system.messaging.MessageChannelEnum
+import river.exertion.kcop.view.messaging.AudioViewMessage
+import river.exertion.kcop.view.messaging.KcopMessage
+import river.exertion.kcop.system.view.KcopInputProcessor
+import river.exertion.kcop.view.layout.ViewType
 
 
 class ProfileSimulator(private val stage: Stage,
                        private val engineHandler: EngineHandler,
-                       private val assetManagerHandler: AssetManagerHandler,
+                       private val assetManagerHandlerCl: AssetManagerHandlerCl,
                        private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
 
     init {
-        MessageChannel.KCOP_BRIDGE.enableReceive(this)
+        MessageChannelEnum.KCOP_BRIDGE.enableReceive(this)
     }
 
     val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
-    val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight). apply { this.hide() }
-    val colorPaletteInputProcessor = ColorPaletteInputProcessor()
+ //   val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight). apply { this.hide() }
+ //   val colorPaletteInputProcessor = ColorPaletteInputProcessor()
     lateinit var inputMultiplexer : InputMultiplexer
 
     /*  //for in-sim narrative nav
@@ -75,12 +73,12 @@ class ProfileSimulator(private val stage: Stage,
 
     override fun show() {
         inputMultiplexer = InputMultiplexer()
-        inputMultiplexer.addProcessor(ViewInputProcessor())
+        inputMultiplexer.addProcessor(KcopInputProcessor())
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
         viewLayout.build(stage)
-        colorPaletteLayout.build(stage)
+ //       colorPaletteLayout.build(stage)
 
 /*      //for in-sim narrative nav
 
@@ -103,36 +101,38 @@ class ProfileSimulator(private val stage: Stage,
     }
 
     override fun dispose() {
-        assetManagerHandler.dispose()
+        assetManagerHandlerCl.dispose()
         viewLayout.dispose()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.KCOP_BRIDGE.isType(msg.message) ) -> {
-                    val kcopMessage: KcopMessage = MessageChannel.KCOP_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.KCOP_BRIDGE.isType(msg.message) ) -> {
+                    val kcopMessage: KcopMessage = MessageChannelEnum.KCOP_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (kcopMessage.kcopMessageType) {
                         KcopMessage.KcopMessageType.FullScreen -> {
                             viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            colorPaletteLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh]))
+                        //    colorPaletteLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            MessageChannelEnum.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, AudioViewMessage(
+                                    AudioViewMessage.AudioViewMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
+                            )
                         }
                         KcopMessage.KcopMessageType.KcopScreen -> {
                             viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            colorPaletteLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            MessageChannel.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-                                    DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh]))
+                      //      colorPaletteLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            MessageChannelEnum.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, AudioViewMessage(
+                                    AudioViewMessage.AudioViewMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
+                            )
                         }
                         KcopMessage.KcopMessageType.ShowColorPalette -> {
-                            colorPaletteLayout.show()
-                            inputMultiplexer.addProcessor(colorPaletteInputProcessor)
+                    //        colorPaletteLayout.show()
+                //            inputMultiplexer.addProcessor(colorPaletteInputProcessor)
                         }
                         KcopMessage.KcopMessageType.HideColorPalette -> {
-                            colorPaletteLayout.hide()
-                            inputMultiplexer.removeProcessor(colorPaletteInputProcessor)
+               //             colorPaletteLayout.hide()
+              //              inputMultiplexer.removeProcessor(colorPaletteInputProcessor)
                         }
                     }
 

@@ -1,10 +1,10 @@
 package river.exertion.kcop.system.ecs.component
 
-import river.exertion.kcop.narrative.structure.events.HintTextEvent
-import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.inactivate
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.Switchboard
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.messages.*
+import river.exertion.kcop.view.messaging.AiHintMessage
+import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
+import river.exertion.kcop.view.messaging.StatusViewMessage
 
 object NarrativeComponentNavStatusHandler {
 
@@ -28,12 +28,12 @@ object NarrativeComponentNavStatusHandler {
 
             unpause()
 
-            MessageChannel.NARRATIVE_BRIDGE.enableReceive(this)
-            MessageChannel.NARRATIVE_STATUS_BRIDGE.enableReceive(this)
-            MessageChannel.NARRATIVE_FLAGS_BRIDGE.enableReceive(this)
-            MessageChannel.NARRATIVE_MEDIA_BRIDGE.enableReceive(this)
+            MessageChannelEnum.NARRATIVE_BRIDGE.enableReceive(this)
+            MessageChannelEnum.NARRATIVE_STATUS_BRIDGE.enableReceive(this)
+            MessageChannelEnum.NARRATIVE_FLAGS_BRIDGE.enableReceive(this)
+            MessageChannelEnum.NARRATIVE_MEDIA_BRIDGE.enableReceive(this)
 
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
 
             blockFlags.clear()
             changed = true
@@ -55,15 +55,17 @@ object NarrativeComponentNavStatusHandler {
 
             pause()
 
-            MessageChannel.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(DisplayViewTextureMessage.DisplayViewTextureMessageType.ClearAll))
+            MessageChannelEnum.DISPLAY_VIEW_TEXTURE_BRIDGE.send(null, DisplayViewTextureMessage(
+                DisplayViewTextureMessage.DisplayViewTextureMessageType.ClearAll)
+            )
 
-            MessageChannel.NARRATIVE_BRIDGE.disableReceive(this)
-            MessageChannel.NARRATIVE_STATUS_BRIDGE.disableReceive(this)
-            MessageChannel.NARRATIVE_FLAGS_BRIDGE.disableReceive(this)
-            MessageChannel.NARRATIVE_MEDIA_BRIDGE.disableReceive(this)
+            MessageChannelEnum.NARRATIVE_BRIDGE.disableReceive(this)
+            MessageChannelEnum.NARRATIVE_STATUS_BRIDGE.disableReceive(this)
+            MessageChannelEnum.NARRATIVE_FLAGS_BRIDGE.disableReceive(this)
+            MessageChannelEnum.NARRATIVE_MEDIA_BRIDGE.disableReceive(this)
 
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentImmersion))
-            MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentImmersion))
+            MessageChannelEnum.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
 //            MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.ClearStatuses))
 
             isInitialized = false
@@ -88,8 +90,8 @@ object NarrativeComponentNavStatusHandler {
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
                 blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
 
-                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.UpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
-                MessageChannel.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
+                MessageChannelEnum.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.UpdateStatus, sequentialStatusKey(), seqNarrativeProgress()))
+                MessageChannelEnum.AI_VIEW_BRIDGE.send(null, AiHintMessage(AiHintMessage.AiHintMessageType.ClearHints))
 
                 blockFlags.clear()
                 changed = true

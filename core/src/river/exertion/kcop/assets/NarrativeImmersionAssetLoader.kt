@@ -24,8 +24,8 @@ class NarrativeImmersionAssetLoader(resolver: FileHandleResolver?) :
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeImmersionSequenceParameter?): NarrativeImmersionAsset {
         try {
             rawData = file.readString()
-            val jsonElement = AssetManagerHandler.json.parseToJsonElement(rawData)
-            val narrativeImmersion = AssetManagerHandler.json.decodeFromJsonElement(jsonElement) as NarrativeImmersion
+            val jsonElement = AssetManagerHandlerCl.json.parseToJsonElement(rawData)
+            val narrativeImmersion = AssetManagerHandlerCl.json.decodeFromJsonElement(jsonElement) as NarrativeImmersion
 
             val returnNarrativeAsset = NarrativeImmersionAsset(narrativeImmersion).apply { this.assetPath = fileName }
             //val errorStatus = "${narrativeImmersion.id} not loaded"

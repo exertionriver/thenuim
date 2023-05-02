@@ -10,7 +10,7 @@ import river.exertion.kcop.system.ecs.component.IComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.ecs.entity.IEntity
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.messages.EngineComponentMessage
 import river.exertion.kcop.system.messaging.messages.EngineEntityMessage
 import kotlin.reflect.KClass
@@ -19,8 +19,8 @@ import kotlin.reflect.full.valueParameters
 class EngineHandler : Telegraph {
 
     init {
-        MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.enableReceive(this)
-        MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.enableReceive(this)
+        MessageChannelEnum.ECS_ENGINE_ENTITY_BRIDGE.enableReceive(this)
+        MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.enableReceive(this)
     }
 
     val engine = PooledEngine().apply { SystemManager.init(this) }
@@ -110,8 +110,8 @@ class EngineHandler : Telegraph {
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.isType(msg.message) ) -> {
-                    val engineEntityMessage: EngineEntityMessage = MessageChannel.ECS_ENGINE_ENTITY_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.ECS_ENGINE_ENTITY_BRIDGE.isType(msg.message) ) -> {
+                    val engineEntityMessage: EngineEntityMessage = MessageChannelEnum.ECS_ENGINE_ENTITY_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (engineEntityMessage.messageType) {
                         EngineEntityMessage.EngineEntityMessageType.InstantiateEntity -> {
@@ -123,8 +123,8 @@ class EngineHandler : Telegraph {
                         else -> {}
                     }
                 }
-                (MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.isType(msg.message) ) -> {
-                    val engineComponentMessage: EngineComponentMessage = MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.isType(msg.message) ) -> {
+                    val engineComponentMessage: EngineComponentMessage = MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (engineComponentMessage.messageType) {
                         EngineComponentMessage.EngineComponentMessageType.AddComponent -> {

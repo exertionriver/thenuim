@@ -5,30 +5,30 @@ import river.exertion.kcop.simulation.view.displayViewMenus.params.NarrativeMenu
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuDataParams
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Profile
 
 object AssetManagerMessageHandler {
 
-    fun AssetManagerHandler.messageHandler(msg: Telegram?): Boolean {
+    fun AssetManagerHandlerCl.messageHandler(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.AMH_LOAD_BRIDGE.isType(msg.message) ) -> {
-                    val amhLoadMessage: AMHLoadMessage = MessageChannel.AMH_LOAD_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.AMH_LOAD_BRIDGE.isType(msg.message) ) -> {
+                    val amhLoadMessage: AMHLoadMessage = MessageChannelEnum.AMH_LOAD_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (amhLoadMessage.messageType) {
                         AMHLoadMessage.AMHLoadMessageType.ReloadMenuProfiles -> {
                             reloadProfileAssets()
 
                             val loadedProfileAssetTitles = loadedProfileAssetTitles()
-                            MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(loadedProfileAssetTitles, loadedProfileAssetTitles[0])))
+                            MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(loadedProfileAssetTitles, loadedProfileAssetTitles[0])))
                         }
                         AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives -> {
                             reloadNarrativeAssets()
 
                             val loadedNarrativeAssetTitles = loadedNarrativeAssetTitles()
-                            MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(loadedNarrativeAssetTitles, loadedNarrativeAssetTitles[0])))
+                            MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(loadedNarrativeAssetTitles, loadedNarrativeAssetTitles[0])))
                         }
                         AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile -> {
                             if (amhLoadMessage.loadComponent != null) {
@@ -60,7 +60,7 @@ object AssetManagerMessageHandler {
 
                                     selectedProfileAsset!!.updateFromImmersionAssets(selectedNarrativeAsset, selectedImmersionAsset)
 
-                                    MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, selectedProfileAsset!!.assetInfo(), selectedProfileAsset!!.assetName())))
+                                    MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, selectedProfileAsset!!.assetInfo(), selectedProfileAsset!!.assetName())))
                                 }
                             }
                         }
@@ -71,7 +71,7 @@ object AssetManagerMessageHandler {
                                 selectedNarrativeAsset = narrativeAssets.byTitle(amhLoadMessage.selectedTitle)
 
                                 if (NarrativeAsset.isValid(selectedNarrativeAsset)) {
-                                    MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(null, null, selectedNarrativeAsset!!.assetInfo(), selectedNarrativeAsset!!.assetName())))
+                                    MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(null, null, selectedNarrativeAsset!!.assetInfo(), selectedNarrativeAsset!!.assetName())))
                                 }
                             }
                         }
@@ -80,10 +80,10 @@ object AssetManagerMessageHandler {
 
                                 selectedProfileAsset!!.update(currentProfileComponent!!, currentImmersionComponent!!)
 
-                                MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, selectedProfileAsset!!.assetInfo(), selectedProfileAsset!!.assetName())))
+                                MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, selectedProfileAsset!!.assetInfo(), selectedProfileAsset!!.assetName())))
 
                                 //workaround for settings key-value pairs
-                                MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(selectedProfileAsset?.profile?.settings?.map { it.key }, null, selectedProfileAsset?.profile?.settings?.map { it.value })))
+                                MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(selectedProfileAsset?.profile?.settings?.map { it.key }, null, selectedProfileAsset?.profile?.settings?.map { it.value })))
                             }
                         }
                         AMHLoadMessage.AMHLoadMessageType.UpdateSelectedNarrativeFromComponent -> {
@@ -92,7 +92,7 @@ object AssetManagerMessageHandler {
 
                                 selectedNarrativeAsset = narrativeAssets.byId(currentImmersionComponent!!.componentId())
 
-                                MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(null, null, selectedNarrativeAsset!!.assetInfo(), selectedNarrativeAsset!!.assetName())))
+                                MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(null, NarrativeMenuDataParams(null, null, selectedNarrativeAsset!!.assetInfo(), selectedNarrativeAsset!!.assetName())))
                             }
                         }
                         AMHLoadMessage.AMHLoadMessageType.InitSelectedProfile -> {
@@ -105,8 +105,8 @@ object AssetManagerMessageHandler {
 
                     return true
                 }
-                (MessageChannel.AMH_SAVE_BRIDGE.isType(msg.message) ) -> {
-                    val amhSaveMessage: AMHSaveMessage = MessageChannel.AMH_SAVE_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.AMH_SAVE_BRIDGE.isType(msg.message) ) -> {
+                    val amhSaveMessage: AMHSaveMessage = MessageChannelEnum.AMH_SAVE_BRIDGE.receiveMessage(msg.extraInfo)
 
                     when (amhSaveMessage.messageType) {
                         AMHSaveMessage.AMHSaveMessageType.SaveOverwriteProfile -> {
@@ -158,7 +158,7 @@ object AssetManagerMessageHandler {
 
                             //profile asset info should be valid now, send info
                             val profileInfo = selectedProfileAsset!!.assetInfo()
-                            MessageChannel.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, profileInfo)))
+                            MessageChannelEnum.INTER_MENU_BRIDGE.send(null, MenuDataMessage(ProfileMenuDataParams(null, null, profileInfo)))
 
                         }
 
@@ -168,7 +168,7 @@ object AssetManagerMessageHandler {
                             }
 
                             if (NarrativeImmersionAsset.isValid(selectedImmersionAsset)) {
-                                MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.UpdateNarrativeImmersion, null, selectedImmersionAsset!!.narrativeImmersion))
+                                MessageChannelEnum.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.UpdateNarrativeImmersion, null, selectedImmersionAsset!!.narrativeImmersion))
 
                                 selectedImmersionAsset!!.save()
                             }

@@ -1,9 +1,7 @@
 package river.exertion.kcop.system.profile.settings
 
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.NarrativeMessage
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.messages.NarrativeStatusMessage
-import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import river.exertion.kcop.system.profile.PSOption
 import river.exertion.kcop.system.profile.PSSelection
 
@@ -21,12 +19,12 @@ object PSCompStatus : PSSelection {
     enum class PSCompStatusOptions {
         Show { override fun tag() = "show"
             override fun exec() {
-                MessageChannel.NARRATIVE_STATUS_BRIDGE.send(null, NarrativeStatusMessage(NarrativeStatusMessage.NarrativeFlagsMessageType.AddStatus))
+                MessageChannelEnum.NARRATIVE_STATUS_BRIDGE.send(null, NarrativeStatusMessage(NarrativeStatusMessage.NarrativeFlagsMessageType.AddStatus))
             }
         },
         Hide { override fun tag() = "hide"
             override fun exec() {
-                MessageChannel.NARRATIVE_STATUS_BRIDGE.send(null, NarrativeStatusMessage(NarrativeStatusMessage.NarrativeFlagsMessageType.RemoveStatus))
+                MessageChannelEnum.NARRATIVE_STATUS_BRIDGE.send(null, NarrativeStatusMessage(NarrativeStatusMessage.NarrativeFlagsMessageType.RemoveStatus))
             }
         }
         ;

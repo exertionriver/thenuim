@@ -1,0 +1,26 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
+apply plugin: "kotlin"
+apply plugin: "idea"
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.test.java.srcDirs = [ "test/" ]
+
+dependencies {
+    implementation project(":view")
+    implementation project(":messaging")
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "io.github.libktx:ktx-assets:$ktxVersion"
+
+}
+
+compileKotlin {
+    compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
+}

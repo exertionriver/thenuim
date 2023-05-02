@@ -8,17 +8,18 @@ import river.exertion.kcop.narrative.structure.ImmersionLocation
 import river.exertion.kcop.narrative.structure.ImmersionStatus
 import river.exertion.kcop.narrative.structure.Narrative
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
-import river.exertion.kcop.simulation.view.ctrl.DisplayViewCtrl
-import river.exertion.kcop.simulation.view.displayViewLayout.DVLayout
+import river.exertion.kcop.view.layout.DVLayout
 import river.exertion.kcop.system.ecs.component.NarrativeComponentMessageHandler.messageHandler
 import river.exertion.kcop.system.ecs.component.NarrativeComponentNavStatusHandler.activate
 import river.exertion.kcop.system.ecs.entity.ProfileEntity
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Profile
+import river.exertion.kcop.view.messaging.DisplayViewTextMessage
+import river.exertion.kcop.view.messaging.StatusViewMessage
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -86,7 +87,7 @@ class NarrativeComponent : IComponent, Telegraph {
                 }
 
                 //set the narrative layout
-                MessageChannel.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrative!!.layoutTag))
+                MessageChannelEnum.DISPLAY_VIEW_TEXT_BRIDGE.send(null, DisplayViewTextMessage(narrative!!.layoutTag))
 
                 if (narrativeComponentInit.narrativeImmersion != null) {
                     narrativeImmersion = narrativeComponentInit.narrativeImmersion
@@ -110,12 +111,12 @@ class NarrativeComponent : IComponent, Telegraph {
                 }
 
                 // set current profile narrative id
-                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateImmersionId,
+                MessageChannelEnum.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.UpdateImmersionId,
                     null, componentId()
                 ))
 
                 // clear statuses
-                MessageChannel.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.ClearStatuses))
+                MessageChannelEnum.STATUS_VIEW_BRIDGE.send(null, StatusViewMessage(StatusViewMessage.StatusViewMessageType.ClearStatuses))
 
                 super.initialize(initData)
 
@@ -140,9 +141,9 @@ class NarrativeComponent : IComponent, Telegraph {
 
         fun ecsInit(profile: Profile, narrative: Narrative, narrativeImmersion: NarrativeImmersion? = null) {
             //inactivate current narrative
-            MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
+            MessageChannelEnum.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
 
-            MessageChannel.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
+            MessageChannelEnum.ECS_ENGINE_COMPONENT_BRIDGE.send(null, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 ProfileEntity.entityName, NarrativeComponent::class.java,
                 NarrativeComponentInit(profile, narrative, narrativeImmersion)

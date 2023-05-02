@@ -3,24 +3,22 @@ package river.exertion.kcop.simulation.view.displayViewMenus
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import river.exertion.kcop.assets.KcopSkin
-import river.exertion.kcop.simulation.view.FontPackage
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ActionParam
-import river.exertion.kcop.system.colorPalette.ColorPalette
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.Switchboard
 import river.exertion.kcop.system.messaging.messages.AMHLoadMessage
 import river.exertion.kcop.system.messaging.messages.AMHSaveMessage
-import river.exertion.kcop.system.messaging.messages.DisplayViewMenuMessage
-import river.exertion.kcop.system.view.SdcHandler
+import river.exertion.kcop.view.messaging.MenuViewMessage
+import river.exertion.kcop.base.view.SdcHandler
+import river.exertion.kcop.view.ColorPalette
 import kotlin.system.exitProcess
 
 class MainMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
 
     init {
-        MessageChannel.SDC_BRIDGE.enableReceive(this)
-        MessageChannel.KCOP_SKIN_BRIDGE.enableReceive(this)
+        MessageChannelEnum.SDC_BRIDGE.enableReceive(this)
+        MessageChannelEnum.KCOP_SKIN_BRIDGE.enableReceive(this)
     }
 
     override lateinit var sdcHandler : SdcHandler
@@ -34,20 +32,20 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
 
     override val navs = mutableListOf(
         ActionParam("Profile >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuProfiles))
-            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(ProfileMenu.tag))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuProfiles))
+            MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, MenuViewMessage(ProfileMenu.tag))
         }),
         ActionParam("Settings >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.UpdateSelectedProfileFromComponents))
-            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(ProfileSettingsMenu.tag))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.UpdateSelectedProfileFromComponents))
+            MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, MenuViewMessage(ProfileSettingsMenu.tag))
         }),
         ActionParam("Narrative >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives))
-            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(NarrativeMenu.tag))
+            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives))
+            MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, MenuViewMessage(NarrativeMenu.tag))
         }),
         ActionParam("Save Progress >", {
-            MessageChannel.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.PrepSaveProgress))
-            MessageChannel.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(SaveProgressMenu.tag))
+            MessageChannelEnum.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.PrepSaveProgress))
+            MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, MenuViewMessage(SaveProgressMenu.tag))
         })
     )
 
@@ -64,12 +62,12 @@ class MainMenu(override var screenWidth: Float, override var screenHeight: Float
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannel.SDC_BRIDGE.isType(msg.message) ) -> {
-                    sdcHandler = MessageChannel.SDC_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.SDC_BRIDGE.isType(msg.message) ) -> {
+                    sdcHandler = MessageChannelEnum.SDC_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
-                (MessageChannel.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
-                    kcopSkin = MessageChannel.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
+                (MessageChannelEnum.KCOP_SKIN_BRIDGE.isType(msg.message) ) -> {
+                    kcopSkin = MessageChannelEnum.KCOP_SKIN_BRIDGE.receiveMessage(msg.extraInfo)
                     return true
                 }
             }

@@ -12,23 +12,24 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
-import river.exertion.kcop.assets.AssetManagerHandler
+import river.exertion.kcop.assets.AssetManagerHandlerCl
+import river.exertion.kcop.assets.KcopSkin
 import river.exertion.kcop.simulation.ProfileSimulator
 import river.exertion.kcop.system.ecs.EngineHandler
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.view.SdcHandler
+import river.exertion.kcop.system.messaging.MessageChannelEnum
+import river.exertion.kcop.view.SdcHandler
 
 class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     init {
-        MessageChannel.TWO_BATCH_BRIDGE.enableProvider(this)
-        MessageChannel.SDC_BRIDGE.enableProvider(this)
-        MessageChannel.KCOP_SKIN_BRIDGE.enableProvider(this)
+        MessageChannelEnum.TWO_BATCH_BRIDGE.enableProvider(this)
+        MessageChannelEnum.SDC_BRIDGE.enableProvider(this)
+        MessageChannelEnum.KCOP_SKIN_BRIDGE.enableProvider(this)
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
     lateinit var sdcHandler : SdcHandler
-    lateinit var assetManagerHandler : AssetManagerHandler
+    lateinit var assetManagerHandlerCl : AssetManagerHandlerCl
 //    val threeBatch = ModelBatch()
 
     private val context = Context()
@@ -43,15 +44,15 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         twoBatch = PolygonSpriteBatch()
         val stage = Stage(viewport, twoBatch)
 
-        sdcHandler = SdcHandler(twoBatch)
+        sdcHandler = SdcHandler(twoBatch, KcopSkin.BackgroundColor)
         val engineHandler = EngineHandler()
-        assetManagerHandler = AssetManagerHandler()
+        assetManagerHandlerCl = AssetManagerHandlerCl()
 
         context.register {
             bindSingleton(orthoCamera)
             bindSingleton(stage)
             bindSingleton(engineHandler)
-            bindSingleton(assetManagerHandler)
+            bindSingleton(assetManagerHandlerCl)
 
             addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
         }
@@ -68,10 +69,10 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
     }
 
     override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {
-        if (msg == MessageChannel.TWO_BATCH_BRIDGE.id()) return twoBatch
+        if (msg == MessageChannelEnum.TWO_BATCH_BRIDGE.id()) return twoBatch
 
-        if (msg == MessageChannel.SDC_BRIDGE.id()) return sdcHandler
-        if (msg == MessageChannel.KCOP_SKIN_BRIDGE.id()) return assetManagerHandler.kcopSkin()
+        if (msg == MessageChannelEnum.SDC_BRIDGE.id()) return sdcHandler
+        if (msg == MessageChannelEnum.KCOP_SKIN_BRIDGE.id()) return assetManagerHandlerCl.kcopSkin()
         return false
     }
 }

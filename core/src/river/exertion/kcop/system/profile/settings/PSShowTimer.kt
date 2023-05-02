@@ -1,6 +1,6 @@
 package river.exertion.kcop.system.profile.settings
 
-import river.exertion.kcop.system.messaging.MessageChannel
+import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.messages.NarrativeMessage
 import river.exertion.kcop.system.messaging.messages.ProfileMessage
 import river.exertion.kcop.system.profile.PSOption
@@ -20,12 +20,12 @@ object PSShowTimer : PSSelection {
     enum class PSShowTimerOptions {
         Profile { override fun tag() = "profile"
             override fun exec() {
-                MessageChannel.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.ReplaceCumlTimer))
+                MessageChannelEnum.PROFILE_BRIDGE.send(null, ProfileMessage(ProfileMessage.ProfileMessageType.ReplaceCumlTimer))
             }
         },
         Narrative { override fun tag() = "narrative"
             override fun exec() {
-                MessageChannel.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.ReplaceCumlTimer))
+                MessageChannelEnum.NARRATIVE_BRIDGE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.ReplaceCumlTimer))
             }
         }
         ;

@@ -5,8 +5,8 @@ import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.oneOf
 import river.exertion.kcop.system.ecs.component.IRLTimeComponent
 import river.exertion.kcop.system.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.system.messaging.MessageChannel
-import river.exertion.kcop.system.messaging.messages.LogViewMessage
+import river.exertion.kcop.system.messaging.MessageChannelEnum
+import river.exertion.kcop.view.messaging.LogViewMessage
 
 class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class).get(), 1/60f) {
 
@@ -16,12 +16,12 @@ class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::cla
         val irlTimeComponent = IRLTimeComponent.getFor(entity)
 
         if (irlTimeComponent != null) {
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LocalTime, irlTimeComponent.localTime()))
+            MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LocalTime, irlTimeComponent.localTime()))
         }
 
         if ( immersionTimerComponent != null ) {
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.InstImmersionTime, immersionTimerComponent.instImmersionTime()) )
-            MessageChannel.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.CumlImmersionTime, immersionTimerComponent.cumlImmersionTime()) )
+            MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.InstImmersionTime, immersionTimerComponent.instImmersionTime()) )
+            MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.CumlImmersionTime, immersionTimerComponent.cumlImmersionTime()) )
         }
     }
 }

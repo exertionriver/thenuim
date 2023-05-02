@@ -2,8 +2,8 @@ package river.exertion.kcop.system.profile
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import river.exertion.kcop.Id
-import river.exertion.kcop.assets.AssetManagerHandler
+import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.assets.AssetManagerHandlerCl
 import river.exertion.kcop.narrative.character.NameTypes
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 import river.exertion.kcop.system.profile.settings.PSCompStatus
@@ -14,7 +14,7 @@ data class Profile(
     override var id : String = Id.randomId(),
     var name : String = genName(),
     var cumlTime : String = ImmersionTimer.CumlTimeZero,
-    var currentImmersionId : String = AssetManagerHandler.NoNarrativeLoaded,
+    var currentImmersionId : String = AssetManagerHandlerCl.NoNarrativeLoaded,
     var settings : MutableList<ProfileSetting> = defaultSettings()
     ) : Id {
 

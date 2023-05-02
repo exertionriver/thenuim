@@ -1,7 +1,7 @@
 package river.exertion.kcop.narrative.structure
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.Id
+import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 
 @Serializable

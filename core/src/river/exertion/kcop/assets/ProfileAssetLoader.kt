@@ -24,8 +24,8 @@ class ProfileAssetLoader(resolver: FileHandleResolver?) :
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: ProfileParameter?): ProfileAsset {
         return try {
             rawData = file.readString()
-            val jsonElement = AssetManagerHandler.json.parseToJsonElement(rawData)
-            val profile = AssetManagerHandler.json.decodeFromJsonElement(jsonElement) as Profile
+            val jsonElement = AssetManagerHandlerCl.json.parseToJsonElement(rawData)
+            val profile = AssetManagerHandlerCl.json.decodeFromJsonElement(jsonElement) as Profile
 
             ProfileAsset(profile).apply { this.assetPath = fileName }
 

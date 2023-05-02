@@ -28,8 +28,8 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): NarrativeAsset {
         try {
             rawData = file.readString()
-            val jsonElement = AssetManagerHandler.json.parseToJsonElement(rawData)
-            val narrative = AssetManagerHandler.json.decodeFromJsonElement(jsonElement) as Narrative
+            val jsonElement = AssetManagerHandlerCl.json.parseToJsonElement(rawData)
+            val narrative = AssetManagerHandlerCl.json.decodeFromJsonElement(jsonElement) as Narrative
 
             val returnNarrativeAsset = NarrativeAsset(narrative).apply { this.assetPath = fileName }
             val errorStatus = "${narrative.name} not loaded"

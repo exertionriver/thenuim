@@ -6,7 +6,6 @@ import kotlinx.serialization.json.encodeToJsonElement
 import ktx.assets.getAsset
 import river.exertion.kcop.narrative.structure.NarrativeImmersion
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
-import river.exertion.kcop.system.ecs.component.ProfileComponent
 import river.exertion.kcop.system.immersionTimer.ImmersionTimer
 
 class NarrativeImmersionAsset(var narrativeImmersion : NarrativeImmersion? = null) : IAsset {
@@ -40,7 +39,7 @@ class NarrativeImmersionAsset(var narrativeImmersion : NarrativeImmersion? = nul
 
     fun save() {
         assetPath = newAssetFilename()
-        val jsonNarrativeImmersion = AssetManagerHandler.json.encodeToJsonElement(this.narrativeImmersion)
+        val jsonNarrativeImmersion = AssetManagerHandlerCl.json.encodeToJsonElement(this.narrativeImmersion)
         Gdx.files.local(assetPath).writeString(jsonNarrativeImmersion.toString(), false)
     }
 
