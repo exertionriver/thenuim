@@ -10,12 +10,13 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
+    implementation project(path: ':messaging')
+    implementation project(path: ':ecs')
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
-    api "io.github.libktx:ktx-actors:$ktxVersion"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "io.github.libktx:ktx-actors:$ktxVersion"
     api "io.github.libktx:ktx-assets:$ktxVersion"
     implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
-    implementation project(path: ':messaging')
 }
 
 compileKotlin {

@@ -1,11 +1,11 @@
 package river.exertion.kcop.assets
 
 import com.badlogic.gdx.ai.msg.Telegram
+import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.simulation.view.displayViewMenus.params.NarrativeMenuDataParams
 import river.exertion.kcop.simulation.view.displayViewMenus.params.ProfileMenuDataParams
 import river.exertion.kcop.system.ecs.component.NarrativeComponent
 import river.exertion.kcop.system.ecs.component.ProfileComponent
-import river.exertion.kcop.system.messaging.MessageChannelEnum
 import river.exertion.kcop.system.messaging.messages.*
 import river.exertion.kcop.system.profile.Profile
 

@@ -1,6 +1,6 @@
 package river.exertion.kcop.system.messaging.messages
 
-import river.exertion.kcop.system.ecs.component.IComponent
+import river.exertion.kcop.ecs.component.IComponent
 
 data class AMHLoadMessage(val messageType : AMHLoadMessageType, val selectedTitle : String? = null, val loadComponent: IComponent? = null) {
 

@@ -61,7 +61,7 @@ object MessageChannelHandler {
     fun addChannel(messageChannel : MessageChannel) {
         val channelEntryCheck = checkByTag(messageChannel.messageChannelTag)
 
-        if (channelEntryCheck == null) messageChannels.add(MessageChannelEntry(messageChannelsIdx++, messageChannel))
+        if (channelEntryCheck == null) messageChannels.add(MessageChannelEntry(messageChannelsIdx++, messageChannel)) else throw Exception("${this::class.simpleName}:${MessageChannelHandler::addChannel.name} : channel ${messageChannel.messageChannelTag} already added")
     }
 
     fun addChannels(messageChannels : List<MessageChannel>) {

@@ -7,5 +7,4 @@ interface IDisplayPlugin : IPlugin {
     fun build(screenWidth : Float, screenHeight : Float, stage : Stage)
     fun displayKcopScreen(offset : Vector2)
     fun displayFullScreen(offset : Vector2)
-
 }

@@ -8,8 +8,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import kotlinx.serialization.json.Json
+import ktx.assets.load
+import ktx.assets.unloadSafely
+import ktx.collections.gdxArrayOf
+import river.exertion.kcop.ecs.system.SystemHandler.logDebug
 import river.exertion.kcop.view.FontPackage
 import river.exertion.kcop.view.KcopSkin
+import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
 
 object AssetManagerHandler {
 
@@ -45,4 +51,35 @@ object AssetManagerHandler {
         this.uiSounds[KcopSkin.UiSounds.Swoosh] = assets[SoundAssets.Swoosh]
        // DisplayViewLayoutAssets.values().forEach { this.layouts.add(assets[it].DVLayout!!) }
     }
+
+    inline fun <reified T: IAsset>reloadLocalAssets(assetLoadLocation : String): List<T> {
+
+        //remove previous assets of type T
+        val previousAssetArray = gdxArrayOf<T>()
+
+        assets.getAll(T::class.java, previousAssetArray)
+        previousAssetArray.forEach {
+            assets.unloadSafely(it.assetPath)
+        }
+
+        //TODO: exception handling for path creation
+        //reload assets of type T
+        Path(assetLoadLocation).listDirectoryEntries().forEach {
+            assets.load<T>(it.toString())
+        }
+        assets.finishLoading()
+
+        val currentAssetArray = gdxArrayOf<T>()
+        assets.getAll(T::class.java, currentAssetArray)
+
+        //log any load errors
+        currentAssetArray.filter { it.status != null}.forEach {
+            logDebug("${it.status}", "${it.statusDetail}")
+        }
+
+        return currentAssetArray.toMutableList()
+    }
+
+    const val NoProfileLoaded = "No Profile Loaded"
+    const val NoImmersionLoaded = "No Immersion Loaded"
 }

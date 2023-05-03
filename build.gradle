@@ -102,6 +102,7 @@ project(":core") {
         implementation project(":view")
         implementation project(":messaging")
         implementation project(":asset")
+        implementation project(":ecs")
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
         implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -139,4 +140,5 @@ project(":core") {
 project(":view")
 project(":messaging")
 project(":asset")
+project(":ecs")
 project(":ColorPaletteSim")

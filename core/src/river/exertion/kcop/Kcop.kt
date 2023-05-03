@@ -12,24 +12,30 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.assets.AssetManagerHandlerCl
-import river.exertion.kcop.assets.KcopSkin
-import river.exertion.kcop.simulation.ProfileSimulator
-import river.exertion.kcop.system.ecs.EngineHandler
-import river.exertion.kcop.system.messaging.MessageChannelEnum
+import river.exertion.kcop.simulation.KcopSimulator
+import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.kcop.messaging.MessageChannel
+import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
 import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
 
 class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     init {
-        MessageChannelEnum.TWO_BATCH_BRIDGE.enableProvider(this)
-        MessageChannelEnum.SDC_BRIDGE.enableProvider(this)
-        MessageChannelEnum.KCOP_SKIN_BRIDGE.enableProvider(this)
+        MessageChannelHandler.addChannel(MessageChannel(TwoBatchBridge, PolygonSpriteBatch::class))
+
+        MessageChannelHandler.enableProvider(TwoBatchBridge, this)
+        MessageChannelHandler.enableProvider(SDCBridge, this)
+        MessageChannelHandler.enableProvider(KcopSkinBridge, this)
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
     lateinit var sdcHandler : SdcHandler
-    lateinit var assetManagerHandlerCl : AssetManagerHandlerCl
+//    lateinit var assetManagerHandlerCl : AssetManagerHandlerCl
 //    val threeBatch = ModelBatch()
 
     private val context = Context()
@@ -45,19 +51,19 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         val stage = Stage(viewport, twoBatch)
 
         sdcHandler = SdcHandler(twoBatch, KcopSkin.BackgroundColor)
-        val engineHandler = EngineHandler()
-        assetManagerHandlerCl = AssetManagerHandlerCl()
+//        val engineHandler = EngineHandler()
+//        assetManagerHandlerCl = AssetManagerHandlerCl()
 
         context.register {
             bindSingleton(orthoCamera)
             bindSingleton(stage)
-            bindSingleton(engineHandler)
-            bindSingleton(assetManagerHandlerCl)
+//            bindSingleton(engineHandler)
+//            bindSingleton(assetManagerHandlerCl)
 
-            addScreen(ProfileSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(KcopSimulator( inject(), inject(), inject(), inject() ) )
         }
 
-        setScreen<ProfileSimulator>()
+        setScreen<KcopSimulator>()
     }
 
     companion object {
@@ -66,13 +72,16 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
         val title = "koboldCave Operating Platform (kcop) v0.11"
         val loglevel = LOG_DEBUG
+
+        const val TwoBatchBridge = "TwoBatchBridge"
     }
 
     override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {
-        if (msg == MessageChannelEnum.TWO_BATCH_BRIDGE.id()) return twoBatch
-
-        if (msg == MessageChannelEnum.SDC_BRIDGE.id()) return sdcHandler
-        if (msg == MessageChannelEnum.KCOP_SKIN_BRIDGE.id()) return assetManagerHandlerCl.kcopSkin()
-        return false
+        return when {
+            (MessageChannelHandler.isType(TwoBatchBridge, msg)) -> twoBatch
+            (MessageChannelHandler.isType(SDCBridge, msg)) -> sdcHandler
+            (MessageChannelHandler.isType(KcopSkinBridge, msg)) -> AssetManagerHandler.kcopSkin()
+            else -> false
+        }
     }
 }

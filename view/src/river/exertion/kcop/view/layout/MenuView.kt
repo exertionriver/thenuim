@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.messaging.SwitchboardEntry
 import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
 import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
 import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
