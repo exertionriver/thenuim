@@ -18,14 +18,6 @@ import river.exertion.kcop.view.messaging.menuParams.ActionParam
 
 interface DisplayViewMenu {
 
-    var sdcHandler : SdcHandler
-    var kcopSkin : KcopSkin
-
-    fun skin() = kcopSkin.skin
-
-    var screenWidth : Float
-    var screenHeight : Float
-
     val backgroundColor : ColorPalette
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
@@ -38,7 +30,7 @@ interface DisplayViewMenu {
 
         this@DisplayViewMenu.navs.forEach { navEntry ->
             this.add(
-                TextButton(navEntry.label, skin())
+                TextButton(navEntry.label, KcopSkin.skin)
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
                         .apply {
                     this.onClick {
@@ -46,7 +38,7 @@ interface DisplayViewMenu {
                     this.center()
                     }
                 }
-            ).padTop(ViewType.padHeight(screenHeight))
+            ).padTop(ViewType.padHeight(KcopSkin.screenHeight))
             if (navEntry != this@DisplayViewMenu.navs.last()) this.row()
         }
     }
@@ -56,7 +48,7 @@ interface DisplayViewMenu {
 
         this@DisplayViewMenu.actions.forEach { actionEntry ->
             this.add(
-                TextButton(actionEntry.label, skin())
+                TextButton(actionEntry.label, KcopSkin.skin)
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
                         .apply {
                     this.onClick {
@@ -65,7 +57,7 @@ interface DisplayViewMenu {
                         actionEntry.action()
                     }
                 }
-            ).right().padRight(ViewType.padWidth(screenWidth))
+            ).right().padRight(ViewType.padWidth(KcopSkin.screenWidth))
         }
     }
 
@@ -74,7 +66,7 @@ interface DisplayViewMenu {
 
         //TODO : singleton with three-sized bitmap fonts
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
-            this.add(Label("${menuLabel.value} > ", kcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
+            this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
                     .apply {
                 this.onClick {
                     MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(menuLabel.key) )
@@ -87,8 +79,8 @@ interface DisplayViewMenu {
     }
 
     fun menuColorTexture() : TextureRegion {
-        return sdcHandler.get("menu_${tag()}", backgroundColor).textureRegion().apply {
-            this.setRegion(0, 0, ViewType.secondWidth(screenWidth).toInt() - 1, ViewType.secondHeight(screenHeight).toInt() - 1)
+        return SdcHandler.get("menu_${tag()}", backgroundColor).textureRegion().apply {
+            this.setRegion(0, 0, ViewType.secondWidth(KcopSkin.screenWidth).toInt() - 1, ViewType.secondHeight(KcopSkin.screenHeight).toInt() - 1)
         }
     }
 
@@ -104,17 +96,17 @@ interface DisplayViewMenu {
                         this.add(breadcrumbPane()).right().growX()
                         this.add(
                             Table().apply {
-                                this.add(Label(this@DisplayViewMenu.label(), kcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label()))
+                                this.add(Label(this@DisplayViewMenu.label(), KcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label()))
                             .apply {
                                 this.setAlignment(Align.center)
-                            }).padRight(ViewType.padWidth(screenWidth))
+                            }).padRight(ViewType.padWidth(KcopSkin.screenWidth))
                             }
                         ).center().right()
                         this.row()
                         this.add(
                             if (menuPane == null) { Table() }
                             else {
-                                ScrollPane(menuPane, skin()).apply {
+                                ScrollPane(menuPane, KcopSkin.skin).apply {
                                     // https://github.com/raeleus/skin-composer/wiki/ScrollPane
                                     this.fadeScrollBars = false
                                     this.setFlickScroll(false)
@@ -123,8 +115,8 @@ interface DisplayViewMenu {
                                     this.layout()
                                 }
                             }
-                        ).height(ViewType.secondHeight(screenHeight) - 3 * kcopSkin.fontPackage.large.lineHeight)
-                            .width(ViewType.secondWidth(screenWidth) - 3 * kcopSkin.fontPackage.large.lineHeight)
+                        ).height(ViewType.secondHeight(KcopSkin.screenHeight) - 3 * KcopSkin.fontPackage.large.lineHeight)
+                            .width(ViewType.secondWidth(KcopSkin.screenWidth) - 3 * KcopSkin.fontPackage.large.lineHeight)
                             .growY().top()
                         this.add(navButtonPane()).top()
                         this.row()
@@ -139,9 +131,4 @@ interface DisplayViewMenu {
 
     fun tag() : String //= tag //need to override this in implementing menu
     fun label() : String //= label //need to override this in implementing menu
-
-    fun dispose() {
-        sdcHandler.dispose()
-        kcopSkin.dispose()
-    }
 }

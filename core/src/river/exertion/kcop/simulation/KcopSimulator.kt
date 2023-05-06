@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IDisplayPackage
 import river.exertion.kcop.plugin.IPackage
@@ -41,9 +42,7 @@ class KcopSimulator(private val stage: Stage,
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-
-
-    val viewLayout = ViewLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight)
+    val viewLayout = ViewLayout()
  //   val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight). apply { this.hide() }
  //   val colorPaletteInputProcessor = ColorPaletteInputProcessor()
     lateinit var inputMultiplexer : InputMultiplexer
@@ -117,10 +116,8 @@ class KcopSimulator(private val stage: Stage,
         orthoCamera.viewportWidth = width.toFloat()
         orthoCamera.viewportHeight = height.toFloat()
         stage.viewport.update(width, height)
-    }
-
-    override fun dispose() {
-        viewLayout.dispose()
+        KcopSkin.screenWidth = width.toFloat()
+        KcopSkin.screenHeight = height.toFloat()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -134,14 +131,14 @@ class KcopSimulator(private val stage: Stage,
                             viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             displayPackages[0].displayFullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
+                                    AudioViewMessage.AudioViewMessageType.PlaySound, KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                             )
                         }
                         KcopMessage.KcopMessageType.KcopScreen -> {
                             viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             displayPackages[0].displayKcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.PlaySound, viewLayout.kcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
+                                    AudioViewMessage.AudioViewMessageType.PlaySound, KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                             )
                         }
                     }
@@ -152,6 +149,4 @@ class KcopSimulator(private val stage: Stage,
         }
         return false
     }
-
-
 }

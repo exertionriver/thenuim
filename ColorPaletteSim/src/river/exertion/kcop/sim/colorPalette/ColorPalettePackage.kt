@@ -23,17 +23,21 @@ class ColorPalettePackage : IDisplayPackage {
         MessageChannelHandler.addChannel(MessageChannel(ColorPaletteBridge, ColorPaletteMessage::class))
     }
 
-    lateinit var colorPaletteLayout : ColorPaletteLayout
+    override fun loadMenus() { }
+
+    override fun loadSystems() {}
 
     override fun build(screenWidth : Float, screenHeight : Float, stage : Stage) {
-        return ColorPaletteLayout(screenWidth, screenHeight).run { this.build(stage) }
+        return ColorPaletteLayout.build(stage)
     }
 
-    override fun displayKcopScreen(offset : Vector2) = colorPaletteLayout.kcopScreen(offset)
+    override fun displayKcopScreen(offset : Vector2) = ColorPaletteLayout.kcopScreen(offset)
 
-    override fun displayFullScreen(offset : Vector2) = colorPaletteLayout.fullScreen(offset)
+    override fun displayFullScreen(offset : Vector2) = ColorPaletteLayout.fullScreen(offset)
 
     override fun inputProcessor() = ColorPaletteInputProcessor()
+
+    override fun dispose() { }
 
     companion object {
         const val ColorPaletteBridge = "ColorPaletteBridge"

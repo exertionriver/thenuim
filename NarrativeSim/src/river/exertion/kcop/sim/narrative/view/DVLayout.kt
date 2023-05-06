@@ -147,5 +147,24 @@ data class DVLayout(
         const val DvLayoutTag = "emptyLayout"
         fun dvLayout() = DVLayout(name= DvLayoutTag)
     }
+
+/*
+                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
+                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
+/*
+                    dvLayoutHandler.currentDvLayout.clearImagePaneContent()
+                    dvLayoutHandler.currentDvLayout.clearTextPaneContent()
+                    dvLayoutHandler.currentDvLayout.clearAlphaPaneContent()
+
+                    MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Layout" else "Clear"}" ))
+*/
+
+                    build()
+                    return true
+                }
+
+
+ */
+
 }
 

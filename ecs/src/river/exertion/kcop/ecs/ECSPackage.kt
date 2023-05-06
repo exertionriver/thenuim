@@ -23,6 +23,14 @@ object ECSPackage : IPackage {
 
     override fun loadAssets(assetManager: AssetManager) {}
 
+    override fun loadMenus() {}
+
+    override fun loadSystems() {}
+
+    override fun dispose() {
+        EngineHandler.dispose()
+    }
+
     const val EngineComponentBridge = "EngineComponentBridge"
     const val EngineEntityBridge = "EngineEntityBridge"
     const val ImmersionTimerBridge = "ImmersionTimerBridge"

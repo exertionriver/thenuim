@@ -8,4 +8,8 @@ interface IPackage {
 
     fun loadChannels()
     fun loadAssets(assetManager : AssetManager)
+    fun loadMenus()
+    fun loadSystems()
+
+    fun dispose()
 }

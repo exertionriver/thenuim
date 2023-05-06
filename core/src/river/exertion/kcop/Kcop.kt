@@ -2,8 +2,6 @@ package river.exertion.kcop
 
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ai.msg.TelegramProvider
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -14,29 +12,21 @@ import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.ecs.ECSPackage
-import river.exertion.kcop.messaging.MessageChannel
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.simulation.KcopSimulator
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 
-class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
+class Kcop : KtxGame<KtxScreen>() {
 
     val packages = mutableListOf<IPackage>(
         ViewPackage, ECSPackage
     )
 
     init {
-        MessageChannelHandler.addChannel(MessageChannel(TwoBatchBridge, PolygonSpriteBatch::class))
-        packages.forEach { it.loadChannels() }
-
-        MessageChannelHandler.enableProvider(TwoBatchBridge, this)
-        MessageChannelHandler.enableProvider(SDCBridge, this)
-        MessageChannelHandler.enableProvider(KcopSkinBridge, this)
+        KcopSkin.screenWidth = initViewportWidth
+        KcopSkin.screenHeight = initViewportHeight
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
@@ -53,8 +43,9 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
         twoBatch = PolygonSpriteBatch()
         val stage = Stage(viewport, twoBatch)
+        SdcHandler.batch = twoBatch
 
-        sdcHandler = SdcHandler(twoBatch, KcopSkin.BackgroundColor)
+        loadPackages()
 
         context.register {
             bindSingleton(orthoCamera)
@@ -64,6 +55,15 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         }
 
         setScreen<KcopSimulator>()
+    }
+
+    fun loadPackages() {
+
+        packages.forEach {
+            it.loadChannels()
+            it.loadAssets(AssetManagerHandler.assets)
+            it.loadMenus()
+        }
     }
 
     companion object {
@@ -76,12 +76,10 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         const val TwoBatchBridge = "TwoBatchBridge"
     }
 
-    override fun provideMessageInfo(msg: Int, receiver: Telegraph?): Any {
-        return when {
-            (MessageChannelHandler.isType(TwoBatchBridge, msg)) -> twoBatch
-            (MessageChannelHandler.isType(SDCBridge, msg)) -> sdcHandler
-            (MessageChannelHandler.isType(KcopSkinBridge, msg)) -> AssetManagerHandler.kcopSkin()
-            else -> false
+    override fun dispose() {
+        packages.forEach {
+            it.dispose()
         }
+        super.dispose()
     }
 }

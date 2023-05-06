@@ -45,7 +45,7 @@ object MenuViewSwitchboard {
                 MessageChannelHandler.send(MenuNavBridge, MenuNavMessage())
             } } )
         }
-        Switchboard.executeAction(CloseMenu.switchboardTag)
+        Switchboard.executeAction(ClearMenu.switchboardTag)
     }
 
 }

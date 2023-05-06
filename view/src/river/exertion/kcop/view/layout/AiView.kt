@@ -8,24 +8,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.AiHintBridge
-import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.ViewPackage.TextViewBridge
 import river.exertion.kcop.view.messaging.AiHintMessage
 import river.exertion.kcop.view.messaging.LogViewMessage
 import river.exertion.kcop.view.messaging.TextViewMessage
 
-class AiView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.AI, screenWidth, screenHeight) {
+class AiView : Telegraph, ViewBase(ViewType.AI) {
 
     init {
         MessageChannelHandler.enableReceive(AiHintBridge, this)
-        MessageChannelHandler.enableReceive(DisplayModeBridge, this)
-
-        MessageChannelHandler.enableReceive(SDCBridge,this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     var hintTextEntries : MutableMap<String, String> = mutableMapOf()
@@ -36,9 +30,9 @@ class AiView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, V
 
     fun clickButton() : Button {
 
-        val innerButton = Button(skin())
+        val innerButton = Button(KcopSkin.skin)
 
-        kcopSkin.addOnClick(innerButton)
+        KcopSkin.addOnClick(innerButton)
 
         //override from ctrl
         innerButton.isChecked = this@AiView.isChecked
@@ -71,19 +65,6 @@ class AiView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, V
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    super.sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
-                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
-                    build()
-                    return true
-                }
                 (MessageChannelHandler.isType(AiHintBridge, msg.message) ) -> {
                     val aiHintMessage: AiHintMessage = MessageChannelHandler.receiveMessage(AiHintBridge, msg.extraInfo)
 

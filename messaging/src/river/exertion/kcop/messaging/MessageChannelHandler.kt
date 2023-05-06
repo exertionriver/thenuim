@@ -9,43 +9,6 @@ object MessageChannelHandler {
     private var messageChannelsIdx = 0
     val messageChannels = mutableListOf<MessageChannelEntry>()
 
-    init {
-        addChannels(
-            listOf(
-/*
-
-                MessageChannel("IntraMenuBridge", MenuNavMessage::class),
-                MessageChannel("InterMenuBridge", MenuDataMessage::class),
-
-                MessageChannel("TextViewBridge", TextViewMessage::class),
-                MessageChannel("LogViewBridge", LogViewMessage::class),
-                MessageChannel("StatusViewBridge", StatusViewMessage::class),
-                MessageChannel("MenuViewBridge", DisplayViewMenuMessage::class),
-                MessageChannel("InputViewBridge", InputViewMessage::class),
-                MessageChannel("AiViewBridge", AiHintMessage::class),
-                MessageChannel("PauseViewBridge", PauseViewMessage::class),
-
-                MessageChannel("NarrativeBridge", NarrativeMessage::class),
-                MessageChannel("NarrativeStatusBridge", NarrativeStatusMessage::class),
-                MessageChannel("NarrativeFlagsBridge", NarrativeFlagsMessage::class),
-                MessageChannel("NarrativeMediaBridge", NarrativeMediaMessage::class),
-                MessageChannel("NarrativeBridgePauseGate", NarrativeMessage::class),
-
-                MessageChannel("ProfileBridge", ProfileMessage::class),
-                MessageChannel("ECSEngineEntityBridge", EngineEntityMessage::class),
-                MessageChannel("ECSEngineComponentBridge", EngineComponentMessage::class),
-
-                MessageChannel("TwoBatchBridge", PolygonSpriteBatch::class),
-                MessageChannel("SDCBridge", SdcHandler::class),
-                MessageChannel("KcopBridge", KcopMessage::class),
-                MessageChannel("KcopSkinBridge", KcopSkin::class),
-                MessageChannel("AMHLoadBridge", AMHLoadMessage::class),
-                MessageChannel("AMHSaveBridge", AMHSaveMessage::class),
-                MessageChannel("DisplayModeBridge", Boolean::class),
-  */          )
-        )
-    }
-
     fun checkByTag(messageChannelTag : String) : MessageChannelEntry? {
         return messageChannels.firstOrNull { it.messageChannelTag == messageChannelTag }
     }

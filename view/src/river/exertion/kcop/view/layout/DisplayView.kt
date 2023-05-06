@@ -7,19 +7,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler.currentMenuTag
 import river.exertion.kcop.view.messaging.DisplayViewTextMessage
 import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
 import river.exertion.kcop.view.messaging.LogViewMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 
-class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.DISPLAY, screenWidth, screenHeight) {
+class DisplayView : Telegraph, ViewBase(ViewType.DISPLAY) {
 
     val audioView = AudioView()
 
@@ -27,10 +26,6 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         MessageChannelHandler.enableReceive(DisplayViewTextureBridge, this)
         MessageChannelHandler.enableReceive(DisplayViewTextBridge, this)
         MessageChannelHandler.enableReceive(MenuViewBridge, this)
-
-        MessageChannelHandler.enableReceive(DisplayModeBridge, this)
-        MessageChannelHandler.enableReceive(SDCBridge, this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     var menuOpen = false
@@ -53,7 +48,7 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                 })
                 if (menuOpen) {
                     this.add(Table().apply {
-                        this.add(currentMenu).grow()
+                        this.add(DisplayViewMenuHandler.buildByTag(currentMenuTag)).grow()
                     })
                 }
            }).size(this.tableWidth(), this.tableHeight())
@@ -64,27 +59,6 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    super.sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
-                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
-/*
-                    dvLayoutHandler.currentDvLayout.clearImagePaneContent()
-                    dvLayoutHandler.currentDvLayout.clearTextPaneContent()
-                    dvLayoutHandler.currentDvLayout.clearAlphaPaneContent()
-
-                    MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Layout" else "Clear"}" ))
-*/
-
-                    build()
-                    return true
-                }
                 (MessageChannelHandler.isType(DisplayViewTextBridge, msg.message) ) -> {
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannelHandler.receiveMessage(DisplayViewTextBridge, msg.extraInfo)
 /*
@@ -150,13 +124,8 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         return false
     }
 
-    override fun dispose() {
-        audioView.dispose()
-    }
-
     companion object {
         var currentSimulation = Actor()
-        var currentMenu = Actor()
     }
 
 }

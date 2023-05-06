@@ -8,23 +8,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.messaging.KcopMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
 
-class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.MENU, screenWidth, screenHeight) {
+class MenuView : Telegraph, ViewBase(ViewType.MENU) {
 
     init {
         MessageChannelHandler.enableReceive(MenuViewBridge, this)
-        MessageChannelHandler.enableReceive(DisplayModeBridge, this)
-
-        MessageChannelHandler.enableReceive(SDCBridge,this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
 
         assignableButtons[0] = {
         if (this@MenuView.isChecked[0] == true)
@@ -34,7 +28,7 @@ class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph,
         }
 
         assignableButtons[1] = {
-            MessageChannelHandler.send(DisplayModeBridge, this@MenuView.isChecked[1]!!)
+            KcopSkin.displayMode = this@MenuView.isChecked[1]!!
         }
 
         assignableButtons[2] = {
@@ -63,7 +57,7 @@ class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph,
 
         (0..5).forEach { idx ->
 
-            val innerButton = Button(skin())//.apply {kcopSkin.addOnEnter(this); kcopSkin.addOnClick(this)}
+            val innerButton = Button(KcopSkin.skin).apply { KcopSkin.addOnClick(this) }
 
             if (assignableButtons[idx] == null) {
                 assignableButtons[idx] = { MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, idx, this@MenuView.isChecked[idx]!!)) }
@@ -82,17 +76,17 @@ class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph,
         }
 
         val buttonSubLayout1 = Table()
-        buttonSubLayout1.add(buttonList[1]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
-        buttonSubLayout1.add(buttonList[2]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
+        buttonSubLayout1.add(buttonList[1]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight))
+        buttonSubLayout1.add(buttonList[2]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight))
         buttonSubLayout1.row()
-        buttonSubLayout1.add(buttonList[0]).align(Align.center).colspan(2).size(ViewType.sixthWidth(screenWidth) - 3, ViewType.sixthHeight(screenHeight) - 3)
+        buttonSubLayout1.add(buttonList[0]).align(Align.center).colspan(2).size(ViewType.sixthWidth(KcopSkin.screenWidth) - 3, ViewType.sixthHeight(KcopSkin.screenHeight) - 3)
 
         val buttonSubLayout2 = Table()
-        buttonSubLayout2.add(buttonList[3]).align(Align.center).size(ViewType.seventhWidth(screenWidth) - 5, ViewType.seventhHeight(screenHeight) - 5)
+        buttonSubLayout2.add(buttonList[3]).align(Align.center).size(ViewType.seventhWidth(KcopSkin.screenWidth) - 5, ViewType.seventhHeight(KcopSkin.screenHeight) - 5)
         buttonSubLayout2.row()
-        buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight)).padTop(1f)
+        buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight)).padTop(1f)
         buttonSubLayout2.row()
-        buttonSubLayout2.add(buttonList[5]).size(ViewType.seventhWidth(screenWidth), ViewType.seventhHeight(screenHeight))
+        buttonSubLayout2.add(buttonList[5]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight))
 
         val buttonLayout = Table()
         buttonLayout.add(buttonSubLayout1).padTop(2f).padLeft(2f).padBottom(2f)
@@ -116,19 +110,6 @@ class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph,
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    super.sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
-                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
-                    build()
-                    return true
-                }
                 (MessageChannelHandler.isType(MenuViewBridge, msg.message) ) -> {
                     val menuViewMessage : MenuViewMessage = MessageChannelHandler.receiveMessage(MenuViewBridge, msg.extraInfo)
 

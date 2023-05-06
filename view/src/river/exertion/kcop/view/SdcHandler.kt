@@ -5,9 +5,10 @@ import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ColorPalette.Companion.randomW3cBasic
 
-class SdcHandler(var batch : Batch, var backgroundColorPalette: ColorPalette) {
+object SdcHandler {
 
     var sdcRegister = mutableMapOf<String, ShapeDrawerConfig>()
+    lateinit var batch : Batch
 
     private fun add(tag : String, baseCP : ColorPalette, alpha : Float? = 1f) { sdcRegister[tag] =
         ShapeDrawerConfig(batch, baseCP.color(), alpha)
@@ -16,7 +17,7 @@ class SdcHandler(var batch : Batch, var backgroundColorPalette: ColorPalette) {
     fun getBlackAlpha(tag : String, alpha: Float? = 1f) : ShapeDrawerConfig {
         return if ( sdcRegister.containsKey(tag) ) sdcRegister[tag]!!.apply { this.setAlpha(alpha!!) }
         else {
-            add(tag, backgroundColorPalette, alpha)
+            add(tag, KcopSkin.BackgroundColor, alpha)
             sdcRegister[tag]!!
         }
     }

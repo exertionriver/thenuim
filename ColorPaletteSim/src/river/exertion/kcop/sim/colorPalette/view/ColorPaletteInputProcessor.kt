@@ -3,6 +3,7 @@ package river.exertion.kcop.sim.colorPalette.view
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.Companion.ColorPaletteBridge
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 
@@ -10,7 +11,7 @@ class ColorPaletteInputProcessor : InputProcessor {
 
     fun modifyBaseColor(colorPaletteModifyType: ColorPaletteMessage.ColorPaletteModifyType) {
         MessageChannelHandler.send(
-            ColorPaletteLayout.ColorPaletteBridge, ColorPaletteMessage(
+            ColorPaletteBridge, ColorPaletteMessage(
             ColorPaletteMessage.ColorPaletteMessageType.ModifyBaseColor, modifyType = colorPaletteModifyType)
         )
     }

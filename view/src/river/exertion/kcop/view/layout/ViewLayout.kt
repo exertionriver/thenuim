@@ -1,7 +1,5 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -11,26 +9,20 @@ import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.messaging.KcopMessage
 
-class ViewLayout(var width : Float, var height : Float) : Telegraph {
+class ViewLayout {
 
-    init {
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
-    }
-
-    var displayView = DisplayView(width, height)
-    var textView = TextView(width, height)
-    var logView = LogView(width, height)
-    var statusView = StatusView(width, height)
-    var menuView = MenuView(width, height)
-    var inputsViewCtrl = InputView(width, height)
-    var aiView = AiView(width, height)
-    var pauseView = PauseView(width, height)
+    var displayView = DisplayView()
+    var textView = TextView()
+    var logView = LogView()
+    var statusView = StatusView()
+    var menuView = MenuView()
+    var inputsViewCtrl = InputView()
+    var aiView = AiView()
+    var pauseView = PauseView()
 
     lateinit var kcopButton : Button
-    lateinit var kcopSkin : KcopSkin
 
     fun build(stage: Stage) {
         stage.addActor(displayView.apply { this.build() })
@@ -42,7 +34,7 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         stage.addActor(aiView.apply { this.build() })
         stage.addActor(pauseView.apply { this.build() })
 
-        kcopButton = Button(kcopSkin.skin).apply { this.onClick {
+        kcopButton = Button(KcopSkin.skin).apply { this.onClick {
             MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.KcopScreen))
         }}
 
@@ -76,28 +68,5 @@ class ViewLayout(var width : Float, var height : Float) : Telegraph {
         aiView.addAction(Actions.sequence(Actions.fadeOut(fadeDuration, Interpolation.fade), Actions.hide()))
         pauseView.addAction(Actions.sequence(Actions.fadeOut(fadeDuration, Interpolation.fade), Actions.hide()))
         kcopButton.addAction(Actions.sequence(Actions.show()))
-    }
-
-    fun dispose() {
-        displayView.dispose()
-        textView.dispose()
-        logView.dispose()
-        statusView.dispose()
-        menuView.dispose()
-        inputsViewCtrl.dispose()
-        aiView.dispose()
-        pauseView.dispose()
-    }
-
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message)) -> {
-                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-            }
-        }
-        return false
     }
 }

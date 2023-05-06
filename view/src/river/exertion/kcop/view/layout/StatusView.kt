@@ -7,22 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
+import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage.StatusViewBridge
 import river.exertion.kcop.view.messaging.StatusViewMessage
 import kotlin.math.roundToInt
 
-
-class StatusView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.STATUS, screenWidth, screenHeight) {
+class StatusView : Telegraph, ViewBase(ViewType.STATUS) {
 
     init {
         MessageChannelHandler.enableReceive(StatusViewBridge, this)
-        MessageChannelHandler.enableReceive(DisplayModeBridge, this)
-
-        MessageChannelHandler.enableReceive(SDCBridge,this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     val displayStatuses : MutableMap<String, Float> = mutableMapOf()
@@ -30,8 +24,8 @@ class StatusView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
     private lateinit var scrollPane : ScrollPane
 
     fun statusColorTexture(overrideColor : ColorPalette? = null) : TextureRegion {
-        return sdcHandler.get("statusColor", overrideColor ?: backgroundColor).textureRegion().apply {
-            this.setRegion(0, 0, ViewType.padWidth(screenWidth).roundToInt(), ViewType.padHeight(screenHeight).roundToInt())
+        return SdcHandler.get("statusColor", overrideColor ?: backgroundColor).textureRegion().apply {
+            this.setRegion(0, 0, ViewType.padWidth(KcopSkin.screenWidth).roundToInt(), ViewType.padHeight(KcopSkin.screenHeight).roundToInt())
         }
     }
 
@@ -49,9 +43,9 @@ class StatusView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
             val barStack = Stack()
 
             barStack.add(
-                ProgressBar(0f, 1f, .01f, false, skin()).apply { this.value = it.value } )
+                ProgressBar(0f, 1f, .01f, false, KcopSkin.skin).apply { this.value = it.value } )
             barStack.add(
-                Label(it.key, kcopSkin.labelStyle(FontSize.TEXT, backgroundColor.incr(2)))
+                Label(it.key, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor.incr(2)))
             )
 
             innerTable.add(barStack)
@@ -61,7 +55,7 @@ class StatusView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
         innerTable.top()
 //        innerTable.debug()
 
-            val scrollPane = ScrollPane(innerTable, skin()).apply {
+            val scrollPane = ScrollPane(innerTable, KcopSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -88,19 +82,6 @@ class StatusView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegrap
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    super.sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
-                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
-                    build()
-                    return true
-                }
                 (MessageChannelHandler.isType(StatusViewBridge, msg.message) ) -> {
                     val statusViewMessage: StatusViewMessage = MessageChannelHandler.receiveMessage(StatusViewBridge, msg.extraInfo)
 

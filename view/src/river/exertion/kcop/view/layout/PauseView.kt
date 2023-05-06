@@ -8,31 +8,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage
-import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.ImmersionKeypressBridge
 import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.PauseViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.messaging.PauseViewMessage
 
-class PauseView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.PAUSE, screenWidth, screenHeight) {
+class PauseView : Telegraph, ViewBase(ViewType.PAUSE) {
 
     init {
         MessageChannelHandler.enableReceive(PauseViewBridge, this)
         MessageChannelHandler.enableReceive(ImmersionPauseBridge, this)
-        MessageChannelHandler.enableReceive(DisplayModeBridge, this)
-
-        MessageChannelHandler.enableReceive(SDCBridge,this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     var isChecked = false
 
     fun clickButton() : Button {
 
-        val innerButton = Button(skin())
+        val innerButton = Button(KcopSkin.skin)
         //override from ctrl
         innerButton.isChecked = this@PauseView.isChecked
 
@@ -63,19 +56,6 @@ class PauseView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    super.sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
-                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
-                    build()
-                    return true
-                }
                 (MessageChannelHandler.isType(PauseViewBridge, msg.message) ) -> {
                     val pauseViewMessage : PauseViewMessage = MessageChannelHandler.receiveMessage(PauseViewBridge, msg.extraInfo)
 

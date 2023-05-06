@@ -10,27 +10,18 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
 
-class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph,
-    DisplayViewMenu {
+class LoadNarrativeMenu : Telegraph, DisplayViewMenu {
 
     init {
         MessageChannelHandler.enableReceive(NarrativeMenuDataBridge,this)
-
-        MessageChannelHandler.enableReceive(SDCBridge,this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge,this)
     }
-
-    override lateinit var sdcHandler : SdcHandler
-    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("teal")
 
@@ -42,7 +33,7 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
     override fun menuPane() = Table().apply {
         if (selectedNarrativeAssetInfo != null) {
             selectedNarrativeAssetInfo!!.forEach { profileEntry ->
-                this.add(Label(profileEntry, skin())
+                this.add(Label(profileEntry, KcopSkin.skin)
                         //LabelStyle(bitmapFont, backgroundColor.label().color()))
                         .apply {
                     this.wrap = true
@@ -52,7 +43,7 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
 //        this.debug()
             this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${selectedNarrativeAssetName()}" }
         } else {
-            this.add(Label("no narrative info found", skin())
+            this.add(Label("no narrative info found", KcopSkin.skin)
                     //LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()
             this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
@@ -81,15 +72,6 @@ class LoadNarrativeMenu(override var screenWidth: Float, override var screenHeig
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-
                 (MessageChannelHandler.isType(NarrativeMenuDataBridge, msg.message)) -> {
                     val menuDataMessage: NarrativeMenuDataMessage = MessageChannelHandler.receiveMessage(NarrativeMenuDataBridge, msg.extraInfo)
 

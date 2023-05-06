@@ -34,6 +34,12 @@ object AssetManagerHandler {
         SoundAssets.values().forEach { assets.load(it) }
 
         assets.finishLoading()
+
+        KcopSkin.skin = assets[SkinAssets.KcopUi]
+        KcopSkin.fontPackage = fontPackage()
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = assets[SoundAssets.Click]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = assets[SoundAssets.Enter]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = assets[SoundAssets.Swoosh]
     }
 
     fun fontPackage() : FontPackage {
@@ -43,13 +49,6 @@ object AssetManagerHandler {
             assets[FreeTypeFontAssets.ImmortalMedium].apply { this.data.setScale(FreeTypeFontAssets.ImmortalMedium.baseFontSize().fontScale())},
             assets[FreeTypeFontAssets.ImmortalLarge].apply { this.data.setScale(FreeTypeFontAssets.ImmortalLarge.baseFontSize().fontScale())}
         )
-    }
-
-    fun kcopSkin() : KcopSkin = KcopSkin(assets[SkinAssets.KcopUi], fontPackage()).apply {
-        this.uiSounds[KcopSkin.UiSounds.Click] = assets[SoundAssets.Click]
-        this.uiSounds[KcopSkin.UiSounds.Enter] = assets[SoundAssets.Enter]
-        this.uiSounds[KcopSkin.UiSounds.Swoosh] = assets[SoundAssets.Swoosh]
-       // DisplayViewLayoutAssets.values().forEach { this.layouts.add(assets[it].DVLayout!!) }
     }
 
     inline fun <reified T: IAsset>reloadLocalAssets(assetLoadLocation : String): List<T> {

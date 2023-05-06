@@ -1,7 +1,5 @@
 package river.exertion.kcop.profile.menu
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
@@ -9,24 +7,14 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
 
-class NewProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
-
-    init {
-        MessageChannelHandler.enableReceive(SDCBridge, this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
-    }
-
-    override lateinit var sdcHandler : SdcHandler
-    override lateinit var kcopSkin: KcopSkin
+class NewProfileMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("olive")
 
@@ -37,10 +25,10 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
     override fun menuPane() = Table().apply {
         newName = newName()
 
-        this.add(Label("profile name: ", skin()))
+        this.add(Label("profile name: ", KcopSkin.skin))
                 //Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
 
-        val nameTextField = TextField(newName, skin())
+        val nameTextField = TextField(newName, KcopSkin.skin)
         //TextField.TextFieldStyle(bitmapFont, backgroundColor.label().color(), null, null, null)).apply {
 //                this.alignment = Align.top
 //        }
@@ -73,22 +61,6 @@ class NewProfileMenu(override var screenWidth: Float, override var screenHeight:
             MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(breadcrumbEntries.keys.toList()[0]) )
         })
     )
-
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
-            }
-        }
-        return false
-    }
 
     override fun tag() = tag
     override fun label() = label

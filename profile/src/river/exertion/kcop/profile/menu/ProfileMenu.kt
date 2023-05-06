@@ -12,10 +12,8 @@ import river.exertion.kcop.profile.messaging.ProfileMenuDataMessage
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.ViewPackage.MenuNavBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuNavMessage
@@ -23,19 +21,12 @@ import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.messaging.menuParams.MenuNavParams
 
-class ProfileMenu(override var screenWidth: Float, override var screenHeight: Float) : Telegraph, DisplayViewMenu {
+class ProfileMenu : Telegraph, DisplayViewMenu {
 
     init {
         MessageChannelHandler.enableReceive(ProfileMenuDataBridge, this)
         MessageChannelHandler.enableReceive(MenuNavBridge, this)
-
-        MessageChannelHandler.enableReceive(SDCBridge, this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
-
     }
-
-    override lateinit var sdcHandler : SdcHandler
-    override lateinit var kcopSkin: KcopSkin
 
     override val backgroundColor = ColorPalette.of("green")
 
@@ -44,7 +35,7 @@ class ProfileMenu(override var screenWidth: Float, override var screenHeight: Fl
 
     override fun menuPane() : Table {
 
-        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(skin())
+        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
                 //ListStyle().apply {
 //            this.font = bitmapFont
 //            this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
@@ -102,14 +93,6 @@ ActionParam("Save >", {
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
                 (MessageChannelHandler.isType(ProfileMenuDataBridge, msg.message)) -> {
                     val menuDataMessage: ProfileMenuDataMessage = MessageChannelHandler.receiveMessage(ProfileMenuDataBridge, msg.extraInfo)
 

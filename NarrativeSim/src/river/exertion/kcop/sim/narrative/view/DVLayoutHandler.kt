@@ -8,19 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.FontSize
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
-import river.exertion.kcop.view.ViewPackage.SDCBridge
 
-class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegraph {
+class DVLayoutHandler : Telegraph {
 
     init {
-        MessageChannelHandler.enableReceive(SDCBridge, this)
-        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     lateinit var sdcHandler : SdcHandler
@@ -33,13 +28,13 @@ class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegra
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {
         return sdcHandler.get("pane_${dvPane.idx}", overrideColor ?: KcopSkin.BackgroundColor).textureRegion().apply {
-            this.setRegion(0, 0, dvPane.dvpType().width(screenWidth).toInt() - 1, dvPane.dvpType().height(screenHeight).toInt() - 1)
+            this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
         }
     }
 
     fun paneBATexture(dvPane: DVPane) : TextureRegion {
         return sdcHandler.getBlackAlpha("bapane_${dvPane.idx}", dvPane.alphaMask).textureRegion().apply {
-            this.setRegion(0, 0, dvPane.dvpType().width(screenWidth).toInt() - 1, dvPane.dvpType().height(screenHeight).toInt() - 1)
+            this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
         }
     }
 
@@ -62,8 +57,8 @@ class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegra
                 val randomColorLabelStyle = kcopSkin.labelStyle(FontSize.TEXT, randomColor)
 
                 when (dvPane) {
-                    is DVImagePane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(screenWidth, screenHeight, randomColorImage, randomColorLabelStyle)
-                    is DVTextPane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(screenWidth, screenHeight, randomColorImage, randomColorLabelStyle)
+                    is DVImagePane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)
+                    is DVTextPane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)
                 }
             }
 
@@ -71,13 +66,13 @@ class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegra
             val textLabelStyle = kcopSkin.labelStyle(currentFontSize)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
-            currentDvLayout.setTextPaneContent(screenWidth, screenHeight, currentText)
+            currentDvLayout.setTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
 
             currentDvLayout.panes().forEach { dvPane ->
                 paneContent.data[dvPane.idx()] = Stack().apply {
-                    this.add(dvPane.emptyPane(screenWidth, screenHeight))
-                    this.add(dvPane.contentPane(screenWidth, screenHeight))
-                    this.add(dvPane.alphaPane(screenWidth, screenHeight, Image(TextureRegionDrawable(paneBATexture(dvPane)))))
+                    this.add(dvPane.emptyPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
+                    this.add(dvPane.contentPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
+                    this.add(dvPane.alphaPane(KcopSkin.screenWidth, KcopSkin.screenHeight, Image(TextureRegionDrawable(paneBATexture(dvPane)))))
                 }
             }
         }
@@ -117,14 +112,7 @@ class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegra
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
-                    sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
-                    return true
-                }
-                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
-                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
-                    return true
-                }
+                else -> return false
             }
         }
         return false

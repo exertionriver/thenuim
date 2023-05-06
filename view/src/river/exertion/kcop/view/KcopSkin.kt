@@ -12,10 +12,18 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ViewPackage.AudioViewBridge
 import river.exertion.kcop.view.messaging.AudioViewMessage
 
-class KcopSkin(var skin : Skin, var fontPackage: FontPackage) {
+object KcopSkin {
 
     val uiSounds = mutableMapOf<UiSounds, Music>()
-/*
+
+    var screenWidth = 50f
+    var screenHeight = 50f
+
+    lateinit var skin : Skin
+    lateinit var fontPackage: FontPackage
+
+    var displayMode = false
+    /*
     val layouts = mutableListOf(DVLayout.dvLayout())
 
     fun layoutByName(name : String) = layouts.firstOrNull { it.name == name } ?: layouts[0]
@@ -50,7 +58,5 @@ class KcopSkin(var skin : Skin, var fontPackage: FontPackage) {
         fontPackage.dispose()
     }
 
-    companion object {
-        val BackgroundColor = ColorPalette.of("black")
-    }
+    val BackgroundColor = ColorPalette.of("black")
 }

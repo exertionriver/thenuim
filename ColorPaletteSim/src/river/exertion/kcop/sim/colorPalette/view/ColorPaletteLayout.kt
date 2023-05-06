@@ -9,10 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.Companion.ColorPaletteBridge
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.ViewType
 
-class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
+object ColorPaletteLayout : Telegraph {
 
     init {
         MessageChannelHandler.enableReceive(ColorPaletteBridge, this)
@@ -31,17 +33,17 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     var triadFirstSwatchesCtrl = ColorSwatchesDisplayView(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
     var triadSecondSwatchesCtrl = ColorSwatchesDisplayView(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
 
-    fun colorColumnWidth() = ViewType.fifthWidth(width) + ViewType.padWidth(width)
+    fun colorColumnWidth() = ViewType.fifthWidth(KcopSkin.screenWidth) + ViewType.padWidth(KcopSkin.screenWidth)
 
-    fun firstColorColumn() = ViewType.seventhWidth(width)
+    fun firstColorColumn() = ViewType.seventhWidth(KcopSkin.screenWidth)
     fun secondColorColumn() = firstColorColumn() + colorColumnWidth()
     fun thirdColorColumn() = secondColorColumn() + colorColumnWidth()
     fun fourthColorColumn() = thirdColorColumn() + colorColumnWidth()
     fun fifthColorColumn() = fourthColorColumn() + colorColumnWidth()
 
-    fun colorRowHeight() = ViewType.seventhHeight(height)
+    fun colorRowHeight() = ViewType.seventhHeight(KcopSkin.screenHeight)
 
-    fun firstColorRow() = ViewType.firstHeight(height) - colorRowHeight()
+    fun firstColorRow() = ViewType.firstHeight(KcopSkin.screenHeight) - colorRowHeight()
 
     fun colorSwatchHeight() = colorRowHeight()
     fun colorSwatchWidth() = colorColumnWidth()
@@ -201,17 +203,5 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
             }
         }
         return false
-    }
-
-    fun dispose() {
-        sampleSwatchesCtrl.dispose()
-        baseSwatchesCtrl.dispose()
-        compSwatchesCtrl.dispose()
-        triadFirstSwatchesCtrl.dispose()
-        triadSecondSwatchesCtrl.dispose()
-    }
-
-    companion object {
-        const val ColorPaletteBridge = "ColorPaletteBridge"
     }
 }
