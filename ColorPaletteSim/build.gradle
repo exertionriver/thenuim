@@ -12,6 +12,8 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     api "io.github.libktx:ktx-actors:$ktxVersion"
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
     implementation project(path: ':view')
     implementation project(path: ':messaging')
     implementation project(path: ':asset')

@@ -11,6 +11,7 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
     implementation project(path: ':messaging')
+    implementation project(path: ':plugin')
     implementation project(path: ':ecs')
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"

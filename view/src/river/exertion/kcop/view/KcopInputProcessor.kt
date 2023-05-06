@@ -3,17 +3,15 @@ package river.exertion.kcop.view
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.messaging.Switchboard
-import river.exertion.kcop.messaging.SwitchboardEntry
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
+import river.exertion.kcop.view.ViewPackage.InputViewBridge
 import river.exertion.kcop.view.messaging.InputViewMessage
-import river.exertion.kcop.view.messaging.InputViewMessage.Companion.InputViewBridge
 import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
 
 class KcopInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
-//        MessageChannelEnum.NARRATIVE_BRIDGE_PAUSE_GATE.send(null, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Next, Input.Keys.toString(keycode)))
+        MessageChannelHandler.send(ImmersionPauseBridge, Input.Keys.toString(keycode))
 
         MessageChannelHandler.send(InputViewBridge, InputViewMessage(
             event = InputViewMessage.InputViewMessageEvent.KeyDownEvent,

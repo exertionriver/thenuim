@@ -102,7 +102,7 @@ class ColorPaletteLayout(var width : Float, var height : Float) : Telegraph {
     fun colorBaseDecrG() = setColorBase(baseColor.decrG())
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
-    fun build(stage: Stage) {
+    fun build(stage : Stage) {
         stage.addActor(createSampleSwatchesCtrl())
         stage.addActor(createBaseSwatchesCtrl())
         stage.addActor(createCompSwatchesCtrl())

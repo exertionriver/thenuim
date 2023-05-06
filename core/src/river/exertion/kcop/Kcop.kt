@@ -13,20 +13,26 @@ import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.assets.AssetManagerHandlerCl
-import river.exertion.kcop.simulation.KcopSimulator
-import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.kcop.ecs.ECSPackage
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.plugin.IPackage
+import river.exertion.kcop.simulation.KcopSimulator
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
+import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 
 class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
+    val packages = mutableListOf<IPackage>(
+        ViewPackage, ECSPackage
+    )
+
     init {
         MessageChannelHandler.addChannel(MessageChannel(TwoBatchBridge, PolygonSpriteBatch::class))
+        packages.forEach { it.loadChannels() }
 
         MessageChannelHandler.enableProvider(TwoBatchBridge, this)
         MessageChannelHandler.enableProvider(SDCBridge, this)
@@ -35,8 +41,6 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
 
     lateinit var twoBatch : PolygonSpriteBatch
     lateinit var sdcHandler : SdcHandler
-//    lateinit var assetManagerHandlerCl : AssetManagerHandlerCl
-//    val threeBatch = ModelBatch()
 
     private val context = Context()
 
@@ -51,16 +55,12 @@ class Kcop : KtxGame<KtxScreen>(), TelegramProvider {
         val stage = Stage(viewport, twoBatch)
 
         sdcHandler = SdcHandler(twoBatch, KcopSkin.BackgroundColor)
-//        val engineHandler = EngineHandler()
-//        assetManagerHandlerCl = AssetManagerHandlerCl()
 
         context.register {
             bindSingleton(orthoCamera)
             bindSingleton(stage)
-//            bindSingleton(engineHandler)
-//            bindSingleton(assetManagerHandlerCl)
 
-            addScreen(KcopSimulator( inject(), inject(), inject(), inject() ) )
+            addScreen(KcopSimulator( inject(), inject() ) )
         }
 
         setScreen<KcopSimulator>()

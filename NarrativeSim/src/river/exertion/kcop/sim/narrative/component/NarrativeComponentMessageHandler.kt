@@ -1,10 +1,10 @@
 package river.exertion.kcop.sim.narrative.component
 
 import com.badlogic.gdx.ai.msg.Telegram
+import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage.Companion.EngineComponentBridge
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.next
@@ -19,12 +19,12 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage.Companion.Na
 import river.exertion.kcop.sim.narrative.messaging.NarrativeStatusMessage
 import river.exertion.kcop.sim.narrative.messaging.NarrativeStatusMessage.Companion.NarrativeStatusBridge
 import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
+import river.exertion.kcop.view.ViewPackage.AudioViewBridge
+import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
+import river.exertion.kcop.view.ViewPackage.StatusViewBridge
 import river.exertion.kcop.view.messaging.AudioViewMessage
-import river.exertion.kcop.view.messaging.AudioViewMessage.Companion.AudioViewBridge
 import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage.Companion.DisplayViewTextureBridge
 import river.exertion.kcop.view.messaging.StatusViewMessage
-import river.exertion.kcop.view.messaging.StatusViewMessage.Companion.StatusViewBridge
 
 object NarrativeComponentMessageHandler {
 

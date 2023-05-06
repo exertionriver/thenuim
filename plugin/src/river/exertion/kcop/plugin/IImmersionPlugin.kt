@@ -1,7 +1,6 @@
 package river.exertion.kcop.plugin
 
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.messaging.SwitchboardEntry
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 
 interface IImmersionPlugin : IPlugin {
 

@@ -5,10 +5,6 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 
 data class InputViewMessage(val event : InputViewMessageEvent, val eventParams : Map<InputViewMessageParam, Any>) {
 
-    init {
-        MessageChannelHandler.addChannel(MessageChannel(InputViewBridge, this::class))
-    }
-
     fun getKeyStr(): String =
         eventParams[InputViewMessageParam.KeycodeStrKey]?.toString() ?: eventParams[InputViewMessageParam.CharacterKey]?.toString() ?: ""
 
@@ -30,10 +26,6 @@ data class InputViewMessage(val event : InputViewMessageEvent, val eventParams :
 
     enum class InputViewMessageParam {
         KeycodeStrKey, CharacterKey, ScreenXKey, ScreenYKey, PointerKey, ButtonKey, AmountXKey, AmountYKey
-    }
-
-    companion object {
-        const val InputViewBridge = "InputViewBridge"
     }
 }
 

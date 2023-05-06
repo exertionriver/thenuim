@@ -8,11 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
+import river.exertion.kcop.view.ViewPackage.TextViewBridge
 import river.exertion.kcop.view.messaging.TextViewMessage
-import river.exertion.kcop.view.messaging.TextViewMessage.Companion.TextViewBridge
 
 
 class TextView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.TEXT, screenWidth, screenHeight) {

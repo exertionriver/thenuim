@@ -9,10 +9,10 @@ import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandle
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.currentText
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.executeReadyBlockEvents
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.executeReadyTimelineEvents
+import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
+import river.exertion.kcop.view.ViewPackage.TextViewBridge
 import river.exertion.kcop.view.messaging.DisplayViewTextMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextMessage.Companion.DisplayViewTextBridge
 import river.exertion.kcop.view.messaging.TextViewMessage
-import river.exertion.kcop.view.messaging.TextViewMessage.Companion.TextViewBridge
 
 class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::class).get(), 1/10f) {
 

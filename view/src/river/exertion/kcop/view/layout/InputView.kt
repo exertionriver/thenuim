@@ -10,9 +10,11 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.FontSize
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.InputViewBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.messaging.InputViewMessage
-import river.exertion.kcop.view.messaging.InputViewMessage.Companion.InputViewBridge
 
 class InputView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.INPUT, screenWidth, screenHeight) {
 
@@ -20,8 +22,8 @@ class InputView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph
         MessageChannelHandler.enableReceive(InputViewBridge, this)
         MessageChannelHandler.enableReceive(DisplayModeBridge, this)
 
-        MessageChannelHandler.enableReceive(SdcHandler.SDCBridge,this)
-        MessageChannelHandler.enableReceive(KcopSkin.KcopSkinBridge, this)
+        MessageChannelHandler.enableReceive(SDCBridge,this)
+        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     var clickImage : Texture? = null
@@ -94,12 +96,12 @@ class InputView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SdcHandler.SDCBridge, msg.message) ) -> {
-                    super.sdcHandler = MessageChannelHandler.receiveMessage(SdcHandler.SDCBridge, msg.extraInfo)
+                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
+                    super.sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
                     return true
                 }
-                (MessageChannelHandler.isType(KcopSkin.KcopSkinBridge, msg.message) ) -> {
-                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkin.KcopSkinBridge, msg.extraInfo)
+                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
+                    super.kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
                     return true
                 }
                 (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {

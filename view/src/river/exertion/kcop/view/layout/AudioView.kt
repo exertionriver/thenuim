@@ -5,8 +5,8 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.utils.Timer
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.ViewPackage.AudioViewBridge
 import river.exertion.kcop.view.messaging.AudioViewMessage
-import river.exertion.kcop.view.messaging.AudioViewMessage.Companion.AudioViewBridge
 
 class AudioView : Telegraph {
 

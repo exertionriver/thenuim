@@ -7,11 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
+import river.exertion.kcop.view.ViewPackage.StatusViewBridge
 import river.exertion.kcop.view.messaging.StatusViewMessage
-import river.exertion.kcop.view.messaging.StatusViewMessage.Companion.StatusViewBridge
 import kotlin.math.roundToInt
 
 

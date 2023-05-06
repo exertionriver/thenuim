@@ -3,7 +3,7 @@ package river.exertion.kcop.profile
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.asset.character.NameTypes
 import river.exertion.kcop.messaging.Id
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimer
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.profile.settings.PSShowTimer
 import river.exertion.kcop.profile.settings.ProfileSetting

@@ -1,17 +1,18 @@
 package river.exertion.kcop.view
 
 import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.actors.onClick
+import ktx.actors.onEnter
 import ktx.assets.disposeSafely
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.ViewPackage.AudioViewBridge
+import river.exertion.kcop.view.messaging.AudioViewMessage
 
 class KcopSkin(var skin : Skin, var fontPackage: FontPackage) {
-
-    init {
-        MessageChannelHandler.addChannel(MessageChannel(KcopSkinBridge, this::class))
-    }
 
     val uiSounds = mutableMapOf<UiSounds, Music>()
 /*
@@ -26,14 +27,14 @@ class KcopSkin(var skin : Skin, var fontPackage: FontPackage) {
         return if (currentLayoutIdx == layouts.size) layouts[0] else layouts[currentLayoutIdx + 1]
     }
 */
-    fun labelStyle(fontSize : FontSize, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (fontPackage.font(fontSize), colorPalette?.label()?.color())
+    fun labelStyle(fontSize : FontSize, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (fontPackage.font(fontSize), colorPalette?.color())
 
-/*    fun addOnEnter(actor : Actor) { actor.onEnter { MessageChannelEnum.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-            DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, uiSounds[UiSounds.Enter])) }}
+    fun addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
+        AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Enter])) }}
 
-    fun addOnClick(actor : Actor) { actor.onClick { MessageChannelEnum.DISPLAY_VIEW_AUDIO_BRIDGE.send(null, DisplayViewAudioMessage(
-            DisplayViewAudioMessage.DisplayViewAudioMessageType.PlaySound, uiSounds[UiSounds.Click])) }}
-*/
+    fun addOnClick(actor : Actor) { actor.onClick { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
+        AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Click])) }}
+
     enum class UiSounds {
         Enter, Click, Swoosh
     }
@@ -50,8 +51,6 @@ class KcopSkin(var skin : Skin, var fontPackage: FontPackage) {
     }
 
     companion object {
-        const val KcopSkinBridge = "KcopSkinBridge"
-
         val BackgroundColor = ColorPalette.of("black")
     }
 }

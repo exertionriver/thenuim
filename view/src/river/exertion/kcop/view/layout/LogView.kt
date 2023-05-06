@@ -6,16 +6,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimer
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.view.FontSize
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.LogViewBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.LogViewMessage.Companion.LogViewBridge
 import river.exertion.kcop.view.system.TimeLogSystem
 
 class LogView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.LOG, screenWidth, screenHeight) {

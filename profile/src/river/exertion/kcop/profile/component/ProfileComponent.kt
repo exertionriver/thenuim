@@ -3,18 +3,18 @@ package river.exertion.kcop.profile.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimer
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage.Companion.EngineComponentBridge
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
+import river.exertion.kcop.profile.ProfilePackage.Companion.ProfileBridge
 import river.exertion.kcop.profile.messaging.ProfileMessage
-import river.exertion.kcop.profile.messaging.ProfileMessage.Companion.ProfileBridge
 import river.exertion.kcop.profile.settings.ProfileSetting
 
 class ProfileComponent : IComponent, Telegraph {
@@ -98,7 +98,7 @@ class ProfileComponent : IComponent, Telegraph {
                         when (profileMessage.profileMessageType) {
                             ProfileMessage.ProfileMessageType.ReplaceCumlTimer -> {
                                 MessageChannelHandler.send(
-                                    EngineComponentMessage.EngineComponentBridge, EngineComponentMessage(
+                                    EngineComponentBridge, EngineComponentMessage(
                                         EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                                         SubjectEntity.entityName, ImmersionTimerComponent::class.java, timerPair)
                                 )

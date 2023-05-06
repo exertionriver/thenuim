@@ -8,15 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
+import river.exertion.kcop.view.ViewPackage.AiHintBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.LogViewBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
+import river.exertion.kcop.view.ViewPackage.TextViewBridge
 import river.exertion.kcop.view.messaging.AiHintMessage
-import river.exertion.kcop.view.messaging.AiHintMessage.Companion.AiHintBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
 import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.LogViewMessage.Companion.LogViewBridge
 import river.exertion.kcop.view.messaging.TextViewMessage
-import river.exertion.kcop.view.messaging.TextViewMessage.Companion.TextViewBridge
 
 class AiView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.AI, screenWidth, screenHeight) {
 
@@ -38,7 +38,7 @@ class AiView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, V
 
         val innerButton = Button(skin())
 
-//        kcopSkin.addOnClick(innerButton)
+        kcopSkin.addOnClick(innerButton)
 
         //override from ctrl
         innerButton.isChecked = this@AiView.isChecked

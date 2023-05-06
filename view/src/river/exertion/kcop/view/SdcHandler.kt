@@ -7,10 +7,6 @@ import river.exertion.kcop.view.ColorPalette.Companion.randomW3cBasic
 
 class SdcHandler(var batch : Batch, var backgroundColorPalette: ColorPalette) {
 
-    init {
-        MessageChannelHandler.addChannel(MessageChannel(SDCBridge, this::class))
-    }
-
     var sdcRegister = mutableMapOf<String, ShapeDrawerConfig>()
 
     private fun add(tag : String, baseCP : ColorPalette, alpha : Float? = 1f) { sdcRegister[tag] =
@@ -46,7 +42,4 @@ class SdcHandler(var batch : Batch, var backgroundColorPalette: ColorPalette) {
         sdcRegister.clear()
     }
 
-    companion object {
-        const val SDCBridge = "SDCBridge"
-    }
 }

@@ -5,12 +5,12 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Compani
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage.Companion.NarrativeMediaBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage.Companion.NarrativeBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeStatusMessage.Companion.NarrativeStatusBridge
+import river.exertion.kcop.view.ViewPackage.AiHintBridge
+import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
+import river.exertion.kcop.view.ViewPackage.StatusViewBridge
 import river.exertion.kcop.view.messaging.AiHintMessage
-import river.exertion.kcop.view.messaging.AiHintMessage.Companion.AiHintBridge
 import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage.Companion.DisplayViewTextureBridge
 import river.exertion.kcop.view.messaging.StatusViewMessage
-import river.exertion.kcop.view.messaging.StatusViewMessage.Companion.StatusViewBridge
 
 object NarrativeComponentNavStatusHandler {
 

@@ -12,8 +12,8 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
 import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage.Companion.DisplayViewTextureBridge
 
 @Serializable
 class DVImagePane : DVPane() {

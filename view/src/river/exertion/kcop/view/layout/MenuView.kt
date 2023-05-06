@@ -8,12 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.messaging.SwitchboardEntry
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.KcopBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
+import river.exertion.kcop.view.messaging.KcopMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage.Companion.MenuViewBridge
+import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
 
 class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.MENU, screenWidth, screenHeight) {
 
@@ -23,6 +25,34 @@ class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph,
 
         MessageChannelHandler.enableReceive(SDCBridge,this)
         MessageChannelHandler.enableReceive(KcopSkinBridge, this)
+
+        assignableButtons[0] = {
+        if (this@MenuView.isChecked[0] == true)
+            MenuViewSwitchboard.openMenu()
+        else
+            MenuViewSwitchboard.closeMenu()
+        }
+
+        assignableButtons[1] = {
+            MessageChannelHandler.send(DisplayModeBridge, this@MenuView.isChecked[1]!!)
+        }
+
+        assignableButtons[2] = {
+            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, 2, this@MenuView.isChecked[2]!!))
+        }
+
+        assignableButtons[3] = {
+            MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.FullScreen))
+        }
+
+        assignableButtons[4] = {
+            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, 4, this@MenuView.isChecked[4]!!))
+        }
+
+        assignableButtons[5] = {
+            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, 5, this@MenuView.isChecked[5]!!))
+        }
+
     }
 
     var isChecked : MutableMap<Int, Boolean> = mutableMapOf()
@@ -46,25 +76,6 @@ class MenuView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph,
                 this@MenuView.isChecked[idx] = !(this@MenuView.isChecked[idx] ?: false)
 
                 assignableButtons[idx]?.let { it() }
-
-/*                when (idx) {
-                    0 -> {
-                        if (this@MenuViewCtrl.isChecked[idx] == true)
-                            Switchboard.openMenu()
-                        else
-                            Switchboard.closeMenu()
-                    }
-                    1 -> MessageChannelEnum.DISPLAY_MODE_BRIDGE.send(null, this@MenuViewCtrl.isChecked[idx]!!)
-                    3 -> MessageChannelEnum.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.FullScreen))
-                    4 -> {
-                        if (this@MenuViewCtrl.isChecked[idx]!!) {
-                            MessageChannelEnum.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.ShowColorPalette))
-                        } else {
-                            MessageChannelEnum.KCOP_BRIDGE.send(null, KcopMessage(KcopMessage.KcopMessageType.HideColorPalette))
-                        }
-                    }
-                    else -> MessageChannelEnum.DISPLAY_VIEW_MENU_BRIDGE.send(null, DisplayViewMenuMessage(null, idx, this@MenuViewCtrl.isChecked[idx]!!))
-                }*/
             }
 
             buttonList.add(innerButton)

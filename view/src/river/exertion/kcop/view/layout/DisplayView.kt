@@ -2,23 +2,22 @@ package river.exertion.kcop.view.layout
 
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
+import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.LogViewBridge
+import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.messaging.DisplayViewTextMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextMessage.Companion.DisplayViewTextBridge
 import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage.Companion.DisplayViewTextureBridge
 import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.LogViewMessage.Companion.LogViewBridge
 import river.exertion.kcop.view.messaging.MenuViewMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage.Companion.MenuViewBridge
 
 class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.DISPLAY, screenWidth, screenHeight) {
 
@@ -33,31 +32,12 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
         MessageChannelHandler.enableReceive(SDCBridge, this)
         MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
-/*
-    var dvLayoutHandler = DVLayoutHandler(screenWidth, screenHeight)
 
-    var displayViewMenus : MutableList<DisplayViewMenu> = mutableListOf(
-        MainMenu(screenWidth, screenHeight),
-        ProfileMenu(screenWidth, screenHeight),
-        LoadProfileMenu(screenWidth, screenHeight),
-        NarrativeMenu(screenWidth, screenHeight),
-        LoadNarrativeMenu(screenWidth, screenHeight),
-        NewProfileMenu(screenWidth, screenHeight),
-        SaveProgressMenu(screenWidth, screenHeight),
-        RestartProgressMenu(screenWidth, screenHeight),
-        ProfileSettingsMenu(screenWidth, screenHeight),
-    )
-*/
     var menuOpen = false
-    var currentMenuIdx = 0
 
     var currentText = ""
     var currentFontSize = FontSize.SMALL
-/*
-    fun setMenuIdxByTag(tag : String) {
-        currentMenuIdx = displayViewMenus.indexOf(displayViewMenus.firstOrNull { it.tag() == tag } ?: displayViewMenus[currentMenuIdx])
-    }
-*/
+
     fun clearText() {
         currentText = ""
     }
@@ -68,14 +48,15 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-  /*              this.add(dvLayoutHandler.run {
-                    this.currentLayoutMode = this@DisplayViewCtrl.currentLayoutMode
-                    this.currentText = this@DisplayViewCtrl.currentText
-                    this.currentFontSize = this@DisplayViewCtrl.currentFontSize
-                    this.buildLayout()
-               })
-                if (menuOpen) this.add(displayViewMenus[currentMenuIdx].menuLayout())
-*/            }).size(this.tableWidth(), this.tableHeight())
+                this.add(Table().apply {
+                    this.add(currentSimulation).grow()
+                })
+                if (menuOpen) {
+                    this.add(Table().apply {
+                        this.add(currentMenu).grow()
+                    })
+                }
+           }).size(this.tableWidth(), this.tableHeight())
 
         this.clip()
     }
@@ -170,13 +151,12 @@ class DisplayView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegra
     }
 
     override fun dispose() {
-//        dvLayoutHandler.dispose()
-//        displayViewMenus.forEach { it.dispose() }
         audioView.dispose()
     }
 
     companion object {
-        var currentSim = Table()
+        var currentSimulation = Actor()
+        var currentMenu = Actor()
     }
 
 }

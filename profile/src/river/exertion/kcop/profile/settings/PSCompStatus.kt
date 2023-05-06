@@ -1,8 +1,8 @@
 package river.exertion.kcop.profile.settings
 
 import river.exertion.kcop.messaging.Switchboard
-import river.exertion.kcop.plugin.switchboard.IImmersionPluginSwitchboard.HideCompletionStatus
-import river.exertion.kcop.plugin.switchboard.IImmersionPluginSwitchboard.ShowCompletionStatus
+import river.exertion.kcop.ecs.switchboard.IImmersionPluginSwitchboard.HideCompletionStatus
+import river.exertion.kcop.ecs.switchboard.IImmersionPluginSwitchboard.ShowCompletionStatus
 
 object PSCompStatus : ProfileSettingSelection {
 

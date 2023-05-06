@@ -13,12 +13,14 @@ import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.FontSize
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 
 class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegraph {
 
     init {
-        MessageChannelHandler.enableReceive(SdcHandler.SDCBridge, this)
-        MessageChannelHandler.enableReceive(KcopSkin.KcopSkinBridge, this)
+        MessageChannelHandler.enableReceive(SDCBridge, this)
+        MessageChannelHandler.enableReceive(KcopSkinBridge, this)
     }
 
     lateinit var sdcHandler : SdcHandler
@@ -115,12 +117,12 @@ class DVLayoutHandler(var screenWidth: Float, var screenHeight: Float) : Telegra
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
-                (MessageChannelHandler.isType(SdcHandler.SDCBridge, msg.message) ) -> {
-                    sdcHandler = MessageChannelHandler.receiveMessage(SdcHandler.SDCBridge, msg.extraInfo)
+                (MessageChannelHandler.isType(SDCBridge, msg.message) ) -> {
+                    sdcHandler = MessageChannelHandler.receiveMessage(SDCBridge, msg.extraInfo)
                     return true
                 }
-                (MessageChannelHandler.isType(KcopSkin.KcopSkinBridge, msg.message) ) -> {
-                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkin.KcopSkinBridge, msg.extraInfo)
+                (MessageChannelHandler.isType(KcopSkinBridge, msg.message) ) -> {
+                    kcopSkin = MessageChannelHandler.receiveMessage(KcopSkinBridge, msg.extraInfo)
                     return true
                 }
             }

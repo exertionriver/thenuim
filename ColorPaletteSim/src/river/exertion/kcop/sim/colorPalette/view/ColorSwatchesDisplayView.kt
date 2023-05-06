@@ -13,9 +13,9 @@ import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.FontSize
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 
 class ColorSwatchesDisplayView(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table(), Telegraph {
 

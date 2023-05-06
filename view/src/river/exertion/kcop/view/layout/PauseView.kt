@@ -8,17 +8,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
-import river.exertion.kcop.view.SdcHandler.Companion.SDCBridge
-import river.exertion.kcop.view.messaging.DisplayModeMessage.Companion.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.ViewPackage.DisplayModeBridge
+import river.exertion.kcop.view.ViewPackage.ImmersionKeypressBridge
+import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.PauseViewBridge
+import river.exertion.kcop.view.ViewPackage.SDCBridge
 import river.exertion.kcop.view.messaging.PauseViewMessage
-import river.exertion.kcop.view.messaging.PauseViewMessage.Companion.PauseViewBridge
 
 class PauseView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph, ViewBase(ViewType.PAUSE, screenWidth, screenHeight) {
 
     init {
         MessageChannelHandler.enableReceive(PauseViewBridge, this)
-//        MessageChannelEnum.NARRATIVE_BRIDGE_PAUSE_GATE.enableReceive(this)
+        MessageChannelHandler.enableReceive(ImmersionPauseBridge, this)
         MessageChannelHandler.enableReceive(DisplayModeBridge, this)
 
         MessageChannelHandler.enableReceive(SDCBridge,this)
@@ -84,15 +87,15 @@ class PauseView(screenWidth: Float = 50f, screenHeight: Float = 50f) : Telegraph
                     build()
                     return true
                 }
-/*                (MessageChannelEnum.NARRATIVE_BRIDGE_PAUSE_GATE.isType(msg.message) ) -> {
-                    val narrativeMessage: NarrativeMessage = MessageChannelEnum.NARRATIVE_BRIDGE_PAUSE_GATE.receiveMessage(msg.extraInfo)
+                (MessageChannelHandler.isType(ImmersionPauseBridge, msg.message) ) -> {
+                    val keyString: String = MessageChannelHandler.receiveMessage(ImmersionPauseBridge, msg.extraInfo)
 
                     if (!isChecked) {
-                        MessageChannelEnum.NARRATIVE_BRIDGE.send(null, narrativeMessage)
+                        MessageChannelHandler.send(ImmersionKeypressBridge, keyString)
                     }
                     return true
                 }
-*/            }
+            }
         }
         return false
     }

@@ -5,13 +5,13 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.entity
+import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
+import river.exertion.kcop.ecs.ECSPackage.EngineEntityBridge
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.entity.IEntity
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage.Companion.EngineComponentBridge
 import river.exertion.kcop.ecs.messaging.EngineEntityMessage
-import river.exertion.kcop.ecs.messaging.EngineEntityMessage.Companion.EngineEntityBridge
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
 import kotlin.reflect.KClass

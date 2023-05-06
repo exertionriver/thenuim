@@ -3,9 +3,9 @@ package river.exertion.kcop.ecs.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.TimeUtils
 import river.exertion.kcop.messaging.Id
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimer
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimerState
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerState
 
 class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) :
     IComponent {

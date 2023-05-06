@@ -10,9 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.KcopSkin.Companion.KcopSkinBridge
+import river.exertion.kcop.view.ViewPackage.KcopBridge
+import river.exertion.kcop.view.ViewPackage.KcopSkinBridge
 import river.exertion.kcop.view.messaging.KcopMessage
-import river.exertion.kcop.view.messaging.KcopMessage.Companion.KcopBridge
 
 class ViewLayout(var width : Float, var height : Float) : Telegraph {
 

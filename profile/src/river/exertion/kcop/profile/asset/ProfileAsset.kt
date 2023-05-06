@@ -6,10 +6,10 @@ import kotlinx.serialization.json.encodeToJsonElement
 import ktx.assets.getAsset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.ecs.immersionTimer.ImmersionTimer
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.settings.ProfileSetting
 import river.exertion.kcop.profile.component.ProfileComponent
+import river.exertion.kcop.profile.settings.ProfileSetting
 
 class ProfileAsset(var profile : Profile? = null) : IAsset {
     override lateinit var assetPath : String

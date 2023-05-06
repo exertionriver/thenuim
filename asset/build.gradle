@@ -20,7 +20,14 @@ dependencies {
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "io.github.libktx:ktx-assets:$ktxVersion"
     api "io.github.libktx:ktx-collections:$ktxVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 
+}
+
+test {
+    useJUnitPlatform()
 }
 
 compileKotlin {
