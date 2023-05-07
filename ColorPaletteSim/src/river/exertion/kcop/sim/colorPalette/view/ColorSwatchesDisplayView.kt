@@ -13,6 +13,7 @@ import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.FontSize
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.layout.ViewType
 
 class ColorSwatchesDisplayView(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
 

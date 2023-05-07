@@ -43,9 +43,11 @@ class DisplayView : Telegraph, ViewBase(ViewType.DISPLAY) {
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-                this.add(Table().apply {
-                    this.add(currentSimulation).grow()
-                })
+                if (currentDisplayView != null) {
+                    this.add(Table().apply {
+                        this.add(currentDisplayView).grow()
+                    })
+                }
                 if (menuOpen) {
                     this.add(Table().apply {
                         this.add(DisplayViewMenuHandler.buildByTag(currentMenuTag)).grow()
@@ -125,7 +127,7 @@ class DisplayView : Telegraph, ViewBase(ViewType.DISPLAY) {
     }
 
     companion object {
-        var currentSimulation = Actor()
+        var currentDisplayView : Actor? = null
     }
 
 }

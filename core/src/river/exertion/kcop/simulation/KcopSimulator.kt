@@ -19,6 +19,7 @@ import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.AudioViewBridge
 import river.exertion.kcop.view.ViewPackage.KcopBridge
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.AudioViewMessage
@@ -93,8 +94,9 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
+        DisplayView.currentDisplayView = displayPackages[0].build()
         viewLayout.build(stage)
-        displayPackages[0].build(stage.width, stage.height, stage)
+
         inputMultiplexer.addProcessor(displayPackages[0].inputProcessor())
  //       colorPaletteLayout.build(stage)
 
@@ -116,8 +118,8 @@ class KcopSimulator(private val stage: Stage,
         orthoCamera.viewportWidth = width.toFloat()
         orthoCamera.viewportHeight = height.toFloat()
         stage.viewport.update(width, height)
-        KcopSkin.screenWidth = width.toFloat()
-        KcopSkin.screenHeight = height.toFloat()
+//        KcopSkin.screenWidth = width.toFloat()
+//        KcopSkin.screenHeight = height.toFloat()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -129,14 +131,12 @@ class KcopSimulator(private val stage: Stage,
                     when (kcopMessage.kcopMessageType) {
                         KcopMessage.KcopMessageType.FullScreen -> {
                             viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            displayPackages[0].displayFullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
                                     AudioViewMessage.AudioViewMessageType.PlaySound, KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                             )
                         }
                         KcopMessage.KcopMessageType.KcopScreen -> {
                             viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            displayPackages[0].displayKcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
                                     AudioViewMessage.AudioViewMessageType.PlaySound, KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                             )

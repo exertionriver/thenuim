@@ -6,7 +6,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
 import river.exertion.kcop.view.ViewPackage.InputViewBridge
 import river.exertion.kcop.view.messaging.InputViewMessage
-import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
+import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
 class KcopInputProcessor : InputProcessor {
 
@@ -18,7 +18,7 @@ class KcopInputProcessor : InputProcessor {
             eventParams = mapOf(InputViewMessage.InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
         )
 
-        if (keycode == Input.Keys.ESCAPE) MenuViewSwitchboard.closeMenu()
+        if (keycode == Input.Keys.ESCAPE) ViewSwitchboard.closeMenu()
 
         return false
     }

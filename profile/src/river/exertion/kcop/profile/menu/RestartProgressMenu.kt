@@ -9,13 +9,12 @@ import river.exertion.kcop.profile.ProfilePackage.Companion.ProfileMenuDataBridg
 import river.exertion.kcop.profile.messaging.ProfileMenuDataMessage
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
+import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
 class RestartProgressMenu : Telegraph, DisplayViewMenu {
 
@@ -50,7 +49,7 @@ class RestartProgressMenu : Telegraph, DisplayViewMenu {
 
     override val actions = mutableListOf(
         ActionParam("Restart", {
-            MenuViewSwitchboard.closeMenu()
+            ViewSwitchboard.closeMenu()
 //            MessageChannelEnum.AMH_SAVE_BRIDGE.send(null, AMHSaveMessage(AMHSaveMessage.AMHSaveMessageType.RestartProgress))
         }, "Narrative Restarted!"),
         ActionParam("Cancel", {

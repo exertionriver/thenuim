@@ -13,7 +13,7 @@ import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.messaging.KcopMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
-import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
+import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
 class MenuView : Telegraph, ViewBase(ViewType.MENU) {
 
@@ -22,9 +22,9 @@ class MenuView : Telegraph, ViewBase(ViewType.MENU) {
 
         assignableButtons[0] = {
         if (this@MenuView.isChecked[0] == true)
-            MenuViewSwitchboard.openMenu()
+            ViewSwitchboard.openMenu()
         else
-            MenuViewSwitchboard.closeMenu()
+            ViewSwitchboard.closeMenu()
         }
 
         assignableButtons[1] = {

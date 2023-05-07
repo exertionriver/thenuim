@@ -6,13 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
+import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
 class NewProfileMenu : DisplayViewMenu {
 
@@ -53,7 +52,7 @@ class NewProfileMenu : DisplayViewMenu {
 
     override val actions = mutableListOf(
         ActionParam("Create", {
-            MenuViewSwitchboard.closeMenu()
+            ViewSwitchboard.closeMenu()
 //            Switchboard.newProfile(newName())
         }, "Profile Created: ${newName()}"),
         //go back a menu

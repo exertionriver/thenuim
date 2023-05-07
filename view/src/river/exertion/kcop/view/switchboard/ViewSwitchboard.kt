@@ -11,7 +11,7 @@ import river.exertion.kcop.view.messaging.MenuNavMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.PauseViewMessage
 
-object MenuViewSwitchboard {
+object ViewSwitchboard {
 
     val OpenMenu = SwitchboardEntry("OpenMenu")
     val CloseMenu = SwitchboardEntry("CloseMenu")

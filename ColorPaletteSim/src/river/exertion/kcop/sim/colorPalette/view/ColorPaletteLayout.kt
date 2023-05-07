@@ -5,6 +5,7 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -33,7 +34,7 @@ object ColorPaletteLayout : Telegraph {
     var triadFirstSwatchesCtrl = ColorSwatchesDisplayView(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
     var triadSecondSwatchesCtrl = ColorSwatchesDisplayView(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
 
-    fun colorColumnWidth() = ViewType.fifthWidth(KcopSkin.screenWidth) + ViewType.padWidth(KcopSkin.screenWidth)
+    fun colorColumnWidth() = ViewType.fifthWidth(KcopSkin.screenWidth) + 2 * ViewType.padWidth(KcopSkin.screenWidth)
 
     fun firstColorColumn() = ViewType.seventhWidth(KcopSkin.screenWidth)
     fun secondColorColumn() = firstColorColumn() + colorColumnWidth()
@@ -104,68 +105,17 @@ object ColorPaletteLayout : Telegraph {
     fun colorBaseDecrG() = setColorBase(baseColor.decrG())
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
-    fun build(stage : Stage) {
-        stage.addActor(createSampleSwatchesCtrl())
-        stage.addActor(createBaseSwatchesCtrl())
-        stage.addActor(createCompSwatchesCtrl())
-        stage.addActor(createTriadFirstSwatchesCtrl())
-        stage.addActor(createTriadSecondSwatchesCtrl())
+    fun build() : Actor {
+        return Table().apply {
+            this.add(createSampleSwatchesCtrl()).top()
+            this.add(createBaseSwatchesCtrl()).top()
+            this.add(createCompSwatchesCtrl()).top()
+            this.add(createTriadFirstSwatchesCtrl()).top()
+            this.add(createTriadSecondSwatchesCtrl()).top()
+            this.row()
+            this.add(Table()).colspan(5).grow()
+        }
     }
-
-    fun hide() {
-        sampleSwatchesCtrl.addAction(Actions.hide())
-        baseSwatchesCtrl.addAction(Actions.hide())
-        compSwatchesCtrl.addAction(Actions.hide())
-        triadFirstSwatchesCtrl.addAction(Actions.hide())
-        triadSecondSwatchesCtrl.addAction(Actions.hide())
-    }
-
-    fun show() {
-        sampleSwatchesCtrl.addAction(Actions.show())
-        baseSwatchesCtrl.addAction(Actions.show())
-        compSwatchesCtrl.addAction(Actions.show())
-        triadFirstSwatchesCtrl.addAction(Actions.show())
-        triadSecondSwatchesCtrl.addAction(Actions.show())
-    }
-
-    fun kcopScreen(offset : Vector2) {
-        sampleSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
-        baseSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
-        compSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
-        triadFirstSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
-        triadSecondSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, .25f, Interpolation.linear)))
-
-        sampleSwatchesCtrl.topX -= offset.x
-        sampleSwatchesCtrl.topY -= offset.y
-        baseSwatchesCtrl.topX -= offset.x
-        baseSwatchesCtrl.topY -= offset.y
-        compSwatchesCtrl.topX -= offset.x
-        compSwatchesCtrl.topY -= offset.y
-        triadFirstSwatchesCtrl.topX -= offset.x
-        triadFirstSwatchesCtrl.topY -= offset.y
-        triadSecondSwatchesCtrl.topX -= offset.x
-        triadSecondSwatchesCtrl.topY -= offset.y
-    }
-
-    fun fullScreen(offset : Vector2) {
-        sampleSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
-        baseSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
-        compSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
-        triadFirstSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
-        triadSecondSwatchesCtrl.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, .25f, Interpolation.linear)))
-
-        sampleSwatchesCtrl.topX += offset.x
-        sampleSwatchesCtrl.topY += offset.y
-        baseSwatchesCtrl.topX += offset.x
-        baseSwatchesCtrl.topY += offset.y
-        compSwatchesCtrl.topX += offset.x
-        compSwatchesCtrl.topY += offset.y
-        triadFirstSwatchesCtrl.topX += offset.x
-        triadFirstSwatchesCtrl.topY += offset.y
-        triadSecondSwatchesCtrl.topX += offset.x
-        triadSecondSwatchesCtrl.topY += offset.y
-    }
-
 
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {

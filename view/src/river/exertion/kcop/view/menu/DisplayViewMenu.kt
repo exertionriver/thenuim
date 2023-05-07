@@ -121,11 +121,11 @@ interface DisplayViewMenu {
                         this.add(navButtonPane()).top()
                         this.row()
                         this.add(actionButtonPane()).colspan(2).right()
-                  //      this.debug()
+             //           this.debug()
                     }
                 )
             })
-      //      this.debug()
+          //  this.debug()
         }
     }
 

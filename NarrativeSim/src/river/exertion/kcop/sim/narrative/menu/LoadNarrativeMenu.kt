@@ -9,13 +9,12 @@ import river.exertion.kcop.sim.narrative.NarrativePackage.Companion.NarrativeMen
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.MenuViewSwitchboard
+import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
 class LoadNarrativeMenu : Telegraph, DisplayViewMenu {
 
@@ -60,7 +59,7 @@ class LoadNarrativeMenu : Telegraph, DisplayViewMenu {
 
     override val actions = mutableListOf(
         ActionParam("Yes", {
-            MenuViewSwitchboard.closeMenu()
+            ViewSwitchboard.closeMenu()
 //            Switchboard.loadSelectedNarrative()
         }, "Narrative Loaded!"),
         //go back a menu

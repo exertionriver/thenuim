@@ -23,18 +23,7 @@ object KcopSkin {
     lateinit var fontPackage: FontPackage
 
     var displayMode = false
-    /*
-    val layouts = mutableListOf(DVLayout.dvLayout())
 
-    fun layoutByName(name : String) = layouts.firstOrNull { it.name == name } ?: layouts[0]
-
-    fun nextLayout(name : String) : DVLayout {
-
-        val currentLayoutIdx = layouts.indexOf(layoutByName(name))
-
-        return if (currentLayoutIdx == layouts.size) layouts[0] else layouts[currentLayoutIdx + 1]
-    }
-*/
     fun labelStyle(fontSize : FontSize, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (fontPackage.font(fontSize), colorPalette?.color())
 
     fun addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
