@@ -1,22 +1,21 @@
 package river.exertion.kcop.profile.settings
 
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.messaging.Switchboard
 import river.exertion.kcop.ecs.switchboard.IImmersionPluginSwitchboard.ShowImmersionTimer
-import river.exertion.kcop.profile.ProfilePackage.Companion.ProfileBridge
-import river.exertion.kcop.profile.messaging.ProfileMessage
+import river.exertion.kcop.messaging.Switchboard
 
-object PSShowTimer : ProfileSettingSelection {
+object PSShowTimer : ProfileSetting {
 
     override val selectionKey = "showTimer"
 
     override val selectionLabel = "Show Timer"
 
+    override val display: Boolean = true
+
     override val options = listOf (
-        ProfileSettingOption("Profile") {
-            MessageChannelHandler.send(ProfileBridge, ProfileMessage(ProfileMessage.ProfileMessageType.ReplaceCumlTimer))
+        ProfileSettingOption("showProfile","Profile") {
+//            MessageChannelHandler.send(ProfileBridge, ProfileMessage(ProfileMessage.ProfileMessageType.ReplaceCumlTimer))
         },
-        ProfileSettingOption("Immersion") {
+        ProfileSettingOption("showImmersion","Immersion") {
             Switchboard.executeAction(ShowImmersionTimer.switchboardTag)
         }
     )

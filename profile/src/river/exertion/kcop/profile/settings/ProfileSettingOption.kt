@@ -1,3 +1,3 @@
 package river.exertion.kcop.profile.settings
 
-data class ProfileSettingOption(val optionLabel : String, val optionAction : () -> Unit)
+data class ProfileSettingOption(val optionValue : String, val optionLabel : String, val optionAction : () -> Unit)

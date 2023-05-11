@@ -13,9 +13,9 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.ProfilePackage.Companion.ProfileBridge
+import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
 import river.exertion.kcop.profile.messaging.ProfileMessage
-import river.exertion.kcop.profile.settings.ProfileSetting
+import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 class ProfileComponent : IComponent, Telegraph {
 
@@ -31,9 +31,9 @@ class ProfileComponent : IComponent, Telegraph {
 //        get() = profile?.currentImmersionId ?: NoImmersionLoaded
 //        set(value) { profile?.currentImmersionId = value }
 
-    var settings : MutableList<ProfileSetting>
-        get() = profile?.settings ?: mutableListOf()
-        set(value) { profile?.settings = value }
+    var settings : MutableList<ProfileSettingEntry>
+        get() = profile?.settingEntries ?: mutableListOf()
+        set(value) { profile?.settingEntries = value }
 
     var cumlTime : String
         get() = profile?.cumlTime ?: ImmersionTimer.CumlTimeZero

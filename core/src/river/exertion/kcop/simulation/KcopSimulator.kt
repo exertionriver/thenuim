@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -30,16 +31,24 @@ class KcopSimulator(private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
 
     val packages = mutableListOf<IPackage>(
-        ProfilePackage()
+        ProfilePackage
     )
     val displayPackages = mutableListOf<IDisplayPackage>(
         ColorPalettePackage()
     )
 
     init {
-        packages.forEach { it.loadChannels() }
-        displayPackages.forEach { it.loadChannels() }
+        packages.forEach {
+            it.loadChannels()
+            it.loadAssets(AssetManagerHandler.assets)
+            it.loadMenus()
+        }
 
+        displayPackages.forEach {
+            it.loadChannels()
+            it.loadAssets(AssetManagerHandler.assets)
+            it.loadMenus()
+        }
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 

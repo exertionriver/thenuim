@@ -6,40 +6,35 @@ import kotlinx.serialization.json.encodeToJsonElement
 import ktx.assets.getAsset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.component.ProfileComponent
-import river.exertion.kcop.profile.settings.ProfileSetting
+import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
-class ProfileAsset(var profile : Profile? = null) : IAsset {
-    override lateinit var assetPath : String
+class ProfileAsset(var profile : Profile = Profile()) : IAsset {
+    override var assetPath : String = newAssetFilename()
     override var status : String? = null
     override var statusDetail : String? = null
 
-    override fun assetId() = if (profile != null) profile?.id!! else throw Exception("ProfileAsset::assetId() profile is null")
-    override fun assetName() = if (profile != null) profile?.name!! else throw Exception("ProfileAsset::assetName() profile is null")
+    override fun assetId() = profile.id
+    override fun assetName() = profile.name
     override fun assetTitle() = assetPath
     override fun newAssetFilename(): String = ProfileAssets.profileAssetPath(super.newAssetFilename())
 
-    var settings : MutableList<ProfileSetting>
-        get() = profile?.settings ?: mutableListOf()
-        set(value) { profile?.settings = value }
+    var settings : MutableList<ProfileSettingEntry>
+        get() = profile.settingEntries
+        set(value) { profile.settingEntries = value }
 
     var cumlTime : String
-        get() = profile?.cumlTime ?: ImmersionTimer.CumlTimeZero
-        set(value) { profile?.cumlTime = value }
+        get() = profile.cumlTime
+        set(value) { profile.cumlTime = value }
 
     //TODO: diff between asset and current
     override fun assetInfo() : List<String> {
 
         val returnList = mutableListOf<String>()
 
-        if (profile != null) {
-            returnList.add("path: $assetPath")
-            returnList.addAll(profile!!.profileInfo())
-        } else {
-            returnList.add("no profile info found")
-        }
+        returnList.add("path: $assetPath")
+        returnList.addAll(profile.profileInfo())
 
         return returnList.toList()
     }
@@ -74,10 +69,11 @@ class ProfileAsset(var profile : Profile? = null) : IAsset {
     }
 */
     fun update(profileComponent: ProfileComponent) {
-        profile = profileComponent.profile
+ //       profile = profileComponent.profile
     }
 
     companion object {
+
         operator fun AssetManager.get(asset: ProfileAsset) = getAsset<ProfileAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
             if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")

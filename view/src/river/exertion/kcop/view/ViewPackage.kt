@@ -24,6 +24,7 @@ object ViewPackage : IPackage {
 
         MessageChannelHandler.addChannel(MessageChannel(AiHintBridge, AiHintMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(AudioViewBridge, AudioViewMessage::class))
+        MessageChannelHandler.addChannel(MessageChannel(DisplayViewBridge, DisplayViewMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(DisplayViewTextBridge, DisplayViewTextMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(DisplayViewTextureBridge, DisplayViewTextureMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(InputViewBridge, InputViewMessage::class))
@@ -41,7 +42,7 @@ object ViewPackage : IPackage {
     override fun loadAssets(assetManager: AssetManager) { }
 
     override fun loadMenus() {
-        DisplayViewMenuHandler.addMenu(MainMenu())
+        DisplayViewMenuHandler.addMenu(MainMenu)
         DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
     }
 
@@ -58,6 +59,7 @@ object ViewPackage : IPackage {
 
     const val AiHintBridge = "AiHintBridge"
     const val AudioViewBridge = "AudioViewBridge"
+    const val DisplayViewBridge = "DisplayViewBridge"
     const val DisplayViewTextBridge = "DisplayViewTextBridge"
     const val DisplayViewTextureBridge = "DisplayViewTextureBridge"
     const val InputViewBridge = "InputViewBridge"

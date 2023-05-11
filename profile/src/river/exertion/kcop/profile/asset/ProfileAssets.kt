@@ -8,8 +8,9 @@ data class ProfileAssets(var values: MutableList<ProfileAsset> = mutableListOf()
 
     fun byTitle(profileTitle : String?) : ProfileAsset? = values.firstOrNull { it.assetTitle() == profileTitle }
 
-    fun reload() {
+    fun reload() : MutableList<ProfileAsset> {
         values = reloadLocalAssets<ProfileAsset>(profileAssetLocation).toMutableList()
+        return values
     }
 
     companion object {

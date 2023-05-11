@@ -6,7 +6,7 @@ import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.switchboard.ViewSwitchboard
 import kotlin.system.exitProcess
 
-class MainMenu : DisplayViewMenu {
+object MainMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("blue")
 
@@ -14,7 +14,7 @@ class MainMenu : DisplayViewMenu {
 
     override val breadcrumbEntries = mapOf<String, String>()
 
-    override val navs = assignableNavs
+    override fun navs() = assignableNavs
 
     override val actions = mutableListOf(
         ActionParam("Exit kcop", {
@@ -29,10 +29,8 @@ class MainMenu : DisplayViewMenu {
     override fun tag() = tag
     override fun label() = label
 
-    companion object {
-        const val tag = "mainMenu"
-        const val label = "Main"
+    const val tag = "mainMenu"
+    const val label = "Main"
 
-        val assignableNavs = mutableListOf<ActionParam>()
-    }
+    val assignableNavs = mutableListOf<ActionParam>()
 }

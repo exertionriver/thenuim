@@ -1,56 +1,38 @@
 package river.exertion.kcop.profile.menu
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfilePackage.Companion.ProfileMenuDataBridge
-import river.exertion.kcop.profile.messaging.ProfileMenuDataMessage
+import river.exertion.kcop.profile.Profile
+import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage.MenuNavBridge
-import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.MenuNavMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage
+import river.exertion.kcop.view.messaging.DisplayViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.messaging.menuParams.MenuNavParams
 
-class ProfileMenu : Telegraph, DisplayViewMenu {
-
-    init {
-        MessageChannelHandler.enableReceive(ProfileMenuDataBridge, this)
-        MessageChannelHandler.enableReceive(MenuNavBridge, this)
-    }
+object ProfileMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("green")
-
-    var profileAssetTitles: List<String>? = null
-    var selectedProfileAssetTitle : String? = null
 
     override fun menuPane() : Table {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
-                //ListStyle().apply {
-//            this.font = bitmapFont
-//            this.selection = TextureRegionDrawable(TextureRegion(Texture("images/kobold64.png")))
- //       })
+        val profileAssetsMap = ProfilePackage.profileAssets.reload().associateBy { it.assetTitle() }
 
-        if (profileAssetTitles != null) {
-            selectedProfileAssetTitle = profileAssetTitles!![0]
+        if (profileAssetsMap.isNotEmpty()) {
+            ProfilePackage.selectedProfileAsset = profileAssetsMap.entries.first().value
 
             listCtrl.onChange {
-                navs.forEach {
-                    selectedProfileAssetTitle = profileAssetTitles?.get(this.selectedIndex)
-                }
+                ProfilePackage.selectedProfileAsset = profileAssetsMap.values.toList()[this.selectedIndex]
             }
 
-            listCtrl.setItems(profileAssetTitles!!.toGdxArray())
+            listCtrl.setItems(profileAssetsMap.keys.toGdxArray())
         } else {
             listCtrl.setItems(listOf("no profiles found").toGdxArray() )
         }
@@ -70,67 +52,25 @@ class ProfileMenu : Telegraph, DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val navs = mutableListOf(
-        ActionParam("Load >", {
-//            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileFromAsset, selectedProfileAssetTitle))
-            MessageChannelHandler.send(MenuNavBridge, MenuNavMessage(MenuNavParams(selectedProfileAssetTitle)))
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(LoadProfileMenu.tag))
-
-        }),
-/*  No longer used, Save progress instead
-ActionParam("Save >", {
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedProfileFromAsset, selectedProfileAssetTitle))
-            MessageChannel.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.UpdateSelectedProfileFromComponents))
-            MessageChannel.INTRA_MENU_BRIDGE.send(null, MenuNavMessage(MenuNavParams(SaveProfileMenu.tag, selectedProfileAssetTitle)))
-        }),*/
-        ActionParam("New >", {
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(NewProfileMenu.tag))
-        })
-    )
+    override fun navs() = assignableNavs
 
     override val actions = mutableListOf<ActionParam>()
-
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(ProfileMenuDataBridge, msg.message)) -> {
-                    val menuDataMessage: ProfileMenuDataMessage = MessageChannelHandler.receiveMessage(ProfileMenuDataBridge, msg.extraInfo)
-
-                    if ( menuDataMessage.profileMenuDataParams != null ) {
-                        if (menuDataMessage.profileMenuDataParams!!.profileAssetTitles != null) {
-                            profileAssetTitles = menuDataMessage.profileMenuDataParams!!.profileAssetTitles
-                        }
-                        if (menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle != null) {
-                            selectedProfileAssetTitle = menuDataMessage.profileMenuDataParams!!.selectedProfileAssetTitle
-                        }
-                    } else {
-                        profileAssetTitles = null
-                        selectedProfileAssetTitle = null
-                    }
-                    return true
-                }
-                (MessageChannelHandler.isType(MenuNavBridge, msg.message)) -> {
-                    val menuNavMessage: MenuNavMessage = MessageChannelHandler.receiveMessage(MenuNavBridge, msg.extraInfo)
-
-                    //between menus
-                    selectedProfileAssetTitle = if (menuNavMessage.menuNavParams != null) {
-                        menuNavMessage.menuNavParams!!.selectedAssetTitle
-                    } else {
-                        null
-                    }
-
-                    return true
-                }
-            }
-        }
-        return false
-    }
 
     override fun tag() = tag
     override fun label() = label
 
-    companion object {
-        const val tag = "profileMenu"
-        const val label = "Profile"
-    }
+    const val tag = "profileMenu"
+    const val label = "Profile"
+
+    val assignableNavs = mutableListOf(
+        ActionParam("Load >", {
+            DisplayViewMenuHandler.currentMenuTag = LoadProfileMenu.tag
+            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
+        }),
+        ActionParam("New >", {
+            NewProfileMenu.newName = Profile.genName()
+            DisplayViewMenuHandler.currentMenuTag = NewProfileMenu.tag
+            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
+        })
+    )
 }

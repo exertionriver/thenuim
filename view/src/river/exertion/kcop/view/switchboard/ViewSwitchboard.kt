@@ -6,6 +6,7 @@ import river.exertion.kcop.messaging.SwitchboardEntry
 import river.exertion.kcop.view.ViewPackage.MenuNavBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.ViewPackage.PauseViewBridge
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.MenuNavMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
@@ -41,6 +42,7 @@ object ViewSwitchboard {
     fun clearMenu() {
         if (Switchboard.checkByTag(ClearMenu.switchboardTag) == null) {
             Switchboard.addEntry(ClearMenu.apply { this.switchboardTagAction = {
+                DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
                 MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(MainMenu.tag))
                 MessageChannelHandler.send(MenuNavBridge, MenuNavMessage())
             } } )

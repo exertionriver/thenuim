@@ -7,22 +7,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.FontSize
+import river.exertion.kcop.view.ViewPackage.DisplayViewBridge
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler.currentMenuTag
-import river.exertion.kcop.view.messaging.DisplayViewTextMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
-import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage
+import river.exertion.kcop.view.messaging.*
 
 class DisplayView : Telegraph, ViewBase(ViewType.DISPLAY) {
 
     val audioView = AudioView()
 
     init {
+        MessageChannelHandler.enableReceive(DisplayViewBridge, this)
         MessageChannelHandler.enableReceive(DisplayViewTextureBridge, this)
         MessageChannelHandler.enableReceive(DisplayViewTextBridge, this)
         MessageChannelHandler.enableReceive(MenuViewBridge, this)
@@ -61,6 +60,16 @@ class DisplayView : Telegraph, ViewBase(ViewType.DISPLAY) {
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
+                (MessageChannelHandler.isType(DisplayViewBridge, msg.message) ) -> {
+                    val displayViewMessage: DisplayViewMessage = MessageChannelHandler.receiveMessage(DisplayViewBridge, msg.extraInfo)
+
+                    when (displayViewMessage.messageType) {
+                        DisplayViewMessage.DisplayViewMessageType.Rebuild -> build()
+                    }
+
+                    return true
+                }
+
                 (MessageChannelHandler.isType(DisplayViewTextBridge, msg.message) ) -> {
                     val displayViewTextMessage: DisplayViewTextMessage = MessageChannelHandler.receiveMessage(DisplayViewTextBridge, msg.extraInfo)
 /*

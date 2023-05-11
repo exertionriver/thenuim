@@ -5,13 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.*
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.layout.ViewType
+import river.exertion.kcop.view.messaging.DisplayViewMessage
 import river.exertion.kcop.view.messaging.LogViewMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
@@ -21,14 +19,14 @@ interface DisplayViewMenu {
     val backgroundColor : ColorPalette
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
-    val navs : MutableList<ActionParam> //Button Label -> action
+    fun navs() : MutableList<ActionParam> //Button Label -> action
     val actions : MutableList<ActionParam> //Button Label -> log text + action to run
 
     fun menuPane() : Table?
     fun navButtonPane() : Table = Table().apply {
        // this.debug()
 
-        this@DisplayViewMenu.navs.forEach { navEntry ->
+        this@DisplayViewMenu.navs().forEach { navEntry ->
             this.add(
                 TextButton(navEntry.label, KcopSkin.skin)
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
@@ -39,7 +37,7 @@ interface DisplayViewMenu {
                     }
                 }
             ).padTop(ViewType.padHeight(KcopSkin.screenHeight))
-            if (navEntry != this@DisplayViewMenu.navs.last()) this.row()
+            if (navEntry != this@DisplayViewMenu.navs().last()) this.row()
         }
     }
 
@@ -69,7 +67,8 @@ interface DisplayViewMenu {
             this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
                     .apply {
                 this.onClick {
-                    MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(menuLabel.key) )
+                    DisplayViewMenuHandler.currentMenuTag = menuLabel.key
+                    MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
                 }
             } )
         }
