@@ -13,6 +13,6 @@ class SubjectEntity : IEntity {
     )
 
     companion object {
-        const val entityName = "immersionProfileEntity"
+        const val entityName = "subjectEntity"
     }
 }

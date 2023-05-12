@@ -5,11 +5,11 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage.Companion.NarrativeMenuDataBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.MenuNavBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
@@ -19,7 +19,10 @@ import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.messaging.menuParams.MenuNavParams
 
-class NarrativeMenu : Telegraph, DisplayViewMenu {
+object NarrativeMenu : Telegraph, DisplayViewMenu {
+
+    override val tag = "narrativeMenu"
+    override val label = "Narrative"
 
     init {
         MessageChannelHandler.enableReceive(NarrativeMenuDataBridge, this)
@@ -43,7 +46,7 @@ class NarrativeMenu : Telegraph, DisplayViewMenu {
             selectedNarrativeAssetTitle = narrativeAssetTitles!![0]
 
             listCtrl.onChange {
-                navs.forEach {
+                navs().forEach {
                     selectedNarrativeAssetTitle = narrativeAssetTitles?.get(this.selectedIndex)
                 }
             }
@@ -66,7 +69,7 @@ class NarrativeMenu : Telegraph, DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val navs = mutableListOf(
+    override fun navs() = mutableListOf(
         ActionParam("Load >", {
 //            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.SetSelectedNarrativeFromAsset, selectedNarrativeAssetTitle))
             MessageChannelHandler.send(MenuNavBridge, MenuNavMessage(MenuNavParams(selectedNarrativeAssetTitle)))
@@ -115,13 +118,5 @@ class NarrativeMenu : Telegraph, DisplayViewMenu {
             }
         }
         return false
-    }
-
-    override fun tag() = tag
-    override fun label() = label
-
-    companion object {
-        const val tag = "narrativeMenu"
-        const val label = "Narrative"
     }
 }

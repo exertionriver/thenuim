@@ -12,10 +12,10 @@ import river.exertion.kcop.profile.settings.ProfileSetting
 
 @Serializable
 data class Profile(
-    override var id : String = Id.randomId(),
-    var name : String = genName(),
-    var cumlTime : String = ImmersionTimer.CumlTimeZero,
-    var settingEntries : MutableList<ProfileSettingEntry> = defaultSettings()
+        override var id : String = Id.randomId(),
+        var name : String = genName(),
+        var cumlTime : String = ImmersionTimer.CumlTimeZero,
+        var settingEntries : MutableList<ProfileSettingEntry> = defaultSettings()
     ) : Id {
 
     fun profileInfo() : List<String> {

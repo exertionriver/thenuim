@@ -32,7 +32,7 @@ class ColorPalettePackage : IDisplayPackage {
         return ColorPaletteLayout.build()
     }
 
-    override fun inputProcessor() = ColorPaletteInputProcessor()
+    override fun inputProcessor() = ColorPaletteInputProcessor
 
     override fun dispose() { }
 

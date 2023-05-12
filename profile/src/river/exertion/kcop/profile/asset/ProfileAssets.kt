@@ -1,21 +1,22 @@
 package river.exertion.kcop.profile.asset
 
 import river.exertion.kcop.asset.AssetManagerHandler.reloadLocalAssets
+import river.exertion.kcop.asset.IAsset
+import river.exertion.kcop.asset.IAssets
 
-data class ProfileAssets(var values: MutableList<ProfileAsset> = mutableListOf()) {
+object ProfileAssets : IAssets {
 
-    fun byId(profileId : String?) : ProfileAsset? = values.firstOrNull { it.assetId() == profileId }
+    override var values: MutableList<IAsset> = mutableListOf()
 
-    fun byTitle(profileTitle : String?) : ProfileAsset? = values.firstOrNull { it.assetTitle() == profileTitle }
+    override fun byId(assetId : String?) : IAsset? = values.firstOrNull { it.assetId() == assetId }
 
-    fun reload() : MutableList<ProfileAsset> {
-        values = reloadLocalAssets<ProfileAsset>(profileAssetLocation).toMutableList()
+    override fun byTitle(assetTitle : String?) : IAsset? = values.firstOrNull { it.assetTitle() == assetTitle }
+
+    override fun reload() : MutableList<IAsset> {
+        values = reloadLocalAssets<ProfileAsset>(iAssetLocation).toMutableList()
         return values
     }
 
-    companion object {
-        val profileAssetLocation = "kcop/profile/"
-        val profileAssetExtension = ".json"
-        fun profileAssetPath(profileFilename : String) = profileAssetLocation + profileFilename + profileAssetExtension
-    }
+    override val iAssetLocation = "kcop/profile/"
+    override val iAssetExtension = ".json"
 }

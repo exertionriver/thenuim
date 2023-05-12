@@ -64,8 +64,8 @@ class ProfileComponent : IComponent, Telegraph {
     fun activate() {
         if (isInitialized) {
 
-            timerPair.instImmersionTimer!!.resetTimer()
-            timerPair.instImmersionTimer!!.resumeTimer()
+            timerPair.instImmersionTimer.resetTimer()
+            timerPair.instImmersionTimer.resumeTimer()
             timerPair.cumlImmersionTimer.resumeTimer()
 
             MessageChannelHandler.enableReceive(ProfileBridge, this)
@@ -76,7 +76,7 @@ class ProfileComponent : IComponent, Telegraph {
     fun inactivate() {
         if (isInitialized) {
 
-            timerPair.instImmersionTimer!!.pauseTimer()
+            timerPair.instImmersionTimer.pauseTimer()
             timerPair.cumlImmersionTimer.pauseTimer()
 
             MessageChannelHandler.disableReceive(ProfileBridge, this)

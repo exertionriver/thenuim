@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
+import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
-import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.messaging.LogViewMessage

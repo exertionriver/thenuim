@@ -1,4 +1,4 @@
-package river.exertion.kcop.view
+package river.exertion.kcop.asset.view
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import ktx.assets.disposeSafely

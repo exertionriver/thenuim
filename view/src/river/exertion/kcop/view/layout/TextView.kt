@@ -6,9 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.TextViewBridge
 import river.exertion.kcop.view.messaging.TextViewMessage
 

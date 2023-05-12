@@ -1,18 +1,14 @@
 package river.exertion.kcop.sim.colorPalette.view
 
-import river.exertion.kcop.view.ColorPalette
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.Companion.ColorPaletteBridge
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.ViewType
 
 object ColorPaletteLayout : Telegraph {

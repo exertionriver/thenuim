@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 
 open class ViewBase(var viewType : ViewType) : Table() {

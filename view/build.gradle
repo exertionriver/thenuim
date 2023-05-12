@@ -10,6 +10,7 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
+    implementation project(path: ':asset')
     implementation project(path: ':messaging')
     implementation project(path: ':plugin')
     implementation project(path: ':ecs')

@@ -17,7 +17,7 @@ object NarrativeComponentNavStatusHandler {
     fun NarrativeComponent.unpause() {
         if (isInitialized) {
             timerPair.cumlImmersionTimer.resumeTimer()
-            timerPair.instImmersionTimer!!.resumeTimer()
+            timerPair.instImmersionTimer.resumeTimer()
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
@@ -29,7 +29,7 @@ object NarrativeComponentNavStatusHandler {
 
             narrative!!.currentBlockId = setBlockId
 
-            timerPair.instImmersionTimer!!.resetTimer()
+            timerPair.instImmersionTimer.resetTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
 
             unpause()
@@ -49,7 +49,7 @@ object NarrativeComponentNavStatusHandler {
     fun NarrativeComponent.pause() {
         if (isInitialized) {
             timerPair.cumlImmersionTimer.pauseTimer()
-            timerPair.instImmersionTimer!!.pauseTimer()
+            timerPair.instImmersionTimer.pauseTimer()
 
             blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.pauseTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()

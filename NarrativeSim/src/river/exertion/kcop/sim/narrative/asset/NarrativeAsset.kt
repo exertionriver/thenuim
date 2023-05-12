@@ -14,7 +14,7 @@ class NarrativeAsset(var narrative : Narrative? = null) : IAsset {
     override fun assetName() : String = if (narrative != null) narrative?.name!! else throw Exception("NarrativeAsset::assetName() narrative is null")
     override fun assetTitle() = assetPath
 
-    override fun newAssetFilename(): String = NarrativeAssets.narrativeAssetPath(super.newAssetFilename())
+    override fun newAssetFilename(): String = NarrativeAssets.iAssetPath(super.newAssetFilename())
 
     override fun assetInfo() : List<String> {
 

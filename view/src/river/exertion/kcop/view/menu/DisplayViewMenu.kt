@@ -4,18 +4,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.*
+import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
-import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.DisplayViewMessage
 import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 
 interface DisplayViewMenu {
 
+    val tag : String
+    val label : String
     val backgroundColor : ColorPalette
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
@@ -78,7 +82,7 @@ interface DisplayViewMenu {
     }
 
     fun menuColorTexture() : TextureRegion {
-        return SdcHandler.get("menu_${tag()}", backgroundColor).textureRegion().apply {
+        return SdcHandler.get("menu_$tag", backgroundColor).textureRegion().apply {
             this.setRegion(0, 0, ViewType.secondWidth(KcopSkin.screenWidth).toInt() - 1, ViewType.secondHeight(KcopSkin.screenHeight).toInt() - 1)
         }
     }
@@ -95,7 +99,7 @@ interface DisplayViewMenu {
                         this.add(breadcrumbPane()).right().growX()
                         this.add(
                             Table().apply {
-                                this.add(Label(this@DisplayViewMenu.label(), KcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label()))
+                                this.add(Label(this@DisplayViewMenu.label, KcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label()))
                             .apply {
                                 this.setAlignment(Align.center)
                             }).padRight(ViewType.padWidth(KcopSkin.screenWidth))
@@ -127,7 +131,4 @@ interface DisplayViewMenu {
           //  this.debug()
         }
     }
-
-    fun tag() : String //= tag //need to override this in implementing menu
-    fun label() : String //= label //need to override this in implementing menu
 }

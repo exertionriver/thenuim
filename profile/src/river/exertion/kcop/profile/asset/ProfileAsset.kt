@@ -18,7 +18,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
     override fun assetId() = profile.id
     override fun assetName() = profile.name
     override fun assetTitle() = assetPath
-    override fun newAssetFilename(): String = ProfileAssets.profileAssetPath(super.newAssetFilename())
+    override fun newAssetFilename(): String = ProfileAssets.iAssetPath(super.newAssetFilename())
 
     var settings : MutableList<ProfileSettingEntry>
         get() = profile.settingEntries
@@ -51,23 +51,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
             }
         }
     }
-/*
-    //when loading profileAsset
-    fun updateFromImmersionAssets(narrativeAsset: NarrativeAsset?, narrativeImmersionAsset: NarrativeImmersionAsset?) {
-        profile!!.currentImmersionName = narrativeAsset?.assetName()
-        profile!!.currentImmersionBlockId = narrativeImmersionAsset?.narrativeCurrBlockId()
-        profile!!.currentImmersionTime = narrativeImmersionAsset?.cumlImmersionTime()
-    }
 
-    fun update(profileComponent: ProfileComponent, narrativeImmersionComponent : NarrativeComponent?) {
-        profile = profileComponent.profile
-        profile!!.currentImmersionName = narrativeImmersionComponent?.narrativeName()
-        profile!!.currentImmersionBlockId = narrativeImmersionComponent?.narrativeCurrBlockId()
-        profile!!.currentImmersionTime = narrativeImmersionComponent?.cumlImmersionTime()
-
-        this.assetPath = this.newAssetFilename()
-    }
-*/
     fun update(profileComponent: ProfileComponent) {
  //       profile = profileComponent.profile
     }

@@ -8,11 +8,9 @@ import river.exertion.kcop.view.ViewPackage.InputViewBridge
 import river.exertion.kcop.view.messaging.InputViewMessage
 import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
-class KcopInputProcessor : InputProcessor {
+object KcopInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
-        MessageChannelHandler.send(ImmersionPauseBridge, Input.Keys.toString(keycode))
-
         MessageChannelHandler.send(InputViewBridge, InputViewMessage(
             event = InputViewMessage.InputViewMessageEvent.KeyDownEvent,
             eventParams = mapOf(InputViewMessage.InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))

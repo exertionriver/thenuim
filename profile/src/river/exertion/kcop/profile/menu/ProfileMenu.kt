@@ -4,11 +4,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -18,6 +19,9 @@ import river.exertion.kcop.view.messaging.menuParams.ActionParam
 
 object ProfileMenu : DisplayViewMenu {
 
+    override val tag = "profileMenu"
+    override val label = "Profile"
+
     override val backgroundColor = ColorPalette.of("green")
 
     override fun menuPane() : Table {
@@ -26,10 +30,10 @@ object ProfileMenu : DisplayViewMenu {
         val profileAssetsMap = ProfilePackage.profileAssets.reload().associateBy { it.assetTitle() }
 
         if (profileAssetsMap.isNotEmpty()) {
-            ProfilePackage.selectedProfileAsset = profileAssetsMap.entries.first().value
+            ProfilePackage.selectedProfileAsset = profileAssetsMap.entries.first().value as ProfileAsset
 
             listCtrl.onChange {
-                ProfilePackage.selectedProfileAsset = profileAssetsMap.values.toList()[this.selectedIndex]
+                ProfilePackage.selectedProfileAsset = profileAssetsMap.values.toList()[this.selectedIndex] as ProfileAsset
             }
 
             listCtrl.setItems(profileAssetsMap.keys.toGdxArray())
@@ -55,12 +59,6 @@ object ProfileMenu : DisplayViewMenu {
     override fun navs() = assignableNavs
 
     override val actions = mutableListOf<ActionParam>()
-
-    override fun tag() = tag
-    override fun label() = label
-
-    const val tag = "profileMenu"
-    const val label = "Profile"
 
     val assignableNavs = mutableListOf(
         ActionParam("Load >", {

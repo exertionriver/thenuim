@@ -2,7 +2,7 @@ package river.exertion.kcop.view.layout
 
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import river.exertion.kcop.view.ColorPalette
+import river.exertion.kcop.asset.view.ColorPalette
 
 enum class ViewType {
 

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import river.exertion.kcop.asset.view.ColorPalette
 import space.earlygrey.shapedrawer.ShapeDrawer
 
 //https://github.com/earlygrey/shapedrawer/wiki/Using-Shape-Drawer

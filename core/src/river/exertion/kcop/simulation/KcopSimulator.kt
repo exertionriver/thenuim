@@ -9,15 +9,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IDisplayPackage
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
 import river.exertion.kcop.view.KcopInputProcessor
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.AudioViewBridge
 import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.layout.DisplayView
@@ -99,7 +98,7 @@ class KcopSimulator(private val stage: Stage,
 
     override fun show() {
         inputMultiplexer = InputMultiplexer()
-        inputMultiplexer.addProcessor(KcopInputProcessor())
+        inputMultiplexer.addProcessor(KcopInputProcessor)
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 

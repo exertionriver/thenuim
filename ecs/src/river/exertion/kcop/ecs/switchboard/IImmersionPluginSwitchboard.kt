@@ -7,7 +7,7 @@ import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.Switchboard
 import river.exertion.kcop.messaging.SwitchboardEntry
-import river.exertion.kcop.plugin.IImmersionPlugin
+import river.exertion.kcop.plugin.IImmersionPackage
 
 object IImmersionPluginSwitchboard {
 
@@ -15,7 +15,7 @@ object IImmersionPluginSwitchboard {
     val ShowCompletionStatus = SwitchboardEntry("ShowCompletionStatus")
     val HideCompletionStatus = SwitchboardEntry("HideCompletionStatus")
 
-    fun IImmersionPlugin.showImmersionTimer() {
+    fun IImmersionPackage.showImmersionTimer() {
         if (Switchboard.checkByTag(ShowImmersionTimer.switchboardTag) == null) {
             Switchboard.addEntry(ShowImmersionTimer.apply { this.switchboardTagAction = {
                 MessageChannelHandler.send(

@@ -25,7 +25,7 @@ object ProfilePackage : IPackage {
     override var id = Id.randomId()
     override var name = this::class.simpleName.toString()
 
-    var profileAssets = ProfileAssets()
+    var profileAssets = ProfileAssets
     var selectedProfileAsset = ProfileAsset()
     var currentProfileAsset = ProfileAsset()
 

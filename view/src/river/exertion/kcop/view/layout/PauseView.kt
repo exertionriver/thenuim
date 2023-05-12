@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.ImmersionKeypressBridge
 import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
 import river.exertion.kcop.view.ViewPackage.PauseViewBridge

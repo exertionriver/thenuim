@@ -11,9 +11,9 @@ import kotlinx.serialization.json.Json
 import ktx.assets.load
 import ktx.assets.unloadSafely
 import ktx.collections.gdxArrayOf
-import river.exertion.kcop.ecs.system.SystemHandler.logDebug
-import river.exertion.kcop.view.FontPackage
-import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.asset.view.FontPackage
+import river.exertion.kcop.asset.view.KcopSkin
+import river.exertion.kcop.messaging.Id.Companion.logDebug
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 

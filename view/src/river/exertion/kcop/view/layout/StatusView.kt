@@ -4,10 +4,10 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage.StatusViewBridge
 import river.exertion.kcop.view.messaging.StatusViewMessage

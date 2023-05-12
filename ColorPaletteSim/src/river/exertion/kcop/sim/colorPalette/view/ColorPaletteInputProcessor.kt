@@ -7,7 +7,7 @@ import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.Companion.ColorP
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 
-class ColorPaletteInputProcessor : InputProcessor {
+object ColorPaletteInputProcessor : InputProcessor {
 
     fun modifyBaseColor(colorPaletteModifyType: ColorPaletteMessage.ColorPaletteModifyType) {
         MessageChannelHandler.send(

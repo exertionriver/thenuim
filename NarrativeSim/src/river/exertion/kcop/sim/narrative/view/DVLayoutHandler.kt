@@ -8,15 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 
-class DVLayoutHandler : Telegraph {
-
-    init {
-    }
+object DVLayoutHandler : Telegraph {
 
     lateinit var sdcHandler : SdcHandler
     lateinit var kcopSkin: KcopSkin

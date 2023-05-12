@@ -1,16 +1,9 @@
-package river.exertion.kcop.view
+package river.exertion.kcop.asset.view
 
 import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import ktx.actors.onClick
-import ktx.actors.onEnter
 import ktx.assets.disposeSafely
-import river.exertion.kcop.messaging.MessageChannel
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage.AudioViewBridge
-import river.exertion.kcop.view.messaging.AudioViewMessage
 
 object KcopSkin {
 
@@ -25,12 +18,6 @@ object KcopSkin {
     var displayMode = false
 
     fun labelStyle(fontSize : FontSize, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (fontPackage.font(fontSize), colorPalette?.color())
-
-    fun addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-        AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Enter])) }}
-
-    fun addOnClick(actor : Actor) { actor.onClick { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-        AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Click])) }}
 
     enum class UiSounds {
         Enter, Click, Swoosh

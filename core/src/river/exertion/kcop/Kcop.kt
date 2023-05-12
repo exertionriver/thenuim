@@ -11,10 +11,10 @@ import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
 import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.ecs.ECSPackage
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.simulation.KcopSimulator
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage
 

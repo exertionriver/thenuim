@@ -7,10 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.ViewPackage.addOnClick
 import river.exertion.kcop.view.messaging.KcopMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.switchboard.ViewSwitchboard

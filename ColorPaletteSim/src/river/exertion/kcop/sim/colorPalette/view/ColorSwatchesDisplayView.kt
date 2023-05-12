@@ -6,14 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.Companion.ColorPaletteBridge
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.FontSize
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.layout.ViewType
 
 class ColorSwatchesDisplayView(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
 

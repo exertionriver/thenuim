@@ -1,13 +1,15 @@
 package river.exertion.kcop.view
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.scenes.scene2d.Actor
+import ktx.actors.onClick
+import ktx.actors.onEnter
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IPackage
-import river.exertion.kcop.view.layout.AudioView
-import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.*
@@ -54,6 +56,12 @@ object ViewPackage : IPackage {
         SdcHandler.dispose()
         KcopSkin.dispose()
     }
+
+    fun KcopSkin.addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
+            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[KcopSkin.UiSounds.Enter])) }}
+
+    fun KcopSkin.addOnClick(actor : Actor) { actor.onClick { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
+            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[KcopSkin.UiSounds.Click])) }}
 
     const val KcopBridge = "KcopBridge"
 

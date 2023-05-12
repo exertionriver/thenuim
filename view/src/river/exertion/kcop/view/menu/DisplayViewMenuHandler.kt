@@ -9,7 +9,7 @@ object DisplayViewMenuHandler {
     var currentMenuTag = MainMenu.tag
 
     fun checkByTag(menuTag : String) : DisplayViewMenu? {
-        return displayViewMenus.firstOrNull { it.tag() == menuTag }
+        return displayViewMenus.firstOrNull { it.tag == menuTag }
     }
 
     fun byTag(menuTag : String) : DisplayViewMenu {
@@ -19,9 +19,9 @@ object DisplayViewMenuHandler {
     fun buildByTag(menuTag : String) : Table = byTag(menuTag).menuLayout()
 
     fun addMenu(displayViewMenu : DisplayViewMenu) {
-        val menuEntryCheck = checkByTag(displayViewMenu.tag())
+        val menuEntryCheck = checkByTag(displayViewMenu.tag)
 
-        if (menuEntryCheck == null) displayViewMenus.add(displayViewMenu) else throw Exception("${this::class.simpleName}:${DisplayViewMenuHandler::addMenu.name} : displayViewMenu ${displayViewMenu.tag()} already added")
+        if (menuEntryCheck == null) displayViewMenus.add(displayViewMenu) else throw Exception("${this::class.simpleName}:${DisplayViewMenuHandler::addMenu.name} : displayViewMenu ${displayViewMenu.tag} already added")
     }
 
     fun addMenus(displayViewMenus: List<DisplayViewMenu>) {
@@ -29,7 +29,7 @@ object DisplayViewMenuHandler {
     }
 
     fun removeMenu(displayViewMenu: DisplayViewMenu) {
-        val menuEntryToRemove = byTag(displayViewMenu.tag())
+        val menuEntryToRemove = byTag(displayViewMenu.tag)
 
         displayViewMenus.remove(menuEntryToRemove)
     }

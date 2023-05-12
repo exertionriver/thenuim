@@ -4,11 +4,11 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage.Companion.NarrativeMenuDataBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
-import river.exertion.kcop.view.ColorPalette
-import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
@@ -16,11 +16,13 @@ import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
-class LoadNarrativeMenu : Telegraph, DisplayViewMenu {
+object LoadNarrativeMenu : Telegraph, DisplayViewMenu {
 
     init {
         MessageChannelHandler.enableReceive(NarrativeMenuDataBridge,this)
     }
+    override val tag = "loadNarrativeMenu"
+    override val label = "Load"
 
     override val backgroundColor = ColorPalette.of("teal")
 
@@ -55,7 +57,7 @@ class LoadNarrativeMenu : Telegraph, DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val navs = mutableListOf<ActionParam>()
+    override fun navs() = mutableListOf<ActionParam>()
 
     override val actions = mutableListOf(
         ActionParam("Yes", {
@@ -92,13 +94,5 @@ class LoadNarrativeMenu : Telegraph, DisplayViewMenu {
             }
         }
         return false
-    }
-
-    override fun tag() = tag
-    override fun label() = label
-
-    companion object {
-        const val tag = "loadNarrativeMenu"
-        const val label = "Load"
     }
 }

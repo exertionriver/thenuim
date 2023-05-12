@@ -11,4 +11,5 @@ include 'NarrativeSim'
 include 'MenuSim'
 include 'ecs'
 include 'profile'
+include 'immersion'
 

@@ -10,10 +10,5 @@ object SystemHandler {
 //        pooledEngine.addSystem(NarrativeTextSystem())
 //        pooledEngine.addSystem(AMHUpdateSystem())
 
-    fun logDebug(tag : String, message : String) {
-        if (Gdx.app != null)
-            Gdx.app.debug(tag, message)
-        else
-            println("$tag: $message")
-    }
+
 }
