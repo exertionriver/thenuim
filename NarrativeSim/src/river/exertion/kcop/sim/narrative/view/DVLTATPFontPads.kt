@@ -1,7 +1,7 @@
 package river.exertion.kcop.sim.narrative.view
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.asset.view.FontSize
+import river.exertion.kcop.view.asset.FontSize
 
 @Serializable
 class DVLTATPFontPads(

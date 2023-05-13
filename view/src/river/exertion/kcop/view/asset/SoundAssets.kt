@@ -1,4 +1,4 @@
-package river.exertion.kcop.asset
+package river.exertion.kcop.view.asset
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.Music

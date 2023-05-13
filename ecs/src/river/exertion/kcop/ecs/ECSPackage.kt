@@ -1,15 +1,14 @@
 package river.exertion.kcop.ecs
 
-import com.badlogic.gdx.assets.AssetManager
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.ecs.messaging.EngineEntityMessage
 import river.exertion.kcop.ecs.messaging.ImmersionTimerMessage
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.IPackage
+import river.exertion.kcop.plugin.IInternalPackage
 
-object ECSPackage : IPackage {
+object ECSPackage : IInternalPackage {
 
     override var id = Id.randomId()
 
@@ -20,12 +19,6 @@ object ECSPackage : IPackage {
         MessageChannelHandler.addChannel(MessageChannel(EngineEntityBridge, EngineEntityMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(ImmersionTimerBridge, ImmersionTimerMessage::class))
     }
-
-    override fun loadAssets(assetManager: AssetManager) {}
-
-    override fun loadMenus() {}
-
-    override fun loadSystems() {}
 
     override fun dispose() {
         EngineHandler.dispose()

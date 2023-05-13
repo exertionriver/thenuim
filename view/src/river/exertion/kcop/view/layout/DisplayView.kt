@@ -5,13 +5,13 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.FontSize
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ViewPackage.DisplayViewBridge
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler.currentMenuTag
 import river.exertion.kcop.view.messaging.*

@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage.Companion.NarrativeMenuDataBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.MenuNavBridge
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu

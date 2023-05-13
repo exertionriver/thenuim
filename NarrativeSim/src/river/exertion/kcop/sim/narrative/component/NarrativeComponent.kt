@@ -3,7 +3,6 @@ package river.exertion.kcop.sim.narrative.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.asset.view.FontSize
 import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
@@ -22,6 +21,7 @@ import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
 import river.exertion.kcop.view.ViewPackage.StatusViewBridge
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.messaging.DisplayViewTextMessage
 import river.exertion.kcop.view.messaging.StatusViewMessage
 
@@ -128,7 +128,6 @@ class NarrativeComponent : IComponent, Telegraph {
                 activate(narrativeCurrBlockId())
 
                 //update kcop with current settings, including setting log timers
-        //        Switchboard.updateSettings(narrativeComponentInit.profile.settings)
             }
         }
     }

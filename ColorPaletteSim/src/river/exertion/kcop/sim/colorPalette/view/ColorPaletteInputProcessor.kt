@@ -3,9 +3,8 @@ package river.exertion.kcop.sim.colorPalette.view
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.Companion.ColorPaletteBridge
+import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.ColorPaletteBridge
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 
 object ColorPaletteInputProcessor : InputProcessor {
 

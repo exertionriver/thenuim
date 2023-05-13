@@ -3,7 +3,6 @@ package river.exertion.kcop.view
 import com.badlogic.gdx.graphics.g2d.Batch
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.asset.view.ColorPalette.Companion.randomW3cBasic
-import river.exertion.kcop.asset.view.KcopSkin
 
 object SdcHandler {
 

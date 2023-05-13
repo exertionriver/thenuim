@@ -8,15 +8,13 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.IDisplayPackage
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
 import river.exertion.kcop.view.KcopInputProcessor
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.AudioViewBridge
 import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.layout.DisplayView
@@ -30,24 +28,15 @@ class KcopSimulator(private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
 
     val packages = mutableListOf<IPackage>(
-        ProfilePackage
-    )
-    val displayPackages = mutableListOf<IDisplayPackage>(
-        ColorPalettePackage()
+        ProfilePackage,
+        ColorPalettePackage
     )
 
     init {
         packages.forEach {
-            it.loadChannels()
-            it.loadAssets(AssetManagerHandler.assets)
-            it.loadMenus()
+            it.load()
         }
 
-        displayPackages.forEach {
-            it.loadChannels()
-            it.loadAssets(AssetManagerHandler.assets)
-            it.loadMenus()
-        }
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
@@ -102,10 +91,10 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        DisplayView.currentDisplayView = displayPackages[0].build()
+        DisplayView.currentDisplayView = ColorPalettePackage.build()
         viewLayout.build(stage)
 
-        inputMultiplexer.addProcessor(displayPackages[0].inputProcessor())
+        inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
  //       colorPaletteLayout.build(stage)
 
 /*      //for in-sim narrative nav

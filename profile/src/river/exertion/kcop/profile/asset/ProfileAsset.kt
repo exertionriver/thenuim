@@ -77,7 +77,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
 
         fun new(profileComponent: ProfileComponent) : ProfileAsset {
             return ProfileAsset(Profile().apply {
-                this.name = profileComponent.profile!!.name
+                this.name = profileComponent.profile.name
             } ).apply {
                 this.update(profileComponent)
             }

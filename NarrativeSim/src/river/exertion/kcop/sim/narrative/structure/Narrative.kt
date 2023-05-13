@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import ktx.assets.Asset
-import river.exertion.kcop.asset.view.FontSize
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
+import river.exertion.kcop.view.asset.FontSize
 
 @Serializable
 data class Narrative(

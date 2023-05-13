@@ -1,21 +1,26 @@
 package river.exertion.kcop.view
 
-import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import com.badlogic.gdx.scenes.scene2d.Actor
 import ktx.actors.onClick
 import ktx.actors.onEnter
-import river.exertion.kcop.asset.view.KcopSkin
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.plugin.IKcopPackage
 import river.exertion.kcop.plugin.IPackage
+import river.exertion.kcop.view.asset.*
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.*
 import river.exertion.kcop.view.system.TimeLogSystem
 
-object ViewPackage : IPackage {
+object ViewPackage : IKcopPackage {
 
     override var id = Id.randomId()
 
@@ -41,27 +46,35 @@ object ViewPackage : IPackage {
         MessageChannelHandler.addChannel(MessageChannel(ImmersionKeypressBridge, String::class))
     }
 
-    override fun loadAssets(assetManager: AssetManager) { }
+    override fun loadAssets() {
+        AssetManagerHandler.assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(AssetManagerHandler.ifhr))
+        AssetManagerHandler.assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(AssetManagerHandler.ifhr))
+        FreeTypeFontAssets.values().forEach { AssetManagerHandler.assets.load(it) }
+        TextureAssets.values().forEach { AssetManagerHandler.assets.load(it) }
+        SkinAssets.values().forEach { AssetManagerHandler.assets.load(it) }
+        SoundAssets.values().forEach { AssetManagerHandler.assets.load(it) }
 
-    override fun loadMenus() {
-        DisplayViewMenuHandler.addMenu(MainMenu)
-        DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
+        AssetManagerHandler.assets.finishLoading()
+
+        KcopSkin.skin = AssetManagerHandler.assets[SkinAssets.KcopUi]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = AssetManagerHandler.assets[SoundAssets.Click]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = AssetManagerHandler.assets[SoundAssets.Enter]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = AssetManagerHandler.assets[SoundAssets.Swoosh]
     }
 
     override fun loadSystems() {
         SystemHandler.pooledEngine.addSystem(TimeLogSystem())
     }
 
+    override fun loadMenus() {
+        DisplayViewMenuHandler.addMenu(MainMenu)
+        DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
+    }
+
     override fun dispose() {
         SdcHandler.dispose()
         KcopSkin.dispose()
     }
-
-    fun KcopSkin.addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[KcopSkin.UiSounds.Enter])) }}
-
-    fun KcopSkin.addOnClick(actor : Actor) { actor.onClick { MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[KcopSkin.UiSounds.Click])) }}
 
     const val KcopBridge = "KcopBridge"
 

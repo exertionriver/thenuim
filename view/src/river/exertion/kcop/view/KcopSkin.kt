@@ -1,9 +1,17 @@
-package river.exertion.kcop.asset.view
+package river.exertion.kcop.view
 
 import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.actors.onClick
+import ktx.actors.onEnter
 import ktx.assets.disposeSafely
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.asset.KcopFont
+import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.messaging.AudioViewMessage
 
 object KcopSkin {
 
@@ -13,15 +21,20 @@ object KcopSkin {
     var screenHeight = 50f
 
     lateinit var skin : Skin
-    lateinit var fontPackage: FontPackage
 
     var displayMode = false
 
-    fun labelStyle(fontSize : FontSize, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (fontPackage.font(fontSize), colorPalette?.color())
+    fun labelStyle(fontSize : FontSize, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (KcopFont.font(fontSize), colorPalette?.color())
 
     enum class UiSounds {
         Enter, Click, Swoosh
     }
+
+    fun addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(ViewPackage.AudioViewBridge, AudioViewMessage(
+            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Enter])) }}
+
+    fun addOnClick(actor : Actor) { actor.onClick { MessageChannelHandler.send(ViewPackage.AudioViewBridge, AudioViewMessage(
+            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Click])) }}
 
     //experiments for border
 //        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = 0f; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })
@@ -31,7 +44,6 @@ object KcopSkin {
 
     fun dispose() {
         skin.disposeSafely()
-        fontPackage.dispose()
     }
 
     val BackgroundColor = ColorPalette.of("black")

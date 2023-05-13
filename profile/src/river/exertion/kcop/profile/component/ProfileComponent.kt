@@ -5,7 +5,6 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.IComponent
-import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
@@ -13,31 +12,30 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
+import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
 import river.exertion.kcop.profile.messaging.ProfileMessage
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 class ProfileComponent : IComponent, Telegraph {
 
-    var profile : Profile? = null
+    var profile : Profile
+        get() = ProfilePackage.currentProfileAsset.profile
+        set(value) { ProfilePackage.currentProfileAsset.profile = value }
 
-    override fun componentId() = if (profile != null) profile?.id!! else throw Exception("ProfileComponent::componentId() profile is null")
+    override fun componentId() = profile.id
 
     override var isInitialized = false
 
     val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
 
-//    var currentImmersionId : String
-//        get() = profile?.currentImmersionId ?: NoImmersionLoaded
-//        set(value) { profile?.currentImmersionId = value }
-
     var settings : MutableList<ProfileSettingEntry>
-        get() = profile?.settingEntries ?: mutableListOf()
-        set(value) { profile?.settingEntries = value }
+        get() = profile.settingEntries
+        set(value) { profile.settingEntries = value }
 
     var cumlTime : String
-        get() = profile?.cumlTime ?: ImmersionTimer.CumlTimeZero
-        set(value) { profile?.cumlTime = value }
+        get() = profile.cumlTime
+        set(value) { profile.cumlTime = value }
 
     fun cumlComponentTime() = if (isInitialized) timerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
 
@@ -56,7 +54,7 @@ class ProfileComponent : IComponent, Telegraph {
 
                 activate()
 
-                profile!!.execSettings()
+                profile.execSettings()
             }
         }
     }
@@ -69,7 +67,6 @@ class ProfileComponent : IComponent, Telegraph {
             timerPair.cumlImmersionTimer.resumeTimer()
 
             MessageChannelHandler.enableReceive(ProfileBridge, this)
-//            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentProfile, null, this))
         }
     }
 
@@ -80,7 +77,6 @@ class ProfileComponent : IComponent, Telegraph {
             timerPair.cumlImmersionTimer.pauseTimer()
 
             MessageChannelHandler.disableReceive(ProfileBridge, this)
-//            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RemoveCurrentProfile))
 
             isInitialized = false
         }
@@ -103,16 +99,6 @@ class ProfileComponent : IComponent, Telegraph {
                                         SubjectEntity.entityName, ImmersionTimerComponent::class.java, timerPair)
                                 )
                             }
-                            ProfileMessage.ProfileMessageType.UpdateSettings -> {
-                                if (profileMessage.settings != null) {
-                                    settings = profileMessage.settings
-                                }
-                            }
-                            ProfileMessage.ProfileMessageType.UpdateProfile -> {
-                                if (profileMessage.profile != null) {
-                                    profile = profileMessage.profile
-                                }
-                            }
                             ProfileMessage.ProfileMessageType.Inactivate -> {
                                 inactivate()
                             }
@@ -131,21 +117,6 @@ class ProfileComponent : IComponent, Telegraph {
 
         fun isValid(profileComponent: ProfileComponent?) : Boolean {
             return (profileComponent?.profile != null && profileComponent.isInitialized)
-        }
-
-        fun ecsInit(profile : Profile = Profile()) {
-            //inactivate current profile
-            MessageChannelHandler.send(ProfileBridge, ProfileMessage(ProfileMessage.ProfileMessageType.Inactivate))
-
-            MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
-                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                SubjectEntity.entityName, ProfileComponent::class.java,
-                ProfileComponentInit(profile)
-            ) )
-            MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
-                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                SubjectEntity.entityName, IRLTimeComponent::class.java
-            ) )
         }
     }
 

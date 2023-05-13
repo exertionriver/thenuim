@@ -1,11 +1,10 @@
-package river.exertion.kcop.asset
+package river.exertion.kcop.view.asset
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter
 import ktx.assets.getAsset
-import river.exertion.kcop.asset.view.FontSize
 
 enum class FreeTypeFontAssets(val path: String) {
     //https://fonts.google.com/noto/specimen/Noto+Sans+Symbols

@@ -2,6 +2,7 @@ package river.exertion.kcop.sim.narrative
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAssets
@@ -20,9 +21,11 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage
 import river.exertion.kcop.sim.narrative.system.NarrativeTextSystem
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
+import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
+import river.exertion.kcop.view.messaging.DisplayViewMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 
@@ -35,14 +38,17 @@ class NarrativePackage : IImmersionPackage {
     override var selectedImmersionAsset : IAsset = NarrativeAsset()
     override var currentImmersionAsset : IAsset = NarrativeAsset()
 
-    override fun loadAssets(assetManager: AssetManager) {
-        assetManager.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
-        immersionAssets.reload()
-    }
-
     override fun loadChannels() {
         MessageChannelHandler.addChannel(MessageChannel(NarrativeBridge, NarrativeMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(NarrativeMenuDataBridge, NarrativeMenuDataMessage::class))
+    }
+
+    override fun loadAssets() {
+        AssetManagerHandler.assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
+    }
+
+    override fun loadSystems() {
+        SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
     }
 
     override fun loadMenus() {
@@ -51,13 +57,9 @@ class NarrativePackage : IImmersionPackage {
 
         MainMenu.assignableNavs.add(
             ActionParam("Narrative >", {
-//            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.ReloadMenuNarratives))
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(NarrativeMenu.tag) )
+                DisplayViewMenuHandler.currentMenuTag = NarrativeMenu.tag
+                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         }) )
-    }
-
-    override fun loadSystems() {
-        SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
     }
 
     override fun build() : Actor = DVLayoutHandler.buildLayout()

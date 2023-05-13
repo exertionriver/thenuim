@@ -5,12 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.asset.view.FontSize
-import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.ViewPackage.LogViewBridge
+import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.asset.KcopFont
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.DisplayViewMessage
 import river.exertion.kcop.view.messaging.LogViewMessage
@@ -118,8 +119,8 @@ interface DisplayViewMenu {
                                     this.layout()
                                 }
                             }
-                        ).height(ViewType.secondHeight(KcopSkin.screenHeight) - 3 * KcopSkin.fontPackage.large.lineHeight)
-                            .width(ViewType.secondWidth(KcopSkin.screenWidth) - 3 * KcopSkin.fontPackage.large.lineHeight)
+                        ).height(ViewType.secondHeight(KcopSkin.screenHeight) - 3 * KcopFont.large().lineHeight)
+                            .width(ViewType.secondWidth(KcopSkin.screenWidth) - 3 * KcopFont.large().lineHeight)
                             .growY().top()
                         this.add(navButtonPane()).top()
                         this.row()

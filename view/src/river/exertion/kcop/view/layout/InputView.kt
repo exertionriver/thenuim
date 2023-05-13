@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.FontSize
-import river.exertion.kcop.asset.view.KcopSkin
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.InputViewBridge
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.messaging.InputViewMessage
 
 class InputView : Telegraph, ViewBase(ViewType.INPUT) {

@@ -1,4 +1,4 @@
-package river.exertion.kcop.asset.view
+package river.exertion.kcop.view.asset
 
 enum class FontSize {
     TEXT {override fun fontScale() = .28f; override fun fontTag() = "text"},
