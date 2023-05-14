@@ -32,8 +32,13 @@ object MenuView : ViewBase {
             ViewLayout.rebuild()
         },
         2 to {
-//            KcopSkin.displayMode = isChecked[2]!!
-//            ViewLayout.rebuild()
+            if (isChecked[2] == true) {
+                LogView.addLog("Color Palette On")
+                MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.ColorPaletteOn))
+            } else {
+                LogView.addLog("Color Palette Off")
+                MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.ColorPaletteOff))
+            }
         },
         fullScreen to {
             MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.FullScreen))

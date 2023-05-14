@@ -9,6 +9,7 @@ import river.exertion.kcop.plugin.IInternalPackage
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteInputProcessor
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
+import river.exertion.kcop.view.layout.DisplayView
 
 object ColorPalettePackage : IInternalPackage, IDisplayPackage {
 
@@ -21,7 +22,10 @@ object ColorPalettePackage : IInternalPackage, IDisplayPackage {
     }
 
     override fun build() : Actor {
-        return ColorPaletteLayout.build()
+        val cp = ColorPaletteLayout.build()
+        DisplayView.currentDisplayView = cp
+        DisplayView.build()
+        return cp
     }
 
     override fun inputProcessor() = ColorPaletteInputProcessor

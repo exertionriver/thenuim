@@ -18,6 +18,7 @@ import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.layout.AudioView
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopMessage
@@ -45,12 +46,6 @@ class KcopSimulator(private val stage: Stage,
  //   val colorPaletteInputProcessor = ColorPaletteInputProcessor()
     lateinit var inputMultiplexer : InputMultiplexer
 
-    /*  //for in-sim narrative nav
-        lateinit var defaultProfileComponent : ProfileComponent
-        var narrativesIdx = 0
-        lateinit var narrativesBlock : NarrativeAssets
-    */
-
     @Suppress("NewApi")
     override fun render(delta: Float) {
 
@@ -60,26 +55,6 @@ class KcopSimulator(private val stage: Stage,
         stage.draw()
 
         EngineHandler.engine.update(delta)
-
-/*      //for in-sim narrative nav
-        when {
-            Gdx.input.isKeyJustPressed(Input.Keys.LEFT) -> {
-                val prevNarrativesIdx = narrativesIdx
-                narrativesIdx = (narrativesIdx - 1).coerceAtLeast(0)
-                if (prevNarrativesIdx != narrativesIdx) {
-                    NarrativeComponent.getFor(engineHandler.profileEntity)!!.inactivate()
-                    NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
-                }
-            }
-            Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) -> {
-                val prevNarrativesIdx = narrativesIdx
-                narrativesIdx = (narrativesIdx + 1).coerceAtMost(narrativesBlock.values.size - 1)
-                if (prevNarrativesIdx != narrativesIdx) {
-                    NarrativeComponent.getFor(engineHandler.profileEntity)!!.inactivate()
-                    NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
-                }
-            }
-        }*/
     }
 
     override fun hide() {
@@ -91,10 +66,7 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-  //      DisplayView.currentDisplayView = ColorPalettePackage.build()
         viewLayout.build(stage)
-
-  //      inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
     }
 
     override fun pause() {
@@ -123,6 +95,15 @@ class KcopSimulator(private val stage: Stage,
                         KcopMessage.KcopMessageType.KcopScreen -> {
                             viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
+                        }
+                        KcopMessage.KcopMessageType.ColorPaletteOn -> {
+                            ColorPalettePackage.build()
+                            inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
+                        }
+                        KcopMessage.KcopMessageType.ColorPaletteOff -> {
+                            DisplayView.currentDisplayView = null
+                            DisplayView.build()
+                            inputMultiplexer.removeProcessor(ColorPalettePackage.inputProcessor())
                         }
                     }
 
