@@ -4,16 +4,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
-import com.badlogic.gdx.scenes.scene2d.Actor
-import ktx.actors.onClick
-import ktx.actors.onEnter
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IKcopPackage
-import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.view.asset.*
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -53,6 +49,7 @@ object ViewPackage : IKcopPackage {
         TextureAssets.values().forEach { AssetManagerHandler.assets.load(it) }
         SkinAssets.values().forEach { AssetManagerHandler.assets.load(it) }
         SoundAssets.values().forEach { AssetManagerHandler.assets.load(it) }
+        MusicAssets.values().forEach { AssetManagerHandler.assets.load(it) }
 
         AssetManagerHandler.assets.finishLoading()
 

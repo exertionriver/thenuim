@@ -1,7 +1,10 @@
 package river.exertion.kcop.profile.settings
 
-import river.exertion.kcop.ecs.switchboard.IImmersionPluginSwitchboard.ShowImmersionTimer
+import river.exertion.kcop.ecs.switchboard.ImmersionTimerSwitchboard
+import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.Switchboard
+import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
+import river.exertion.kcop.profile.messaging.ProfileMessage
 
 object PSShowTimer : ProfileSetting {
 
@@ -13,10 +16,10 @@ object PSShowTimer : ProfileSetting {
 
     override val options = listOf (
         ProfileSettingOption("showProfile","Profile") {
-//            MessageChannelHandler.send(ProfileBridge, ProfileMessage(ProfileMessage.ProfileMessageType.ReplaceCumlTimer))
+            MessageChannelHandler.send(ProfileBridge, ProfileMessage(ProfileMessage.ProfileMessageType.ReplaceCumlTimer))
         },
         ProfileSettingOption("showImmersion","Immersion") {
-            Switchboard.executeAction(ShowImmersionTimer.switchboardTag)
+            Switchboard.executeAction(ImmersionTimerSwitchboard.ShowImmersionTimer.switchboardTag)
         }
     )
 }

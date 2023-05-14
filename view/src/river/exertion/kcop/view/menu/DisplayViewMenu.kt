@@ -24,14 +24,14 @@ interface DisplayViewMenu {
     val backgroundColor : ColorPalette
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
-    fun navs() : MutableList<ActionParam> //Button Label -> action
     val actions : MutableList<ActionParam> //Button Label -> log text + action to run
+    val assignableNavs : MutableList<ActionParam>
 
     fun menuPane() : Table?
     fun navButtonPane() : Table = Table().apply {
        // this.debug()
 
-        this@DisplayViewMenu.navs().forEach { navEntry ->
+        this@DisplayViewMenu.assignableNavs.forEach { navEntry ->
             this.add(
                 TextButton(navEntry.label, KcopSkin.skin)
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
@@ -42,7 +42,7 @@ interface DisplayViewMenu {
                     }
                 }
             ).padTop(ViewType.padHeight(KcopSkin.screenHeight))
-            if (navEntry != this@DisplayViewMenu.navs().last()) this.row()
+            if (navEntry != this@DisplayViewMenu.assignableNavs.last()) this.row()
         }
     }
 
@@ -67,7 +67,6 @@ interface DisplayViewMenu {
     fun breadcrumbPane() = Table().apply {
       //  this.debug()
 
-        //TODO : singleton with three-sized bitmap fonts
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
             this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
                     .apply {

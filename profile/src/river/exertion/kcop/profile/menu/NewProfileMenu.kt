@@ -49,7 +49,7 @@ object NewProfileMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override fun navs() = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<ActionParam>()
 
     override val actions = mutableListOf(
         ActionParam("Create", {

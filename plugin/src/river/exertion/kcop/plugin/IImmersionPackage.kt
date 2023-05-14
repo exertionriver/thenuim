@@ -7,6 +7,7 @@ import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 interface IImmersionPackage : IKcopPackage, IDisplayPackage {
 
     fun timerPair() : ImmersionTimerPair
+    fun showImmersionTimer(immersionTimerPair : ImmersionTimerPair)
 
     var immersionAssets : IAssets
     var selectedImmersionAsset : IAsset

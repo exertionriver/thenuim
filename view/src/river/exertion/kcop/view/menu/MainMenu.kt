@@ -17,7 +17,7 @@ object MainMenu : DisplayViewMenu {
 
     override val breadcrumbEntries = mapOf<String, String>()
 
-    override fun navs() = assignableNavs
+    override val assignableNavs = mutableListOf<ActionParam>()
 
     override val actions = mutableListOf(
         ActionParam("Exit kcop", {
@@ -28,6 +28,4 @@ object MainMenu : DisplayViewMenu {
             ViewSwitchboard.closeMenu()
         })
     )
-
-    val assignableNavs = mutableListOf<ActionParam>()
 }

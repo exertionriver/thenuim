@@ -15,22 +15,19 @@ import river.exertion.kcop.view.asset.FontSize
 
 object DVLayoutHandler : Telegraph {
 
-    lateinit var sdcHandler : SdcHandler
-    lateinit var kcopSkin: KcopSkin
-
     var currentLayoutMode = false
     var currentText = ""
     var currentFontSize = FontSize.SMALL
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {
-        return sdcHandler.get("pane_${dvPane.idx}", overrideColor ?: KcopSkin.BackgroundColor).textureRegion().apply {
+        return SdcHandler.get("pane_${dvPane.idx}", overrideColor ?: KcopSkin.BackgroundColor).textureRegion().apply {
             this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
         }
     }
 
     fun paneBATexture(dvPane: DVPane) : TextureRegion {
-        return sdcHandler.getBlackAlpha("bapane_${dvPane.idx}", dvPane.alphaMask).textureRegion().apply {
+        return SdcHandler.getBlackAlpha("bapane_${dvPane.idx}", dvPane.alphaMask).textureRegion().apply {
             this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
         }
     }
@@ -51,7 +48,7 @@ object DVLayoutHandler : Telegraph {
             currentDvLayout.panes().forEach { dvPane ->
                 val randomColor = ColorPalette.randomW3cBasic()
                 val randomColorImage = Image(TextureRegionDrawable(paneColorTexture(dvPane, randomColor).texture))
-                val randomColorLabelStyle = kcopSkin.labelStyle(FontSize.TEXT, randomColor)
+                val randomColorLabelStyle = KcopSkin.labelStyle(FontSize.TEXT, randomColor)
 
                 when (dvPane) {
                     is DVImagePane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)
@@ -60,7 +57,7 @@ object DVLayoutHandler : Telegraph {
             }
 
         } else {
-            val textLabelStyle = kcopSkin.labelStyle(currentFontSize)
+            val textLabelStyle = KcopSkin.labelStyle(currentFontSize)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
             currentDvLayout.setTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
@@ -113,10 +110,5 @@ object DVLayoutHandler : Telegraph {
             }
         }
         return false
-    }
-
-    fun dispose() {
-        sdcHandler.dispose()
-        kcopSkin.dispose()
     }
 }

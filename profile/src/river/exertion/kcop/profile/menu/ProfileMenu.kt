@@ -56,19 +56,17 @@ object ProfileMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override fun navs() = assignableNavs
+    override val assignableNavs = mutableListOf(
+            ActionParam("Load >", {
+                DisplayViewMenuHandler.currentMenuTag = LoadProfileMenu.tag
+                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
+            }),
+            ActionParam("New >", {
+                NewProfileMenu.newName = Profile.genName()
+                DisplayViewMenuHandler.currentMenuTag = NewProfileMenu.tag
+                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
+            })
+    )
 
     override val actions = mutableListOf<ActionParam>()
-
-    val assignableNavs = mutableListOf(
-        ActionParam("Load >", {
-            DisplayViewMenuHandler.currentMenuTag = LoadProfileMenu.tag
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
-        }),
-        ActionParam("New >", {
-            NewProfileMenu.newName = Profile.genName()
-            DisplayViewMenuHandler.currentMenuTag = NewProfileMenu.tag
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
-        })
-    )
 }

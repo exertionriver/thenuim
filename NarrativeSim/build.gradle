@@ -19,6 +19,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "io.github.libktx:ktx-assets:$ktxVersion"
+    implementation project(path: ':profile')
 }
 
 compileKotlin {

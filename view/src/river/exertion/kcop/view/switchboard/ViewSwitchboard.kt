@@ -1,5 +1,6 @@
 package river.exertion.kcop.view.switchboard
 
+import river.exertion.kcop.ecs.switchboard.ImmersionTimerSwitchboard
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.Switchboard
 import river.exertion.kcop.messaging.SwitchboardEntry
@@ -17,6 +18,8 @@ object ViewSwitchboard {
     val OpenMenu = SwitchboardEntry("OpenMenu")
     val CloseMenu = SwitchboardEntry("CloseMenu")
     val ClearMenu = SwitchboardEntry("ClearMenu")
+    val ShowCompletionStatus = SwitchboardEntry("ShowCompletionStatus")
+    val HideCompletionStatus = SwitchboardEntry("HideCompletionStatus")
 
     fun openMenu() {
         if (Switchboard.checkByTag(OpenMenu.switchboardTag) == null) {
@@ -50,4 +53,23 @@ object ViewSwitchboard {
         Switchboard.executeAction(ClearMenu.switchboardTag)
     }
 
+    fun showCompletionStatus() {
+        if (Switchboard.checkByTag(ShowCompletionStatus.switchboardTag) == null) {
+            Switchboard.addEntry(ShowCompletionStatus.apply { this.switchboardTagAction = {
+                //take status action
+            } } )
+        } else {
+            Switchboard.executeAction(ImmersionTimerSwitchboard.ShowImmersionTimer.switchboardTag)
+        }
+    }
+
+    fun hideCompletionStatus() {
+        if (Switchboard.checkByTag(HideCompletionStatus.switchboardTag) == null) {
+            Switchboard.addEntry(HideCompletionStatus.apply { this.switchboardTagAction = {
+                //take status action
+            } } )
+        } else {
+            Switchboard.executeAction(ImmersionTimerSwitchboard.ShowImmersionTimer.switchboardTag)
+        }
+    }
 }

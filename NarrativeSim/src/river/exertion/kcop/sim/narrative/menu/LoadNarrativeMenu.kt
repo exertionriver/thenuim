@@ -6,34 +6,31 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.NarrativePackage.Companion.NarrativeMenuDataBridge
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuDataBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.MainMenu
+import river.exertion.kcop.view.messaging.DisplayViewMessage
 import river.exertion.kcop.view.messaging.MenuViewMessage
 import river.exertion.kcop.view.messaging.menuParams.ActionParam
 import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
-object LoadNarrativeMenu : Telegraph, DisplayViewMenu {
+object LoadNarrativeMenu : DisplayViewMenu {
 
-    init {
-        MessageChannelHandler.enableReceive(NarrativeMenuDataBridge,this)
-    }
     override val tag = "loadNarrativeMenu"
     override val label = "Load"
 
     override val backgroundColor = ColorPalette.of("teal")
 
-    var selectedNarrativeAssetInfo: List<String>? = null
-    var selectedNarrativeAssetName : String? = null
-
-    fun selectedNarrativeAssetName() = selectedNarrativeAssetName ?: throw Exception("LoadNarrativeMenu requires valid selectNarrativeAssetTitle")
-
     override fun menuPane() = Table().apply {
-        if (selectedNarrativeAssetInfo != null) {
-            selectedNarrativeAssetInfo!!.forEach { profileEntry ->
+
+        if (NarrativePackage.selectedImmersionAsset.assetInfo().isNotEmpty()) {
+            NarrativePackage.selectedImmersionAsset.assetInfo().forEach { profileEntry ->
                 this.add(Label(profileEntry, KcopSkin.skin)
                         //LabelStyle(bitmapFont, backgroundColor.label().color()))
                         .apply {
@@ -42,7 +39,7 @@ object LoadNarrativeMenu : Telegraph, DisplayViewMenu {
                 this.row()
             }
 //        this.debug()
-            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${selectedNarrativeAssetName()}" }
+            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativePackage.selectedImmersionAsset.assetName()}" }
         } else {
             this.add(Label("no narrative info found", KcopSkin.skin)
                     //LabelStyle(bitmapFont, backgroundColor.label().color()))
@@ -57,12 +54,14 @@ object LoadNarrativeMenu : Telegraph, DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override fun navs() = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<ActionParam>()
 
     override val actions = mutableListOf(
         ActionParam("Yes", {
             ViewSwitchboard.closeMenu()
-//            Switchboard.loadSelectedNarrative()
+            NarrativePackage.currentImmersionAsset = NarrativePackage.selectedImmersionAsset
+            DisplayView.currentDisplayView = NarrativePackage.build()
+            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         }, "Narrative Loaded!"),
         //go back a menu
         ActionParam("No", {
@@ -70,29 +69,4 @@ object LoadNarrativeMenu : Telegraph, DisplayViewMenu {
         })
     )
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(NarrativeMenuDataBridge, msg.message)) -> {
-                    val menuDataMessage: NarrativeMenuDataMessage = MessageChannelHandler.receiveMessage(NarrativeMenuDataBridge, msg.extraInfo)
-
-                    if ( menuDataMessage.narrativeMenuDataParams != null ) {
-
-                        if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo != null) {
-                            selectedNarrativeAssetInfo = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetInfo
-                        }
-                        if (menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName != null) {
-                            selectedNarrativeAssetName = menuDataMessage.narrativeMenuDataParams!!.selectedNarrativeAssetName
-                        }
-                    } else {
-                        selectedNarrativeAssetInfo = null
-                        selectedNarrativeAssetName = null
-                    }
-
-                    return true
-                }
-            }
-        }
-        return false
-    }
 }

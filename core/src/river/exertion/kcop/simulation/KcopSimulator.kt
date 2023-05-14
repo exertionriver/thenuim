@@ -13,6 +13,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
+import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.AudioViewBridge
@@ -29,6 +30,7 @@ class KcopSimulator(private val stage: Stage,
 
     val packages = mutableListOf<IPackage>(
         ProfilePackage,
+        NarrativePackage,
         ColorPalettePackage
     )
 
@@ -95,14 +97,6 @@ class KcopSimulator(private val stage: Stage,
         viewLayout.build(stage)
 
         inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
- //       colorPaletteLayout.build(stage)
-
-/*      //for in-sim narrative nav
-
-        defaultProfileComponent = ProfileComponent.getFor(engineHandler.profileEntity)!!
-        narrativesBlock = assetManagerHandler.narrativeAssets
-        NarrativeComponent.ecsInit(defaultProfileComponent.profile!!, narrativesBlock.values[narrativesIdx].narrative!!)
-*/
     }
 
     override fun pause() {
@@ -115,8 +109,6 @@ class KcopSimulator(private val stage: Stage,
         orthoCamera.viewportWidth = width.toFloat()
         orthoCamera.viewportHeight = height.toFloat()
         stage.viewport.update(width, height)
-//        KcopSkin.screenWidth = width.toFloat()
-//        KcopSkin.screenHeight = height.toFloat()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {

@@ -39,24 +39,13 @@ class ProfileComponent : IComponent, Telegraph {
 
     fun cumlComponentTime() = if (isInitialized) timerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
 
-    override fun initialize(initData: Any?) {
+    override fun initialize(initData : Any?) {
 
-        if (initData != null) {
-            val profileComponentInit = IComponent.checkInitType<ProfileComponentInit>(initData)
+        super.initialize(initData)
 
-            if (profileComponentInit != null) {
+        timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profile.cumlTime))
 
-                profile = profileComponentInit.profile
-
-                timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profileComponentInit.cumlTime()))
-
-                super.initialize(initData)
-
-                activate()
-
-                profile.execSettings()
-            }
-        }
+        activate()
     }
 
     fun activate() {
@@ -118,9 +107,5 @@ class ProfileComponent : IComponent, Telegraph {
         fun isValid(profileComponent: ProfileComponent?) : Boolean {
             return (profileComponent?.profile != null && profileComponent.isInitialized)
         }
-    }
-
-    data class ProfileComponentInit(val profile: Profile = Profile()) {
-        fun cumlTime() = profile.cumlTime
     }
 }

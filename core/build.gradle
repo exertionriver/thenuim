@@ -12,6 +12,7 @@ dependencies {
     implementation project(path: ':plugin')
     implementation project(path: ':profile')
     implementation project(path: ':ColorPaletteSim')
+    implementation project(path: ':NarrativeSim')
 }
 compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)

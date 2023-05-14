@@ -2,6 +2,11 @@ package river.exertion.kcop.profile
 
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
+import river.exertion.kcop.ecs.ECSPackage
+import river.exertion.kcop.ecs.component.IRLTimeComponent
+import river.exertion.kcop.ecs.component.ImmersionTimerComponent
+import river.exertion.kcop.ecs.entity.SubjectEntity
+import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -9,6 +14,7 @@ import river.exertion.kcop.plugin.IKcopPackage
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssetLoader
 import river.exertion.kcop.profile.asset.ProfileAssets
+import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileMenuDataMessage
 import river.exertion.kcop.profile.messaging.ProfileMessage
@@ -25,6 +31,17 @@ object ProfilePackage : IKcopPackage {
     var profileAssets = ProfileAssets
     var selectedProfileAsset = ProfileAsset()
     var currentProfileAsset = ProfileAsset()
+        set(value) {
+            field = value
+
+            MessageChannelHandler.send(
+                    ECSPackage.EngineComponentBridge, EngineComponentMessage(
+                    EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
+                    SubjectEntity.entityName, ProfileComponent::class.java)
+            )
+
+            value.profile.execSettings()
+        }
 
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))
@@ -54,7 +71,6 @@ object ProfilePackage : IKcopPackage {
                 ProfileSettingsMenu.settings = currentProfileAsset.settings
                 DisplayViewMenuHandler.currentMenuTag = ProfileSettingsMenu.tag
                 MessageChannelHandler.send(DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
-
             }))
         MainMenu.assignableNavs.add(
             ActionParam("Save Progress >", {
@@ -63,7 +79,13 @@ object ProfilePackage : IKcopPackage {
             }))
     }
 
-    override fun loadSystems() {}
+    override fun loadSystems() {
+        MessageChannelHandler.send(
+                ECSPackage.EngineComponentBridge, EngineComponentMessage(
+                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
+                SubjectEntity.entityName, IRLTimeComponent::class.java)
+        )
+    }
 
     override fun dispose() {}
 

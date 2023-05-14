@@ -3,8 +3,12 @@ package river.exertion.kcop.profile.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.ecs.ECSPackage
+import river.exertion.kcop.ecs.entity.SubjectEntity
+import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage
+import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
@@ -32,7 +36,7 @@ object LoadProfileMenu : DisplayViewMenu {
                 this.row()
             }
 //        this.debug()
-            this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Profile Loaded : ${ProfilePackage.selectedProfileAsset.assetName()}" }
+            this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${ProfilePackage.selectedProfileAsset.assetName()}" }
         } else {
             this.add(Label("no profile info found", KcopSkin.skin)
             ).growX().left()
@@ -46,12 +50,16 @@ object LoadProfileMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override fun navs() = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<ActionParam>()
 
     override val actions = mutableListOf(
         ActionParam("Yes", {
             ViewSwitchboard.closeMenu()
             ProfilePackage.currentProfileAsset = ProfilePackage.selectedProfileAsset
+            MessageChannelHandler.send(ECSPackage.EngineComponentBridge, EngineComponentMessage(
+                    EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
+                    SubjectEntity.entityName, ProfileComponent::class.java
+            ) )
         }, "Profile Loaded!"),
         //go back a menu
         ActionParam("No", {
