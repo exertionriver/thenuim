@@ -1,23 +1,14 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.utils.Timer
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage.AudioViewBridge
-import river.exertion.kcop.view.messaging.AudioViewMessage
 
-class AudioView : Telegraph {
+object AudioView {
 
-    init {
-        MessageChannelHandler.enableReceive(AudioViewBridge, this)
-    }
+    private var currentMusic : Music? = null
+    private var musicLock : Timer.Task? = null
 
-    var currentMusic : Music? = null
-    var musicLock : Timer.Task? = null
-
-    var currentSound : Music? = null
+    private var currentSound : Music? = null
 
     fun crossfadeMusic(prevMusic : Music?, newMusic : Music?) {
         if (prevMusic != newMusic) {
@@ -95,25 +86,16 @@ class AudioView : Telegraph {
         currentSound?.play()
     }
 
-    @Suppress("NewApi")
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            if (MessageChannelHandler.isType(AudioViewBridge, msg.message) ) {
-                val audioViewMessage: AudioViewMessage = MessageChannelHandler.receiveMessage(
-                    AudioViewBridge, msg.extraInfo)
+    fun fadeOutMusic() {
+        crossfadeMusic(currentMusic, null)
+    }
 
-                when (audioViewMessage.messageType) {
-                    AudioViewMessage.AudioViewMessageType.FadeOutMusic -> crossfadeMusic(currentMusic, null)
-                    AudioViewMessage.AudioViewMessageType.FadeInMusic-> crossfadeMusic(null, audioViewMessage.music)
-                    AudioViewMessage.AudioViewMessageType.CrossFadeMusic -> crossfadeMusic(currentMusic, audioViewMessage.music)
-                    AudioViewMessage.AudioViewMessageType.PlayMusic -> playMusic(audioViewMessage.music)
-                    AudioViewMessage.AudioViewMessageType.PlaySound -> playSound(audioViewMessage.music)
-                    AudioViewMessage.AudioViewMessageType.StopMusic -> stopMusic()
-                }
-                return true
-            }
-        }
-        return false
+    fun fadeInMusic(newMusic : Music) {
+        crossfadeMusic(null, newMusic)
+    }
+
+    fun crossFadeMusic(newMusic : Music) {
+        crossfadeMusic(currentMusic, newMusic)
     }
 
     fun dispose() {

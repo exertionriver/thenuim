@@ -15,7 +15,6 @@ import river.exertion.kcop.view.asset.FontSize
 
 object DVLayoutHandler : Telegraph {
 
-    var currentLayoutMode = false
     var currentText = ""
     var currentFontSize = FontSize.SMALL
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
@@ -43,7 +42,7 @@ object DVLayoutHandler : Telegraph {
         val paneContent = DVPaneContent()
         currentDvLayout.setAdjacencies(currentFontSize)
 
-        if (currentLayoutMode) {
+        if (KcopSkin.displayMode) {
 
             currentDvLayout.panes().forEach { dvPane ->
                 val randomColor = ColorPalette.randomW3cBasic()
@@ -74,7 +73,7 @@ object DVLayoutHandler : Telegraph {
         return paneContent
     }
 
-    fun buildLayout() : Table {
+    fun build() : Table {
 
         val paneContent = buildPaneContent()
         val layoutTable = Table()

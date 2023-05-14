@@ -6,8 +6,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage
 import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
 import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
-import river.exertion.kcop.view.ViewPackage.LogViewBridge
-import river.exertion.kcop.view.messaging.LogViewMessage
+import river.exertion.kcop.view.layout.LogView
 
 @Serializable
 @SerialName("log")
@@ -18,7 +17,7 @@ class ReportLogEvent(
 ) : Event(), ITriggerEvent {
 
     override fun execEvent(previousEvent : Event?) {
-        MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, report) )
+        LogView.addLog(report)
         MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetPersistFlag, id!!, NarrativeImmersion.EventFiredValue) )
     }
 }

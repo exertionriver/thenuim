@@ -8,11 +8,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.asset.FontSize
 
-open class ViewBase(var viewType : ViewType) : Table() {
+interface ViewBase {
+
+    var viewType : ViewType
+    var viewTable : Table
 
     fun viewRect() = viewType.viewRect(KcopSkin.screenWidth, KcopSkin.screenHeight)
 
@@ -21,43 +24,32 @@ open class ViewBase(var viewType : ViewType) : Table() {
     fun tablePosX() = viewRect().x
     fun tablePosY() = viewRect().y
 
-    var currentLayoutMode = false
-
-    var backgroundColor : ColorPalette = viewType.defaultColor()
+    fun backgroundColor() = if (KcopSkin.displayMode) viewType.defaultColor() else KcopSkin.BackgroundColor
 
     fun backgroundColorTexture() : TextureRegion {
-        return if (currentLayoutMode) {
-            SdcHandler.get("background_${viewType}", backgroundColor).textureRegion().apply {
+        return SdcHandler.get("background_${viewType}", backgroundColor()).textureRegion().apply {
                 this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
-            }
-        } else {
-            SdcHandler.get("background_${viewType}", KcopSkin.BackgroundColor).textureRegion().apply {
-                this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
-            }
         }
     }
 
     fun backgroundColorImg() : Image = Image(backgroundColorTexture()).apply { this.setFillParent(true) }
 
     private fun clearTable() {
-        this.clearChildren()
-        this.clearListeners()
+        viewTable.clearChildren()
+        viewTable.clearListeners()
 
-        this.setSize(tableWidth(), tableHeight())
-        this.setPosition(tablePosX(), tablePosY())
+        viewTable.setSize(tableWidth(), tableHeight())
+        viewTable.setPosition(tablePosX(), tablePosY())
     }
 
-    fun build() {
-        clearTable()
-        buildCtrl()
+    fun layoutLabel() : Label {
+        return Label(viewType.name, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label())).apply {
+            this.setAlignment(Align.center)
+        }
     }
 
-    open fun buildCtrl() {
+    fun buildCtrl() {
         val stack = Stack()
-
-        val viewLabel = Label(viewType.name, skin)
-                //Label.LabelStyle(fontPackage.font(FontSize.TEXT), backgroundColor.label().color()))
-        viewLabel.setAlignment(Align.center)
 
         stack.onClick {
             println("layout View:${viewType.name}")
@@ -65,9 +57,14 @@ open class ViewBase(var viewType : ViewType) : Table() {
         }
 
         stack.add(backgroundColorImg())
-        stack.add(viewLabel)
+        stack.add(layoutLabel())
 
-        this.add(stack).size(this.tableWidth(), this.tableHeight())
-        this.clip()
+        viewTable.add(stack).size(this.tableWidth(), this.tableHeight())
+        viewTable.clip()
+    }
+
+    fun build() {
+        clearTable()
+        buildCtrl()
     }
 }

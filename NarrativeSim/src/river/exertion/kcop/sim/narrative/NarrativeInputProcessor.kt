@@ -3,15 +3,15 @@ package river.exertion.kcop.sim.narrative
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
-import river.exertion.kcop.view.ViewPackage.InputViewBridge
-import river.exertion.kcop.view.messaging.InputViewMessage
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
+import river.exertion.kcop.view.layout.PauseView
 
 object NarrativeInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
-        MessageChannelHandler.send(ImmersionPauseBridge, Input.Keys.toString(keycode))
+        if (!PauseView.isChecked) {
+            MessageChannelHandler.send(NarrativeBridge, Input.Keys.toString(keycode))
+        }
 
         return false
     }

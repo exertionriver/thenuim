@@ -1,16 +1,25 @@
 package river.exertion.kcop.sim.narrative.asset
 
+import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.IAsset
+import river.exertion.kcop.asset.IAssets
 import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
 
-data class NarrativeImmersionAssets(var values: MutableList<NarrativeImmersionAsset> = mutableListOf()) {
+object NarrativeImmersionAssets : IAssets {
 
-    fun byIds(profileId : String?, narrativeId : String?) : NarrativeImmersionAsset? = values.firstOrNull {
-        it.assetId() == NarrativeImmersion.genId(profileId, narrativeId)
+    override var values: MutableList<IAsset> = mutableListOf()
+
+    override fun byId(assetId : String?) : IAsset? = values.firstOrNull { it.assetId() == assetId }
+
+    fun byIds(profileId : String, narrativeId : String) : IAsset? = byId(NarrativeImmersion.genId(profileId, narrativeId))
+
+    override fun byTitle(assetTitle : String?) : IAsset? = values.firstOrNull { it.assetTitle() == assetTitle }
+
+    override fun reload() : MutableList<IAsset> {
+        values = AssetManagerHandler.reloadLocalAssets<NarrativeAsset>(iAssetLocation).toMutableList()
+        return values
     }
 
-    companion object {
-        val narrativeImmersionAssetLocation = "kcop/immersion/"
-        val narrativeImmersionAssetExtension = ".json"
-        fun narrativeImmersionAssetPath(narrativeFilename : String) = narrativeImmersionAssetLocation + narrativeFilename + narrativeImmersionAssetExtension
-    }
+    override val iAssetLocation = "kcop/immersion/"
+    override val iAssetExtension = ".json"
 }

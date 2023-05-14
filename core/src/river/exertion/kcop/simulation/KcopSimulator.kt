@@ -16,12 +16,10 @@ import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.AudioViewBridge
 import river.exertion.kcop.view.ViewPackage.KcopBridge
-import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
-import river.exertion.kcop.view.messaging.AudioViewMessage
 import river.exertion.kcop.view.messaging.KcopMessage
 
 
@@ -42,7 +40,7 @@ class KcopSimulator(private val stage: Stage,
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-    val viewLayout = ViewLayout()
+    val viewLayout = ViewLayout
  //   val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight). apply { this.hide() }
  //   val colorPaletteInputProcessor = ColorPaletteInputProcessor()
     lateinit var inputMultiplexer : InputMultiplexer
@@ -93,10 +91,10 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        DisplayView.currentDisplayView = ColorPalettePackage.build()
+  //      DisplayView.currentDisplayView = ColorPalettePackage.build()
         viewLayout.build(stage)
 
-        inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
+  //      inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
     }
 
     override fun pause() {
@@ -120,15 +118,11 @@ class KcopSimulator(private val stage: Stage,
                     when (kcopMessage.kcopMessageType) {
                         KcopMessage.KcopMessageType.FullScreen -> {
                             viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.PlaySound, KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
-                            )
+                            AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopMessage.KcopMessageType.KcopScreen -> {
                             viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.PlaySound, KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
-                            )
+                            AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                     }
 

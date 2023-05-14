@@ -19,11 +19,6 @@ class DisplayViewLayoutAsset(var DVLayout: DVLayout? = null) : IAsset {
     override fun assetInfo() : List<String> = listOf(assetName())
 
     companion object {
-        operator fun AssetManager.get(asset: DisplayViewLayoutAsset) = getAsset<DisplayViewLayoutAsset>(asset.assetPath).also {
-            if (it.status != null) println ("Asset Status: ${it.status}")
-            if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
-        }
-
         fun isValid(displayViewLayoutAsset: DisplayViewLayoutAsset?) : Boolean {
             return (displayViewLayoutAsset?.DVLayout != null && displayViewLayoutAsset.status == null)
         }

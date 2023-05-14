@@ -2,98 +2,49 @@ package river.exertion.kcop.view
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage.ImmersionPauseBridge
-import river.exertion.kcop.view.ViewPackage.InputViewBridge
-import river.exertion.kcop.view.messaging.InputViewMessage
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.layout.InputView
+import river.exertion.kcop.view.layout.MenuView
 
 object KcopInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.KeyDownEvent,
-            eventParams = mapOf(InputViewMessage.InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
-        )
+        InputView.keyEvent(Input.Keys.toString(keycode))
 
-        if (keycode == Input.Keys.ESCAPE) ViewSwitchboard.closeMenu()
+        if (keycode == Input.Keys.ESCAPE) MenuView.closeMenu()
 
         return false
     }
 
     override fun keyUp(keycode: Int): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.KeyUpEvent,
-            eventParams = mapOf(InputViewMessage.InputViewMessageParam.KeycodeStrKey to Input.Keys.toString(keycode)))
-        )
+        InputView.releaseEvent()
         return false
     }
 
     override fun keyTyped(character: Char): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.KeyTypedEvent,
-            eventParams = mapOf(InputViewMessage.InputViewMessageParam.CharacterKey to character))
-        )
+        InputView.keyEvent(character.toString())
         return false
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.TouchDownEvent,
-            eventParams = mapOf(
-                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY,
-                InputViewMessage.InputViewMessageParam.PointerKey to pointer,
-                InputViewMessage.InputViewMessageParam.ButtonKey to button)
-            )
-        )
+        InputView.touchEvent(screenX, screenY, button)
         return false
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.TouchUpEvent,
-            eventParams = mapOf(
-                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY,
-                InputViewMessage.InputViewMessageParam.PointerKey to pointer,
-                InputViewMessage.InputViewMessageParam.ButtonKey to button)
-            )
-        )
+        InputView.releaseEvent()
         return false
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.TouchDraggedEvent,
-            eventParams = mapOf(
-                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY,
-                InputViewMessage.InputViewMessageParam.PointerKey to pointer)
-            )
-        )
+        InputView.touchEvent(screenX, screenY, -1)
         return false
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.MouseMovedEvent,
-            eventParams = mapOf(
-                InputViewMessage.InputViewMessageParam.ScreenXKey to screenX,
-                InputViewMessage.InputViewMessageParam.ScreenYKey to screenY)
-            )
-        )
         return false
     }
 
     override fun scrolled(amountX: Float, amountY: Float): Boolean {
-        MessageChannelHandler.send(InputViewBridge, InputViewMessage(
-            event = InputViewMessage.InputViewMessageEvent.ScrolledEvent,
-            eventParams = mapOf(
-                InputViewMessage.InputViewMessageParam.AmountXKey to amountX,
-                InputViewMessage.InputViewMessageParam.AmountYKey to amountY)
-            )
-        )
         return false
     }
 }

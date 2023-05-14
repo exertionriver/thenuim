@@ -5,17 +5,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage
-import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.asset.KcopFont
+import river.exertion.kcop.view.layout.LogView
 import river.exertion.kcop.view.layout.ViewType
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
 
 interface DisplayViewMenu {
 
@@ -24,8 +19,8 @@ interface DisplayViewMenu {
     val backgroundColor : ColorPalette
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
-    val actions : MutableList<ActionParam> //Button Label -> log text + action to run
-    val assignableNavs : MutableList<ActionParam>
+    val actions : MutableList<MenuActionParam> //Button Label -> log text + action to run
+    val assignableNavs : MutableList<MenuActionParam>
 
     fun menuPane() : Table?
     fun navButtonPane() : Table = Table().apply {
@@ -56,7 +51,7 @@ interface DisplayViewMenu {
                         .apply {
                     this.onClick {
                         if (actionEntry.log != null)
-                            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, actionEntry.log!!))
+                            LogView.addLog(actionEntry.log!!)
                         actionEntry.action()
                     }
                 }
@@ -72,7 +67,6 @@ interface DisplayViewMenu {
                     .apply {
                 this.onClick {
                     DisplayViewMenuHandler.currentMenuTag = menuLabel.key
-                    MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
                 }
             } )
         }

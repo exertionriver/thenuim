@@ -1,22 +1,16 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.InputViewBridge
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.messaging.InputViewMessage
 
-class InputView : Telegraph, ViewBase(ViewType.INPUT) {
+object InputView : ViewBase {
 
-    init {
-        MessageChannelHandler.enableReceive(InputViewBridge, this)
-    }
+    override var viewType = ViewType.INPUT
+    override var viewTable = Table()
 
     var clickImage : Texture? = null
     var keyPressImage : Texture? = null
@@ -60,12 +54,12 @@ class InputView : Telegraph, ViewBase(ViewType.INPUT) {
 
         val innerTable = Table()
 
-        innerTable.add(Label(keyText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor)))
+        innerTable.add(Label(keyText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label())))
         .expandY()
 
         innerTable.row()
 
-        if (isTouchEvent()) innerTable.add(Label(touchText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor)))
+        if (isTouchEvent()) innerTable.add(Label(touchText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label())))
 
 //        innerTable.debug()
 
@@ -75,39 +69,14 @@ class InputView : Telegraph, ViewBase(ViewType.INPUT) {
     override fun buildCtrl() {
 
         if ( (isTouchEvent() || isKeyEvent()) ) {
-            this.add(Stack().apply {
+            viewTable.add(Stack().apply {
                 this.add(backgroundColorImg())
                 this.add(textTable())
             } ).size(this.tableWidth(), this.tableHeight())
         } else {
-            this.add(backgroundColorImg()).size(this.tableWidth(), this.tableHeight())
+            viewTable.add(backgroundColorImg()).size(this.tableWidth(), this.tableHeight())
         }
-        this.clip()
+        viewTable.clip()
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(InputViewBridge, msg.message) ) -> {
-                    val inputMessage : InputViewMessage = MessageChannelHandler.receiveMessage(InputViewBridge, msg.extraInfo)
-
-                    if (inputMessage.event.isReleaseEvent()) {
-                        releaseEvent()
-                    } else {
-                        if (inputMessage.event.isKeyEvent()) {
-                            keyEvent(inputMessage.getKeyStr())
-                        }
-                        else if (inputMessage.event.isTouchEvent()) {
-                            touchEvent(inputMessage.getScreenX(), inputMessage.getScreenY(), inputMessage.getButton())
-                        }
-                    }
-
-                    build()
-                    return true
-                }
-
-            }
-        }
-        return false
-    }
 }

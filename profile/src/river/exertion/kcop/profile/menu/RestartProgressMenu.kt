@@ -6,12 +6,11 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object RestartProgressMenu : DisplayViewMenu {
 
@@ -39,15 +38,14 @@ object RestartProgressMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val assignableNavs = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Restart", {
-            ViewSwitchboard.closeMenu()
+        MenuActionParam("Restart", {
+            MenuView.closeMenu()
         }, "Narrative Restarted!"),
-        ActionParam("Cancel", {
+        MenuActionParam("Cancel", {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         })
     )
 

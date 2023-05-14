@@ -9,9 +9,8 @@ import ktx.actors.onEnter
 import ktx.assets.disposeSafely
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.asset.KcopFont
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.messaging.AudioViewMessage
+import river.exertion.kcop.view.layout.AudioView
 
 object KcopSkin {
 
@@ -30,11 +29,9 @@ object KcopSkin {
         Enter, Click, Swoosh
     }
 
-    fun addOnEnter(actor : Actor) { actor.onEnter { MessageChannelHandler.send(ViewPackage.AudioViewBridge, AudioViewMessage(
-            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Enter])) }}
+    fun addOnEnter(actor : Actor) { actor.onEnter { AudioView.playSound(uiSounds[UiSounds.Enter]) }}
 
-    fun addOnClick(actor : Actor) { actor.onClick { MessageChannelHandler.send(ViewPackage.AudioViewBridge, AudioViewMessage(
-            AudioViewMessage.AudioViewMessageType.PlaySound, uiSounds[UiSounds.Click])) }}
+    fun addOnClick(actor : Actor) { actor.onClick { AudioView.playSound(uiSounds[UiSounds.Click]) }}
 
     //experiments for border
 //        stage.addActor(Image(NinePatch(assets[TextureAssets.KoboldA])).apply { this.x = 0f; this.y = 0f; this.width = 10f; this.height = orthoCamera.viewportHeight })

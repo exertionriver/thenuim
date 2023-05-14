@@ -2,8 +2,7 @@ package river.exertion.kcop.view.menu
 
 import com.badlogic.gdx.Gdx
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.layout.MenuView
 import kotlin.system.exitProcess
 
 object MainMenu : DisplayViewMenu {
@@ -17,15 +16,15 @@ object MainMenu : DisplayViewMenu {
 
     override val breadcrumbEntries = mapOf<String, String>()
 
-    override val assignableNavs = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Exit kcop", {
+        MenuActionParam("Exit kcop", {
             Gdx.app.exit()
             exitProcess(0)
         }, "Peace Out"),
-        ActionParam("Close Menu", {
-            ViewSwitchboard.closeMenu()
+        MenuActionParam("Close Menu", {
+            MenuView.closeMenu()
         })
     )
 }

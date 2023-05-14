@@ -1,26 +1,16 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.AiHintBridge
-import river.exertion.kcop.view.ViewPackage.LogViewBridge
-import river.exertion.kcop.view.ViewPackage.TextViewBridge
-import river.exertion.kcop.view.messaging.AiHintMessage
-import river.exertion.kcop.view.messaging.LogViewMessage
-import river.exertion.kcop.view.messaging.TextViewMessage
 
-class AiView : Telegraph, ViewBase(ViewType.AI) {
+object AiView : ViewBase {
 
-    init {
-        MessageChannelHandler.enableReceive(AiHintBridge, this)
-    }
+    override var viewType = ViewType.AI
+    override var viewTable = Table()
 
     var hintTextEntries : MutableMap<String, String> = mutableMapOf()
 
@@ -39,53 +29,30 @@ class AiView : Telegraph, ViewBase(ViewType.AI) {
 
         innerButton.onClick {
             this@AiView.isChecked = !this@AiView.isChecked
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "AI character set to: ${if (this.isChecked) "On" else "Off"}" ))
+            LogView.addLog("AI character set to: ${if (this.isChecked) "On" else "Off"}")
 
-            if (isChecked) {
-                MessageChannelHandler.send(TextViewBridge, TextViewMessage(TextViewMessage.TextViewMessageType.HintText, hintText()))
-            } else {
-                MessageChannelHandler.send(TextViewBridge, TextViewMessage(TextViewMessage.TextViewMessageType.HintText))
-            }
+            if (!this@AiView.isChecked) clearHints()
         }
 
         return innerButton
     }
 
     override fun buildCtrl() {
-        this.add(Stack().apply {
+        viewTable.add(Stack().apply {
             this.add(backgroundColorImg())
             this.add(Table().apply {
                 this.add(clickButton()).align(Align.center).size(this@AiView.tableWidth() - 5, this@AiView.tableHeight() - 5)
             })
         } ).size(this.tableWidth(), this.tableHeight())
 
-        this.clip()
+        viewTable.clip()
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(AiHintBridge, msg.message) ) -> {
-                    val aiHintMessage: AiHintMessage = MessageChannelHandler.receiveMessage(AiHintBridge, msg.extraInfo)
+    fun addHint(eventId : String, eventReport : String) {
+        hintTextEntries[eventId] = eventReport
+    }
 
-                    when (aiHintMessage.aiHintMessageType) {
-                        AiHintMessage.AiHintMessageType.ClearHints -> hintTextEntries.clear()
-                        AiHintMessage.AiHintMessageType.AddHint -> {
-                            if (aiHintMessage.aiHintEventId != null && aiHintMessage.aiHintEventReport != null)
-                                hintTextEntries[aiHintMessage.aiHintEventId] = aiHintMessage.aiHintEventReport
-                        }
-                    }
-
-                    if (isChecked) {
-                        MessageChannelHandler.send(TextViewBridge, TextViewMessage(TextViewMessage.TextViewMessageType.HintText, hintText()))
-                    } else {
-                        MessageChannelHandler.send(TextViewBridge, TextViewMessage(TextViewMessage.TextViewMessageType.HintText))
-                    }
-
-                    return true
-                }
-            }
-        }
-        return false
+    fun clearHints() {
+        hintTextEntries.clear()
     }
 }

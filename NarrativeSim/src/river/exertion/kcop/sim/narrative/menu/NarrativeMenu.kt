@@ -1,7 +1,5 @@
 package river.exertion.kcop.sim.narrative.menu
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
@@ -9,21 +7,13 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.menu.RestartProgressMenu
 import river.exertion.kcop.sim.narrative.NarrativePackage
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuDataBridge
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
-import river.exertion.kcop.view.ViewPackage.MenuNavBridge
-import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.MenuNavMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.messaging.menuParams.MenuNavParams
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object NarrativeMenu : DisplayViewMenu {
 
@@ -64,15 +54,13 @@ object NarrativeMenu : DisplayViewMenu {
     )
 
     override val assignableNavs = mutableListOf(
-            ActionParam("Load >", {
+            MenuActionParam("Load >", {
                 DisplayViewMenuHandler.currentMenuTag = LoadNarrativeMenu.tag
-                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
             }),
-            ActionParam("Restart >", {
+            MenuActionParam("Restart >", {
                 DisplayViewMenuHandler.currentMenuTag = RestartProgressMenu.tag
-                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
             })
     )
 
-    override val actions = mutableListOf<ActionParam>()
+    override val actions = mutableListOf<MenuActionParam>()
 }

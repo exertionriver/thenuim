@@ -7,12 +7,11 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage.currentProfileAsset
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object SaveProgressMenu : DisplayViewMenu {
 
@@ -39,16 +38,15 @@ object SaveProgressMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val assignableNavs = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Save", {
-            ViewSwitchboard.closeMenu()
+        MenuActionParam("Save", {
             currentProfileAsset.save()
+            MenuView.closeMenu()
         }, "Progress Saved!"),
-        ActionParam("Cancel", {
+        MenuActionParam("Cancel", {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         })
     )
 }

@@ -46,12 +46,22 @@ data class DVLayout(
         imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageOut(texture)
     }
 
+    fun clearContent() {
+        clearImagePaneContent()
+        clearTextPaneContent()
+        clearAlphaPaneContent()
+    }
+
     fun clearImagePaneContent() {
         imagePanes().forEach { dvImagePane -> dvImagePane.paneTexture = null }
     }
 
     fun clearAlphaPaneContent() {
         panes().forEach { dvPane -> dvPane.alphaMask = 1f }
+    }
+
+    fun clearTextPaneContent() {
+        textPanes().forEach { dvTextPane -> dvTextPane.paneText = "" }
     }
 
     fun setTextLabelStyle(textLabelStyle: Label.LabelStyle) {
@@ -139,32 +149,9 @@ data class DVLayout(
         }
     }
 
-    fun clearTextPaneContent() {
-        textPanes().forEach { dvTextPane -> dvTextPane.paneText = "" }
-    }
-
     companion object {
         const val DvLayoutTag = "emptyLayout"
         fun dvLayout() = DVLayout(name= DvLayoutTag)
     }
-
-/*
-                (MessageChannelHandler.isType(DisplayModeBridge, msg.message) ) -> {
-                    this.currentLayoutMode = MessageChannelHandler.receiveMessage(DisplayModeBridge, msg.extraInfo)
-/*
-                    dvLayoutHandler.currentDvLayout.clearImagePaneContent()
-                    dvLayoutHandler.currentDvLayout.clearTextPaneContent()
-                    dvLayoutHandler.currentDvLayout.clearAlphaPaneContent()
-
-                    MessageChannelEnum.LOG_VIEW_BRIDGE.send(null, LogViewMessage(LogViewMessage.LogViewMessageType.LogEntry, "DisplayMode set to: ${if (currentLayoutMode) "Layout" else "Clear"}" ))
-*/
-
-                    build()
-                    return true
-                }
-
-
- */
-
 }
 

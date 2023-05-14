@@ -14,6 +14,7 @@ interface IAssets {
     }
 
     val iAssetLocation : String
+
     val iAssetExtension : String
 
     fun iAssetPath(iAssetFilename : String) = iAssetLocation + iAssetFilename + iAssetExtension

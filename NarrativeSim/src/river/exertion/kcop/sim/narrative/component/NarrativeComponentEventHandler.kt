@@ -1,13 +1,11 @@
 package river.exertion.kcop.sim.narrative.component
 
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.sim.narrative.structure.events.Event
 import river.exertion.kcop.sim.narrative.structure.events.HintTextEvent
 import river.exertion.kcop.sim.narrative.structure.events.ITriggerEvent
 import river.exertion.kcop.sim.narrative.structure.events.ReportTextEvent
-import river.exertion.kcop.view.ViewPackage.AiHintBridge
-import river.exertion.kcop.view.messaging.AiHintMessage
+import river.exertion.kcop.view.layout.AiView
 
 object NarrativeComponentEventHandler {
 
@@ -32,7 +30,7 @@ object NarrativeComponentEventHandler {
             }.sortedBy {
                 it.id
             }.forEach { event ->
-                MessageChannelHandler.send(AiHintBridge, AiHintMessage(AiHintMessage.AiHintMessageType.AddHint, event.id, (event as HintTextEvent).report))
+                AiView.addHint(event.id!!, (event as HintTextEvent).report)
             }
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
@@ -48,7 +46,7 @@ object NarrativeComponentEventHandler {
             }.sortedBy {
                 it.id
             }.forEach { timelineEvent ->
-                MessageChannelHandler.send(AiHintBridge, AiHintMessage(AiHintMessage.AiHintMessageType.AddHint, timelineEvent.id, (timelineEvent as HintTextEvent).report))
+                AiView.addHint(timelineEvent.id!!, (timelineEvent as HintTextEvent).report)
             }
         }
 

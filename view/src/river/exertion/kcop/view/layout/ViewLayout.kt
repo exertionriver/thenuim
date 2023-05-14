@@ -11,28 +11,19 @@ import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.messaging.KcopMessage
 
-class ViewLayout {
-
-    var displayView = DisplayView()
-    var textView = TextView()
-    var logView = LogView()
-    var statusView = StatusView()
-    var menuView = MenuView()
-    var inputsViewCtrl = InputView()
-    var aiView = AiView()
-    var pauseView = PauseView()
+object ViewLayout {
 
     lateinit var kcopButton : Button
 
     fun build(stage: Stage) {
-        stage.addActor(displayView.apply { this.build() })
-        stage.addActor(textView.apply { this.build() })
-        stage.addActor(logView.apply { this.build() })
-        stage.addActor(statusView.apply { this.build() })
-        stage.addActor(menuView.apply { this.build() })
-        stage.addActor(inputsViewCtrl.apply { this.build() })
-        stage.addActor(aiView.apply { this.build() })
-        stage.addActor(pauseView.apply { this.build() })
+        stage.addActor(DisplayView.apply { this.build() }.viewTable)
+        stage.addActor(TextView.apply { this.build() }.viewTable)
+        stage.addActor(LogView.apply { this.build() }.viewTable)
+        stage.addActor(StatusView.apply { this.build() }.viewTable)
+        stage.addActor(MenuView.apply { this.build() }.viewTable)
+        stage.addActor(InputView.apply { this.build() }.viewTable)
+        stage.addActor(AiView.apply { this.build() }.viewTable)
+        stage.addActor(PauseView.apply { this.build() }.viewTable)
 
         kcopButton = Button(KcopSkin.skin).apply { this.onClick {
             MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.KcopScreen))
@@ -42,33 +33,46 @@ class ViewLayout {
         kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
+    fun rebuild() {
+        DisplayView.build()
+        TextView.build()
+        LogView.build()
+        StatusView.build()
+        MenuView.build()
+        InputView.build()
+        AiView.build()
+        PauseView.build()
+    }
+
     val fadeOutDuration = .2f
     val fadeInDuration = fadeOutDuration * 4
     val moveDuration = fadeOutDuration * 2
 
     fun kcopScreen(offset : Vector2) {
-        displayView.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, moveDuration, Interpolation.linear)))
-        displayView.viewType = ViewType.DISPLAY
-        textView.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        logView.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        statusView.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        menuView.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        inputsViewCtrl.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        aiView.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        pauseView.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, moveDuration, Interpolation.linear)))
+        DisplayView.viewType = ViewType.DISPLAY
+
+        TextView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        LogView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        StatusView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        MenuView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        InputView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        AiView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        PauseView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+
         kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
     fun fullScreen(offset : Vector2) {
-        displayView.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, moveDuration, Interpolation.linear)))
-        displayView.viewType = ViewType.DISPLAY_FULLSCREEN
-        textView.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        logView.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        statusView.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        menuView.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        inputsViewCtrl.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        aiView.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        pauseView.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, moveDuration, Interpolation.linear)))
+        DisplayView.viewType = ViewType.DISPLAY_FULLSCREEN
+        TextView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        LogView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        StatusView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        MenuView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        InputView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        AiView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+        PauseView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
         kcopButton.addAction(Actions.sequence(Actions.show()))
     }
 }

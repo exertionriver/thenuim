@@ -1,13 +1,24 @@
 package river.exertion.kcop.sim.narrative.view.asset
 
-import com.badlogic.gdx.assets.AssetManager
-import ktx.assets.getAsset
-import ktx.assets.load
+import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.IAsset
+import river.exertion.kcop.asset.IAssets
 
-enum class DisplayViewLayoutAssets(val path: String) {
-    BasicPictureNarrative("kcop/layout/layoutBasicPictureNarrative.json"),
-    GoldenRatio("kcop/layout/layoutGoldenRatio.json")
+object DisplayViewLayoutAssets : IAssets {
+
+    override var values: MutableList<IAsset> = mutableListOf()
+
+    override fun byId(assetId : String?) : IAsset? = values.firstOrNull { it.assetId() == assetId }
+
+    fun byName(assetName : String?) : IAsset? = values.firstOrNull { it.assetName() == assetName }
+
+    override fun byTitle(assetTitle : String?) : IAsset? = values.firstOrNull { it.assetTitle() == assetTitle }
+
+    override fun reload() : MutableList<IAsset> {
+        values = AssetManagerHandler.reloadLocalAssets<DisplayViewLayoutAsset>(iAssetLocation).toMutableList()
+        return values
+    }
+
+    override val iAssetLocation = "kcop/layout/"
+    override val iAssetExtension = ".json"
 }
-
-fun AssetManager.load(asset: DisplayViewLayoutAssets) = load<DisplayViewLayoutAsset>(asset.path)
-operator fun AssetManager.get(asset: DisplayViewLayoutAssets) = getAsset<DisplayViewLayoutAsset>(asset.path)

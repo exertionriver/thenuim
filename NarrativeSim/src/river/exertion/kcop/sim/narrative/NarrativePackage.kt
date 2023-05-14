@@ -1,6 +1,9 @@
 package river.exertion.kcop.sim.narrative
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
+import ktx.assets.getAsset
+import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.IAsset
@@ -12,20 +15,23 @@ import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IImmersionPackage
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
-import river.exertion.kcop.sim.narrative.asset.NarrativeAssetLoader
-import river.exertion.kcop.sim.narrative.asset.NarrativeAssets
+import river.exertion.kcop.sim.narrative.asset.*
 import river.exertion.kcop.sim.narrative.menu.LoadNarrativeMenu
 import river.exertion.kcop.sim.narrative.menu.NarrativeMenu
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage
 import river.exertion.kcop.sim.narrative.system.NarrativeTextSystem
+import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
-import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAsset
+import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
+import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetStore
+import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
+import river.exertion.kcop.view.layout.AudioView
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object NarrativePackage : IImmersionPackage {
     override var id = Id.randomId()
@@ -43,7 +49,15 @@ object NarrativePackage : IImmersionPackage {
 
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
+        AssetManagerHandler.assets.setLoader(NarrativeImmersionAsset::class.java, NarrativeImmersionAssetLoader(lfhr))
+        AssetManagerHandler.assets.setLoader(DisplayViewLayoutAsset::class.java, DisplayViewLayoutAssetLoader(lfhr))
+
+        DisplayViewLayoutAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
+
+        AssetManagerHandler.assets.finishLoading()
     }
+
+    fun dvLayoutByTag(dvTag : String) = (DisplayViewLayoutAssets.byName(dvTag) as DisplayViewLayoutAsset).DVLayout ?: DVLayout.dvLayout()
 
     override fun loadSystems() {
         SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
@@ -54,13 +68,17 @@ object NarrativePackage : IImmersionPackage {
         DisplayViewMenuHandler.addMenu(NarrativeMenu)
 
         MainMenu.assignableNavs.add(
-            ActionParam("Narrative >", {
+            MenuActionParam("Narrative >", {
                 DisplayViewMenuHandler.currentMenuTag = NarrativeMenu.tag
-                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         }) )
     }
 
-    override fun build() : Actor = DVLayoutHandler.buildLayout()
+    override fun build() : Actor {
+        val dv = DVLayoutHandler.build()
+        DisplayView.currentDisplayView = dv
+        DisplayView.build()
+        return dv
+    }
 
     override fun inputProcessor() = NarrativeInputProcessor
 
@@ -68,10 +86,24 @@ object NarrativePackage : IImmersionPackage {
 
     override fun showImmersionTimer(immersionTimerPair: ImmersionTimerPair) = ImmersionTimerSwitchboard.showImmersionTimer(timerPair())
 
+    fun clearContent() {
+        AudioView.stopMusic()
+        DVLayoutHandler.currentDvLayout.clearContent()
+        build()
+    }
+
     override fun dispose() {
 
     }
 
     const val NarrativeBridge = "NarrativeBridge"
     const val NarrativeMenuDataBridge = "NarrativeMenuDataBridge"
+}
+
+fun AssetManager.load(asset: DisplayViewLayoutAssetStore) = load<DisplayViewLayoutAsset>(asset.path)
+operator fun AssetManager.get(asset: DisplayViewLayoutAssetStore) = getAsset<DisplayViewLayoutAsset>(asset.path)
+
+operator fun AssetManager.get(asset: DisplayViewLayoutAsset) = getAsset<DisplayViewLayoutAsset>(asset.assetPath).also {
+    if (it.status != null) println ("Asset Status: ${it.status}")
+    if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
 }

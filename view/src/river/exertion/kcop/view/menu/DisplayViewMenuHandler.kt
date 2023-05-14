@@ -1,12 +1,17 @@
 package river.exertion.kcop.view.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.view.layout.DisplayView
 
 object DisplayViewMenuHandler {
 
     val displayViewMenus = mutableListOf<DisplayViewMenu>()
 
     var currentMenuTag = MainMenu.tag
+        set(value) {
+            field = value
+            DisplayView.build()
+        }
 
     fun checkByTag(menuTag : String) : DisplayViewMenu? {
         return displayViewMenus.firstOrNull { it.tag == menuTag }

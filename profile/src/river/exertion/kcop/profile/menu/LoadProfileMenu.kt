@@ -11,12 +11,11 @@ import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object LoadProfileMenu : DisplayViewMenu {
 
@@ -50,11 +49,11 @@ object LoadProfileMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val assignableNavs = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Yes", {
-            ViewSwitchboard.closeMenu()
+        MenuActionParam("Yes", {
+            MenuView.closeMenu()
             ProfilePackage.currentProfileAsset = ProfilePackage.selectedProfileAsset
             MessageChannelHandler.send(ECSPackage.EngineComponentBridge, EngineComponentMessage(
                     EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
@@ -62,9 +61,8 @@ object LoadProfileMenu : DisplayViewMenu {
             ) )
         }, "Profile Loaded!"),
         //go back a menu
-        ActionParam("No", {
+        MenuActionParam("No", {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         })
     )
 }

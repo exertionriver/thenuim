@@ -3,6 +3,7 @@ package river.exertion.kcop.profile.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import river.exertion.kcop.ecs.ECSPackage
 import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
@@ -103,6 +104,14 @@ class ProfileComponent : IComponent, Telegraph {
     companion object {
         fun has(entity : Entity?) : Boolean = entity?.components?.firstOrNull{ it is ProfileComponent } != null
         fun getFor(entity : Entity?) : ProfileComponent? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileComponent } as ProfileComponent else null
+
+        fun ecsInit() {
+            MessageChannelHandler.send(
+                    EngineComponentBridge, EngineComponentMessage(
+                    EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
+                    SubjectEntity.entityName, ProfileComponent::class.java)
+            )
+        }
 
         fun isValid(profileComponent: ProfileComponent?) : Boolean {
             return (profileComponent?.profile != null && profileComponent.isInitialized)

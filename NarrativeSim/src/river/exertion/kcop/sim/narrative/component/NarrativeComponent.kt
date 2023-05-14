@@ -19,11 +19,8 @@ import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
 import river.exertion.kcop.sim.narrative.view.DVLayout
-import river.exertion.kcop.view.ViewPackage.DisplayViewTextBridge
-import river.exertion.kcop.view.ViewPackage.StatusViewBridge
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.messaging.DisplayViewTextMessage
-import river.exertion.kcop.view.messaging.StatusViewMessage
+import river.exertion.kcop.view.layout.StatusView
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -91,7 +88,7 @@ class NarrativeComponent : IComponent, Telegraph {
                 }
 
                 //set the narrative layout
-                MessageChannelHandler.send(DisplayViewTextBridge, DisplayViewTextMessage(narrative!!.layoutTag))
+//                DVLayoutHandler.currentDvLayout = NarrativePackage.dvLayoutByTag(narrative!!.layoutTag)
 
                 if (narrativeComponentInit.narrativeImmersion != null) {
                     narrativeImmersion = narrativeComponentInit.narrativeImmersion
@@ -119,8 +116,7 @@ class NarrativeComponent : IComponent, Telegraph {
 //                    null, componentId()
 //                ))
 
-                // clear statuses
-                MessageChannelHandler.send(StatusViewBridge, StatusViewMessage(StatusViewMessage.StatusViewMessageType.ClearStatuses))
+                StatusView.clearStatuses()
 
                 super.initialize(initData)
 

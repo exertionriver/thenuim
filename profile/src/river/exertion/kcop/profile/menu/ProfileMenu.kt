@@ -14,8 +14,7 @@ import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object ProfileMenu : DisplayViewMenu {
 
@@ -57,16 +56,14 @@ object ProfileMenu : DisplayViewMenu {
     )
 
     override val assignableNavs = mutableListOf(
-            ActionParam("Load >", {
+            MenuActionParam("Load >", {
                 DisplayViewMenuHandler.currentMenuTag = LoadProfileMenu.tag
-                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
             }),
-            ActionParam("New >", {
+            MenuActionParam("New >", {
                 NewProfileMenu.newName = Profile.genName()
                 DisplayViewMenuHandler.currentMenuTag = NewProfileMenu.tag
-                MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
             })
     )
 
-    override val actions = mutableListOf<ActionParam>()
+    override val actions = mutableListOf<MenuActionParam>()
 }

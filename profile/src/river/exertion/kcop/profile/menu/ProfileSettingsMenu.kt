@@ -14,12 +14,11 @@ import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.option
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.updateSetting
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object ProfileSettingsMenu : DisplayViewMenu {
 
@@ -52,20 +51,18 @@ object ProfileSettingsMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val assignableNavs = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Update", {
-            ViewSwitchboard.closeMenu()
+        MenuActionParam("Update", {
+            MenuView.closeMenu()
             ProfilePackage.currentProfileAsset.settings = settings
             ProfilePackage.currentProfileAsset.save()
 
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         }, "Settings Updated!"),
-        ActionParam("Cancel", {
+        MenuActionParam("Cancel", {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         })
     )
 }

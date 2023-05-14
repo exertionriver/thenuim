@@ -1,24 +1,16 @@
 package river.exertion.kcop.sim.narrative.menu
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuDataBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage
-import river.exertion.kcop.view.ViewPackage.MenuViewBridge
 import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage
-import river.exertion.kcop.view.messaging.menuParams.ActionParam
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.menu.MenuActionParam
 
 object LoadNarrativeMenu : DisplayViewMenu {
 
@@ -54,18 +46,17 @@ object LoadNarrativeMenu : DisplayViewMenu {
         MainMenu.tag to MainMenu.label
     )
 
-    override val assignableNavs = mutableListOf<ActionParam>()
+    override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val actions = mutableListOf(
-        ActionParam("Yes", {
-            ViewSwitchboard.closeMenu()
+        MenuActionParam("Yes", {
+            MenuView.closeMenu()
             NarrativePackage.currentImmersionAsset = NarrativePackage.selectedImmersionAsset
             DisplayView.currentDisplayView = NarrativePackage.build()
-            MessageChannelHandler.send(ViewPackage.DisplayViewBridge, DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild) )
         }, "Narrative Loaded!"),
         //go back a menu
-        ActionParam("No", {
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(breadcrumbEntries.keys.toList()[0]) )
+        MenuActionParam("No", {
+            DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
         })
     )
 

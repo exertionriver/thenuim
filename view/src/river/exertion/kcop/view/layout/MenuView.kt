@@ -1,7 +1,5 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -10,44 +8,45 @@ import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
-import river.exertion.kcop.view.ViewPackage.MenuViewBridge
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler
+import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.KcopMessage
-import river.exertion.kcop.view.messaging.MenuViewMessage
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
 
-class MenuView : Telegraph, ViewBase(ViewType.MENU) {
+object MenuView : ViewBase {
 
-    init {
-        MessageChannelHandler.enableReceive(MenuViewBridge, this)
+    override var viewType = ViewType.MENU
+    override var viewTable = Table()
 
-        assignableButtons[0] = {
-        if (this@MenuView.isChecked[0] == true)
-            ViewSwitchboard.openMenu()
-        else
-            ViewSwitchboard.closeMenu()
-        }
+    val menuButton = 0
+    val fullScreen = 3
 
-        assignableButtons[1] = {
-            KcopSkin.displayMode = this@MenuView.isChecked[1]!!
-        }
-
-        assignableButtons[2] = {
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, 2, this@MenuView.isChecked[2]!!))
-        }
-
-        assignableButtons[3] = {
+    var assignableButtons = mutableMapOf(
+        menuButton to {
+            if (isChecked[menuButton] == true)
+                openMenu()
+            else
+                closeMenu()
+        },
+        1 to {
+            KcopSkin.displayMode = isChecked[1]!!
+            ViewLayout.rebuild()
+        },
+        2 to {
+//            KcopSkin.displayMode = isChecked[2]!!
+//            ViewLayout.rebuild()
+        },
+        fullScreen to {
             MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.FullScreen))
+        },
+        4 to {
+//            KcopSkin.displayMode = isChecked[4]!!
+//            ViewLayout.rebuild()
+        },
+        5 to {
+//            KcopSkin.displayMode = isChecked[5]!!
+//            ViewLayout.rebuild()
         }
-
-        assignableButtons[4] = {
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, 4, this@MenuView.isChecked[4]!!))
-        }
-
-        assignableButtons[5] = {
-            MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, 5, this@MenuView.isChecked[5]!!))
-        }
-
-    }
+    )
 
     var isChecked : MutableMap<Int, Boolean> = mutableMapOf()
 
@@ -58,10 +57,6 @@ class MenuView : Telegraph, ViewBase(ViewType.MENU) {
         (0..5).forEach { idx ->
 
             val innerButton = Button(KcopSkin.skin).apply { KcopSkin.addOnClick(this) }
-
-            if (assignableButtons[idx] == null) {
-                assignableButtons[idx] = { MessageChannelHandler.send(MenuViewBridge, MenuViewMessage(null, idx, this@MenuView.isChecked[idx]!!)) }
-            }
 
             //override from ctrl
             innerButton.isChecked = this@MenuView.isChecked[idx] == true
@@ -99,33 +94,29 @@ class MenuView : Telegraph, ViewBase(ViewType.MENU) {
     }
 
     override fun buildCtrl() {
-        this.add(Stack().apply {
+        viewTable.add(Stack().apply {
             this.add(backgroundColorImg())
             this.add(buttonLayout())
         } ).size(this.tableWidth(), this.tableHeight())
 
-        this.clip()
+        viewTable.clip()
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(MenuViewBridge, msg.message) ) -> {
-                    val menuViewMessage : MenuViewMessage = MessageChannelHandler.receiveMessage(MenuViewBridge, msg.extraInfo)
-
-                    if (menuViewMessage.menuButtonIdx != null) {
-                        this@MenuView.isChecked[menuViewMessage.menuButtonIdx] = menuViewMessage.isChecked
-                    }
-
-                    build()
-                    return true
-                }
-            }
-        }
-        return false
+    fun openMenu() {
+        PauseView.isChecked = true
+        PauseView.build()
+        DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
+        DisplayView.menuOpen = true
+        DisplayView.build()
     }
 
-    companion object {
-        var assignableButtons = mutableMapOf<Int, () -> Unit>()
+    fun closeMenu() {
+        isChecked[menuButton] = false
+        MenuView.build()
+        PauseView.isChecked = false
+        PauseView.build()
+        DisplayView.menuOpen = false
+        DisplayView.build()
     }
+
 }

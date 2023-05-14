@@ -1,9 +1,16 @@
 package river.exertion.kcop.view
 
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader
+import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import ktx.assets.getAsset
+import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
@@ -24,39 +31,23 @@ object ViewPackage : IKcopPackage {
 
     override fun loadChannels() {
         MessageChannelHandler.addChannel(MessageChannel(KcopBridge, KcopMessage::class))
-
-        MessageChannelHandler.addChannel(MessageChannel(AiHintBridge, AiHintMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(AudioViewBridge, AudioViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(DisplayViewBridge, DisplayViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(DisplayViewTextBridge, DisplayViewTextMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(DisplayViewTextureBridge, DisplayViewTextureMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(InputViewBridge, InputViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(LogViewBridge, LogViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(MenuViewBridge, MenuViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(PauseViewBridge, PauseViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(StatusViewBridge, StatusViewMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(TextViewBridge, TextViewMessage::class))
-
-        MessageChannelHandler.addChannel(MessageChannel(MenuNavBridge, MenuNavMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(ImmersionPauseBridge, String::class))
-        MessageChannelHandler.addChannel(MessageChannel(ImmersionKeypressBridge, String::class))
     }
 
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(AssetManagerHandler.ifhr))
         AssetManagerHandler.assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(AssetManagerHandler.ifhr))
-        FreeTypeFontAssets.values().forEach { AssetManagerHandler.assets.load(it) }
-        TextureAssets.values().forEach { AssetManagerHandler.assets.load(it) }
-        SkinAssets.values().forEach { AssetManagerHandler.assets.load(it) }
-        SoundAssets.values().forEach { AssetManagerHandler.assets.load(it) }
-        MusicAssets.values().forEach { AssetManagerHandler.assets.load(it) }
+        FreeTypeFontAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
+        TextureAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
+        SkinAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
+        SoundAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
+        MusicAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
 
         AssetManagerHandler.assets.finishLoading()
 
-        KcopSkin.skin = AssetManagerHandler.assets[SkinAssets.KcopUi]
-        KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = AssetManagerHandler.assets[SoundAssets.Click]
-        KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = AssetManagerHandler.assets[SoundAssets.Enter]
-        KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = AssetManagerHandler.assets[SoundAssets.Swoosh]
+        KcopSkin.skin = AssetManagerHandler.assets[SkinAssetStore.KcopUi]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = AssetManagerHandler.assets[SoundAssetStore.Click]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = AssetManagerHandler.assets[SoundAssetStore.Enter]
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = AssetManagerHandler.assets[SoundAssetStore.Swoosh]
     }
 
     override fun loadSystems() {
@@ -74,20 +65,41 @@ object ViewPackage : IKcopPackage {
     }
 
     const val KcopBridge = "KcopBridge"
-
-    const val AiHintBridge = "AiHintBridge"
-    const val AudioViewBridge = "AudioViewBridge"
-    const val DisplayViewBridge = "DisplayViewBridge"
-    const val DisplayViewTextBridge = "DisplayViewTextBridge"
-    const val DisplayViewTextureBridge = "DisplayViewTextureBridge"
-    const val InputViewBridge = "InputViewBridge"
-    const val LogViewBridge = "LogViewBridge"
-    const val MenuViewBridge = "MenuViewBridge"
-    const val PauseViewBridge = "PauseViewBridge"
-    const val StatusViewBridge = "StatusViewBridge"
-    const val TextViewBridge = "TextViewBridge"
-
-    const val MenuNavBridge = "MenuNavBridge"
-    const val ImmersionPauseBridge = "ImmersionPauseBridge"
-    const val ImmersionKeypressBridge = "ImmersionKeypressBridge"
 }
+
+//asset support
+
+val bfp = BitmapFontLoader.BitmapFontParameter().apply {
+    this.genMipMaps = true
+    this.minFilter = Texture.TextureFilter.Linear
+    this.magFilter = Texture.TextureFilter.Linear
+}
+
+fun AssetManager.load(asset: BitmapFontAssetStore) = load<BitmapFont>(asset.path, bfp)
+operator fun AssetManager.get(asset: BitmapFontAssetStore) = getAsset<BitmapFont>(asset.path)
+
+fun AssetManager.load(asset: FreeTypeFontAssetStore) = load(asset.path, BitmapFont::class.java,
+        FreetypeFontLoader.FreeTypeFontLoaderParameter().apply {
+            this.fontParameters.genMipMaps = true
+            this.fontParameters.minFilter = Texture.TextureFilter.MipMapLinearLinear
+            this.fontParameters.magFilter = Texture.TextureFilter.Linear
+            this.fontParameters.characters = this.fontParameters.characters + "↑" + "↓"
+            this.fontParameters.size = FontSize.baseFontSize
+            this.fontFileName = asset.path
+        })
+
+operator fun AssetManager.get(asset: FreeTypeFontAssetStore) = getAsset<BitmapFont>(asset.path).apply { this.data.setScale(
+        FontSize.TEXT.fontScale())
+}
+
+fun AssetManager.load(asset: MusicAssetStore) = load<Music>(asset.path)
+operator fun AssetManager.get(asset: MusicAssetStore) = getAsset<Music>(asset.path)
+
+fun AssetManager.load(asset: SkinAssetStore) = load<Skin>(asset.path)
+operator fun AssetManager.get(asset: SkinAssetStore) = getAsset<Skin>(asset.path)
+
+fun AssetManager.load(asset: SoundAssetStore) = load<Music>(asset.path)
+operator fun AssetManager.get(asset: SoundAssetStore) = getAsset<Music>(asset.path)
+
+fun AssetManager.load(asset: TextureAssetStore) = load<Texture>(asset.path)
+operator fun AssetManager.get(asset: TextureAssetStore) = getAsset<Texture>(asset.path)

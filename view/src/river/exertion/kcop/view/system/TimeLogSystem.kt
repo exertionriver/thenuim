@@ -5,10 +5,8 @@ import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.oneOf
 import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
-import river.exertion.kcop.view.ViewPackage.LogViewBridge
-import river.exertion.kcop.view.messaging.LogViewMessage
+import river.exertion.kcop.view.layout.LogView
 
 class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class).get(), 1/60f) {
 
@@ -18,17 +16,21 @@ class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::cla
         val irlTimeComponent = IRLTimeComponent.getFor(entity)
 
         if (irlTimeComponent != null) {
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.LocalTime, irlTimeComponent.localTime()))
+            LogView.localTimeStr = irlTimeComponent.localTime()
+            LogView.rebuildTextTimeReadout()
         } else {
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.LocalTime, ImmersionTimer.CumlTimeZero))
+            LogView.localTimeStr = ImmersionTimer.CumlTimeZero
+            LogView.rebuildTextTimeReadout()
         }
 
         if ( immersionTimerComponent != null ) {
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.InstImmersionTime, immersionTimerComponent.instImmersionTime()) )
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.CumlImmersionTime, immersionTimerComponent.cumlImmersionTime()) )
+            LogView.instImmersionTimeStr = immersionTimerComponent.instImmersionTime()
+            LogView.cumlImmersionTimeStr = immersionTimerComponent.cumlImmersionTime()
+            LogView.rebuildTextTimeReadout()
         } else {
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.InstImmersionTime, ImmersionTimer.CumlTimeZero) )
-            MessageChannelHandler.send(LogViewBridge, LogViewMessage(LogViewMessage.LogViewMessageType.CumlImmersionTime, ImmersionTimer.CumlTimeZero) )
+            LogView.instImmersionTimeStr = ImmersionTimer.CumlTimeZero
+            LogView.cumlImmersionTimeStr = ImmersionTimer.CumlTimeZero
+            LogView.rebuildTextTimeReadout()
         }
     }
 }

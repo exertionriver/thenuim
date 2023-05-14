@@ -1,25 +1,18 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.TextViewBridge
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.messaging.TextViewMessage
 
-class TextView : Telegraph, ViewBase(ViewType.TEXT) {
+object TextView : ViewBase {
 
-    init {
-        MessageChannelHandler.enableReceive(TextViewBridge, this)
-    }
+    override var viewType = ViewType.TEXT
+    override var viewTable = Table()
 
     var currentText : String = "noLoad"
-    var currentHintText : String = ""
     var currentPrompts : List<String>? = null
 
     private lateinit var scrollPane : ScrollPane
@@ -28,21 +21,22 @@ class TextView : Telegraph, ViewBase(ViewType.TEXT) {
 
     fun textScrollPane() : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
+        val innerTable = Table().padLeft(ViewType.padWidth(KcopSkin.screenWidth)).padRight(ViewType.padWidth(KcopSkin.screenWidth)).padTop(
             ViewType.padHeight(
-                height
+                KcopSkin.screenHeight
             )
         ).padBottom(
-            ViewType.padHeight(height)
+            ViewType.padHeight(KcopSkin.screenHeight)
         )
 
-        val textLabel = Label(currentText, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
-        val hintLabel = Label(currentHintText, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor.triad().first))
+        val textLabel = Label(currentText, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
 
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
 
-        if (!currentHintText.isBlank()) {
+        if (AiView.hintText().isNotBlank()) {
+            val hintLabel = Label(AiView.hintText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().triad().first))
+
             innerTable.row()
             innerTable.add(hintLabel).growX()
         }
@@ -66,17 +60,17 @@ class TextView : Telegraph, ViewBase(ViewType.TEXT) {
 
     fun promptPane() : Table {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(width)).padRight(ViewType.padWidth(width)).padTop(
+        val innerTable = Table().padLeft(ViewType.padWidth(KcopSkin.screenWidth)).padRight(ViewType.padWidth(KcopSkin.screenWidth)).padTop(
             ViewType.padHeight(
-                height
+                    KcopSkin.screenHeight
             )
         ).padBottom(
-            ViewType.padHeight(height)
+            ViewType.padHeight(KcopSkin.screenHeight)
         )
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
+                val logLabel = Label(entry, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()
@@ -91,7 +85,7 @@ class TextView : Telegraph, ViewBase(ViewType.TEXT) {
 
     override fun buildCtrl() {
 
-        this.add(Stack().apply {
+        viewTable.add(Stack().apply {
             this.add(backgroundColorImg())
             this.add(Table().apply {
                 this.add(textScrollPane()).grow()
@@ -99,34 +93,6 @@ class TextView : Telegraph, ViewBase(ViewType.TEXT) {
                 this.add(promptPane()).growX()
             })
         }).size(this.tableWidth(), this.tableHeight())
-        this.clip()
-    }
-
-    @Suppress("NewApi")
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(TextViewBridge, msg.message) ) -> {
-                    val textViewMessage: TextViewMessage = MessageChannelHandler.receiveMessage(TextViewBridge, msg.extraInfo)
-
-                    when (textViewMessage.textViewMessageType) {
-                        TextViewMessage.TextViewMessageType.ReportText ->
-                            if (textViewMessage.narrativeText != null && textViewMessage.prompts != null) {
-                                currentText = textViewMessage.narrativeText
-                                currentPrompts = textViewMessage.prompts
-                            } else {
-                                currentText = ""
-                                currentPrompts = null
-                            }
-                        TextViewMessage.TextViewMessageType.HintText ->
-                            currentHintText = textViewMessage.narrativeText ?: ""
-                    }
-
-                    build()
-                    return true
-                }
-            }
-        }
-        return false
+        viewTable.clip()
     }
 }

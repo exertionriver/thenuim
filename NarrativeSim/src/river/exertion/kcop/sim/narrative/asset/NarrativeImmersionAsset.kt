@@ -11,6 +11,7 @@ import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
 
 class NarrativeImmersionAsset(var narrativeImmersion : NarrativeImmersion? = null) : IAsset {
+
     override lateinit var assetPath : String
     override var status : String? = null
     override var statusDetail : String? = null
@@ -21,7 +22,7 @@ class NarrativeImmersionAsset(var narrativeImmersion : NarrativeImmersion? = nul
 
     override fun assetTitle() = assetPath
 
-    override fun newAssetFilename(): String = NarrativeImmersionAssets.narrativeImmersionAssetPath(assetName())
+    override fun newAssetFilename(): String = NarrativeImmersionAssets.iAssetPath(assetName())
 
     override fun assetInfo() : List<String> {
 

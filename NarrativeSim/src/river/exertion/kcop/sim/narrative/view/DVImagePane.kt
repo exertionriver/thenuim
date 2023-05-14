@@ -11,11 +11,7 @@ import com.badlogic.gdx.utils.Timer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewPackage.DisplayViewBridge
-import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
-import river.exertion.kcop.view.messaging.DisplayViewMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
+import river.exertion.kcop.view.layout.DisplayView
 
 @Serializable
 class DVImagePane : DVPane() {
@@ -66,25 +62,16 @@ class DVImagePane : DVPane() {
                         val alpha = this@DVImagePane.alphaMask
                         if (alpha >= .1f) {
                             this@DVImagePane.alphaMask = alpha - .1f
-                            MessageChannelHandler.send(
-                                DisplayViewBridge,
-                                DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild)
-                            )
+                            DisplayView.build()
                         } else {
                             this@DVImagePane.textureLock = null
-                            MessageChannelHandler.send(
-                                DisplayViewBridge,
-                                DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild)
-                            )
+                            DisplayView.build()
                             this.cancel()
                         }
                     } else {
 //                        println("texture unlocked! [$layoutPaneIdx]")
                         this@DVImagePane.alphaMask = 0f
-                        MessageChannelHandler.send(
-                            DisplayViewBridge,
-                            DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild)
-                        )
+                        DisplayView.build()
                         this.cancel()
                     }
                 }
@@ -104,27 +91,18 @@ class DVImagePane : DVPane() {
                         val alpha = this@DVImagePane.alphaMask
                         if (alpha <= .9f) {
                             this@DVImagePane.alphaMask = alpha + .1f
-                            MessageChannelHandler.send(
-                                DisplayViewBridge,
-                                DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild)
-                            )
+                            DisplayView.build()
                         } else {
                             this@DVImagePane.textureLock = null
                             this@DVImagePane.paneTexture = null
                             this@DVImagePane.alphaMask = 1f
-                            MessageChannelHandler.send(
-                                DisplayViewBridge,
-                                DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild)
-                            )
+                            DisplayView.build()
                             this.cancel()
                         }
                     } else {
 //                        println("texture unlocked! [$layoutPaneIdx]")
                         this@DVImagePane.alphaMask = 1f
-                        MessageChannelHandler.send(
-                            DisplayViewBridge,
-                            DisplayViewMessage(DisplayViewMessage.DisplayViewMessageType.Rebuild)
-                        )
+                        DisplayView.build()
                         this.cancel()
                     }
                 }

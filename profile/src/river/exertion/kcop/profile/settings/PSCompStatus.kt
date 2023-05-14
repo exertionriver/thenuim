@@ -1,6 +1,6 @@
 package river.exertion.kcop.profile.settings
 
-import river.exertion.kcop.view.switchboard.ViewSwitchboard
+import river.exertion.kcop.view.layout.StatusView
 
 object PSCompStatus : ProfileSetting {
 
@@ -12,10 +12,10 @@ object PSCompStatus : ProfileSetting {
 
     override val options = listOf (
         ProfileSettingOption("show","Show") {
-            ViewSwitchboard.showCompletionStatus()
+            StatusView.showCompletionStatus()
         },
         ProfileSettingOption("hide", "Hide") {
-            ViewSwitchboard.hideCompletionStatus()
+            StatusView.hideCompletionStatus()
         }
     )
 }

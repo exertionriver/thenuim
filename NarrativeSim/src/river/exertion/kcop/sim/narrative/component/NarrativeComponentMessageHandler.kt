@@ -19,12 +19,9 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage.Companion.Na
 import river.exertion.kcop.sim.narrative.messaging.NarrativeStatusMessage
 import river.exertion.kcop.sim.narrative.messaging.NarrativeStatusMessage.Companion.NarrativeStatusBridge
 import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
-import river.exertion.kcop.view.ViewPackage.AudioViewBridge
-import river.exertion.kcop.view.ViewPackage.DisplayViewTextureBridge
-import river.exertion.kcop.view.ViewPackage.StatusViewBridge
-import river.exertion.kcop.view.messaging.AudioViewMessage
-import river.exertion.kcop.view.messaging.DisplayViewTextureMessage
-import river.exertion.kcop.view.messaging.StatusViewMessage
+import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
+import river.exertion.kcop.view.layout.AudioView
+import river.exertion.kcop.view.layout.StatusView
 
 object NarrativeComponentMessageHandler {
 
@@ -60,12 +57,12 @@ object NarrativeComponentMessageHandler {
                     NarrativeStatusMessage.NarrativeStatusMessageType.AddStatus -> {
                         //completion status
                         if (narrativeStatusMessage.key == null) {
-                            MessageChannelHandler.send(StatusViewBridge, StatusViewMessage(StatusViewMessage.StatusViewMessageType.AddStatus, sequentialStatusKey(), seqNarrativeProgress()))
+                            StatusView.addOrUpdateStatus(sequentialStatusKey(), seqNarrativeProgress())
                         }
                     }
                     NarrativeStatusMessage.NarrativeStatusMessageType.RemoveStatus -> {
                         if (narrativeStatusMessage.key == null) {
-                            MessageChannelHandler.send(StatusViewBridge, StatusViewMessage(StatusViewMessage.StatusViewMessageType.RemoveStatus, sequentialStatusKey()))
+                            StatusView.removeStatus(sequentialStatusKey())
                         }
                     }
                 }
@@ -109,79 +106,57 @@ object NarrativeComponentMessageHandler {
                 when (narrativeMediaMessage.narrativeMediaMessageType) {
                     NarrativeMediaMessage.NarrativeMediaMessageType.PlaySound -> {
                         if ( narrative!!.sounds.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.PlaySound, narrative!!.sounds[narrativeMediaMessage.assetFilename]!!.asset)
-                            )
+                            AudioView.playSound(narrative!!.sounds[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.PlayMusic -> {
                         if ( narrative!!.music.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.PlayMusic, narrative!!.music[narrativeMediaMessage.assetFilename]!!.asset)
-                            )
+                            AudioView.playMusic(narrative!!.music[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.StopMusic -> {
                         if ( narrative!!.music.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.StopMusic, null)
-                            )
+                            AudioView.stopMusic()
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.FadeInMusic -> {
                         if ( narrative!!.music.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.FadeInMusic, narrative!!.music[narrativeMediaMessage.assetFilename]!!.asset)
-                            )
+                            AudioView.fadeInMusic(narrative!!.music[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.FadeOutMusic -> {
                         if ( narrative!!.music.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.FadeOutMusic, null)
-                            )
+                            AudioView.fadeOutMusic()
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.CrossFadeMusic -> {
                         if ( narrative!!.music.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(AudioViewBridge, AudioViewMessage(
-                                    AudioViewMessage.AudioViewMessageType.CrossFadeMusic, narrative!!.music[narrativeMediaMessage.assetFilename]!!.asset)
-                            )
+                            AudioView.crossFadeMusic(narrative!!.music[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.ShowImage -> {
                         if ( narrative!!.textures.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(DisplayViewTextureBridge, DisplayViewTextureMessage(
-                                    DisplayViewTextureMessage.DisplayViewTextureMessageType.ShowImage, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset, narrativeMediaMessage.imageLayoutPaneIdx?.toInt())
-                            )
+                            DVLayoutHandler.setImagePaneContent(narrativeMediaMessage.imageLayoutPaneIdx?.toInt()!!, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.HideImage -> {
                         if ( narrative!!.textures.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(DisplayViewTextureBridge, DisplayViewTextureMessage(
-                                    DisplayViewTextureMessage.DisplayViewTextureMessageType.HideImage, null, narrativeMediaMessage.imageLayoutPaneIdx?.toInt())
-                            )
+                            DVLayoutHandler.setImagePaneContent(narrativeMediaMessage.imageLayoutPaneIdx?.toInt()!!, null)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.FadeInImage -> {
                         if ( narrative!!.textures.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(DisplayViewTextureBridge, DisplayViewTextureMessage(
-                                    DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeInImage, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset, narrativeMediaMessage.imageLayoutPaneIdx?.toInt())
-                            )
+                            DVLayoutHandler.fadeImageIn(narrativeMediaMessage.imageLayoutPaneIdx?.toInt()!!, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.FadeOutImage -> {
                         if ( narrative!!.textures.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(DisplayViewTextureBridge, DisplayViewTextureMessage(
-                                    DisplayViewTextureMessage.DisplayViewTextureMessageType.FadeOutImage, null, narrativeMediaMessage.imageLayoutPaneIdx?.toInt())
-                            )
+                            DVLayoutHandler.fadeImageOut(narrativeMediaMessage.imageLayoutPaneIdx?.toInt()!!, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                     NarrativeMediaMessage.NarrativeMediaMessageType.CrossFadeImage -> {
                         if ( narrative!!.textures.keys.contains(narrativeMediaMessage.assetFilename) ) {
-                            MessageChannelHandler.send(DisplayViewTextureBridge, DisplayViewTextureMessage(
-                                    DisplayViewTextureMessage.DisplayViewTextureMessageType.CrossFadeImage, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset, narrativeMediaMessage.imageLayoutPaneIdx?.toInt())
-                            )
+                            DVLayoutHandler.setImagePaneContent(narrativeMediaMessage.imageLayoutPaneIdx?.toInt()!!, narrative!!.textures[narrativeMediaMessage.assetFilename]!!.asset)
                         }
                     }
                 }

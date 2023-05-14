@@ -1,24 +1,18 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewPackage.LogViewBridge
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.messaging.LogViewMessage
 
-class LogView : Telegraph, ViewBase(ViewType.LOG) {
+object LogView : ViewBase {
 
-    init {
-        MessageChannelHandler.enableReceive(LogViewBridge, this)
-    }
+    override var viewType = ViewType.LOG
+    override var viewTable = Table()
 
     var currentLog : MutableList<String>? = null
 
@@ -33,15 +27,9 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
     private var scrollPane : ScrollPane = textScrollPane()
 
     fun textTimeBackgroundColorTexture() : TextureRegion {
-        return if (currentLayoutMode) {
-            SdcHandler.get("textTime", backgroundColor.triad().second).textureRegion().apply {
+        return SdcHandler.get("textTime", backgroundColor().triad().second).textureRegion().apply {
                 this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
             }
-        } else {
-            SdcHandler.get("textTime", KcopSkin.BackgroundColor).textureRegion().apply {
-                this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
-            }
-        }
     }
 
     fun isLog() = !currentLog.isNullOrEmpty()
@@ -52,18 +40,23 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
         } else {
             currentLog = mutableListOf(logEntry)
         }
+
+        build()
     }
 
     fun updateInstImmersionTime(newImmersionTimeStr : String) {
         instImmersionTimeStr = newImmersionTimeStr
+        rebuildTextTimeReadout()
     }
 
     fun updateCumlImmersionTime(newImmersionTimeStr : String) {
         cumlImmersionTimeStr = newImmersionTimeStr
+        rebuildTextTimeReadout()
     }
 
     fun updateLocalTime(newLocalTimeStr : String) {
         localTimeStr = newLocalTimeStr
+        rebuildTextTimeReadout()
     }
 
     fun textTimeReadout() : Table {
@@ -75,7 +68,7 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(instImmersionTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
+                    this.add(Label(instImmersionTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -87,7 +80,7 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(cumlImmersionTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
+                    this.add(Label(cumlImmersionTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -100,7 +93,7 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(localTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
+                    this.add(Label(localTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -114,9 +107,9 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
     }
 
     fun rebuildTextTimeReadout() {
-        this.clearChildren()
+        viewTable.clearChildren()
 
-        this.add(Stack().apply {
+        viewTable.add(Stack().apply {
             this.add(Table().apply {
                 this.add(backgroundColorImg()).grow()
             })
@@ -126,7 +119,7 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
                 this.add(scrollPane).grow()
             })
         }).size(this.tableWidth(), this.tableHeight())
-        this.clip()
+        viewTable.clip()
     }
 
     fun textScrollPane() : ScrollPane {
@@ -141,7 +134,7 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
 
         if (isLog()) {
             (currentLog!!.size - 1 downTo 0).forEach { revEntryIdx ->
-                val logLabel = Label(currentLog!![revEntryIdx], KcopSkin.labelStyle(FontSize.TEXT, backgroundColor))
+                val logLabel = Label(currentLog!![revEntryIdx], KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).growX()
                 innerTable.row()
@@ -168,7 +161,7 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
 
     override fun buildCtrl() {
 
-        this.add(Stack().apply {
+        viewTable.add(Stack().apply {
             this.add(Table().apply {
                 this.add(backgroundColorImg()).grow()
             })
@@ -180,43 +173,13 @@ class LogView : Telegraph, ViewBase(ViewType.LOG) {
             })
  //           this.debug()
         }).size(this.tableWidth(), this.tableHeight())
-        this.clip()
+        viewTable.clip()
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(LogViewBridge, msg.message) ) -> {
-                    val logMessage : LogViewMessage = MessageChannelHandler.receiveMessage(LogViewBridge, msg.extraInfo)
-
-                    when {
-                        (logMessage.messageType == LogViewMessage.LogViewMessageType.ResetTime) -> {
-                            updateInstImmersionTime(initTimeStr)
-                            updateCumlImmersionTime(initTimeStr)
-                            updateLocalTime(initTimeStr)
-                            rebuildTextTimeReadout()
-                        }
-                        else -> if (logMessage.message != null) {
-                            if (logMessage.messageType == LogViewMessage.LogViewMessageType.LogEntry) {
-                                addLog(logMessage.message)
-                                build()
-                            } else {
-                                when (logMessage.messageType) {
-                                    LogViewMessage.LogViewMessageType.InstImmersionTime -> updateInstImmersionTime(logMessage.message)
-                                    LogViewMessage.LogViewMessageType.CumlImmersionTime -> updateCumlImmersionTime(logMessage.message)
-                                    LogViewMessage.LogViewMessageType.LocalTime -> updateLocalTime(logMessage.message)
-                                    else -> {}
-                                }
-                                rebuildTextTimeReadout()
-                            }
-
-                        }
-                    }
-
-                    return true
-                }
-            }
-        }
-        return false
+    fun resetTime() {
+        updateInstImmersionTime(initTimeStr)
+        updateCumlImmersionTime(initTimeStr)
+        updateLocalTime(initTimeStr)
+        rebuildTextTimeReadout()
     }
 }
