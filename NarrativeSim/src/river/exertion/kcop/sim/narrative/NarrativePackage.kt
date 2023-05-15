@@ -15,11 +15,12 @@ import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IImmersionPackage
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.sim.narrative.asset.*
 import river.exertion.kcop.sim.narrative.menu.LoadNarrativeMenu
 import river.exertion.kcop.sim.narrative.menu.NarrativeMenu
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMenuDataMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
+import river.exertion.kcop.sim.narrative.settings.PSShowTimer
 import river.exertion.kcop.sim.narrative.system.NarrativeTextSystem
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
@@ -39,17 +40,27 @@ object NarrativePackage : IImmersionPackage {
     override var name = this::class.simpleName.toString()
 
     override var immersionAssets : IAssets = NarrativeAssets
+
     override var selectedImmersionAsset : IAsset = NarrativeAsset()
     override var currentImmersionAsset : IAsset = NarrativeAsset()
 
+    var currentNarrativeAsset : NarrativeAsset
+        get() = currentImmersionAsset as NarrativeAsset
+        set(value) { currentImmersionAsset = value }
+
+    override var currentImmersionStateAsset : IAsset = NarrativeStateAsset()
+
+    var currentNarrativeStateAsset : NarrativeStateAsset
+        get() = currentImmersionStateAsset as NarrativeStateAsset
+        set(value) { currentImmersionStateAsset = value }
+
     override fun loadChannels() {
-        MessageChannelHandler.addChannel(MessageChannel(NarrativeBridge, NarrativeMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(NarrativeMenuDataBridge, NarrativeMenuDataMessage::class))
+        MessageChannelHandler.addChannel(MessageChannel(NarrativeBridge, NarrativeComponentMessage::class))
     }
 
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(NarrativeAsset::class.java, NarrativeAssetLoader(lfhr))
-        AssetManagerHandler.assets.setLoader(NarrativeImmersionAsset::class.java, NarrativeImmersionAssetLoader(lfhr))
+        AssetManagerHandler.assets.setLoader(NarrativeStateAsset::class.java, NarrativeStateAssetLoader(lfhr))
         AssetManagerHandler.assets.setLoader(DisplayViewLayoutAsset::class.java, DisplayViewLayoutAssetLoader(lfhr))
 
         DisplayViewLayoutAssetStore.values().forEach { AssetManagerHandler.assets.load(it) }
@@ -61,6 +72,8 @@ object NarrativePackage : IImmersionPackage {
 
     override fun loadSystems() {
         SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
+
+        Profile.availableSettings().add(PSShowTimer)
     }
 
     override fun loadMenus() {
@@ -97,7 +110,6 @@ object NarrativePackage : IImmersionPackage {
     }
 
     const val NarrativeBridge = "NarrativeBridge"
-    const val NarrativeMenuDataBridge = "NarrativeMenuDataBridge"
 }
 
 fun AssetManager.load(asset: DisplayViewLayoutAssetStore) = load<DisplayViewLayoutAsset>(asset.path)

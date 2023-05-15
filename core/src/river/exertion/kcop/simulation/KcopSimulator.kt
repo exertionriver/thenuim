@@ -21,7 +21,7 @@ import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
-import river.exertion.kcop.view.messaging.KcopMessage
+import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 
 class KcopSimulator(private val stage: Stage,
@@ -85,22 +85,22 @@ class KcopSimulator(private val stage: Stage,
         if (msg != null) {
             when {
                 (MessageChannelHandler.isType(KcopBridge, msg.message) ) -> {
-                    val kcopMessage: KcopMessage = MessageChannelHandler.receiveMessage(KcopBridge, msg.extraInfo)
+                    val kcopSimulationMessage: KcopSimulationMessage = MessageChannelHandler.receiveMessage(KcopBridge, msg.extraInfo)
 
-                    when (kcopMessage.kcopMessageType) {
-                        KcopMessage.KcopMessageType.FullScreen -> {
+                    when (kcopSimulationMessage.kcopMessageType) {
+                        KcopSimulationMessage.KcopMessageType.FullScreen -> {
                             viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
-                        KcopMessage.KcopMessageType.KcopScreen -> {
+                        KcopSimulationMessage.KcopMessageType.KcopScreen -> {
                             viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
-                        KcopMessage.KcopMessageType.ColorPaletteOn -> {
+                        KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
                             ColorPalettePackage.build()
                             inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
                         }
-                        KcopMessage.KcopMessageType.ColorPaletteOff -> {
+                        KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
                             DisplayView.currentDisplayView = null
                             DisplayView.build()
                             inputMultiplexer.removeProcessor(ColorPalettePackage.inputProcessor())

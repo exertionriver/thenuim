@@ -5,51 +5,57 @@ import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.IComponent
+import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.sim.narrative.component.NarrativeComponentMessageHandler.messageHandler
+import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.activate
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage.Companion.NarrativeBridge
+import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.inactivate
+import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.next
+import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.pause
+import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.unpause
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage.Companion.NarrativeBridge
 import river.exertion.kcop.sim.narrative.structure.ImmersionLocation
 import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.StatusView
 
 class NarrativeComponent : IComponent, Telegraph {
 
+    var narrative : Narrative
+        get() = NarrativePackage.currentNarrativeAsset.narrative
+        set(value) { NarrativePackage.currentNarrativeAsset.narrative = value }
+
+    var narrativeState : NarrativeState
+        get() = NarrativePackage.currentNarrativeStateAsset.narrativeState
+        set(value) { NarrativePackage.currentNarrativeStateAsset.narrativeState = value }
+
+    override fun componentId() = narrative.id
+
     override var isInitialized = false
 
-    var narrative : Narrative? = null
+    val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
 
-    var narrativeImmersion : NarrativeImmersion? = null
+    fun narrativeName() = narrative.name
 
-    override fun componentId() = if (narrative != null) narrative?.id!! else throw Exception("NarrativeComponent::component() narrative is null")
+    fun narrativeCurrBlockId() = narrative.currentBlockId
 
-    fun narrativeName() = narrative?.name ?: throw Exception("narrative name:$this narrative.name not set")
-
-    fun narrativeCurrBlockId() = narrative?.currentBlockId ?: throw Exception("narrativeCurrBlockId:$this narrative.currentBlockId not set")
-
-    fun narrativePrevBlockId() = narrative?.previousBlockId ?: throw Exception("narrativePrevBlockId:$this narrative.previousBlockId not set")
+    fun narrativePrevBlockId() = narrative.previousBlockId
 
     var flags : MutableList<ImmersionStatus>
-        get() = narrativeImmersion?.flags ?: mutableListOf()
-        set(value) { narrativeImmersion?.flags = value }
+        get() = narrativeState.flags
+        set(value) { narrativeState.flags = value }
 
     var location : ImmersionLocation
-        get() = narrativeImmersion?.location ?: ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTime())
-        set(value) { narrativeImmersion?.location = value }
-
-    var blockFlags : MutableList<ImmersionStatus> = mutableListOf()
-    fun eventFired(id : String) = blockFlags.any { it.key == id && it.value == NarrativeImmersion.EventFiredValue }
-
-    val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
+        get() = narrativeState.location ?: ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTime())
+        set(value) { narrativeState.location = value }
 
     var blockImmersionTimers : MutableMap<String, ImmersionTimerPair> = mutableMapOf()
 
@@ -61,15 +67,15 @@ class NarrativeComponent : IComponent, Telegraph {
 
     var changed = false
 
-    fun currentPrompts() = if (isInitialized) narrative!!.currentPrompts() else listOf()
+    fun currentPrompts() = if (isInitialized) narrative.currentPrompts() else listOf()
 
-    fun layoutTag() = if (isInitialized) narrative!!.layoutTag else DVLayout.DvLayoutTag
+    fun layoutTag() = if (isInitialized) narrative.layoutTag else DVLayout.DvLayoutTag
 
-    fun currentDisplayText() = if (isInitialized) narrative!!.currentDisplayText() else "<no display text>"
+    fun currentDisplayText() = if (isInitialized) narrative.currentDisplayText() else "<no display text>"
 
-    fun currentFontSize() = if (isInitialized) narrative!!.currentFontSize() else FontSize.TEXT
+    fun currentFontSize() = if (isInitialized) narrative.currentFontSize() else FontSize.TEXT
 
-    fun seqNarrativeProgress() : Float = ((narrative?.currentIdx()?.plus(1))?.toFloat() ?: 0f) / (narrative?.narrativeBlocks?.size ?: 1)
+    fun seqNarrativeProgress() : Float = ((narrative.currentIdx().plus(1)).toFloat()) / (narrative.narrativeBlocks.size)
     fun sequentialStatusKey() : String = "progress(${narrativeName().subSequence(0, 3)})"
 
     override fun initialize(initData: Any?) {
@@ -83,17 +89,17 @@ class NarrativeComponent : IComponent, Telegraph {
                 narrative = narrativeComponentInit.narrative
 
                 //add timers for each block
-                narrative!!.narrativeBlocks.forEach { narrativeBlock ->
+                narrative.narrativeBlocks.forEach { narrativeBlock ->
                     blockImmersionTimers[narrativeBlock.id] = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
                 }
 
                 //set the narrative layout
 //                DVLayoutHandler.currentDvLayout = NarrativePackage.dvLayoutByTag(narrative!!.layoutTag)
 
-                if (narrativeComponentInit.narrativeImmersion != null) {
-                    narrativeImmersion = narrativeComponentInit.narrativeImmersion
+                if (narrativeComponentInit.narrativeState != null) {
+                    narrativeState = narrativeComponentInit.narrativeState
 
-                    narrative!!.init(narrativeImmersion!!.immersionBlockId())
+                    narrative.init(narrativeState.immersionBlockId())
 
                     //set the narrative cumulative timer
                     timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(narrativeComponentInit.cumlTime()))
@@ -108,7 +114,7 @@ class NarrativeComponent : IComponent, Telegraph {
                         this.flags = mutableListOf()
                         this.blockImmersionTimers = blockImmersionTimersStr()
                     }
-       */             narrative!!.init()
+       */             narrative.init()
                 }
 
                 // set current profile narrative id
@@ -128,31 +134,54 @@ class NarrativeComponent : IComponent, Telegraph {
         }
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean = this.messageHandler(msg)
+    override fun handleMessage(msg: Telegram?): Boolean {
+        if (msg != null) {
+            if (MessageChannelHandler.isType(NarrativeBridge, msg.message) && isInitialized) {
+                val narrativeComponentMessage: NarrativeComponentMessage = MessageChannelHandler.receiveMessage(NarrativeBridge, msg.extraInfo)
+
+                when (narrativeComponentMessage.narrativeMessageType) {
+
+                    NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer -> {
+                        MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
+                                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
+                                SubjectEntity.entityName, ImmersionTimerComponent::class.java, this.timerPair)
+                        )
+                    }
+
+                    NarrativeComponentMessage.NarrativeMessageType.Pause -> pause()
+                    NarrativeComponentMessage.NarrativeMessageType.Unpause -> unpause()
+                    NarrativeComponentMessage.NarrativeMessageType.Inactivate -> inactivate()
+                    NarrativeComponentMessage.NarrativeMessageType.Next -> if (narrativeComponentMessage.promptNext != null) next(narrativeComponentMessage.promptNext)
+                }
+                return true
+            }
+        }
+        return false
+    }
 
     companion object {
         fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is NarrativeComponent } != null
         fun getFor(entity : Entity) : NarrativeComponent? = if (has(entity)) entity.components.first { it is NarrativeComponent } as NarrativeComponent else null
 
         fun isValid(narrativeComponent: NarrativeComponent?) : Boolean {
-            return (narrativeComponent?.narrative != null && narrativeComponent.narrativeImmersion != null && narrativeComponent.isInitialized)
+            return (narrativeComponent?.narrative != null && narrativeComponent.isInitialized)
         }
 
-        fun ecsInit(narrative: Narrative, narrativeImmersion: NarrativeImmersion? = null) {
+        fun ecsInit(narrative: Narrative, narrativeState: NarrativeState? = null) {
             //inactivate current narrative
-            MessageChannelHandler.send(NarrativeBridge, NarrativeMessage(NarrativeMessage.NarrativeMessageType.Inactivate))
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
 
             MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 SubjectEntity.entityName, NarrativeComponent::class.java,
-                NarrativeComponentInit(narrative, narrativeImmersion)
+                NarrativeComponentInit(narrative, narrativeState)
             ) )
         }
     }
 
-    data class NarrativeComponentInit(val narrative: Narrative, val narrativeImmersion: NarrativeImmersion? = null) {
-        fun blockImmersionTimers() = narrativeImmersion?.blockImmersionTimers ?: mapOf()
-        fun cumlTime() = narrativeImmersion?.cumlImmersionTime() ?: ImmersionTimer.CumlTimeZero
+    data class NarrativeComponentInit(val narrative: Narrative, val narrativeState: NarrativeState? = null) {
+        fun blockImmersionTimers() = narrativeState?.blockImmersionTimers ?: mapOf()
+        fun cumlTime() = narrativeState?.cumlImmersionTime() ?: ImmersionTimer.CumlTimeZero
     }
 
     // only need to replace in case of settings change

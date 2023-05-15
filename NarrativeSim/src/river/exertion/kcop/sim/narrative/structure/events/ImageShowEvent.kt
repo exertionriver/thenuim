@@ -2,12 +2,9 @@ package river.exertion.kcop.sim.narrative.structure.events
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage.Companion.NarrativeMediaBridge
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
+import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 
 @Serializable
 @SerialName("showImage")
@@ -18,14 +15,14 @@ class ImageShowEvent(
 ) : Event(), IImageEvent {
 
     override fun execEvent(previousEvent : Event?) {
-        MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "exec_${id!!}", NarrativeImmersion.EventFiredValue) )
-        MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.ShowImage, imageFile, layoutPaneIdx) )
+        NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
+        DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativePackage.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "resolve_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.HideImage, imageFile, layoutPaneIdx) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
+            DVLayoutHandler.hideImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"))
         }
     }
 }

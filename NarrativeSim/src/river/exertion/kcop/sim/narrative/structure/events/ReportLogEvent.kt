@@ -3,9 +3,9 @@ package river.exertion.kcop.sim.narrative.structure.events
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
+import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.LogView
 
 @Serializable
@@ -18,6 +18,6 @@ class ReportLogEvent(
 
     override fun execEvent(previousEvent : Event?) {
         LogView.addLog(report)
-        MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetPersistFlag, id!!, NarrativeImmersion.EventFiredValue) )
+        NarrativePackage.currentNarrativeStateAsset.narrativeState.setPersistFlag(id!!, NarrativeState.EventFiredValue)
     }
 }

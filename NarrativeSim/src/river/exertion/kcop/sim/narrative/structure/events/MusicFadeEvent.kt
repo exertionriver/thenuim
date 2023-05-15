@@ -2,12 +2,9 @@ package river.exertion.kcop.sim.narrative.structure.events
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage.Companion.NarrativeMediaBridge
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
+import river.exertion.kcop.view.layout.AudioView
 
 @Serializable
 @SerialName("fadeMusic")
@@ -18,18 +15,19 @@ class MusicFadeEvent(
 
     override fun execEvent(previousEvent : Event?) {
         if (previousEvent == null) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "exec_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.FadeInMusic, musicFile) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
+            AudioView.fadeInMusic(NarrativePackage.currentNarrativeAsset.narrative.music[musicFile]!!.asset)
+
         } else if ( (previousEvent as IMusicEvent).musicFile != musicFile ) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "exec_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.CrossFadeMusic, musicFile) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
+            AudioView.crossFadeMusic(NarrativePackage.currentNarrativeAsset.narrative.music[musicFile]!!.asset)
         }
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "resolve_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.FadeOutMusic, musicFile) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
+            AudioView.fadeOutMusic()
         }
     }
 }

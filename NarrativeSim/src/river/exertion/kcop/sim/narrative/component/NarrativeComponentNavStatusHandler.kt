@@ -2,10 +2,7 @@ package river.exertion.kcop.sim.narrative.component
 
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage.Companion.NarrativeMediaBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMessage.Companion.NarrativeBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeStatusMessage.Companion.NarrativeStatusBridge
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage.Companion.NarrativeBridge
 import river.exertion.kcop.view.layout.AiView
 import river.exertion.kcop.view.layout.StatusView
 
@@ -24,7 +21,7 @@ object NarrativeComponentNavStatusHandler {
     fun NarrativeComponent.activate(setBlockId : String) {
         if (isInitialized) {
 
-            narrative!!.currentBlockId = setBlockId
+            narrative.currentBlockId = setBlockId
 
             timerPair.instImmersionTimer.resetTimer()
             blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
@@ -32,13 +29,8 @@ object NarrativeComponentNavStatusHandler {
             unpause()
 
             MessageChannelHandler.enableReceive(NarrativeBridge, this)
-            MessageChannelHandler.enableReceive(NarrativeStatusBridge,this)
-            MessageChannelHandler.enableReceive(NarrativeFlagsBridge,this)
-            MessageChannelHandler.enableReceive(NarrativeMediaBridge,this)
 
-//            MessageChannelEnum.AMH_LOAD_BRIDGE.send(null, AMHLoadMessage(AMHLoadMessage.AMHLoadMessageType.RefreshCurrentImmersion, null, this))
-
-            blockFlags.clear()
+            narrativeState.blockFlags.clear()
             changed = true
         }
     }
@@ -61,9 +53,6 @@ object NarrativeComponentNavStatusHandler {
             NarrativePackage.clearContent()
 
             MessageChannelHandler.disableReceive(NarrativeBridge, this)
-            MessageChannelHandler.disableReceive(NarrativeStatusBridge,this)
-            MessageChannelHandler.disableReceive(NarrativeFlagsBridge,this)
-            MessageChannelHandler.disableReceive(NarrativeMediaBridge,this)
 
             AiView.clearHints()
 
@@ -77,7 +66,7 @@ object NarrativeComponentNavStatusHandler {
     fun NarrativeComponent.next(keypress : String) {
         if (isInitialized) {
             val possiblePrevBlockId = narrativeCurrBlockId()
-            narrative!!.next(keypress)
+            narrative.next(keypress)
 
             //switch timers to new block
             if (possiblePrevBlockId != narrativeCurrBlockId()) {
@@ -92,7 +81,7 @@ object NarrativeComponentNavStatusHandler {
                 StatusView.addOrUpdateStatus(sequentialStatusKey(), seqNarrativeProgress())
                 AiView.clearHints()
 
-                blockFlags.clear()
+                narrativeState.blockFlags.clear()
                 changed = true
             }
 

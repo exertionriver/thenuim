@@ -15,8 +15,7 @@ import river.exertion.kcop.profile.asset.ProfileAssetLoader
 import river.exertion.kcop.profile.asset.ProfileAssets
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.menu.*
-import river.exertion.kcop.profile.messaging.ProfileMenuDataMessage
-import river.exertion.kcop.profile.messaging.ProfileMessage
+import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
@@ -41,8 +40,7 @@ object ProfilePackage : IKcopPackage {
     }
 
     override fun loadChannels() {
-        MessageChannelHandler.addChannel(MessageChannel(ProfileBridge, ProfileMessage::class))
-        MessageChannelHandler.addChannel(MessageChannel(ProfileMenuDataBridge, ProfileMenuDataMessage::class))
+        MessageChannelHandler.addChannel(MessageChannel(ProfileBridge, ProfileComponentMessage::class))
     }
 
     override fun loadMenus() {
@@ -79,5 +77,4 @@ object ProfilePackage : IKcopPackage {
     override fun dispose() {}
 
     const val ProfileBridge = "ProfileBridge"
-    const val ProfileMenuDataBridge = "ProfileMenuDataBridge"
 }

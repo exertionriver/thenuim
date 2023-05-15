@@ -8,10 +8,10 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.asset.AssetManagerHandler.json
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
 
-class NarrativeImmersionAssetLoader(resolver: FileHandleResolver?) :
-    AsynchronousAssetLoader<NarrativeImmersionAsset?, NarrativeImmersionAssetLoader.NarrativeImmersionSequenceParameter?>(resolver) {
+class NarrativeStateAssetLoader(resolver: FileHandleResolver?) :
+    AsynchronousAssetLoader<NarrativeStateAsset?, NarrativeStateAssetLoader.NarrativeImmersionSequenceParameter?>(resolver) {
 
     lateinit var rawData: String
 
@@ -22,19 +22,19 @@ class NarrativeImmersionAssetLoader(resolver: FileHandleResolver?) :
     override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeImmersionSequenceParameter?) {
     }
 
-    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeImmersionSequenceParameter?): NarrativeImmersionAsset {
+    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeImmersionSequenceParameter?): NarrativeStateAsset {
         try {
             rawData = file.readString()
             val jsonElement = json.parseToJsonElement(rawData)
-            val narrativeImmersion = json.decodeFromJsonElement(jsonElement) as NarrativeImmersion
+            val narrativeState = json.decodeFromJsonElement(jsonElement) as NarrativeState
 
-            val returnNarrativeAsset = NarrativeImmersionAsset(narrativeImmersion).apply { this.assetPath = fileName }
+            val returnNarrativeAsset = NarrativeStateAsset(narrativeState).apply { this.assetPath = fileName }
             //val errorStatus = "${narrativeImmersion.id} not loaded"
 
             return returnNarrativeAsset
 
         } catch (ex : Exception) {
-            return NarrativeImmersionAsset().apply {
+            return NarrativeStateAsset().apply {
                 this.assetPath = fileName
                 this.status = "$fileName not loaded"
                 this.statusDetail = ex.message
@@ -42,5 +42,5 @@ class NarrativeImmersionAssetLoader(resolver: FileHandleResolver?) :
         }
     }
 
-    class NarrativeImmersionSequenceParameter : AssetLoaderParameters<NarrativeImmersionAsset?>()
+    class NarrativeImmersionSequenceParameter : AssetLoaderParameters<NarrativeStateAsset?>()
 }

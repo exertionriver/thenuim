@@ -31,7 +31,9 @@ object DVLayoutHandler : Telegraph {
         }
     }
 
-    fun setImagePaneContent(paneIdx : Int, texture : Texture?) = currentDvLayout.setImagePaneContent(paneIdx, texture)
+    fun showImage(paneIdx : Int, texture : Texture) = currentDvLayout.setImagePaneContent(paneIdx, texture)
+
+    fun hideImage(paneIdx : Int) = currentDvLayout.setImagePaneContent(paneIdx, null)
 
     fun fadeImageIn(paneIdx : Int, texture : Texture?) = currentDvLayout.fadeImageIn(paneIdx, texture)
 

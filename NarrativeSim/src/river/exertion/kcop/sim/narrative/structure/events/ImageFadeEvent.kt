@@ -3,11 +3,9 @@ package river.exertion.kcop.sim.narrative.structure.events
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeMediaMessage.Companion.NarrativeMediaBridge
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
+import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 
 @Serializable
 @SerialName("fadeImage")
@@ -19,18 +17,18 @@ class ImageFadeEvent(
 
     override fun execEvent(previousEvent : Event?) {
         if (previousEvent == null) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "exec_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.FadeInImage, imageFile, layoutPaneIdx) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
+            DVLayoutHandler.fadeImageIn(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativePackage.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
         } else if ( (previousEvent as IImageEvent).imageFile != imageFile ) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "exec_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.CrossFadeImage, imageFile, layoutPaneIdx) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
+            DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativePackage.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
         }
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
-            MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetBlockFlag, "resolve_${id!!}", NarrativeImmersion.EventFiredValue) )
-            MessageChannelHandler.send(NarrativeMediaBridge, NarrativeMediaMessage(NarrativeMediaMessage.NarrativeMediaMessageType.FadeOutImage, imageFile, layoutPaneIdx) )
+            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
+            DVLayoutHandler.fadeImageOut(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativePackage.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
         }
     }
 }

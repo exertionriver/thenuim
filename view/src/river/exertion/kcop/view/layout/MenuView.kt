@@ -10,7 +10,7 @@ import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.KcopMessage
+import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 object MenuView : ViewBase {
 
@@ -34,14 +34,14 @@ object MenuView : ViewBase {
         2 to {
             if (isChecked[2] == true) {
                 LogView.addLog("Color Palette On")
-                MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.ColorPaletteOn))
+                MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.ColorPaletteOn))
             } else {
                 LogView.addLog("Color Palette Off")
-                MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.ColorPaletteOff))
+                MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.ColorPaletteOff))
             }
         },
         fullScreen to {
-            MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.FullScreen))
+            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.FullScreen))
         },
         4 to {
 //            KcopSkin.displayMode = isChecked[4]!!

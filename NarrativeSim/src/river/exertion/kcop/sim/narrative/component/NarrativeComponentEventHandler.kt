@@ -14,11 +14,11 @@ object NarrativeComponentEventHandler {
         var returnText = ""
 
         if (isInitialized) {
-            returnText += narrative!!.currentText()
+            returnText += narrative.currentText()
 
             readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
                 (event is ReportTextEvent) &&
-                narrativeImmersion!!.persistEventFired(event.id!!)
+                narrativeState.persistEventFired(event.id!!)
             }.sortedBy {
                 it.id
             }.forEach { event ->
@@ -26,7 +26,7 @@ object NarrativeComponentEventHandler {
             }
 
             readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
-                (event is HintTextEvent) && narrativeImmersion!!.persistEventFired(event.id!!)
+                (event is HintTextEvent) && narrativeState.persistEventFired(event.id!!)
             }.sortedBy {
                 it.id
             }.forEach { event ->
@@ -34,7 +34,7 @@ object NarrativeComponentEventHandler {
             }
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
-                (timelineEvent is ReportTextEvent) && narrativeImmersion!!.persistEventFired(timelineEvent.id!!)
+                (timelineEvent is ReportTextEvent) && narrativeState.persistEventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
             }.forEach { timelineEvent ->
@@ -42,7 +42,7 @@ object NarrativeComponentEventHandler {
             }
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
-                (timelineEvent is HintTextEvent) && narrativeImmersion!!.persistEventFired(timelineEvent.id!!)
+                (timelineEvent is HintTextEvent) && narrativeState.persistEventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
             }.forEach { timelineEvent ->
@@ -59,7 +59,7 @@ object NarrativeComponentEventHandler {
         if (isInitialized) {
 
             readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
-                !narrativeImmersion!!.persistEventFired(timelineEvent.id!!)
+                !narrativeState.persistEventFired(timelineEvent.id!!)
             }.forEach { timelineEvent ->
                 timelineEvent.execEvent()
             }
@@ -69,7 +69,7 @@ object NarrativeComponentEventHandler {
     private fun NarrativeComponent.readyTimelineEvents(narrativeCumulativeTimer : ImmersionTimer) : List<Event> {
 
         if (isInitialized) {
-            val narrativeTimelineEvents = narrative!!.timelineEvents.filter { timelineEvent ->
+            val narrativeTimelineEvents = narrative.timelineEvents.filter { timelineEvent ->
                 (timelineEvent is ITriggerEvent) &&
                 timelineEvent.timeTrigger() != null &&
                 narrativeCumulativeTimer.onOrPast(timelineEvent.timeTrigger())
@@ -92,14 +92,14 @@ object NarrativeComponentEventHandler {
             val currentBlockEvents = readyCurrentBlockEvents(cumlBlockImmersionTimer())
 
             previousBlockEvents.forEach { previousBlockEvent ->
-                if (!narrativeImmersion!!.persistEventFired(previousBlockEvent.id!!) && !eventFired("resolve_${previousBlockEvent.id!!}" ) )
+                if (!narrativeState.persistEventFired(previousBlockEvent.id!!) && !narrativeState.blockEventFired("resolve_${previousBlockEvent.id!!}" ) )
                     previousBlockEvent.resolveEvent(currentBlockEvents.firstOrNull {
                         it.isLikeEvent(previousBlockEvent)
                     })
             }
 
             currentBlockEvents.forEach { currentBlockEvent ->
-                if (!narrativeImmersion!!.persistEventFired(currentBlockEvent.id!!) && !eventFired("exec_${currentBlockEvent.id!!}" ) )
+                if (!narrativeState.persistEventFired(currentBlockEvent.id!!) && !narrativeState.blockEventFired("exec_${currentBlockEvent.id!!}" ) )
                     currentBlockEvent.execEvent(previousBlockEvents.firstOrNull {
                         it.isLikeEvent(currentBlockEvent)
                     })
@@ -117,11 +117,11 @@ object NarrativeComponentEventHandler {
         val previousBlockEvents = mutableListOf<Event>()
 
         if (isInitialized) {
-            narrative!!.previousEventBlock()?.events?.filter {
+            narrative.previousEventBlock()?.events?.filter {
                 it.isImageEvent()
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
 
-            narrative!!.previousEventBlock()?.events?.filter {
+            narrative.previousEventBlock()?.events?.filter {
                 it.isMusicEvent()
             }.let { previousBlockEvents.addAll(it ?: emptyList()) }
         }
@@ -134,23 +134,23 @@ object NarrativeComponentEventHandler {
         val currentBlockEvents = mutableListOf<Event>()
 
         if (isInitialized) {
-            narrative!!.previousEventBlock()?.events?.filter {
+            narrative.previousEventBlock()?.events?.filter {
                 (it is ITriggerEvent) &&
                 (it as ITriggerEvent).blockTrigger() == ITriggerEvent.EventTrigger.ON_EXIT
             }.let { currentBlockEvents.addAll(it ?: emptyList()) }
 
-            narrative!!.currentEventBlock()?.events?.filter {
+            narrative.currentEventBlock()?.events?.filter {
                 (it is ITriggerEvent) &&
                 (it as ITriggerEvent).blockTrigger() == ITriggerEvent.EventTrigger.ON_ENTRY
             }.let { currentBlockEvents.addAll(it ?: emptyList()) }
 
-            narrative!!.currentEventBlock()?.events?.filter {
+            narrative.currentEventBlock()?.events?.filter {
                 (it is ITriggerEvent) &&
                 (it.timeTrigger() != null) &&
                 blockCumulativeTimer.onOrPast(it.timeTrigger())
             }.let { currentBlockEvents.addAll(it ?: emptyList()) }
 
-            narrative!!.currentEventBlock()?.events?.filter {
+            narrative.currentEventBlock()?.events?.filter {
                 (it !is ITriggerEvent)
             }.let { currentBlockEvents.addAll(it ?: emptyList()) }
         }

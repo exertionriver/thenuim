@@ -3,9 +3,8 @@ package river.exertion.kcop.sim.narrative.structure.events
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeFlagsMessage.Companion.NarrativeFlagsBridge
-import river.exertion.kcop.sim.narrative.structure.NarrativeImmersion
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
 
 @Serializable
 @SerialName("plusCounter")
@@ -16,7 +15,7 @@ class CounterPlusEvent(
 ) : Event(), ITriggerEvent {
 
     override fun execEvent(previousEvent : Event?) {
-        MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.SetPersistFlag, id!!, NarrativeImmersion.EventFiredValue) )
-        MessageChannelHandler.send(NarrativeFlagsBridge, NarrativeFlagsMessage(NarrativeFlagsMessage.NarrativeFlagsMessageType.AddToCounter, counterKey, (1).toString() ) )
+        NarrativePackage.currentNarrativeStateAsset.narrativeState.setPersistFlag(id!!, NarrativeState.EventFiredValue)
+        NarrativePackage.currentNarrativeStateAsset.narrativeState.addToCounter(counterKey, (1).toString() )
     }
 }

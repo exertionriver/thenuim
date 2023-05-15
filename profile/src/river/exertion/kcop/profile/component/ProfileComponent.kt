@@ -3,7 +3,6 @@ package river.exertion.kcop.profile.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.ecs.ECSPackage
 import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
@@ -15,7 +14,7 @@ import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
-import river.exertion.kcop.profile.messaging.ProfileMessage
+import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 class ProfileComponent : IComponent, Telegraph {
@@ -78,18 +77,18 @@ class ProfileComponent : IComponent, Telegraph {
         if (msg != null) {
             when {
                 (MessageChannelHandler.isType(ProfileBridge, msg.message)) -> {
-                    val profileMessage: ProfileMessage = MessageChannelHandler.receiveMessage(ProfileBridge, msg.extraInfo)
+                    val profileComponentMessage: ProfileComponentMessage = MessageChannelHandler.receiveMessage(ProfileBridge, msg.extraInfo)
 
                     if (isValid(this)) {
-                        when (profileMessage.profileMessageType) {
-                            ProfileMessage.ProfileMessageType.ReplaceCumlTimer -> {
+                        when (profileComponentMessage.profileMessageType) {
+                            ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer -> {
                                 MessageChannelHandler.send(
                                     EngineComponentBridge, EngineComponentMessage(
                                         EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                                         SubjectEntity.entityName, ImmersionTimerComponent::class.java, timerPair)
                                 )
                             }
-                            ProfileMessage.ProfileMessageType.Inactivate -> {
+                            ProfileComponentMessage.ProfileMessageType.Inactivate -> {
                                 inactivate()
                             }
                         }

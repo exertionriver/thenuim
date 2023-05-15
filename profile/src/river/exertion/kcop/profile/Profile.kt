@@ -6,9 +6,8 @@ import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.profile.settings.PSCompStatus.settingByKey
-import river.exertion.kcop.profile.settings.PSShowTimer
-import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.profile.settings.ProfileSetting
+import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 @Serializable
 data class Profile(
@@ -34,8 +33,7 @@ data class Profile(
 
     companion object {
         fun availableSettings() : MutableList<ProfileSetting> = mutableListOf(
-            PSCompStatus,
-            PSShowTimer
+            PSCompStatus
         )
 
         fun defaultSettings() : MutableList<ProfileSettingEntry> = availableSettings().map { profileSetting ->

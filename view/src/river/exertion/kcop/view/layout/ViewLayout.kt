@@ -9,7 +9,7 @@ import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage.KcopBridge
-import river.exertion.kcop.view.messaging.KcopMessage
+import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 object ViewLayout {
 
@@ -26,7 +26,7 @@ object ViewLayout {
         stage.addActor(PauseView.apply { this.build() }.viewTable)
 
         kcopButton = Button(KcopSkin.skin).apply { this.onClick {
-            MessageChannelHandler.send(KcopBridge, KcopMessage(KcopMessage.KcopMessageType.KcopScreen))
+            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.KcopScreen))
         }}
 
         stage.addActor(kcopButton)

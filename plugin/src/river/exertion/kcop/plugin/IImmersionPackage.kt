@@ -12,4 +12,5 @@ interface IImmersionPackage : IKcopPackage, IDisplayPackage {
     var immersionAssets : IAssets
     var selectedImmersionAsset : IAsset
     var currentImmersionAsset : IAsset
+    var currentImmersionStateAsset : IAsset
 }

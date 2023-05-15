@@ -8,14 +8,15 @@ import kotlinx.serialization.Transient
 import ktx.assets.Asset
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
+import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.view.asset.FontSize
 
 @Serializable
 data class Narrative(
     override var id: String = Id.randomId(),
-    val name : String,
+    val name : String = "",
     val description : String = "",
-    val layoutTag : String,
+    val layoutTag : String = DVLayout.DvLayoutTag,
     val narrativeBlocks : MutableList<NarrativeBlock> = mutableListOf(),
     val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
     val eventBlocks : MutableList<EventBlock> = mutableListOf(),

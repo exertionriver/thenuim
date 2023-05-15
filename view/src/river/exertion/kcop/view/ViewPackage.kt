@@ -30,7 +30,7 @@ object ViewPackage : IKcopPackage {
     override var name = this::class.simpleName.toString()
 
     override fun loadChannels() {
-        MessageChannelHandler.addChannel(MessageChannel(KcopBridge, KcopMessage::class))
+        MessageChannelHandler.addChannel(MessageChannel(KcopBridge, KcopSimulationMessage::class))
     }
 
     override fun loadAssets() {
