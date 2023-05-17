@@ -3,10 +3,8 @@ package river.exertion.kcop.profile.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfilePackage.currentProfileAsset
+import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -22,7 +20,7 @@ object SaveProgressMenu : DisplayViewMenu {
 
     override fun menuPane() = Table().apply {
 
-        currentProfileAsset.assetInfo().forEach { profileEntry ->
+        ProfileAsset.currentProfileAsset.assetInfo().forEach { profileEntry ->
             this.add(Label(profileEntry, KcopSkin.skin
             //        Label.LabelStyle(bitmapFont, backgroundColor.label().color())
             ).apply {
@@ -42,7 +40,7 @@ object SaveProgressMenu : DisplayViewMenu {
 
     override val actions = mutableListOf(
         MenuActionParam("Save", {
-            currentProfileAsset.save()
+            ProfileAsset.currentProfileAsset.save()
             MenuView.closeMenu()
         }, "Progress Saved!"),
         MenuActionParam("Cancel", {

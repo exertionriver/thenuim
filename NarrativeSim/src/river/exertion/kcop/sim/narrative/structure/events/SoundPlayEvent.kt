@@ -2,8 +2,8 @@ package river.exertion.kcop.sim.narrative.structure.events
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.layout.AudioView
 
@@ -16,7 +16,7 @@ class SoundPlayEvent(
 ) : Event(), ISoundEvent, ITriggerEvent {
 
     override fun execEvent(previousEvent : Event?) {
-        NarrativePackage.currentNarrativeStateAsset.narrativeState.setPersistFlag(id!!, NarrativeState.EventFiredValue)
-        AudioView.playSound(NarrativePackage.currentNarrativeAsset.narrative.sounds[musicFile]!!.asset)
+        NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setPersistFlag(id!!, NarrativeState.EventFiredValue)
+        AudioView.playSound(NarrativeAsset.currentNarrativeAsset.narrative.sounds[musicFile]!!.asset)
     }
 }

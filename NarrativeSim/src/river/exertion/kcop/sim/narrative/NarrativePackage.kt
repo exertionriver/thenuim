@@ -35,24 +35,9 @@ import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
 
 object NarrativePackage : IImmersionPackage {
+
     override var id = Id.randomId()
-
     override var name = this::class.simpleName.toString()
-
-    override var immersionAssets : IAssets = NarrativeAssets
-
-    override var selectedImmersionAsset : IAsset = NarrativeAsset()
-    override var currentImmersionAsset : IAsset = NarrativeAsset()
-
-    var currentNarrativeAsset : NarrativeAsset
-        get() = currentImmersionAsset as NarrativeAsset
-        set(value) { currentImmersionAsset = value }
-
-    override var currentImmersionStateAsset : IAsset = NarrativeStateAsset()
-
-    var currentNarrativeStateAsset : NarrativeStateAsset
-        get() = currentImmersionStateAsset as NarrativeStateAsset
-        set(value) { currentImmersionStateAsset = value }
 
     override fun loadChannels() {
         MessageChannelHandler.addChannel(MessageChannel(NarrativeBridge, NarrativeComponentMessage::class))

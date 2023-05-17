@@ -4,6 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.MenuView
@@ -21,8 +23,8 @@ object LoadNarrativeMenu : DisplayViewMenu {
 
     override fun menuPane() = Table().apply {
 
-        if (NarrativePackage.selectedImmersionAsset.assetInfo().isNotEmpty()) {
-            NarrativePackage.selectedImmersionAsset.assetInfo().forEach { profileEntry ->
+        if (NarrativeAsset.selectedNarrativeAsset.assetInfo().isNotEmpty()) {
+            NarrativeAsset.selectedNarrativeAsset.assetInfo().forEach { profileEntry ->
                 this.add(Label(profileEntry, KcopSkin.skin)
                         //LabelStyle(bitmapFont, backgroundColor.label().color()))
                         .apply {
@@ -31,7 +33,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
                 this.row()
             }
 //        this.debug()
-            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativePackage.selectedImmersionAsset.assetName()}" }
+            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
         } else {
             this.add(Label("no narrative info found", KcopSkin.skin)
                     //LabelStyle(bitmapFont, backgroundColor.label().color()))
@@ -51,7 +53,8 @@ object LoadNarrativeMenu : DisplayViewMenu {
     override val actions = mutableListOf(
         MenuActionParam("Yes", {
             MenuView.closeMenu()
-            NarrativePackage.currentImmersionAsset = NarrativePackage.selectedImmersionAsset
+            NarrativeAsset.currentNarrativeAsset = NarrativeAsset.selectedNarrativeAsset
+            NarrativeComponent.ecsInit()
             DisplayView.currentDisplayView = NarrativePackage.build()
         }, "Narrative Loaded!"),
         //go back a menu

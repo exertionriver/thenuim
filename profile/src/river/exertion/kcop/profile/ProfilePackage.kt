@@ -11,9 +11,8 @@ import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IKcopPackage
 import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.profile.asset.ProfileAsset.Companion.currentProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssetLoader
-import river.exertion.kcop.profile.asset.ProfileAssets
-import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -21,19 +20,9 @@ import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
 
 object ProfilePackage : IKcopPackage {
+
     override var id = Id.randomId()
     override var name = this::class.simpleName.toString()
-
-    var profileAssets = ProfileAssets
-    var selectedProfileAsset = ProfileAsset()
-    var currentProfileAsset = ProfileAsset()
-        set(value) {
-            field = value
-
-            ProfileComponent.ecsInit()
-
-            value.profile.execSettings()
-        }
 
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))

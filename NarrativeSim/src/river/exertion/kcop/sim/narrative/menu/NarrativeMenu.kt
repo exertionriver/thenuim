@@ -4,12 +4,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.menu.RestartProgressMenu
-import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeAssets
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -26,13 +24,13 @@ object NarrativeMenu : DisplayViewMenu {
     override fun menuPane() : Table {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
-        val narrativeAssetsMap = NarrativePackage.immersionAssets.reload().associateBy { it.assetTitle() }
+        val narrativeAssetsMap = NarrativeAssets.reload().associateBy { it.assetTitle() }
 
         if (narrativeAssetsMap.isNotEmpty()) {
-            NarrativePackage.selectedImmersionAsset = narrativeAssetsMap.entries.first().value as NarrativeAsset
+            NarrativeAsset.selectedNarrativeAsset = narrativeAssetsMap.entries.first().value
 
             listCtrl.onChange {
-                NarrativePackage.selectedImmersionAsset = narrativeAssetsMap.values.toList()[this.selectedIndex] as NarrativeAsset
+                NarrativeAsset.selectedNarrativeAsset = narrativeAssetsMap.values.toList()[this.selectedIndex]
             }
 
             listCtrl.setItems(narrativeAssetsMap.keys.toGdxArray())

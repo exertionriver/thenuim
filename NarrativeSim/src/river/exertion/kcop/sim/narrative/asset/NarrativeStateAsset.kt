@@ -48,6 +48,8 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
     }
 
     companion object {
+        var currentNarrativeStateAsset = NarrativeStateAsset()
+
         operator fun AssetManager.get(asset: NarrativeStateAsset) = getAsset<NarrativeStateAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
             if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")

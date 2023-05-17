@@ -4,18 +4,34 @@ interface IAssets {
 
     var values: MutableList<IAsset>
 
-    fun byId(assetId : String?) : IAsset? = values.firstOrNull { it.assetId() == assetId }
+    @Suppress("UNCHECKED_CAST")
+    fun <T:IAsset>byIdTyped(assetId : String?) : T? = values.firstOrNull { it.assetId() == assetId } as T?
 
-    fun byTitle(assetTitle : String?) : IAsset? = values.firstOrNull { it.assetTitle() == assetTitle }
+    fun byId(assetId : String?) : Any?
 
-    fun reload() : MutableList<IAsset> {
+    @Suppress("UNCHECKED_CAST")
+    fun <T:IAsset>byTitleTyped(assetTitle : String?) : T? = values.firstOrNull { it.assetTitle() == assetTitle } as T?
+
+    fun byTitle(assetTitle : String?) : Any?
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T:IAsset>byNameTyped(assetName : String?) : T? = values.firstOrNull { it.assetName() == assetName } as T?
+
+    fun byName(assetName : String?) : Any?
+
+    fun <T:IAsset>reloadTyped() : MutableList<T> {
         values = AssetManagerHandler.reloadLocalAssets<IAsset>(iAssetLocation).toMutableList()
-        return values
+        return getTyped()
     }
 
+    fun reload() : MutableList<*>
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T:IAsset>getTyped() : MutableList<T> = values as MutableList<T>
+
+    fun get() : MutableList<*>
+
     val iAssetLocation : String
-
     val iAssetExtension : String
-
     fun iAssetPath(iAssetFilename : String) = iAssetLocation + iAssetFilename + iAssetExtension
 }

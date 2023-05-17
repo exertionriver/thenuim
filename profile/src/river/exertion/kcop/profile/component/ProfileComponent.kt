@@ -14,14 +14,15 @@ import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
+import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 class ProfileComponent : IComponent, Telegraph {
 
     var profile : Profile
-        get() = ProfilePackage.currentProfileAsset.profile
-        set(value) { ProfilePackage.currentProfileAsset.profile = value }
+        get() = ProfileAsset.currentProfileAsset.profile
+        set(value) { ProfileAsset.currentProfileAsset.profile = value }
 
     override fun componentId() = profile.id
 
@@ -44,6 +45,8 @@ class ProfileComponent : IComponent, Telegraph {
         super.initialize(initData)
 
         timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profile.cumlTime))
+
+        profile.execSettings()
 
         activate()
     }

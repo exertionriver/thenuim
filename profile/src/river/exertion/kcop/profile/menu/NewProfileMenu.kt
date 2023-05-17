@@ -53,8 +53,8 @@ object NewProfileMenu : DisplayViewMenu {
     override val actions = mutableListOf(
         MenuActionParam("Create", {
             MenuView.closeMenu()
-            ProfilePackage.currentProfileAsset = ProfileAsset.new(newName)
-            ProfilePackage.currentProfileAsset.save()
+            ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
+            ProfileAsset.currentProfileAsset.save()
         }, "Profile Created: $newName"),
         //go back a menu
         MenuActionParam("Cancel", {

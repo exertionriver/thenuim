@@ -12,6 +12,8 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.activate
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.inactivate
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.next
@@ -30,12 +32,12 @@ import river.exertion.kcop.view.layout.StatusView
 class NarrativeComponent : IComponent, Telegraph {
 
     var narrative : Narrative
-        get() = NarrativePackage.currentNarrativeAsset.narrative
-        set(value) { NarrativePackage.currentNarrativeAsset.narrative = value }
+        get() = NarrativeAsset.currentNarrativeAsset.narrative
+        set(value) { NarrativeAsset.currentNarrativeAsset.narrative = value }
 
     var narrativeState : NarrativeState
-        get() = NarrativePackage.currentNarrativeStateAsset.narrativeState
-        set(value) { NarrativePackage.currentNarrativeStateAsset.narrativeState = value }
+        get() = NarrativeStateAsset.currentNarrativeStateAsset.narrativeState
+        set(value) { NarrativeStateAsset.currentNarrativeStateAsset.narrativeState = value }
 
     override fun componentId() = narrative.id
 
@@ -167,14 +169,13 @@ class NarrativeComponent : IComponent, Telegraph {
             return (narrativeComponent?.narrative != null && narrativeComponent.isInitialized)
         }
 
-        fun ecsInit(narrative: Narrative, narrativeState: NarrativeState? = null) {
+        fun ecsInit() {
             //inactivate current narrative
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
 
             MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
                 EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                SubjectEntity.entityName, NarrativeComponent::class.java,
-                NarrativeComponentInit(narrative, narrativeState)
+                SubjectEntity.entityName, NarrativeComponent::class.java
             ) )
         }
     }

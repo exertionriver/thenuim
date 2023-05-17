@@ -9,6 +9,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.profile.asset.ProfileAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
@@ -26,13 +27,13 @@ object ProfileMenu : DisplayViewMenu {
     override fun menuPane() : Table {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
-        val profileAssetsMap = ProfilePackage.profileAssets.reload().associateBy { it.assetTitle() }
+        val profileAssetsMap = ProfileAssets.reload().associateBy { it.assetTitle() }
 
         if (profileAssetsMap.isNotEmpty()) {
-            ProfilePackage.selectedProfileAsset = profileAssetsMap.entries.first().value as ProfileAsset
+            ProfileAsset.selectedProfileAsset = profileAssetsMap.entries.first().value
 
             listCtrl.onChange {
-                ProfilePackage.selectedProfileAsset = profileAssetsMap.values.toList()[this.selectedIndex] as ProfileAsset
+                ProfileAsset.selectedProfileAsset = profileAssetsMap.values.toList()[this.selectedIndex]
             }
 
             listCtrl.setItems(profileAssetsMap.keys.toGdxArray())

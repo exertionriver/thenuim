@@ -52,11 +52,10 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
         }
     }
 
-    fun update(profileComponent: ProfileComponent) {
- //       profile = profileComponent.profile
-    }
-
     companion object {
+
+        var selectedProfileAsset = ProfileAsset()
+        var currentProfileAsset = ProfileAsset()
 
         operator fun AssetManager.get(asset: ProfileAsset) = getAsset<ProfileAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
@@ -72,14 +71,6 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
                 this.name = saveName ?: this.name
             } ).apply {
                 this.assetPath = this.newAssetFilename()
-            }
-        }
-
-        fun new(profileComponent: ProfileComponent) : ProfileAsset {
-            return ProfileAsset(Profile().apply {
-                this.name = profileComponent.profile.name
-            } ).apply {
-                this.update(profileComponent)
             }
         }
     }

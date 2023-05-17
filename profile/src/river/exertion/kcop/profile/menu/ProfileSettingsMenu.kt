@@ -9,6 +9,7 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage
+import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.optionBySelectionKey
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.updateSetting
@@ -56,8 +57,8 @@ object ProfileSettingsMenu : DisplayViewMenu {
     override val actions = mutableListOf(
         MenuActionParam("Update", {
             MenuView.closeMenu()
-            ProfilePackage.currentProfileAsset.settings = settings
-            ProfilePackage.currentProfileAsset.save()
+            ProfileAsset.currentProfileAsset.settings = settings
+            ProfileAsset.currentProfileAsset.save()
 
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
         }, "Settings Updated!"),

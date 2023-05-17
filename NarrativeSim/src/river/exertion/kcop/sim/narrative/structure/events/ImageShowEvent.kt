@@ -2,7 +2,8 @@ package river.exertion.kcop.sim.narrative.structure.events
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 
@@ -15,13 +16,13 @@ class ImageShowEvent(
 ) : Event(), IImageEvent {
 
     override fun execEvent(previousEvent : Event?) {
-        NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-        DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativePackage.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
+        NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
+        DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
-            NarrativePackage.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
+            NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
             DVLayoutHandler.hideImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"))
         }
     }
