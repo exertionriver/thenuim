@@ -4,13 +4,14 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.view.layout.PauseView
 
 object NarrativeInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
         if (!PauseView.isChecked) {
-            MessageChannelHandler.send(NarrativeBridge, Input.Keys.toString(keycode))
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Next, Input.Keys.toString(keycode)))
         }
 
         return false

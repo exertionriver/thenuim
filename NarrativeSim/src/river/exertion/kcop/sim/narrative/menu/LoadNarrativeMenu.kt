@@ -3,9 +3,13 @@ package river.exertion.kcop.sim.narrative.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAssets
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
+import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.MenuView
@@ -54,8 +58,9 @@ object LoadNarrativeMenu : DisplayViewMenu {
         MenuActionParam("Yes", {
             MenuView.closeMenu()
             NarrativeAsset.currentNarrativeAsset = NarrativeAsset.selectedNarrativeAsset
+            NarrativeStateAsset.currentNarrativeStateAsset = NarrativeStateAssets.reload().firstOrNull { it.assetId() == NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId(), NarrativeAsset.currentNarrativeAsset.assetId() ) } ?: NarrativeStateAsset.currentNarrativeStateAsset
+
             NarrativeComponent.ecsInit()
-            DisplayView.currentDisplayView = NarrativePackage.build()
         }, "Narrative Loaded!"),
         //go back a menu
         MenuActionParam("No", {

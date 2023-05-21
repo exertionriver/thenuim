@@ -21,9 +21,7 @@ class ProfileComponent : IComponent, Telegraph {
 
     var profile : Profile
         get() = ProfileAsset.currentProfileAsset.profile
-        set(value) {
-            ProfileAsset.currentProfileAsset.profile = value
-        }
+        set(value) { ProfileAsset.currentProfileAsset.profile = value }
 
     override fun componentId() = profile.id
 
@@ -33,23 +31,20 @@ class ProfileComponent : IComponent, Telegraph {
 
     var settings : MutableList<ProfileSettingEntry>
         get() = profile.settingEntries
-        set(value) {
-            profile.settingEntries = value
-        }
+        set(value) { profile.settingEntries = value }
 
     var cumlTimer : ImmersionTimer
         get() = profile.cumlTimer
-        set(value) {
-            profile.cumlTimer = value
-        }
+        set(value) { profile.cumlTimer = value }
 
     override fun initialize(initData : Any?) {
 
         super.initialize(initData)
 
+        activate()
+
         profile.execSettings()
 
-        activate()
     }
 
     fun activate() {
@@ -87,11 +82,7 @@ class ProfileComponent : IComponent, Telegraph {
                     if (isValid(this)) {
                         when (profileComponentMessage.profileMessageType) {
                             ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer -> {
-                                MessageChannelHandler.send(
-                                    EngineComponentBridge, EngineComponentMessage(
-                                        EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                                        SubjectEntity.entityName, ImmersionTimerComponent::class.java, ImmersionTimerPair(instTimer, cumlTimer))
-                                )
+                                ImmersionTimerComponent.ecsInit(ImmersionTimerPair(instTimer, cumlTimer))
                             }
                             ProfileComponentMessage.ProfileMessageType.Inactivate -> {
                                 inactivate()

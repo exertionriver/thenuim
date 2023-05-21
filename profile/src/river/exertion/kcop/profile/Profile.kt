@@ -7,6 +7,7 @@ import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.profile.settings.PSCompStatus.settingByKey
+import river.exertion.kcop.profile.settings.PSShowTimer
 import river.exertion.kcop.profile.settings.ProfileSetting
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
@@ -38,15 +39,15 @@ data class Profile(
 
     //update kcop with current settings, including setting log timers
     fun execSettings() {
-        settingEntries.forEach { settingEntry -> availableSettings().settingByKey(settingEntry.profileSettingSelectionKey)?.optionByValue(settingEntry.profileSettingOptionValue)?.optionAction?.let { it -> it() } }
+        settingEntries.forEach { settingEntry -> availableSettings.settingByKey(settingEntry.profileSettingSelectionKey)?.optionByValue(settingEntry.profileSettingOptionValue)?.optionAction?.let { it -> it() } }
     }
 
     companion object {
-        fun availableSettings() : MutableList<ProfileSetting> = mutableListOf(
-            PSCompStatus
+        var availableSettings : MutableList<ProfileSetting> = mutableListOf(
+            PSCompStatus, PSShowTimer
         )
 
-        fun defaultSettings() : MutableList<ProfileSettingEntry> = availableSettings().map { profileSetting ->
+        fun defaultSettings() : MutableList<ProfileSettingEntry> = availableSettings.map { profileSetting ->
             ProfileSettingEntry(profileSetting.selectionKey, profileSetting.options[0].optionValue)
         }.toMutableList()
 

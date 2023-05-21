@@ -7,6 +7,8 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.profile.component.ProfileComponent
+import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.layout.MenuView
@@ -53,8 +55,10 @@ object NewProfileMenu : DisplayViewMenu {
     override val actions = mutableListOf(
         MenuActionParam("Create", {
             MenuView.closeMenu()
+            MessageChannelHandler.send(ProfilePackage.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
             ProfileAsset.currentProfileAsset.save()
+            ProfileComponent.ecsInit()
         }, "Profile Created: $newName"),
         //go back a menu
         MenuActionParam("Cancel", {

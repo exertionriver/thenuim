@@ -16,7 +16,7 @@ object NarrativeComponentEventHandler {
         if (isInitialized) {
             returnText += narrative.currentText()
 
-            readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
+            readyCurrentBlockEvents(blockCumlImmersionTimer()).filter { event ->
                 (event is ReportTextEvent) &&
                 narrativeState.persistEventFired(event.id!!)
             }.sortedBy {
@@ -25,7 +25,7 @@ object NarrativeComponentEventHandler {
                 returnText += "\n${(event as ReportTextEvent).report}"
             }
 
-            readyCurrentBlockEvents(cumlBlockImmersionTimer()).filter { event ->
+            readyCurrentBlockEvents(blockCumlImmersionTimer()).filter { event ->
                 (event is HintTextEvent) && narrativeState.persistEventFired(event.id!!)
             }.sortedBy {
                 it.id
@@ -89,7 +89,7 @@ object NarrativeComponentEventHandler {
         if (isInitialized) {
 
             val previousBlockEvents = readyPreviousBlockEvents()
-            val currentBlockEvents = readyCurrentBlockEvents(cumlBlockImmersionTimer())
+            val currentBlockEvents = readyCurrentBlockEvents(blockCumlImmersionTimer())
 
             previousBlockEvents.forEach { previousBlockEvent ->
                 if (!narrativeState.persistEventFired(previousBlockEvent.id!!) && !narrativeState.blockEventFired("resolve_${previousBlockEvent.id!!}" ) )
@@ -108,7 +108,7 @@ object NarrativeComponentEventHandler {
     }
 
     fun NarrativeComponent.currentBlockTimer() : String {
-        return if (isInitialized) "\nblock inst time:[${blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.immersionTime()}]\nblock cuml time:[${blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.immersionTime()}]"
+        return if (isInitialized) "\nblock inst time:[${blockInstImmersionTimer().immersionTime()}]\nblock cuml time:[${blockCumlImmersionTimer().immersionTime()}]"
         else ""
     }
 

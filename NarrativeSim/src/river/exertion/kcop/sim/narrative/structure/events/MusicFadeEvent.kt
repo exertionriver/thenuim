@@ -17,11 +17,11 @@ class MusicFadeEvent(
     override fun execEvent(previousEvent : Event?) {
         if (previousEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-            AudioView.fadeInMusic(NarrativeAsset.currentNarrativeAsset.narrative.music[musicFile]!!.asset)
+            AudioView.fadeInMusic(NarrativeAsset.currentNarrativeAsset.narrative.music[musicFile]!!)
 
         } else if ( (previousEvent as IMusicEvent).musicFile != musicFile ) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-            AudioView.crossFadeMusic(NarrativeAsset.currentNarrativeAsset.narrative.music[musicFile]!!.asset)
+            AudioView.crossFadeMusic(NarrativeAsset.currentNarrativeAsset.narrative.music[musicFile]!!)
         }
     }
 

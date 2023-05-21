@@ -3,7 +3,7 @@ package river.exertion.kcop.profile.settings
 interface ProfileSetting {
     val selectionKey : String
     val selectionLabel : String
-    val options : List<ProfileSettingOption>
+    val options : MutableList<ProfileSettingOption>
     val display: Boolean
 
     fun optionByValue(value : String) = options.firstOrNull { it.optionValue == value } ?: throw Exception("optionByValue(): option value not found")

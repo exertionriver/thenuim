@@ -38,8 +38,10 @@ object SaveProgressMenu : DisplayViewMenu {
 
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
+    const val SaveLabel = "Save"
+
     override val actions = mutableListOf(
-        MenuActionParam("Save", {
+        MenuActionParam(SaveLabel, {
             ProfileAsset.currentProfileAsset.save()
             MenuView.closeMenu()
         }, "Progress Saved!"),
@@ -47,4 +49,5 @@ object SaveProgressMenu : DisplayViewMenu {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
         })
     )
+
 }

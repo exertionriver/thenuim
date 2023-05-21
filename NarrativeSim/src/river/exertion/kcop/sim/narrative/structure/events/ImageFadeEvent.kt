@@ -18,17 +18,17 @@ class ImageFadeEvent(
     override fun execEvent(previousEvent : Event?) {
         if (previousEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.fadeImageIn(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
+            DVLayoutHandler.fadeImageIn(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
         } else if ( (previousEvent as IImageEvent).imageFile != imageFile ) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
+            DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
         }
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.fadeImageOut(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
+            DVLayoutHandler.fadeImageOut(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
         }
     }
 }

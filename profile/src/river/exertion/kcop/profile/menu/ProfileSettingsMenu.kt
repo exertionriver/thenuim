@@ -31,7 +31,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
     var settings : MutableList<ProfileSettingEntry> = mutableListOf()
 
     override fun menuPane() = Table().apply {
-        Profile.availableSettings().forEach { setting ->
+        Profile.availableSettings.forEach { setting ->
             this.add(Label(setting.selectionLabel, KcopSkin.skin).apply {
                 this.wrap
             } ).left()
@@ -58,7 +58,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
         MenuActionParam("Update", {
             MenuView.closeMenu()
             ProfileAsset.currentProfileAsset.settings = settings
-            ProfileAsset.currentProfileAsset.save()
+            ProfileAsset.currentProfileAsset.profile.execSettings()
 
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]
         }, "Settings Updated!"),

@@ -70,7 +70,7 @@ object TextView : ViewBase {
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor()))
+                val logLabel = Label(entry, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()

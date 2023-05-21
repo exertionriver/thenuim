@@ -20,7 +20,6 @@ object NarrativeMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("green")
 
-
     override fun menuPane() : Table {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)

@@ -64,8 +64,6 @@ object ProfilePackage : IKcopPackage {
         )
 
         ProfileComponent.ecsInit()
-
-        MessageChannelHandler.send(ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer))
     }
 
     override fun dispose() {}

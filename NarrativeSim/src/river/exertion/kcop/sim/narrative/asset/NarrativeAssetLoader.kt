@@ -5,13 +5,17 @@ import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
+import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.json.decodeFromJsonElement
+import ktx.assets.Asset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.events.IImageEvent
 import river.exertion.kcop.sim.narrative.structure.events.ISoundEvent
 import river.exertion.kcop.sim.narrative.structure.events.IMusicEvent
+import river.exertion.kcop.view.asset.TextureAssetStore
 
 class NarrativeAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<NarrativeAsset?, NarrativeAssetLoader.NarrativeSequenceParameter?>(resolver) {

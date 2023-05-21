@@ -17,7 +17,7 @@ object NarrativeAssets : IAssets {
     override fun byName(assetName : String?) : NarrativeAsset? = super.byNameTyped(assetName)
 
     override fun <T:IAsset>reloadTyped() : MutableList<T> {
-        ProfileAssets.values = AssetManagerHandler.reloadLocalAssets<NarrativeAsset>(iAssetLocation).toMutableList()
+        values = AssetManagerHandler.reloadLocalAssets<NarrativeAsset>(iAssetLocation).toMutableList()
         return getTyped()
     }
 

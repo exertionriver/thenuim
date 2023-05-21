@@ -21,9 +21,13 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
     override fun assetTitle() = assetPath
     override fun newAssetFilename(): String = ProfileAssets.iAssetPath(super.newAssetFilename())
 
-    var settings : MutableList<ProfileSettingEntry> by profile::settingEntries
+    var settings : MutableList<ProfileSettingEntry>
+        get() = profile.settingEntries
+        set(value) { profile.settingEntries = value }
 
-    var cumlTimer : ImmersionTimer by profile::cumlTimer
+    var cumlTimer : ImmersionTimer
+        get() = profile.cumlTimer
+        set(value) { profile.cumlTimer = value }
 
     //TODO: diff between asset and current
     override fun assetInfo() : List<String> {
@@ -37,7 +41,10 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
     }
 
     fun save(renameAssetPath : String? = null) {
-        val jsonProfile = json.encodeToJsonElement(this.profile)
+        //used to update serializable field
+        cumlTimer = cumlTimer
+
+        val jsonProfile = json.encodeToJsonElement(profile)
 
         if (renameAssetPath == null) {
             Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)

@@ -7,6 +7,7 @@ import ktx.assets.getAsset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 
@@ -24,6 +25,14 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
     override fun newAssetFilename(): String = NarrativeStateAssets.iAssetPath(assetName())
 
+    var cumlImmersionTimer : ImmersionTimer
+        get() = narrativeState.cumlImmersionTimer
+        set(value) { narrativeState.cumlImmersionTimer = value }
+
+    var blockCumlImmersionTimers : MutableMap<String, ImmersionTimer>
+        get() = narrativeState.blockCumlImmersionTimers
+        set(value) { narrativeState.blockCumlImmersionTimers = value }
+
     override fun assetInfo() : List<String> {
 
         val returnList = mutableListOf<String>()
@@ -34,6 +43,10 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
     }
     
     fun save() {
+        //used to update serializable fields
+        cumlImmersionTimer = cumlImmersionTimer
+        blockCumlImmersionTimers = blockCumlImmersionTimers
+
         assetPath = newAssetFilename()
         val jsonNarrativeImmersion = json.encodeToJsonElement(this.narrativeState)
         Gdx.files.local(assetPath).writeString(jsonNarrativeImmersion.toString(), false)
@@ -41,16 +54,7 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
     companion object {
         var currentNarrativeStateAsset = NarrativeStateAsset()
-/*
-        operator fun AssetManager.get(asset: NarrativeStateAsset) = getAsset<NarrativeStateAsset>(asset.assetPath).also {
-            if (it.status != null) println ("Asset Status: ${it.status}")
-            if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
-        }
 
-        fun isValid(narrativeStateAsset: NarrativeStateAsset?) : Boolean {
-            return (narrativeStateAsset?.narrativeState != null && narrativeStateAsset.status == null)
-        }
-*/
         fun new(narrativeComponent: NarrativeComponent) : NarrativeStateAsset {
             return NarrativeStateAsset(narrativeComponent.narrativeState).apply {
                 this.assetPath = newAssetFilename()

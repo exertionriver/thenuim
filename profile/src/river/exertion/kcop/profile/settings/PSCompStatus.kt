@@ -10,7 +10,7 @@ object PSCompStatus : ProfileSetting {
 
     override val display: Boolean = true
 
-    override val options = listOf (
+    override val options = mutableListOf (
         ProfileSettingOption("show","Show") {
             StatusView.showCompletionStatus()
         },

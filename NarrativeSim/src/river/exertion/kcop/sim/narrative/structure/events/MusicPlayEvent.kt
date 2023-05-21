@@ -16,7 +16,7 @@ class MusicPlayEvent(
 
     override fun execEvent(previousEvent : Event?) {
         NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-        AudioView.playMusic(NarrativeAsset.currentNarrativeAsset.narrative.music[musicFile]!!.asset)
+        AudioView.playMusic(NarrativeAsset.currentNarrativeAsset.narrative.music[musicFile]!!)
     }
 
     override fun resolveEvent(currentEvent: Event?) {

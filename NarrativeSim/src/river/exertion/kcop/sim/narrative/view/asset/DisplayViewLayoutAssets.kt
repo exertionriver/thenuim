@@ -1,7 +1,10 @@
 package river.exertion.kcop.sim.narrative.view.asset
 
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAssets
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeAssets
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 
 object DisplayViewLayoutAssets : IAssets {
@@ -14,7 +17,12 @@ object DisplayViewLayoutAssets : IAssets {
 
     override fun byName(assetName : String?) : DisplayViewLayoutAsset? = super.byNameTyped(assetName)
 
-    override fun reload() : MutableList<DisplayViewLayoutAsset> = super.reloadTyped()
+    override fun <T:IAsset>reloadTyped() : MutableList<T> {
+        values = AssetManagerHandler.reloadLocalAssets<DisplayViewLayoutAsset>(iAssetLocation).toMutableList()
+        return getTyped()
+    }
+
+    override fun reload() : MutableList<NarrativeAsset> = reloadTyped()
 
     override fun get() : MutableList<DisplayViewLayoutAsset> = super.getTyped()
 

@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import ktx.assets.Asset
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
 import river.exertion.kcop.sim.narrative.view.DVLayout
@@ -30,13 +29,13 @@ data class Narrative(
     var previousBlockId = ""
 
     @Transient
-    var textures : MutableMap<String, Asset<Texture>> = mutableMapOf()
+    var textures : MutableMap<String, Texture> = mutableMapOf()
 
     @Transient
-    var sounds : MutableMap<String, Asset<Music>> = mutableMapOf()
+    var sounds : MutableMap<String, Music> = mutableMapOf()
 
     @Transient
-    var music : MutableMap<String, Asset<Music>> = mutableMapOf()
+    var music : MutableMap<String, Music> = mutableMapOf()
 
 
     fun init(blockIdStart : String? = null) {

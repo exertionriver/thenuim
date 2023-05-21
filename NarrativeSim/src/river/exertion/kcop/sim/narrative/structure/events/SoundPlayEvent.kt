@@ -17,6 +17,6 @@ class SoundPlayEvent(
 
     override fun execEvent(previousEvent : Event?) {
         NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setPersistFlag(id!!, NarrativeState.EventFiredValue)
-        AudioView.playSound(NarrativeAsset.currentNarrativeAsset.narrative.sounds[musicFile]!!.asset)
+        AudioView.playSound(NarrativeAsset.currentNarrativeAsset.narrative.sounds[musicFile]!!)
     }
 }

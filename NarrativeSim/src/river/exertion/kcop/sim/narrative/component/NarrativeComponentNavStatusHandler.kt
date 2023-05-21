@@ -2,7 +2,7 @@ package river.exertion.kcop.sim.narrative.component
 
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage.Companion.NarrativeBridge
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.view.layout.AiView
 import river.exertion.kcop.view.layout.StatusView
 
@@ -13,8 +13,8 @@ object NarrativeComponentNavStatusHandler {
             cumlImmersionTimer.resumeTimer()
             instImmersionTimer.resumeTimer()
 
-            blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
-            blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
+            blockCumlImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
+            blockInstImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
         }
     }
 
@@ -24,7 +24,7 @@ object NarrativeComponentNavStatusHandler {
             narrative.currentBlockId = setBlockId
 
             instImmersionTimer.resetTimer()
-            blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
+            blockInstImmersionTimers[narrativeCurrBlockId()]?.resetTimer()
 
             unpause()
 
@@ -40,8 +40,8 @@ object NarrativeComponentNavStatusHandler {
             cumlImmersionTimer.pauseTimer()
             instImmersionTimer.pauseTimer()
 
-            blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.pauseTimer()
-            blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.pauseTimer()
+            blockCumlImmersionTimers[narrativeCurrBlockId()]?.pauseTimer()
+            blockInstImmersionTimers[narrativeCurrBlockId()]?.pauseTimer()
         }
     }
 
@@ -70,13 +70,13 @@ object NarrativeComponentNavStatusHandler {
 
             //switch timers to new block
             if (possiblePrevBlockId != narrativeCurrBlockId()) {
-                blockImmersionTimers[narrativePrevBlockId()]?.cumlImmersionTimer?.pauseTimer()
-                blockImmersionTimers[narrativePrevBlockId()]?.instImmersionTimer?.pauseTimer()
+                blockCumlImmersionTimers[narrativePrevBlockId()]?.pauseTimer()
+                blockInstImmersionTimers[narrativePrevBlockId()]?.pauseTimer()
 
-                blockImmersionTimers[narrativeCurrBlockId()]?.cumlImmersionTimer?.resumeTimer()
+                blockCumlImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
 
-                blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resetTimer()
-                blockImmersionTimers[narrativeCurrBlockId()]?.instImmersionTimer?.resumeTimer()
+                blockInstImmersionTimers[narrativeCurrBlockId()]?.resetTimer()
+                blockInstImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
 
                 StatusView.addOrUpdateStatus(sequentialStatusKey(), seqNarrativeProgress())
                 AiView.clearHints()

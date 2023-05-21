@@ -17,7 +17,7 @@ class ImageShowEvent(
 
     override fun execEvent(previousEvent : Event?) {
         NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-        DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!.asset)
+        DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
     }
 
     override fun resolveEvent(currentEvent: Event?) {

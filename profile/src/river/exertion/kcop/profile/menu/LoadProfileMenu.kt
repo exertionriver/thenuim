@@ -10,6 +10,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
+import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.layout.MenuView
@@ -55,6 +56,7 @@ object LoadProfileMenu : DisplayViewMenu {
     override val actions = mutableListOf(
         MenuActionParam("Yes", {
             MenuView.closeMenu()
+            MessageChannelHandler.send(ProfilePackage.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.selectedProfileAsset
             ProfileComponent.ecsInit()
         }, "Profile Loaded!"),

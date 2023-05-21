@@ -10,6 +10,7 @@ import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandle
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.executeReadyBlockEvents
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.executeReadyTimelineEvents
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.TextView
 
 class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::class).get(), 1/10f) {
@@ -29,13 +30,15 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
                 DVLayoutHandler.currentDvLayout = NarrativePackage.dvLayoutByTag(narrativeComponent.layoutTag())
                 DVLayoutHandler.currentText = narrativeComponent.currentDisplayText()
                 DVLayoutHandler.currentFontSize = narrativeComponent.currentFontSize()
-                NarrativePackage.build()
+                DisplayView.currentDisplayView = DVLayoutHandler.build()
+                DisplayView.build()
 
                 NarrativeComponent.getFor(entity)!!.changed = false
             }
 
             TextView.currentText = currentText
             TextView.currentPrompts = narrativeComponent.currentPrompts()
+            TextView.build()
         }
     }
 }

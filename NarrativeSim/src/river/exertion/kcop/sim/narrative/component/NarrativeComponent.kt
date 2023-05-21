@@ -11,6 +11,8 @@ import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.activate
@@ -19,7 +21,6 @@ import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHa
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.pause
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.unpause
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
-import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage.Companion.NarrativeBridge
 import river.exertion.kcop.sim.narrative.structure.ImmersionLocation
 import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
@@ -60,11 +61,15 @@ class NarrativeComponent : IComponent, Telegraph {
         get() = narrativeState.location ?: ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTimer.immersionTime())
         set(value) { narrativeState.location = value }
 
-    var blockImmersionTimers : MutableMap<String, ImmersionTimerPair>
-        get() = narrativeState.blockCumlImmersionTimers.mapValues { (_, values) -> ImmersionTimerPair(ImmersionTimer(), values) }.toMutableMap()
-        set(value) { narrativeState.blockCumlImmersionTimers = value.mapValues { (_,values) -> values.cumlImmersionTimer }.toMutableMap() }
+    var blockInstImmersionTimers : MutableMap<String, ImmersionTimer> = mutableMapOf()
 
-    fun cumlBlockImmersionTimer() = blockImmersionTimers[narrativeCurrBlockId()]!!.cumlImmersionTimer
+    fun blockInstImmersionTimer() = blockInstImmersionTimers[narrativeCurrBlockId()]!!
+
+    var blockCumlImmersionTimers : MutableMap<String, ImmersionTimer>
+        get() = narrativeState.blockCumlImmersionTimers
+        set(value) { narrativeState.blockCumlImmersionTimers = value }
+
+    fun blockCumlImmersionTimer() = blockCumlImmersionTimers[narrativeCurrBlockId()]!!
 
     var changed = false
 
@@ -85,7 +90,19 @@ class NarrativeComponent : IComponent, Telegraph {
 
         narrative.init(narrativeState.immersionBlockId())
 
+        narrative.narrativeBlocks.forEach {
+            blockInstImmersionTimers[it.id] = ImmersionTimer()
+        }
+
+        if (narrativeState.blockCumlImmersionTimers.isEmpty()) {
+            narrative.narrativeBlocks.forEach {
+                blockCumlImmersionTimers[it.id] = ImmersionTimer()
+            }
+        }
+
         StatusView.clearStatuses()
+
+        ProfileAsset.currentProfileAsset.profile.execSettings()
 
         //start timers, enable message receipt
         activate(narrativeCurrBlockId())
@@ -99,16 +116,10 @@ class NarrativeComponent : IComponent, Telegraph {
                 when (narrativeComponentMessage.narrativeMessageType) {
 
                     NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer -> {
-                        MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
-                                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                                SubjectEntity.entityName, ImmersionTimerComponent::class.java, ImmersionTimerPair(instImmersionTimer, cumlImmersionTimer))
-                        )
+                        ImmersionTimerComponent.ecsInit(ImmersionTimerPair(instImmersionTimer, cumlImmersionTimer))
                     }
                     NarrativeComponentMessage.NarrativeMessageType.ReplaceBlockCumlTimer -> {
-                        MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
-                                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                                SubjectEntity.entityName, ImmersionTimerComponent::class.java, blockImmersionTimers[narrativeCurrBlockId()])
-                        )
+                        ImmersionTimerComponent.ecsInit(ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
                     }
                     NarrativeComponentMessage.NarrativeMessageType.Pause -> pause()
                     NarrativeComponentMessage.NarrativeMessageType.Unpause -> unpause()

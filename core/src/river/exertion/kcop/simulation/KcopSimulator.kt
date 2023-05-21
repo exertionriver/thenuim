@@ -13,6 +13,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
+import river.exertion.kcop.sim.narrative.NarrativeInputProcessor
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
@@ -64,6 +65,7 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(KcopInputProcessor)
         inputMultiplexer.addProcessor(stage)
+        inputMultiplexer.addProcessor(NarrativeInputProcessor)
         Gdx.input.inputProcessor = inputMultiplexer
 
         viewLayout.build(stage)
