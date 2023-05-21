@@ -1,13 +1,12 @@
 package river.exertion.kcop.sim.narrative.settings
 
-import river.exertion.kcop.ecs.switchboard.ImmersionTimerSwitchboard
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.messaging.Switchboard
-import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.profile.settings.ProfileSetting
 import river.exertion.kcop.profile.settings.ProfileSettingOption
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 
 object PSShowTimer : ProfileSetting {
 
@@ -22,7 +21,10 @@ object PSShowTimer : ProfileSetting {
             MessageChannelHandler.send(ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer))
         },
         ProfileSettingOption("showImmersion","Immersion") {
-            Switchboard.executeAction(ImmersionTimerSwitchboard.ShowImmersionTimer.switchboardTag)
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer))
+        },
+        ProfileSettingOption("showImmersionBlock","Immersion Block") {
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceBlockCumlTimer))
         }
     )
 }

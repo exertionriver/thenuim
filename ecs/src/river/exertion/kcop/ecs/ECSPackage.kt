@@ -1,15 +1,12 @@
 package river.exertion.kcop.ecs
 
-import river.exertion.kcop.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.ecs.messaging.EngineEntityMessage
 import river.exertion.kcop.ecs.messaging.ImmersionTimerMessage
-import river.exertion.kcop.ecs.switchboard.ImmersionTimerSwitchboard
-import river.exertion.kcop.ecs.switchboard.ImmersionTimerSwitchboard.showImmersionTimer
-import river.exertion.kcop.messaging.*
+import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.messaging.MessageChannel
+import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IInternalPackage
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 
 object ECSPackage : IInternalPackage {
 
@@ -22,7 +19,7 @@ object ECSPackage : IInternalPackage {
         MessageChannelHandler.addChannel(MessageChannel(EngineEntityBridge, EngineEntityMessage::class))
         MessageChannelHandler.addChannel(MessageChannel(ImmersionTimerBridge, ImmersionTimerMessage::class))
 
-        ImmersionTimerSwitchboard.addShowImmersionTimerStub()
+        EngineHandler
     }
 
     override fun dispose() {

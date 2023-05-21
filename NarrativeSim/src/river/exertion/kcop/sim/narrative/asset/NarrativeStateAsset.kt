@@ -28,19 +28,11 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
         val returnList = mutableListOf<String>()
 
-        returnList.add(narrativeState.cumlImmersionTime() ?: "no narrative immersion info found")
+        returnList.add(narrativeState.cumlImmersionTimer.immersionTime())
 
         return returnList.toList()
     }
-
-    fun narrativeCurrBlockId() = narrativeState.immersionBlockId()
-
-    fun cumlImmersionTime() = narrativeState.cumlImmersionTime()
-
-    fun flags() = narrativeState.flags
-
-    fun timers() = narrativeState.blockImmersionTimers
-
+    
     fun save() {
         assetPath = newAssetFilename()
         val jsonNarrativeImmersion = json.encodeToJsonElement(this.narrativeState)
@@ -49,7 +41,7 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
     companion object {
         var currentNarrativeStateAsset = NarrativeStateAsset()
-
+/*
         operator fun AssetManager.get(asset: NarrativeStateAsset) = getAsset<NarrativeStateAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
             if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
@@ -58,7 +50,7 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
         fun isValid(narrativeStateAsset: NarrativeStateAsset?) : Boolean {
             return (narrativeStateAsset?.narrativeState != null && narrativeStateAsset.status == null)
         }
-
+*/
         fun new(narrativeComponent: NarrativeComponent) : NarrativeStateAsset {
             return NarrativeStateAsset(narrativeComponent.narrativeState).apply {
                 this.assetPath = newAssetFilename()

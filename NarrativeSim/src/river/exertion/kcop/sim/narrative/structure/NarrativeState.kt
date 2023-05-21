@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 
 @Serializable
 class NarrativeState(
@@ -11,7 +12,7 @@ class NarrativeState(
 
     var location : ImmersionLocation? = null,
 
-    var blockImmersionTimers : MutableMap<String, String> = mutableMapOf(),
+    private var sBlockCumlImmersionTimers : MutableMap<String, String> = mutableMapOf(),
 
     var flags : MutableList<ImmersionStatus> = mutableListOf()
 
@@ -19,8 +20,16 @@ class NarrativeState(
 
     fun immersionBlockId() = location?.immersionBlockId ?: UnknownBlockId
 
-    fun cumlImmersionTime() = if (location != null) location!!.cumlImmersionTime else ImmersionTimer.CumlTimeZero
+    var cumlImmersionTimer : ImmersionTimer
+        get() = ImmersionTimer().apply { this.setPastStartTime(ImmersionTimer.inMilliseconds(location?.cumlImmersionTime ?: ImmersionTimer.CumlTimeZero)) }
+        set(value) { location?.cumlImmersionTime = value.immersionTime() }
 
+    //persisted as cuml timer
+    var blockCumlImmersionTimers : MutableMap<String, ImmersionTimer>
+        get() = sBlockCumlImmersionTimers.mapValues { (_, values) -> ImmersionTimer().apply { this.setPastStartTime(ImmersionTimer.inMilliseconds(values)) } }.toMutableMap()
+        set(value) { sBlockCumlImmersionTimers = value.mapValues { (_,values) -> values.immersionTime() }.toMutableMap() }
+
+    //not persisted, cleared when moving from block to block
     @Transient
     var blockFlags : MutableList<ImmersionStatus> = mutableListOf()
 

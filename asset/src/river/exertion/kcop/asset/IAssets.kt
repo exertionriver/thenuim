@@ -19,6 +19,7 @@ interface IAssets {
 
     fun byName(assetName : String?) : Any?
 
+    //must be overridden, there is no IAsset loader
     fun <T:IAsset>reloadTyped() : MutableList<T> {
         values = AssetManagerHandler.reloadLocalAssets<IAsset>(iAssetLocation).toMutableList()
         return getTyped()

@@ -6,17 +6,16 @@ import ktx.assets.getAsset
 import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
-import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.asset.IAssets
-import river.exertion.kcop.ecs.switchboard.ImmersionTimerSwitchboard
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IImmersionPackage
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.sim.narrative.asset.*
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeAssetLoader
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAssetLoader
 import river.exertion.kcop.sim.narrative.menu.LoadNarrativeMenu
 import river.exertion.kcop.sim.narrative.menu.NarrativeMenu
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
@@ -79,10 +78,6 @@ object NarrativePackage : IImmersionPackage {
     }
 
     override fun inputProcessor() = NarrativeInputProcessor
-
-    override fun timerPair() = ImmersionTimerPair()
-
-    override fun showImmersionTimer(immersionTimerPair: ImmersionTimerPair) = ImmersionTimerSwitchboard.showImmersionTimer(timerPair())
 
     fun clearContent() {
         AudioView.stopMusic()

@@ -6,6 +6,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import ktx.assets.getAsset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.IAsset
+import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
@@ -20,13 +21,9 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
     override fun assetTitle() = assetPath
     override fun newAssetFilename(): String = ProfileAssets.iAssetPath(super.newAssetFilename())
 
-    var settings : MutableList<ProfileSettingEntry>
-        get() = profile.settingEntries
-        set(value) { profile.settingEntries = value }
+    var settings : MutableList<ProfileSettingEntry> by profile::settingEntries
 
-    var cumlTime : String
-        get() = profile.cumlTime
-        set(value) { profile.cumlTime = value }
+    var cumlTimer : ImmersionTimer by profile::cumlTimer
 
     //TODO: diff between asset and current
     override fun assetInfo() : List<String> {
@@ -56,7 +53,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
 
         var selectedProfileAsset = ProfileAsset()
         var currentProfileAsset = ProfileAsset()
-
+/*
         operator fun AssetManager.get(asset: ProfileAsset) = getAsset<ProfileAsset>(asset.assetPath).also {
             if (it.status != null) println ("Asset Status: ${it.status}")
             if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
@@ -64,7 +61,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
 
         fun isValid(profileAsset: ProfileAsset?) : Boolean {
             return (profileAsset?.profile != null && profileAsset.status == null)
-        }
+        }*/
 
         fun new(saveName : String? = null) : ProfileAsset {
             return ProfileAsset(Profile().apply {

@@ -13,6 +13,7 @@ import river.exertion.kcop.plugin.IKcopPackage
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAsset.Companion.currentProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssetLoader
+import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -61,6 +62,10 @@ object ProfilePackage : IKcopPackage {
                 EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
                 SubjectEntity.entityName, IRLTimeComponent::class.java)
         )
+
+        ProfileComponent.ecsInit()
+
+        MessageChannelHandler.send(ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer))
     }
 
     override fun dispose() {}

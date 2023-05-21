@@ -11,7 +11,7 @@ data class NarrativeComponentMessage(val narrativeMessageType : NarrativeMessage
     }
 
     enum class NarrativeMessageType {
-        ReplaceCumlTimer, Pause, Unpause, Inactivate, Next
+        ReplaceCumlTimer, ReplaceBlockCumlTimer, Pause, Unpause, Inactivate, Next
     }
 
     companion object {

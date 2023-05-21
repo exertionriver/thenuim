@@ -33,7 +33,7 @@ object NarrativeComponentEventHandler {
                 AiView.addHint(event.id!!, (event as HintTextEvent).report)
             }
 
-            readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
+            readyTimelineEvents(cumlImmersionTimer).filter { timelineEvent ->
                 (timelineEvent is ReportTextEvent) && narrativeState.persistEventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
@@ -41,7 +41,7 @@ object NarrativeComponentEventHandler {
                 returnText += "\n${(timelineEvent as ReportTextEvent).report}"
             }
 
-            readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
+            readyTimelineEvents(cumlImmersionTimer).filter { timelineEvent ->
                 (timelineEvent is HintTextEvent) && narrativeState.persistEventFired(timelineEvent.id!!)
             }.sortedBy {
                 it.id
@@ -58,7 +58,7 @@ object NarrativeComponentEventHandler {
 
         if (isInitialized) {
 
-            readyTimelineEvents(timerPair.cumlImmersionTimer).filter { timelineEvent ->
+            readyTimelineEvents(cumlImmersionTimer).filter { timelineEvent ->
                 !narrativeState.persistEventFired(timelineEvent.id!!)
             }.forEach { timelineEvent ->
                 timelineEvent.execEvent()

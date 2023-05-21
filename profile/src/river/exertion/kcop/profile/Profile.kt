@@ -1,6 +1,7 @@
 package river.exertion.kcop.profile
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import river.exertion.kcop.asset.character.NameTypes
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
@@ -13,15 +14,24 @@ import river.exertion.kcop.profile.settings.ProfileSettingEntry
 data class Profile(
         override var id : String = Id.randomId(),
         var name : String = genName(),
-        var cumlTime : String = ImmersionTimer.CumlTimeZero,
+        private var sCumlTime : String = ImmersionTimer.CumlTimeZero,
         var settingEntries : MutableList<ProfileSettingEntry> = defaultSettings()
     ) : Id {
+
+    @Transient
+    var cumlTimer : ImmersionTimer = ImmersionTimer().apply {
+        this.setPastStartTime(ImmersionTimer.inMilliseconds(sCumlTime))
+    }
+        set(value) {
+            field = value
+            sCumlTime = value.immersionTime()
+        }
 
     fun profileInfo() : List<String> {
         val returnList = mutableListOf<String>()
 
         returnList.add("name: $name")
-        returnList.add("cuml. time: $cumlTime")
+        returnList.add("cuml. time: ${cumlTimer.immersionTime()}")
 
         return returnList.toList()
     }

@@ -12,7 +12,6 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
@@ -22,29 +21,31 @@ class ProfileComponent : IComponent, Telegraph {
 
     var profile : Profile
         get() = ProfileAsset.currentProfileAsset.profile
-        set(value) { ProfileAsset.currentProfileAsset.profile = value }
+        set(value) {
+            ProfileAsset.currentProfileAsset.profile = value
+        }
 
     override fun componentId() = profile.id
 
     override var isInitialized = false
 
-    val timerPair = ImmersionTimerPair(ImmersionTimer(), ImmersionTimer())
+    val instTimer = ImmersionTimer()
 
     var settings : MutableList<ProfileSettingEntry>
         get() = profile.settingEntries
-        set(value) { profile.settingEntries = value }
+        set(value) {
+            profile.settingEntries = value
+        }
 
-    var cumlTime : String
-        get() = profile.cumlTime
-        set(value) { profile.cumlTime = value }
-
-    fun cumlComponentTime() = if (isInitialized) timerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
+    var cumlTimer : ImmersionTimer
+        get() = profile.cumlTimer
+        set(value) {
+            profile.cumlTimer = value
+        }
 
     override fun initialize(initData : Any?) {
 
         super.initialize(initData)
-
-        timerPair.cumlImmersionTimer.setPastStartTime(ImmersionTimer.inMilliseconds(profile.cumlTime))
 
         profile.execSettings()
 
@@ -54,9 +55,10 @@ class ProfileComponent : IComponent, Telegraph {
     fun activate() {
         if (isInitialized) {
 
-            timerPair.instImmersionTimer.resetTimer()
-            timerPair.instImmersionTimer.resumeTimer()
-            timerPair.cumlImmersionTimer.resumeTimer()
+            instTimer.resetTimer()
+            instTimer.resumeTimer()
+
+            cumlTimer.resumeTimer()
 
             MessageChannelHandler.enableReceive(ProfileBridge, this)
         }
@@ -65,8 +67,8 @@ class ProfileComponent : IComponent, Telegraph {
     fun inactivate() {
         if (isInitialized) {
 
-            timerPair.instImmersionTimer.pauseTimer()
-            timerPair.cumlImmersionTimer.pauseTimer()
+            instTimer.pauseTimer()
+            cumlTimer.pauseTimer()
 
             MessageChannelHandler.disableReceive(ProfileBridge, this)
 
@@ -88,7 +90,7 @@ class ProfileComponent : IComponent, Telegraph {
                                 MessageChannelHandler.send(
                                     EngineComponentBridge, EngineComponentMessage(
                                         EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                                        SubjectEntity.entityName, ImmersionTimerComponent::class.java, timerPair)
+                                        SubjectEntity.entityName, ImmersionTimerComponent::class.java, ImmersionTimerPair(instTimer, cumlTimer))
                                 )
                             }
                             ProfileComponentMessage.ProfileMessageType.Inactivate -> {
@@ -109,9 +111,9 @@ class ProfileComponent : IComponent, Telegraph {
 
         fun ecsInit() {
             MessageChannelHandler.send(
-                    EngineComponentBridge, EngineComponentMessage(
-                    EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                    SubjectEntity.entityName, ProfileComponent::class.java)
+                EngineComponentBridge, EngineComponentMessage(
+                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
+                SubjectEntity.entityName, ProfileComponent::class.java)
             )
         }
 
