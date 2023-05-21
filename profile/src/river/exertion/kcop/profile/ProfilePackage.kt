@@ -2,8 +2,9 @@ package river.exertion.kcop.profile
 
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
-import river.exertion.kcop.ecs.ECSPackage
+import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IRLTimeComponent
+import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.Id
@@ -57,11 +58,7 @@ object ProfilePackage : IKcopPackage {
     }
 
     override fun loadSystems() {
-        MessageChannelHandler.send(
-                ECSPackage.EngineComponentBridge, EngineComponentMessage(
-                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                SubjectEntity.entityName, IRLTimeComponent::class.java)
-        )
+        EngineHandler.replaceComponent(componentClass = IRLTimeComponent::class.java)
 
         ProfileComponent.ecsInit()
     }

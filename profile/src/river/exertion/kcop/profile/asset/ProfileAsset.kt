@@ -6,19 +6,20 @@ import kotlinx.serialization.json.encodeToJsonElement
 import ktx.assets.getAsset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.IAsset
+import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 class ProfileAsset(var profile : Profile = Profile()) : IAsset {
-    override var assetPath : String = newAssetFilename()
+    override var assetPath : String? = newAssetFilename()
     override var status : String? = null
     override var statusDetail : String? = null
 
     override fun assetId() = profile.id
     override fun assetName() = profile.name
-    override fun assetTitle() = assetPath
+    override fun assetTitle() = assetPath ?: AssetNotFound
     override fun newAssetFilename(): String = ProfileAssets.iAssetPath(super.newAssetFilename())
 
     var settings : MutableList<ProfileSettingEntry>

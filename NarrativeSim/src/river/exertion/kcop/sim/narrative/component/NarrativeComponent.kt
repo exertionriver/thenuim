@@ -3,7 +3,7 @@ package river.exertion.kcop.sim.narrative.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
+import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
@@ -58,7 +58,7 @@ class NarrativeComponent : IComponent, Telegraph {
         set(value) { narrativeState.flags = value }
 
     var location : ImmersionLocation
-        get() = narrativeState.location ?: ImmersionLocation(narrativeCurrBlockId(), cumlImmersionTimer.immersionTime())
+        get() = narrativeState.location
         set(value) { narrativeState.location = value }
 
     var blockInstImmersionTimers : MutableMap<String, ImmersionTimer> = mutableMapOf()
@@ -102,10 +102,12 @@ class NarrativeComponent : IComponent, Telegraph {
 
         StatusView.clearStatuses()
 
-        ProfileAsset.currentProfileAsset.profile.execSettings()
+        changed = true
 
         //start timers, enable message receipt
         activate(narrativeCurrBlockId())
+
+        ProfileAsset.currentProfileAsset.profile.execSettings()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -144,10 +146,7 @@ class NarrativeComponent : IComponent, Telegraph {
             //inactivate current narrative
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
 
-            MessageChannelHandler.send(EngineComponentBridge, EngineComponentMessage(
-                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                SubjectEntity.entityName, NarrativeComponent::class.java
-            ) )
+            EngineHandler.replaceComponent(componentClass = NarrativeComponent::class.java)
         }
     }
 }

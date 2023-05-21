@@ -2,7 +2,7 @@ package river.exertion.kcop.ecs.component
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.TimeUtils
-import river.exertion.kcop.ecs.ECSPackage
+import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
@@ -44,11 +44,7 @@ class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState 
         fun getFor(entity : Entity) : ImmersionTimerComponent? = if (has(entity)) entity.components.first { it is ImmersionTimerComponent } as ImmersionTimerComponent else null
 
         fun ecsInit(immersionTimerPair : ImmersionTimerPair) {
-            MessageChannelHandler.send(
-                ECSPackage.EngineComponentBridge, EngineComponentMessage(
-                EngineComponentMessage.EngineComponentMessageType.ReplaceComponent,
-                SubjectEntity.entityName, ImmersionTimerComponent::class.java, immersionTimerPair)
-            )
+            EngineHandler.replaceComponent(componentClass = ImmersionTimerComponent::class.java, initInfo = immersionTimerPair)
         }
     }
 }

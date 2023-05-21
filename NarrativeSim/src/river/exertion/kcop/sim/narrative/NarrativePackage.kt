@@ -21,6 +21,7 @@ import river.exertion.kcop.sim.narrative.menu.LoadNarrativeMenu
 import river.exertion.kcop.sim.narrative.menu.NarrativeMenu
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.profile.settings.PSShowTimer
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset.Companion.isNarrativeLoaded
 import river.exertion.kcop.sim.narrative.system.NarrativeTextSystem
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
@@ -56,11 +57,19 @@ object NarrativePackage : IImmersionPackage {
         SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
 
         PSShowTimer.options.add(ProfileSettingOption("showImmersion","Immersion") {
-            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer))
+            if (isNarrativeLoaded()) {
+                MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer))
+            } else {
+                PSShowTimer.options.firstOrNull { it.optionValue == PSShowTimer.ShowProfile }?.optionAction?.let { it() }
+            }
         } )
 
         PSShowTimer.options.add(ProfileSettingOption("showImmersionBlock","Immersion Block") {
-                    MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceBlockCumlTimer))
+            if (isNarrativeLoaded()) {
+                MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceBlockCumlTimer))
+            } else {
+                PSShowTimer.options.firstOrNull { it.optionValue == PSShowTimer.ShowProfile }?.optionAction?.let { it() }
+            }
         })
     }
 
@@ -101,9 +110,4 @@ object NarrativePackage : IImmersionPackage {
     }
 
     const val NarrativeBridge = "NarrativeBridge"
-}
-
-operator fun AssetManager.get(asset: DisplayViewLayoutAsset) = getAsset<DisplayViewLayoutAsset>(asset.assetPath).also {
-    if (it.status != null) println ("Asset Status: ${it.status}")
-    if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
 }

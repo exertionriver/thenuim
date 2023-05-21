@@ -35,6 +35,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
             this.add(Label(setting.selectionLabel, KcopSkin.skin).apply {
                 this.wrap
             } ).left()
+
             this.add(
                 SelectBox<String>(KcopSkin.skin
             ).apply {

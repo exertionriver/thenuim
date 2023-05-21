@@ -12,9 +12,12 @@ object PSShowTimer : ProfileSetting {
 
     override val display: Boolean = true
 
+    const val ShowProfile = "showProfile"
+
     override val options = mutableListOf (
-        ProfileSettingOption("showProfile","Profile") {
+        ProfileSettingOption(ShowProfile,"Profile") {
             MessageChannelHandler.send(ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer))
         },
     )
+
 }

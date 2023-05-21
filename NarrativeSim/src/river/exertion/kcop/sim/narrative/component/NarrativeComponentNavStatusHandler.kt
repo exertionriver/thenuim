@@ -81,6 +81,8 @@ object NarrativeComponentNavStatusHandler {
                 StatusView.addOrUpdateStatus(sequentialStatusKey(), seqNarrativeProgress())
                 AiView.clearHints()
 
+                location.immersionBlockId = narrativeCurrBlockId()
+
                 narrativeState.blockFlags.clear()
                 changed = true
             }

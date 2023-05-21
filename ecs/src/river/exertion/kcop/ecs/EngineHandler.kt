@@ -2,31 +2,19 @@ package river.exertion.kcop.ecs
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.ashley.entity
-import river.exertion.kcop.ecs.ECSPackage.EngineComponentBridge
-import river.exertion.kcop.ecs.ECSPackage.EngineEntityBridge
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.entity.IEntity
 import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage
-import river.exertion.kcop.ecs.messaging.EngineEntityMessage
 import river.exertion.kcop.ecs.system.SystemHandler
-import river.exertion.kcop.messaging.MessageChannelHandler
 import kotlin.reflect.KClass
 import kotlin.reflect.full.valueParameters
 
-object EngineHandler : Telegraph {
-
-    init {
-        MessageChannelHandler.enableReceive(EngineEntityBridge, this)
-        MessageChannelHandler.enableReceive(EngineComponentBridge, this)
-    }
+object EngineHandler {
 
     var engine = SystemHandler.pooledEngine
     val entities = mutableMapOf<IEntity, Entity>()
-    val profileEntity = instantiateEntity(SubjectEntity::class.java)//.also { ProfileComponent.ecsInit() }
+    val subjectEntity = instantiateEntity(SubjectEntity::class.java)
 
     fun entityByName(entityName : String) : Entity = entities.entries.firstOrNull{ it.key.entityName == entityName }?.value ?: throw Exception("entityByName:$entityName not found")
 
@@ -66,7 +54,7 @@ object EngineHandler : Telegraph {
         return newEntity
     }
 
-    fun removeComponent(entityName : String, componentClass: Class<*>) {
+    fun removeComponent(entityName : String = SubjectEntity.entityName, componentClass: Class<*>) {
         val entityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
 
         if (entityEntry != null) {
@@ -80,11 +68,11 @@ object EngineHandler : Telegraph {
         }
     }
 
-    fun addComponentInstance(entity : Entity, componentInstance : IComponent) {
+    fun addComponentInstance(entity : Entity = subjectEntity, componentInstance : IComponent) {
         engine.entities.firstOrNull { it == entity }?.add(componentInstance)
     }
 
-    fun addInstantiateComponent(entity : Entity, componentClass : Class<*>, initInfo : Any? = null) {
+    fun addInstantiateComponent(entity : Entity = subjectEntity, componentClass : Class<*>, initInfo : Any? = null) {
         val instance = componentClass.getDeclaredConstructor().newInstance()
         val initMethod = componentClass.getMethod(
             IComponent::initialize.name,
@@ -95,7 +83,7 @@ object EngineHandler : Telegraph {
         initMethod.invoke(instance, initInfo)
     }
 
-    fun addComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
+    fun addComponent(entityName : String = SubjectEntity.entityName, componentClass : Class<*>, initInfo : Any? = null) {
         val entityEntry = entities.entries.firstOrNull { it.key.entityName == entityName }
 
         if (entityEntry != null) {
@@ -103,45 +91,9 @@ object EngineHandler : Telegraph {
         }
     }
 
-    fun replaceComponent(entityName : String, componentClass : Class<*>, initInfo : Any? = null) {
+    fun replaceComponent(entityName : String = SubjectEntity.entityName, componentClass : Class<*>, initInfo : Any? = null) {
         removeComponent(entityName, componentClass)
         addComponent(entityName, componentClass, initInfo)
-    }
-
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(EngineEntityBridge, msg.message) ) -> {
-                    val engineEntityMessage: EngineEntityMessage = MessageChannelHandler.receiveMessage(EngineEntityBridge, msg.extraInfo)
-
-                    when (engineEntityMessage.messageType) {
-                        EngineEntityMessage.EngineEntityMessageType.InstantiateEntity -> {
-                            instantiateEntity(engineEntityMessage.entityClass, engineEntityMessage.initInfo)
-                        }
-                        EngineEntityMessage.EngineEntityMessageType.RemoveEntity -> {
-                            removeEntity(engineEntityMessage.entityClass)
-                        }
-                        else -> {}
-                    }
-                }
-                (MessageChannelHandler.isType(EngineComponentBridge, msg.message) ) -> {
-                    val engineComponentMessage: EngineComponentMessage = MessageChannelHandler.receiveMessage(EngineComponentBridge, msg.extraInfo)
-
-                    when (engineComponentMessage.messageType) {
-                        EngineComponentMessage.EngineComponentMessageType.AddComponent -> {
-                            addComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
-                        }
-                        EngineComponentMessage.EngineComponentMessageType.RemoveComponent -> {
-                            removeComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass)
-                        }
-                        EngineComponentMessage.EngineComponentMessageType.ReplaceComponent -> {
-                            replaceComponent(engineComponentMessage.entityName, engineComponentMessage.componentClass, engineComponentMessage.initInfo)
-                        }
-                    }
-                }
-            }
-        }
-        return true
     }
 
     fun dispose() { }

@@ -1,18 +1,17 @@
 package river.exertion.kcop.sim.narrative.asset
 
-import com.badlogic.gdx.assets.AssetManager
-import ktx.assets.getAsset
 import river.exertion.kcop.asset.IAsset
+import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
 import river.exertion.kcop.sim.narrative.structure.Narrative
 
 class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
-    override lateinit var assetPath : String
+    override var assetPath : String? = null
     override var status : String? = null
     override var statusDetail : String? = null
 
     override fun assetId() : String = narrative.id
     override fun assetName() : String = narrative.name
-    override fun assetTitle() = assetPath
+    override fun assetTitle() = assetPath ?: AssetNotFound
 
     override fun newAssetFilename(): String = NarrativeAssets.iAssetPath(super.newAssetFilename())
 
@@ -30,10 +29,7 @@ class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
         var selectedNarrativeAsset = NarrativeAsset()
         var currentNarrativeAsset = NarrativeAsset()
 
-        operator fun AssetManager.get(asset: NarrativeAsset) = getAsset<NarrativeAsset>(asset.assetPath).also {
-            if (it.status != null) println ("Asset Status: ${it.status}")
-            if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
-        }
+        fun isNarrativeLoaded() = (currentNarrativeAsset.assetPath != null)
 
         fun isValid(narrativeAsset: NarrativeAsset?) : Boolean {
             return (narrativeAsset?.narrative != null && narrativeAsset.status == null)

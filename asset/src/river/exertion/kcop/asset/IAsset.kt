@@ -1,7 +1,7 @@
 package river.exertion.kcop.asset
 
 interface IAsset {
-    var assetPath : String
+    var assetPath : String?
     var status : String?
     var statusDetail : String?
 
@@ -21,5 +21,7 @@ interface IAsset {
         fun reduceFilename(assetName: String) = assetName.replace(reduceUnderscores.toRegex(), "_")
 
         fun newAssetFilename(assetName : String, assetId : String) = "${reduceFilename(replaceFileName(assetName))}_${assetId.substring(0, 4)}"
+
+        const val AssetNotFound = "not found"
     }
 }

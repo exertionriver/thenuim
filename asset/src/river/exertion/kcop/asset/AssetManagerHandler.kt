@@ -27,7 +27,7 @@ object AssetManagerHandler {
 
         assets.getAll(T::class.java, previousAssetArray)
         previousAssetArray.forEach {
-            assets.unloadSafely(it.assetPath)
+            if (it.assetPath != null) assets.unloadSafely(it.assetPath!!)
         }
 
         //TODO: exception handling for path creation

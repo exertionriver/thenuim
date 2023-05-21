@@ -10,7 +10,6 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
-import river.exertion.kcop.ecs.ECSPackage
 import river.exertion.kcop.plugin.IPackage
 import river.exertion.kcop.simulation.KcopSimulator
 import river.exertion.kcop.view.KcopSkin
@@ -20,7 +19,7 @@ import river.exertion.kcop.view.ViewPackage
 class Kcop : KtxGame<KtxScreen>() {
 
     val packages = mutableListOf<IPackage>(
-        ViewPackage, ECSPackage
+        ViewPackage
     )
 
     init {

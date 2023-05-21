@@ -4,26 +4,25 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 
 @Serializable
 class NarrativeState(
-    override var id : String = genId(),
+        override var id : String = genId(),
 
-    var location : ImmersionLocation? = null,
+        var location : ImmersionLocation = ImmersionLocation(),
 
-    private var sBlockCumlImmersionTimers : MutableMap<String, String> = mutableMapOf(),
+        private var sBlockCumlImmersionTimers : MutableMap<String, String> = mutableMapOf(),
 
-    var flags : MutableList<ImmersionStatus> = mutableListOf()
+        var flags : MutableList<ImmersionStatus> = mutableListOf()
 
 ) : Id {
 
-    fun immersionBlockId() = location?.immersionBlockId ?: UnknownBlockId
+    fun immersionBlockId() = location.immersionBlockId ?: UnknownBlockId
 
     @Transient
-    var cumlImmersionTimer : ImmersionTimer = ImmersionTimer().apply { this.setPastStartTime(ImmersionTimer.inMilliseconds(location?.cumlImmersionTime ?: ImmersionTimer.CumlTimeZero)) }
+    var cumlImmersionTimer : ImmersionTimer = ImmersionTimer().apply { this.setPastStartTime(ImmersionTimer.inMilliseconds(location.cumlImmersionTime)) }
         set(value) {
-            location?.cumlImmersionTime = value.immersionTime()
+            location.cumlImmersionTime = value.immersionTime()
             field = value
         }
 
