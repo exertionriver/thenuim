@@ -79,35 +79,33 @@ class DVImagePane : DVPane() {
         }
     }
 
-    fun fadeImageOut(texture : Texture?) {
-        if (this.paneTexture != texture) {
-            this.alphaMask = 0f
-            Timer.schedule(object : Timer.Task() {
-                override fun run() {
+    fun fadeImageOut() {
+        this.alphaMask = 0f
+        Timer.schedule(object : Timer.Task() {
+            override fun run() {
 //                    println("fadeOut[$layoutPaneIdx]: alpha:${displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]}")
 
-                    if (textureLock != null && textureLock == this) {
+                if (textureLock != null && textureLock == this) {
 
-                        val alpha = this@DVImagePane.alphaMask
-                        if (alpha <= .9f) {
-                            this@DVImagePane.alphaMask = alpha + .1f
-                            DisplayView.build()
-                        } else {
-                            this@DVImagePane.textureLock = null
-                            this@DVImagePane.paneTexture = null
-                            this@DVImagePane.alphaMask = 1f
-                            DisplayView.build()
-                            this.cancel()
-                        }
+                    val alpha = this@DVImagePane.alphaMask
+                    if (alpha <= .9f) {
+                        this@DVImagePane.alphaMask = alpha + .1f
+                        DisplayView.build()
                     } else {
-//                        println("texture unlocked! [$layoutPaneIdx]")
+                        this@DVImagePane.textureLock = null
+                        this@DVImagePane.paneTexture = null
                         this@DVImagePane.alphaMask = 1f
                         DisplayView.build()
                         this.cancel()
                     }
+                } else {
+//                        println("texture unlocked! [$layoutPaneIdx]")
+                    this@DVImagePane.alphaMask = 1f
+                    DisplayView.build()
+                    this.cancel()
                 }
-            }.apply { this@DVImagePane.textureLock = this }, 0f, .05f)
-        }
+            }
+        }.apply { this@DVImagePane.textureLock = this }, 0f, .05f)
     }
 
     companion object {

@@ -42,8 +42,8 @@ data class DVLayout(
         imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageIn(texture)
     }
 
-    fun fadeImageOut(paneIdx : Int, texture : Texture?) {
-        imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageOut(texture)
+    fun fadeImageOut(paneIdx : Int) {
+        imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageOut()
     }
 
     fun clearContent() {

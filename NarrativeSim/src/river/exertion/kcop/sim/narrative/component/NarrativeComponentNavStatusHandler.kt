@@ -50,7 +50,7 @@ object NarrativeComponentNavStatusHandler {
 
             pause()
 
-            NarrativePackage.clearContent()
+            NarrativePackage.displayViewLayoutHandler().clearContent()
 
             MessageChannelHandler.disableReceive(NarrativeBridge, this)
 

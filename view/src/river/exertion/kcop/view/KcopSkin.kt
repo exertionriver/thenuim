@@ -43,5 +43,5 @@ object KcopSkin {
         skin.disposeSafely()
     }
 
-    val BackgroundColor = ColorPalette.of("black")
+    val BackgroundColor = ColorPalette.BackgroundColor
 }

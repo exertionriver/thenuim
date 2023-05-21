@@ -21,16 +21,20 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
 
         if (narrativeComponent.isInitialized) {
 
+            if (narrativeComponent.changed) {
+                //in case this was reset, e.g. by colorPalette
+                DisplayView.currentDisplayViewLayoutHandler = NarrativePackage.displayViewLayoutHandler()
+                DVLayoutHandler.currentDvLayout = NarrativePackage.dvLayoutByTag(narrativeComponent.layoutTag())
+            }
+
             narrativeComponent.executeReadyTimelineEvents()
             narrativeComponent.executeReadyBlockEvents()
 
             val currentText = narrativeComponent.currentText() + narrativeComponent.currentBlockTimer()
 
             if (narrativeComponent.changed) {
-                DVLayoutHandler.currentDvLayout = NarrativePackage.dvLayoutByTag(narrativeComponent.layoutTag())
                 DVLayoutHandler.currentText = narrativeComponent.currentDisplayText()
                 DVLayoutHandler.currentFontSize = narrativeComponent.currentFontSize()
-                DisplayView.currentDisplayView = DVLayoutHandler.build()
                 DisplayView.build()
 
                 NarrativeComponent.getFor(entity)!!.changed = false

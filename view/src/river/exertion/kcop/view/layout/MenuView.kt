@@ -18,6 +18,7 @@ object MenuView : ViewBase {
     override var viewTable = Table()
 
     val menuButton = 0
+    val displayMode = 1
     val fullScreen = 3
 
     var assignableButtons = mutableMapOf(
@@ -27,8 +28,8 @@ object MenuView : ViewBase {
             else
                 closeMenu()
         },
-        1 to {
-            KcopSkin.displayMode = isChecked[1]!!
+        displayMode to {
+            KcopSkin.displayMode = isChecked[displayMode]!!
             ViewLayout.rebuild()
         },
         2 to {

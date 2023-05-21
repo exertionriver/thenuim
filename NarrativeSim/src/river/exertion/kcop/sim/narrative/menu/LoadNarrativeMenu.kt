@@ -3,12 +3,17 @@ package river.exertion.kcop.sim.narrative.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAssets
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
+import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.DisplayView
@@ -57,8 +62,9 @@ object LoadNarrativeMenu : DisplayViewMenu {
     override val actions = mutableListOf(
         MenuActionParam("Yes", {
             MenuView.closeMenu()
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
             NarrativeAsset.currentNarrativeAsset = NarrativeAsset.selectedNarrativeAsset
-            NarrativeStateAsset.currentNarrativeStateAsset = NarrativeStateAssets.reload().firstOrNull { it.assetId() == NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId(), NarrativeAsset.currentNarrativeAsset.assetId() ) } ?: NarrativeStateAsset.currentNarrativeStateAsset
+            NarrativeStateAsset.currentNarrativeStateAsset = NarrativeStateAssets.reload().firstOrNull { it.assetId() == NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId(), NarrativeAsset.currentNarrativeAsset.assetId() ) } ?: NarrativeStateAsset()
 
             NarrativeComponent.ecsInit()
         }, "Narrative Loaded!"),

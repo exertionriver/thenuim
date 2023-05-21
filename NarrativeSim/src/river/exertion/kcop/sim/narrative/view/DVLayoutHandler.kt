@@ -1,7 +1,5 @@
 package river.exertion.kcop.sim.narrative.view
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -12,8 +10,10 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
+import river.exertion.kcop.view.layout.AudioView
 
-object DVLayoutHandler : Telegraph {
+object DVLayoutHandler : IDisplayViewLayoutHandler {
 
     var currentText = ""
     var currentFontSize = FontSize.SMALL
@@ -37,7 +37,7 @@ object DVLayoutHandler : Telegraph {
 
     fun fadeImageIn(paneIdx : Int, texture : Texture?) = currentDvLayout.fadeImageIn(paneIdx, texture)
 
-    fun fadeImageOut(paneIdx : Int, texture : Texture?) = currentDvLayout.fadeImageOut(paneIdx, texture)
+    fun fadeImageOut(paneIdx : Int) = currentDvLayout.fadeImageOut(paneIdx)
 
     fun buildPaneContent() : DVPaneContent {
 
@@ -75,7 +75,7 @@ object DVLayoutHandler : Telegraph {
         return paneContent
     }
 
-    fun build() : Table {
+    override fun build() : Table {
 
         val paneContent = buildPaneContent()
         val layoutTable = Table()
@@ -84,9 +84,17 @@ object DVLayoutHandler : Telegraph {
             layoutTable.paneCell(currentDvLayout, paneContent, dvPane)
         }
 
+        if (KcopSkin.displayMode) layoutTable.debug()
+
         layoutTable.validate()
 
         return layoutTable
+    }
+
+    override fun clearContent() {
+        AudioView.stopMusic()
+        currentDvLayout.clearContent()
+        build()
     }
 
     fun Table.paneCell(dvLayout: DVLayout, paneContent : DVPaneContent, dvLayoutCell: DVLayoutCell) {
@@ -98,18 +106,9 @@ object DVLayoutHandler : Telegraph {
                     dvLayout.layout.firstOrNull { it.tableIdx == dvLayoutCell.tableIdx }?.panes?.forEach {
                         dvPane -> this.paneCell(dvLayout, paneContent, dvPane)
                     }
-                }).colspan(dvLayoutCell.colspan())
+                if (KcopSkin.displayMode) this.debug()
+            }).colspan(dvLayoutCell.colspan())
             }
         }
-    }
-
-    @Suppress("NewApi")
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                else -> return false
-            }
-        }
-        return false
     }
 }

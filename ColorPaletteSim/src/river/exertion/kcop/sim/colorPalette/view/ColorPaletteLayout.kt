@@ -6,12 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.ColorPaletteBridge
 import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewType
 
-object ColorPaletteLayout : Telegraph {
+object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
 
     init {
         MessageChannelHandler.enableReceive(ColorPaletteBridge, this)
@@ -101,7 +103,7 @@ object ColorPaletteLayout : Telegraph {
     fun colorBaseDecrG() = setColorBase(baseColor.decrG())
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
-    fun build() : Actor {
+    override fun build() : Actor {
         return Table().apply {
             this.add(createSampleSwatchesCtrl()).top()
             this.add(createBaseSwatchesCtrl()).top()
@@ -111,6 +113,17 @@ object ColorPaletteLayout : Telegraph {
             this.row()
             this.add(Table()).colspan(5).grow()
         }
+    }
+
+    override fun clearContent() {
+        sampleSwatchesCtrl.clearChildren()
+        baseSwatchesCtrl.clearChildren()
+        compSwatchesCtrl.clearChildren()
+        triadFirstSwatchesCtrl.clearChildren()
+        triadSecondSwatchesCtrl.clearChildren()
+
+        DisplayView.currentDisplayViewLayoutHandler = null
+        DisplayView.build()
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {

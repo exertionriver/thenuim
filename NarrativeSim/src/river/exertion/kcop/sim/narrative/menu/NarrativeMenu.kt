@@ -4,7 +4,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.profile.menu.RestartProgressMenu
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeAssets
 import river.exertion.kcop.view.KcopSkin

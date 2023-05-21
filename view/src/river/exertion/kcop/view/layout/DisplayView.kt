@@ -1,8 +1,8 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler.currentMenuTag
 
@@ -19,9 +19,9 @@ object DisplayView : ViewBase {
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-                if (currentDisplayView != null) {
+                if (currentDisplayViewLayoutHandler != null) {
                     this.add(Table().apply {
-                        this.add(currentDisplayView).grow()
+                        this.add(currentDisplayViewLayoutHandler!!.build()).grow()
                     })
                 }
                 if (menuOpen) {
@@ -34,5 +34,5 @@ object DisplayView : ViewBase {
         viewTable.clip()
     }
 
-    var currentDisplayView : Actor? = null
+    var currentDisplayViewLayoutHandler : IDisplayViewLayoutHandler? = null
 }

@@ -12,6 +12,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
@@ -26,7 +27,9 @@ import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.sim.narrative.view.DVLayout
+import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
 
 class NarrativeComponent : IComponent, Telegraph {
@@ -100,6 +103,9 @@ class NarrativeComponent : IComponent, Telegraph {
             }
         }
 
+        DisplayView.currentDisplayViewLayoutHandler = NarrativePackage.displayViewLayoutHandler()
+
+        narrativeState.blockFlags.clear()
         StatusView.clearStatuses()
 
         changed = true

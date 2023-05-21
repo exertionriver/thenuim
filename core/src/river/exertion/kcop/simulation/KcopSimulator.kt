@@ -99,12 +99,12 @@ class KcopSimulator(private val stage: Stage,
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
-                            ColorPalettePackage.build()
+                            DisplayView.currentDisplayViewLayoutHandler = ColorPalettePackage.displayViewLayoutHandler()
+                            DisplayView.build()
                             inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
-                            DisplayView.currentDisplayView = null
-                            DisplayView.build()
+                            ColorPalettePackage.displayViewLayoutHandler().clearContent()
                             inputMultiplexer.removeProcessor(ColorPalettePackage.inputProcessor())
                         }
                     }

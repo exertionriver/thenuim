@@ -263,7 +263,9 @@ enum class ColorPalette {
         val colorThresholdsFloat : List<Float> = colorThresholdsInt.map { it / 255f }
         const val defaultAlpha = 1f
 
-        fun randomW3cBasic() = w3cBasic().values.random()
+        val BackgroundColor = ColorPalette.of("black")
+
+        fun randomW3cBasic() = w3cBasic().filter { it.value != BackgroundColor }.values.random()
 
         //w3c standard color lists
         fun w3cBasic() = listOf(

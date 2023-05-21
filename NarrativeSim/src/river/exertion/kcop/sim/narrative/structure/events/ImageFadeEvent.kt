@@ -28,7 +28,7 @@ class ImageFadeEvent(
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.fadeImageOut(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
+            DVLayoutHandler.fadeImageOut(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"))
         }
     }
 }

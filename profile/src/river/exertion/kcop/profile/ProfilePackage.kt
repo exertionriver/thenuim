@@ -39,7 +39,6 @@ object ProfilePackage : IKcopPackage {
         DisplayViewMenuHandler.addMenu(NewProfileMenu)
         DisplayViewMenuHandler.addMenu(ProfileMenu)
         DisplayViewMenuHandler.addMenu(ProfileSettingsMenu)
-        DisplayViewMenuHandler.addMenu(RestartProgressMenu)
         DisplayViewMenuHandler.addMenu(SaveProgressMenu)
 
         MainMenu.assignableNavs.add(

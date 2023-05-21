@@ -5,6 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 
 interface IDisplayPackage {
 
-    fun build() : Actor
+    fun displayViewLayoutHandler() : IDisplayViewLayoutHandler
     fun inputProcessor() : InputProcessor
 }
