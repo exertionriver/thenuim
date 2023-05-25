@@ -7,14 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.ColorPaletteBridge
-import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.asset.FontSize
 
-class ColorSwatchesDisplayView(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
+class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
 
     var swatchEntries: Map<String, ColorPalette> = mapOf()
 
@@ -63,10 +60,7 @@ class ColorSwatchesDisplayView(var topX: Float = 0f, var topY: Float = 0f, var s
 
         if (colorPaletteEntry.key != null) {
             stack.onClick {
-                MessageChannelHandler.send(
-                    ColorPaletteBridge, message = ColorPaletteMessage(
-                        ColorPaletteMessage.ColorPaletteMessageType.SetBaseColor, colorPaletteEntry.key!!, colorPaletteEntry.value)
-                )
+                ColorPaletteLayout.setBaseColor(colorPaletteEntry.key!!, colorPaletteEntry.value)
             }
         }
 

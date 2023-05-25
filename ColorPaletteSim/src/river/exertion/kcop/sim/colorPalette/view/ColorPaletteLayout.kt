@@ -1,23 +1,14 @@
 package river.exertion.kcop.sim.colorPalette.view
 
-import com.badlogic.gdx.ai.msg.Telegram
-import com.badlogic.gdx.ai.msg.Telegraph
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
-import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.ColorPaletteBridge
-import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewType
 
-object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
-
-    init {
-        MessageChannelHandler.enableReceive(ColorPaletteBridge, this)
-    }
+object ColorPaletteLayout : IDisplayViewLayoutHandler {
 
     var baseColorName = "darkGray"
     var baseColor = ColorPalette.of(baseColorName)
@@ -26,11 +17,11 @@ object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
     var sampleSwatchesMinIdx = 0
     var sampleSwatchesMaxIdx = ColorPalette.w3cColors().size - 1
 
-    var sampleSwatchesCtrl = ColorSwatchesDisplayView(firstColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var baseSwatchesCtrl = ColorSwatchesDisplayView(secondColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var compSwatchesCtrl = ColorSwatchesDisplayView(thirdColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var triadFirstSwatchesCtrl = ColorSwatchesDisplayView(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
-    var triadSecondSwatchesCtrl = ColorSwatchesDisplayView(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var sampleSwatchesCtrl = ColorSwatchBase(firstColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var baseSwatchesCtrl = ColorSwatchBase(secondColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var compSwatchesCtrl = ColorSwatchBase(thirdColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var triadFirstSwatchesCtrl = ColorSwatchBase(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
+    var triadSecondSwatchesCtrl = ColorSwatchBase(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
 
     fun colorColumnWidth() = ViewType.fifthWidth(KcopSkin.screenWidth) + 2 * ViewType.padWidth(KcopSkin.screenWidth)
 
@@ -47,7 +38,7 @@ object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
     fun colorSwatchHeight() = colorRowHeight()
     fun colorSwatchWidth() = colorColumnWidth()
 
-    fun createSampleSwatchesCtrl() : Table {
+    fun createSampleSwatchesCtrl(): Table {
         sampleSwatchesCtrl.swatchEntries = ColorPalette.w3cColors()[sampleSwatchesIdx]
         sampleSwatchesCtrl.create()
 
@@ -66,7 +57,11 @@ object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
         createSampleSwatchesCtrl()
     }
 
-    private fun createSpectrumSwatchesCtrl(swatchesCtrl : ColorSwatchesDisplayView, colorPalette : ColorPalette, colorNameOverride : String? = null) : Table {
+    private fun createSpectrumSwatchesCtrl(
+        swatchesCtrl: ColorSwatchBase,
+        colorPalette: ColorPalette,
+        colorNameOverride: String? = null
+    ): Table {
         val colorName = colorNameOverride ?: colorPalette.tags()[0]
 
         swatchesCtrl.swatchEntries = colorPalette.labelledSpectrum(colorName)
@@ -103,7 +98,7 @@ object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
     fun colorBaseDecrG() = setColorBase(baseColor.decrG())
     fun colorBaseDecrB() = setColorBase(baseColor.decrB())
 
-    override fun build() : Actor {
+    override fun build(): Actor {
         return Table().apply {
             this.add(createSampleSwatchesCtrl()).top()
             this.add(createBaseSwatchesCtrl()).top()
@@ -126,41 +121,11 @@ object ColorPaletteLayout : Telegraph, IDisplayViewLayoutHandler {
         DisplayView.build()
     }
 
-    override fun handleMessage(msg: Telegram?): Boolean {
-        if (msg != null) {
-            when {
-                (MessageChannelHandler.isType(ColorPaletteBridge, msg.message) ) -> {
-                    val colorPaletteMessage : ColorPaletteMessage = MessageChannelHandler.receiveMessage(
-                        ColorPaletteBridge, msg.extraInfo)
+    fun setBaseColor(baseColorName: String?, baseColorPalette: ColorPalette?) {
+        this.baseColor = baseColorPalette ?: baseColor
+        this.baseColorName = baseColorName ?: baseColor.tags()[0]
 
-                    when (colorPaletteMessage.colorPaletteMessageType) {
-                        ColorPaletteMessage.ColorPaletteMessageType.SetBaseColor -> {
-                            baseColor = colorPaletteMessage.baseCp ?: baseColor
-                            baseColorName = colorPaletteMessage.baseColorName ?: baseColor.tags()[0]
-
-                            recreateSpectrumSwatches()
-                        }
-                        ColorPaletteMessage.ColorPaletteMessageType.ModifyBaseColor -> {
-                            when (colorPaletteMessage.modifyType) {
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrR -> colorBaseIncrR()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrG -> colorBaseIncrG()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrB -> colorBaseIncrB()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrR -> colorBaseDecrR()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrG -> colorBaseDecrG()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrB -> colorBaseDecrB()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncr -> colorBaseIncr()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecr -> colorBaseDecr()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorSamplePrev -> colorSamplePrev()
-                                ColorPaletteMessage.ColorPaletteModifyType.ColorSampleNext -> colorSampleNext()
-                                else -> {}
-                            }
-                        }
-
-                    }
-                    return true
-                }
-            }
-        }
-        return false
+        recreateSpectrumSwatches()
     }
+
 }

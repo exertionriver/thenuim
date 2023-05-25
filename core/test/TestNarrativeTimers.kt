@@ -8,5 +8,7 @@ class TestNarrativeTimers {
 
         val timeSplit = "00:12:23".split(":")
 
+        println(timeSplit)
+
     }
 }

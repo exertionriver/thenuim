@@ -23,20 +23,22 @@ class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
     }
 
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: DisplayViewLayoutAssetParameter?): DisplayViewLayoutAsset {
+
+        lateinit var errorStatus : String
+
         try {
             rawData = file.readString()
             val jsonElement = json.parseToJsonElement(rawData)
-            val DVLayout = json.decodeFromJsonElement(jsonElement) as DVLayout
+            val dvLayout = json.decodeFromJsonElement(jsonElement) as DVLayout
 
-            val returnDisplayViewLayoutAsset = DisplayViewLayoutAsset(DVLayout).apply { this.assetPath = fileName }
-            val errorStatus = "${DVLayout.name} not loaded"
+            errorStatus = "${dvLayout.name} not loaded"
 
-            return returnDisplayViewLayoutAsset
+            return DisplayViewLayoutAsset(dvLayout).apply { this.assetPath = fileName }
 
         } catch (ex : Exception) {
             return DisplayViewLayoutAsset().apply {
                 this.assetPath = fileName
-                this.status = "$fileName not loaded"
+                this.status = errorStatus
                 this.statusDetail = ex.message
             }
         }

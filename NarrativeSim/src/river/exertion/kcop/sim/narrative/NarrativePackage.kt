@@ -100,4 +100,5 @@ object NarrativePackage : IImmersionPackage {
     }
 
     const val NarrativeBridge = "NarrativeBridge"
+    const val NoNarrativeLoaded = "No Narrative Loaded"
 }

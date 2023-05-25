@@ -65,4 +65,6 @@ object ProfilePackage : IKcopPackage {
     override fun dispose() {}
 
     const val ProfileBridge = "ProfileBridge"
+    const val NoProfileLoaded = "No Profile Loaded"
+
 }

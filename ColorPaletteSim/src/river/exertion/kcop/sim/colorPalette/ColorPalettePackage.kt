@@ -15,16 +15,11 @@ object ColorPalettePackage : IInternalPackage, IDisplayPackage {
 
     override var name = this::class.simpleName.toString()
 
-    override fun loadChannels() {
-        MessageChannelHandler.addChannel(MessageChannel(ColorPaletteBridge, ColorPaletteMessage::class))
-    }
+    override fun loadChannels() { }
 
     override fun inputProcessor() = ColorPaletteInputProcessor
 
     override fun displayViewLayoutHandler() = ColorPaletteLayout
 
     override fun dispose() { }
-
-    const val ColorPaletteBridge = "ColorPaletteBridge"
-
 }

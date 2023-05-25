@@ -57,7 +57,7 @@ data class DVLayout(
     }
 
     fun clearAlphaPaneContent() {
-        panes().forEach { dvPane -> dvPane.alphaMask = 1f }
+        panes().forEach { dvPane -> dvPane.alphaMask = 0f }
     }
 
     fun clearTextPaneContent() {

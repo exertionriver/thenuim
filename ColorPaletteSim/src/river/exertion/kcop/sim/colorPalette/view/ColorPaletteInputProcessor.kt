@@ -2,35 +2,34 @@ package river.exertion.kcop.sim.colorPalette.view
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.colorPalette.ColorPalettePackage.ColorPaletteBridge
-import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecr
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecrB
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecrG
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecrR
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncr
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncrB
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncrG
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncrR
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorSampleNext
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorSamplePrev
 
 object ColorPaletteInputProcessor : InputProcessor {
 
-    fun modifyBaseColor(colorPaletteModifyType: ColorPaletteMessage.ColorPaletteModifyType) {
-        MessageChannelHandler.send(
-            ColorPaletteBridge, ColorPaletteMessage(
-            ColorPaletteMessage.ColorPaletteMessageType.ModifyBaseColor, modifyType = colorPaletteModifyType)
-        )
-    }
-
     override fun keyDown(keycode: Int): Boolean {
         when (keycode) {
-            Input.Keys.R -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrR) }
-            Input.Keys.G -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrG) }
-            Input.Keys.B -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncrB) }
+            Input.Keys.R -> { colorBaseIncrR() }
+            Input.Keys.G -> { colorBaseIncrG() }
+            Input.Keys.B -> { colorBaseIncrB() }
 
-            Input.Keys.E -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrR) }
-            Input.Keys.F -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrG) }
-            Input.Keys.V -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecrB) }
+            Input.Keys.E -> { colorBaseDecrR() }
+            Input.Keys.F -> { colorBaseDecrG() }
+            Input.Keys.V -> { colorBaseDecrB() }
 
-            Input.Keys.UP -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseIncr) }
-            Input.Keys.DOWN -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorBaseDecr) }
-            Input.Keys.LEFT -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorSamplePrev) }
-            Input.Keys.RIGHT -> { modifyBaseColor(ColorPaletteMessage.ColorPaletteModifyType.ColorSampleNext) }
+            Input.Keys.UP -> { colorBaseIncr() }
+            Input.Keys.DOWN -> {colorBaseDecr() }
+            Input.Keys.LEFT -> { colorSamplePrev() }
+            Input.Keys.RIGHT -> { colorSampleNext() }
         }
-
         return false
     }
 

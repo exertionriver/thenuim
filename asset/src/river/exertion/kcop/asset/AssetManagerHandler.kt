@@ -52,6 +52,4 @@ object AssetManagerHandler {
         assets.disposeSafely()
     }
 
-    const val NoProfileLoaded = "No Profile Loaded"
-    const val NoImmersionLoaded = "No Immersion Loaded"
 }
