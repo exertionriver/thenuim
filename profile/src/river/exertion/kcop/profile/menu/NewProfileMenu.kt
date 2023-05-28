@@ -26,23 +26,27 @@ object NewProfileMenu : DisplayViewMenu {
 
     var newName = ""
 
-    override fun menuPane() = Table().apply {
-
-        this.add(Label("profile name: ", KcopSkin.skin))
-                //Label.LabelStyle(bitmapFont, backgroundColor.label().color())))
+    override var menuPane = {
 
         val nameTextField = TextField(newName, KcopSkin.skin)
 
+        updateNameFromTextField()
+
         nameTextField.setTextFieldListener {
-           textField, _ -> this@NewProfileMenu.newName = textField.text
-            this@NewProfileMenu.actions.first { it.label == "Create"}.log = "Profile Created: ${this@NewProfileMenu.newName}"
+            textField, _ -> this@NewProfileMenu.newName = textField.text
+            updateNameFromTextField()
         }
-        this.add(nameTextField).growX().top()
-        this.row()
 
-//      this.debug()
+        Table().apply {
+            this.add(Label("profile name: ", KcopSkin.skin))
+            this.add(nameTextField).growX().top()
+            this.row()
+            this.top()
+        }
+    }
 
-        this.top()
+    private fun updateNameFromTextField() {
+        this@NewProfileMenu.actions.firstOrNull { it.label == "Create" }?.apply { this.log = "Profile Created : ${this@NewProfileMenu.newName}" }
     }
 
     override val breadcrumbEntries = mapOf(
@@ -59,7 +63,7 @@ object NewProfileMenu : DisplayViewMenu {
             ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
             ProfileAsset.currentProfileAsset.save()
             ProfileComponent.ecsInit()
-        }, "Profile Created: $newName"),
+        }, "Profile Created!"),
         //go back a menu
         MenuActionParam("Cancel", {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]

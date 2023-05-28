@@ -18,6 +18,7 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
     override var assetPath : String? = null
     override var status : String? = null
     override var statusDetail : String? = null
+    override var persisted = false
 
     override fun assetId() = narrativeState.id
 
@@ -42,7 +43,7 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
         val returnList = mutableListOf<String>()
 
-        returnList.add(narrativeState.cumlImmersionTimer.immersionTime())
+        returnList.add("cuml. time: ${narrativeState.cumlImmersionTimer.immersionTime()}")
 
         return returnList.toList()
     }
@@ -58,6 +59,8 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
             val jsonNarrativeImmersion = json.encodeToJsonElement(this.narrativeState)
             Gdx.files.local(assetPath).writeString(jsonNarrativeImmersion.toString(), false)
         }
+
+        persisted = true
     }
 
     companion object {

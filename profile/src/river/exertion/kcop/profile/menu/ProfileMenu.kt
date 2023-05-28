@@ -5,13 +5,10 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssets
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -24,7 +21,7 @@ object ProfileMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("green")
 
-    override fun menuPane() : Table {
+    override var menuPane = {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
         val profileAssetsMap = ProfileAssets.reload().associateBy { it.assetTitle() }
@@ -43,15 +40,12 @@ object ProfileMenu : DisplayViewMenu {
 
         listCtrl.alignment = Align.topLeft
 
-        return Table().apply {
+        Table().apply {
             this.add(listCtrl).growY().top().left()
-//            this.add(Table())
-//            this.debug()
             this.top()
             this.left()
         }
     }
-
     override val breadcrumbEntries = mapOf(
         MainMenu.tag to MainMenu.label
     )

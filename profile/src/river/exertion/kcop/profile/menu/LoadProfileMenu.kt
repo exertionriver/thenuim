@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage
+import river.exertion.kcop.profile.ProfilePackage.NoProfileInfoFound
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
@@ -22,26 +23,30 @@ object LoadProfileMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("teal")
 
-    override fun menuPane() = Table().apply {
+    override var menuPane = {
+        Table().apply {
 
-        if (ProfileAsset.selectedProfileAsset.assetInfo().isNotEmpty()) {
-            ProfileAsset.selectedProfileAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.skin)
+            if (ProfileAsset.selectedProfileAsset.assetInfo().isNotEmpty()) {
+                ProfileAsset.selectedProfileAsset.assetInfo().forEach { profileEntry ->
+                    this.add(Label(profileEntry, KcopSkin.skin)
                         .apply {
-                    this.wrap = true
-                }).growX().left()
-                this.row()
-            }
+                            this.wrap = true
+                        }).growX().left()
+                    this.row()
+                }
 //        this.debug()
-            this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
-        } else {
-            this.add(Label("no profile info found", KcopSkin.skin)
-            ).growX().left()
-            this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
+                this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }
+                    ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
+            } else {
+                this.add(
+                    Label(NoProfileInfoFound, KcopSkin.skin)
+                ).growX().left()
+                this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }
+                    ?.apply { this.label = "Error"; this.action = {} }
+            }
+            this.top()
         }
-        this.top()
     }
-
     override val breadcrumbEntries = mapOf(
         ProfileMenu.tag to ProfileMenu.label,
         MainMenu.tag to MainMenu.label

@@ -41,7 +41,7 @@ object AssetManagerHandler {
         assets.getAll(T::class.java, currentAssetArray)
 
         //log any load errors
-        currentAssetArray.filter { it.status != null}.forEach {
+        currentAssetArray.filter { it.status != null }.forEach {
             logDebug("${it.status}", "${it.statusDetail}")
         }
 

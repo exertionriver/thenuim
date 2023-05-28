@@ -22,7 +22,8 @@ interface DisplayViewMenu {
     val actions : MutableList<MenuActionParam> //Button Label -> log text + action to run
     val assignableNavs : MutableList<MenuActionParam>
 
-    fun menuPane() : Table?
+    var menuPane : () -> Table
+
     fun navButtonPane() : Table = Table().apply {
        // this.debug()
 
@@ -83,8 +84,6 @@ interface DisplayViewMenu {
 
     fun menuLayout() : Table {
 
-        val menuPane = menuPane()
-
         return Table().apply {
             this.add(Stack().apply {
                 this.add(Image(menuColorTexture()))
@@ -101,16 +100,13 @@ interface DisplayViewMenu {
                         ).center().right()
                         this.row()
                         this.add(
-                            if (menuPane == null) { Table() }
-                            else {
-                                ScrollPane(menuPane, KcopSkin.skin).apply {
-                                    // https://github.com/raeleus/skin-composer/wiki/ScrollPane
-                                    this.fadeScrollBars = false
-                                    this.setFlickScroll(false)
-                                    this.validate()
-                                    //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
-                                    this.layout()
-                                }
+                            ScrollPane(menuPane(), KcopSkin.skin).apply {
+                                // https://github.com/raeleus/skin-composer/wiki/ScrollPane
+                                this.fadeScrollBars = false
+                                this.setFlickScroll(false)
+                                this.validate()
+                                //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
+                                this.layout()
                             }
                         ).height(ViewType.secondHeight(KcopSkin.screenHeight) - 3 * KcopFont.large().lineHeight)
                             .width(ViewType.secondWidth(KcopSkin.screenWidth) - 3 * KcopFont.large().lineHeight)

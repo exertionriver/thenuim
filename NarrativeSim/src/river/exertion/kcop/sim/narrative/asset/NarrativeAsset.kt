@@ -8,6 +8,7 @@ class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
     override var assetPath : String? = null
     override var status : String? = null
     override var statusDetail : String? = null
+    override var persisted = false
 
     override fun assetId() : String = narrative.id
     override fun assetName() : String = narrative.name

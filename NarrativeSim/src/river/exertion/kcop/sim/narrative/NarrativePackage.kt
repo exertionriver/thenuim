@@ -1,22 +1,25 @@
 package river.exertion.kcop.sim.narrative
 
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
 import river.exertion.kcop.plugin.IImmersionPackage
+import river.exertion.kcop.profile.ProfilePackage
+import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.menu.SaveProgressMenu
 import river.exertion.kcop.profile.menu.SaveProgressMenu.SaveLabel
 import river.exertion.kcop.profile.settings.PSShowTimer
 import river.exertion.kcop.profile.settings.ProfileSettingOption
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeAsset.Companion.currentNarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset.Companion.isNarrativeLoaded
 import river.exertion.kcop.sim.narrative.asset.NarrativeAssetLoader
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
+import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset.Companion.currentNarrativeStateAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAssetLoader
 import river.exertion.kcop.sim.narrative.menu.LoadNarrativeMenu
 import river.exertion.kcop.sim.narrative.menu.NarrativeMenu
@@ -28,8 +31,8 @@ import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAsset
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
-import river.exertion.kcop.view.layout.AudioView
-import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
@@ -51,7 +54,7 @@ object NarrativePackage : IImmersionPackage {
         DisplayViewLayoutAssets.reload()
     }
 
-    fun dvLayoutByTag(dvTag : String) = (DisplayViewLayoutAssets.byName(dvTag) as DisplayViewLayoutAsset).DVLayout ?: DVLayout.dvLayout()
+    fun dvLayoutByTag(dvTag : String) = (DisplayViewLayoutAssets.byName(dvTag) as DisplayViewLayoutAsset).dvLayout ?: DVLayout.dvLayout()
 
     override fun loadSystems() {
         SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
@@ -78,11 +81,60 @@ object NarrativePackage : IImmersionPackage {
         DisplayViewMenuHandler.addMenu(NarrativeMenu)
         DisplayViewMenuHandler.addMenu(RestartProgressMenu)
 
+        addNarrativeNavsToMainMenu()
+        addNarrativeInfoToMainMenu()
+        addNarrativeStateSaveToSaveProgress()
+    }
+
+    private fun addNarrativeNavsToMainMenu() {
         MainMenu.assignableNavs.add(
             MenuActionParam("Narrative >", {
                 DisplayViewMenuHandler.currentMenuTag = NarrativeMenu.tag
-        }) )
+            }) )
+    }
 
+    private fun addNarrativeInfoToMainMenu() {
+        val mainMenuPane = MainMenu.menuPane
+
+        MainMenu.menuPane = {
+            mainMenuPane().apply {
+                this.row() // profile is above this
+                this.add(Label("Narrative:", KcopSkin.labelStyle(FontSize.MEDIUM))).left()
+                this.row()
+
+                if (currentNarrativeAsset.persisted && currentNarrativeAsset.assetInfo().isNotEmpty()) {
+                    currentNarrativeAsset.assetInfo().forEach { narrativeEntry ->
+                        this.add(
+                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL))
+                                .apply {
+                                    this.wrap = true
+                                }).growX().left()
+                        this.row()
+                    }
+                } else {
+                    this.add(
+                        Label(NoNarrativeLoaded, KcopSkin.labelStyle(FontSize.SMALL))
+                    ).growX().left()
+                }
+
+                if (currentNarrativeStateAsset.persisted && currentNarrativeStateAsset.assetInfo().isNotEmpty()) {
+                    this.row()
+                    currentNarrativeStateAsset.assetInfo().forEach { narrativeEntry ->
+                        this.add(
+                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL))
+                                .apply {
+                                    this.wrap = true
+                                }).growX().left()
+                        this.row()
+                    }
+                }
+
+                this.top()
+            }
+        }
+    }
+
+    private fun addNarrativeStateSaveToSaveProgress() {
         val saveProgressAction = SaveProgressMenu.actions.firstOrNull { it.label == SaveLabel }!!.action
 
         SaveProgressMenu.actions.firstOrNull { it.label == SaveLabel }!!.action = {

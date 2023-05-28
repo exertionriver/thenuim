@@ -18,18 +18,20 @@ object SaveProgressMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("olive")
 
-    override fun menuPane() = Table().apply {
+    override var menuPane = {
 
-        ProfileAsset.currentProfileAsset.assetInfo().forEach { profileEntry ->
-            this.add(Label(profileEntry, KcopSkin.skin
-            //        Label.LabelStyle(bitmapFont, backgroundColor.label().color())
-            ).apply {
-                this.wrap = true
-            }).colspan(2).growX()
-            this.row()
+        Table().apply {
+
+            ProfileAsset.currentProfileAsset.assetInfo().forEach { profileEntry ->
+                this.add(Label(profileEntry, KcopSkin.skin
+                ).apply {
+                    this.wrap = true
+                }).colspan(2).growX()
+                this.row()
+            }
+
+            this.top()
         }
-
-        this.top()
     }
 
     override val breadcrumbEntries = mapOf(

@@ -19,7 +19,7 @@ object NarrativeMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("green")
 
-    override fun menuPane() : Table {
+    override var menuPane = {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
         val narrativeAssetsMap = NarrativeAssets.reload().associateBy { it.assetTitle() }
@@ -36,7 +36,8 @@ object NarrativeMenu : DisplayViewMenu {
             listCtrl.setItems(listOf("no narrative assets found").toGdxArray() )
         }
 
-        return Table().apply {
+        Table().apply {
+
             this.add(listCtrl).growY().top().left()
 //            this.add(Table())
 //            this.debug()

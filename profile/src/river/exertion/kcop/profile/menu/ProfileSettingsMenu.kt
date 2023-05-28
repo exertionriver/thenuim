@@ -30,23 +30,25 @@ object ProfileSettingsMenu : DisplayViewMenu {
 
     var settings : MutableList<ProfileSettingEntry> = mutableListOf()
 
-    override fun menuPane() = Table().apply {
-        Profile.availableSettings.forEach { setting ->
-            this.add(Label(setting.selectionLabel, KcopSkin.skin).apply {
-                this.wrap
-            } ).left()
+    override var menuPane = {
+        Table().apply {
+            Profile.availableSettings.forEach { setting ->
+                this.add(Label(setting.selectionLabel, KcopSkin.skin).apply {
+                    this.wrap
+                } ).left()
 
-            this.add(
-                SelectBox<String>(KcopSkin.skin
-            ).apply {
-                this.items = setting.options.map { it.optionValue }.toGdxArray()
-                this.selected = settings.optionBySelectionKey(setting.selectionKey)
-                this.onChange { settings.updateSetting(setting.selectionKey, this.selected) }
-            })
-            this.row()
+                this.add(
+                    SelectBox<String>(KcopSkin.skin
+                ).apply {
+                    this.items = setting.options.map { it.optionValue }.toGdxArray()
+                    this.selected = settings.optionBySelectionKey(setting.selectionKey)
+                    this.onChange { settings.updateSetting(setting.selectionKey, this.selected) }
+                })
+                this.row()
+            }
+
+            this.top()
         }
-
-        this.top()
     }
 
     override val breadcrumbEntries = mapOf(

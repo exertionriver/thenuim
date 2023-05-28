@@ -4,6 +4,7 @@ interface IAsset {
     var assetPath : String?
     var status : String?
     var statusDetail : String?
+    var persisted : Boolean
 
     fun assetId() : String
     fun assetName() : String

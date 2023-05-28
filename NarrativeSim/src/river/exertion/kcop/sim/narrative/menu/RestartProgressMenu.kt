@@ -24,16 +24,18 @@ object RestartProgressMenu : DisplayViewMenu {
 
     override val backgroundColor = ColorPalette.of("olive")
 
-    override fun menuPane() = Table().apply {
+    override var menuPane = {
+        Table().apply {
 
-        NarrativeStateAsset.currentNarrativeStateAsset.assetInfo().forEach { assetInfo ->
-            this.add(Label(assetInfo, KcopSkin.skin).apply {
-                this.wrap = true
-            }).colspan(2).growX()
-            this.row()
+            NarrativeStateAsset.currentNarrativeStateAsset.assetInfo().forEach { assetInfo ->
+                this.add(Label(assetInfo, KcopSkin.skin).apply {
+                    this.wrap = true
+                }).colspan(2).growX()
+                this.row()
+            }
+
+            this.top()
         }
-
-        this.top()
     }
 
     override val breadcrumbEntries = mapOf(

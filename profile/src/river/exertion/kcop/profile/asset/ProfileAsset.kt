@@ -16,6 +16,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
     override var assetPath : String? = newAssetFilename()
     override var status : String? = null
     override var statusDetail : String? = null
+    override var persisted : Boolean = false
 
     override fun assetId() = profile.id
     override fun assetName() = profile.name
@@ -55,21 +56,14 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
                 Gdx.files.local(assetPath).moveTo(Gdx.files.local(renameAssetPath))
             }
         }
+
+        persisted = true
     }
 
     companion object {
 
         var selectedProfileAsset = ProfileAsset()
         var currentProfileAsset = ProfileAsset()
-/*
-        operator fun AssetManager.get(asset: ProfileAsset) = getAsset<ProfileAsset>(asset.assetPath).also {
-            if (it.status != null) println ("Asset Status: ${it.status}")
-            if (it.statusDetail != null) println ("Status Detail: ${it.statusDetail}")
-        }
-
-        fun isValid(profileAsset: ProfileAsset?) : Boolean {
-            return (profileAsset?.profile != null && profileAsset.status == null)
-        }*/
 
         fun new(saveName : String? = null) : ProfileAsset {
             return ProfileAsset(Profile().apply {

@@ -1,12 +1,10 @@
 package river.exertion.kcop.profile
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IRLTimeComponent
-import river.exertion.kcop.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -17,6 +15,8 @@ import river.exertion.kcop.profile.asset.ProfileAssetLoader
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
+import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
@@ -41,6 +41,11 @@ object ProfilePackage : IKcopPackage {
         DisplayViewMenuHandler.addMenu(ProfileSettingsMenu)
         DisplayViewMenuHandler.addMenu(SaveProgressMenu)
 
+        addProfileNavsToMainMenu()
+        addProfileInfoToMainMenu()
+    }
+
+    private fun addProfileNavsToMainMenu() {
         MainMenu.assignableNavs.add(
             MenuActionParam("Profile >", {
                 DisplayViewMenuHandler.currentMenuTag = ProfileMenu.tag
@@ -56,6 +61,33 @@ object ProfilePackage : IKcopPackage {
             }))
     }
 
+    private fun addProfileInfoToMainMenu() {
+        val mainMenuPane = MainMenu.menuPane
+
+        MainMenu.menuPane = {
+            mainMenuPane().apply {
+                this.add(Label("Profile:", KcopSkin.labelStyle(FontSize.MEDIUM))).left()
+                this.row()
+
+                if (currentProfileAsset.persisted && currentProfileAsset.assetInfo().isNotEmpty()) {
+                    currentProfileAsset.assetInfo().forEach { profileEntry ->
+                        this.add(
+                            Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL))
+                                .apply {
+                                    this.wrap = true
+                                }).growX().left()
+                        this.row()
+                    }
+                } else {
+                    this.add(
+                        Label(NoProfileLoaded, KcopSkin.labelStyle(FontSize.SMALL))
+                    ).growX().left()
+                }
+                this.top()
+            }
+        }
+    }
+
     override fun loadSystems() {
         EngineHandler.replaceComponent(componentClass = IRLTimeComponent::class.java)
 
@@ -66,5 +98,6 @@ object ProfilePackage : IKcopPackage {
 
     const val ProfileBridge = "ProfileBridge"
     const val NoProfileLoaded = "No Profile Loaded"
+    const val NoProfileInfoFound = "No Profile Info Found"
 
 }

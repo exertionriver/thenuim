@@ -13,6 +13,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+
 }
 
 compileKotlin {

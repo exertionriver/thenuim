@@ -28,10 +28,12 @@ class NarrativeStateAssetLoader(resolver: FileHandleResolver?) :
             val jsonElement = json.parseToJsonElement(rawData)
             val narrativeState = json.decodeFromJsonElement(jsonElement) as NarrativeState
 
-            val returnNarrativeAsset = NarrativeStateAsset(narrativeState).apply { this.assetPath = fileName }
+            val returnNarrativeStateAsset = NarrativeStateAsset(narrativeState).apply { this.assetPath = fileName }
             //val errorStatus = "${narrativeImmersion.id} not loaded"
 
-            return returnNarrativeAsset
+            returnNarrativeStateAsset.persisted = true
+
+            return returnNarrativeStateAsset
 
         } catch (ex : Exception) {
             return NarrativeStateAsset().apply {
