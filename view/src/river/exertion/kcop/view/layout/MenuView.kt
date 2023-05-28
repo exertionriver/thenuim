@@ -108,7 +108,7 @@ object MenuView : ViewBase {
         viewTable.clip()
     }
 
-    fun openMenu() {
+    var openMenu = {
         PauseView.isChecked = true
         PauseView.build()
         DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
@@ -116,7 +116,7 @@ object MenuView : ViewBase {
         DisplayView.build()
     }
 
-    fun closeMenu() {
+    var closeMenu = {
         isChecked[menuButton] = false
         MenuView.build()
         PauseView.isChecked = false

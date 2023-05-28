@@ -3,6 +3,7 @@ package river.exertion.kcop.sim.narrative
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
+import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
@@ -33,6 +34,7 @@ import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
@@ -59,6 +61,13 @@ object NarrativePackage : IImmersionPackage {
     override fun loadSystems() {
         SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
 
+        val profileAction = PSShowTimer.options[0].optionAction
+
+        PSShowTimer.options[0].optionAction = {
+            profileAction()
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.RemoveBlockCumlTimer))
+        }
+
         PSShowTimer.options.add(ProfileSettingOption("showImmersion","Immersion") {
             if (isNarrativeLoaded()) {
                 MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer))
@@ -84,6 +93,7 @@ object NarrativePackage : IImmersionPackage {
         addNarrativeNavsToMainMenu()
         addNarrativeInfoToMainMenu()
         addNarrativeStateSaveToSaveProgress()
+        addNarrativePauseToMenuAction()
     }
 
     private fun addNarrativeNavsToMainMenu() {
@@ -99,13 +109,13 @@ object NarrativePackage : IImmersionPackage {
         MainMenu.menuPane = {
             mainMenuPane().apply {
                 this.row() // profile is above this
-                this.add(Label("Narrative:", KcopSkin.labelStyle(FontSize.MEDIUM))).left()
+                this.add(Label("Narrative:", KcopSkin.labelStyle(FontSize.MEDIUM, NarrativeMenuText))).left()
                 this.row()
 
-                if (currentNarrativeAsset.persisted && currentNarrativeAsset.assetInfo().isNotEmpty()) {
+                if (isNarrativeLoaded() && currentNarrativeAsset.assetInfo().isNotEmpty()) {
                     currentNarrativeAsset.assetInfo().forEach { narrativeEntry ->
                         this.add(
-                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL))
+                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
                                 .apply {
                                     this.wrap = true
                                 }).growX().left()
@@ -113,7 +123,7 @@ object NarrativePackage : IImmersionPackage {
                     }
                 } else {
                     this.add(
-                        Label(NoNarrativeLoaded, KcopSkin.labelStyle(FontSize.SMALL))
+                        Label(NoNarrativeLoaded, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
                     ).growX().left()
                 }
 
@@ -121,7 +131,7 @@ object NarrativePackage : IImmersionPackage {
                     this.row()
                     currentNarrativeStateAsset.assetInfo().forEach { narrativeEntry ->
                         this.add(
-                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL))
+                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
                                 .apply {
                                     this.wrap = true
                                 }).growX().left()
@@ -139,7 +149,22 @@ object NarrativePackage : IImmersionPackage {
 
         SaveProgressMenu.actions.firstOrNull { it.label == SaveLabel }!!.action = {
             saveProgressAction()
-            NarrativeStateAsset.currentNarrativeStateAsset.save()
+            currentNarrativeStateAsset.save()
+        }
+    }
+
+    private fun addNarrativePauseToMenuAction() {
+        val menuOpenButtonAction = MenuView.openMenu
+        val menuCloseButtonAction = MenuView.closeMenu
+
+        MenuView.openMenu = {
+            menuOpenButtonAction()
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Pause))
+        }
+
+        MenuView.closeMenu = {
+            menuCloseButtonAction()
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Unpause))
         }
     }
 
@@ -153,4 +178,9 @@ object NarrativePackage : IImmersionPackage {
 
     const val NarrativeBridge = "NarrativeBridge"
     const val NoNarrativeLoaded = "No Narrative Loaded"
+
+    val NarrativeMenuBackgroundColor = ColorPalette.of("Color010")
+    val NarrativeMenuText = ColorPalette.of("Color443")
+
+    val NarrativeMainMenuText = ColorPalette.of("Color343")
 }

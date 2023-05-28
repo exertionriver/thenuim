@@ -4,8 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
-import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.profile.Profile
+import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssets
 import river.exertion.kcop.view.KcopSkin
@@ -19,7 +19,7 @@ object ProfileMenu : DisplayViewMenu {
     override val tag = "profileMenu"
     override val label = "Profile"
 
-    override val backgroundColor = ColorPalette.of("green")
+    override val backgroundColor = ProfileMenuBackgroundColor
 
     override var menuPane = {
 

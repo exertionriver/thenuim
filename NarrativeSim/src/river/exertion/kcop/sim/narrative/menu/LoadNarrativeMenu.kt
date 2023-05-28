@@ -9,6 +9,8 @@ import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuBackgroundColor
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuText
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAssets
@@ -16,6 +18,7 @@ import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
@@ -28,14 +31,14 @@ object LoadNarrativeMenu : DisplayViewMenu {
     override val tag = "loadNarrativeMenu"
     override val label = "Load"
 
-    override val backgroundColor = ColorPalette.of("teal")
+    override val backgroundColor = NarrativeMenuBackgroundColor
 
     override var menuPane = {
         Table().apply {
 
         if (NarrativeAsset.selectedNarrativeAsset.assetInfo().isNotEmpty()) {
             NarrativeAsset.selectedNarrativeAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.skin)
+                this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
                         .apply {
                     this.wrap = true
                 }).growX().left()

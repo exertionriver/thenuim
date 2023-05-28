@@ -4,6 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuBackgroundColor
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeAssets
 import river.exertion.kcop.view.KcopSkin
@@ -17,7 +19,7 @@ object NarrativeMenu : DisplayViewMenu {
     override val tag = "narrativeMenu"
     override val label = "Narrative"
 
-    override val backgroundColor = ColorPalette.of("green")
+    override val backgroundColor = NarrativeMenuBackgroundColor
 
     override var menuPane = {
 

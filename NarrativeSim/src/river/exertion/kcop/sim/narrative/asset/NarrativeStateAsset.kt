@@ -58,9 +58,9 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
             val jsonNarrativeImmersion = json.encodeToJsonElement(this.narrativeState)
             Gdx.files.local(assetPath).writeString(jsonNarrativeImmersion.toString(), false)
-        }
 
-        persisted = true
+            persisted = true
+        }
     }
 
     companion object {

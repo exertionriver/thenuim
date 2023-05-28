@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.assets.getAsset
 import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
@@ -65,6 +66,8 @@ object ViewPackage : IKcopPackage {
     }
 
     const val KcopBridge = "KcopBridge"
+    val MainMenuBackgroundColor = ColorPalette.of("Color101")
+    val MainMenuText = ColorPalette.of("Color443")
 }
 
 //asset support

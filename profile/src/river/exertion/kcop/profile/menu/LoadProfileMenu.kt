@@ -2,14 +2,16 @@ package river.exertion.kcop.profile.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.ProfilePackage.NoProfileInfoFound
+import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
+import river.exertion.kcop.profile.ProfilePackage.ProfileMenuText
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -21,14 +23,14 @@ object LoadProfileMenu : DisplayViewMenu {
     override val tag = "loadProfileMenu"
     override val label = "Load"
 
-    override val backgroundColor = ColorPalette.of("teal")
+    override val backgroundColor = ProfileMenuBackgroundColor
 
     override var menuPane = {
         Table().apply {
 
             if (ProfileAsset.selectedProfileAsset.assetInfo().isNotEmpty()) {
                 ProfileAsset.selectedProfileAsset.assetInfo().forEach { profileEntry ->
-                    this.add(Label(profileEntry, KcopSkin.skin)
+                    this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfileMenuText))
                         .apply {
                             this.wrap = true
                         }).growX().left()
@@ -39,7 +41,7 @@ object LoadProfileMenu : DisplayViewMenu {
                     ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
             } else {
                 this.add(
-                    Label(NoProfileInfoFound, KcopSkin.skin)
+                    Label(NoProfileInfoFound, KcopSkin.labelStyle(FontSize.SMALL, ProfileMenuText))
                 ).growX().left()
                 this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }
                     ?.apply { this.label = "Error"; this.action = {} }

@@ -76,6 +76,8 @@ class NarrativeComponent : IComponent, Telegraph {
 
     var changed = false
 
+    var blockCumlTimer = false
+
     fun currentPrompts() = if (isInitialized) narrative.currentPrompts() else listOf()
 
     fun layoutTag() = if (isInitialized) narrative.layoutTag else DVLayout.DvLayoutTag
@@ -123,10 +125,15 @@ class NarrativeComponent : IComponent, Telegraph {
 
                 when (narrativeComponentMessage.narrativeMessageType) {
 
+                    NarrativeComponentMessage.NarrativeMessageType.RemoveBlockCumlTimer -> {
+                        blockCumlTimer = false
+                    }
                     NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer -> {
+                        blockCumlTimer = false
                         ImmersionTimerComponent.ecsInit(ImmersionTimerPair(instImmersionTimer, cumlImmersionTimer))
                     }
                     NarrativeComponentMessage.NarrativeMessageType.ReplaceBlockCumlTimer -> {
+                        blockCumlTimer = true
                         ImmersionTimerComponent.ecsInit(ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
                     }
                     NarrativeComponentMessage.NarrativeMessageType.Pause -> pause()

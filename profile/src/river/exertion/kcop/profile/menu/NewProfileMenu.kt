@@ -6,11 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfilePackage
+import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -22,7 +24,7 @@ object NewProfileMenu : DisplayViewMenu {
     override val tag = "newProfileMenu"
     override val label = "New"
 
-    override val backgroundColor = ColorPalette.of("olive")
+    override val backgroundColor = ProfileMenuBackgroundColor
 
     var newName = ""
 
@@ -38,7 +40,7 @@ object NewProfileMenu : DisplayViewMenu {
         }
 
         Table().apply {
-            this.add(Label("profile name: ", KcopSkin.skin))
+            this.add(Label("profile name: ", KcopSkin.labelStyle(FontSize.SMALL, ProfilePackage.ProfileMenuText)))
             this.add(nameTextField).growX().top()
             this.row()
             this.top()

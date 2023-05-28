@@ -3,6 +3,7 @@ package river.exertion.kcop.profile
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
+import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.messaging.Id
@@ -66,13 +67,13 @@ object ProfilePackage : IKcopPackage {
 
         MainMenu.menuPane = {
             mainMenuPane().apply {
-                this.add(Label("Profile:", KcopSkin.labelStyle(FontSize.MEDIUM))).left()
+                this.add(Label("Profile:", KcopSkin.labelStyle(FontSize.MEDIUM, ProfileMainMenuText))).left()
                 this.row()
 
                 if (currentProfileAsset.persisted && currentProfileAsset.assetInfo().isNotEmpty()) {
                     currentProfileAsset.assetInfo().forEach { profileEntry ->
                         this.add(
-                            Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL))
+                            Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfileMainMenuText))
                                 .apply {
                                     this.wrap = true
                                 }).growX().left()
@@ -80,7 +81,7 @@ object ProfilePackage : IKcopPackage {
                     }
                 } else {
                     this.add(
-                        Label(NoProfileLoaded, KcopSkin.labelStyle(FontSize.SMALL))
+                        Label(NoProfileLoaded, KcopSkin.labelStyle(FontSize.SMALL, ProfileMainMenuText))
                     ).growX().left()
                 }
                 this.top()
@@ -100,4 +101,8 @@ object ProfilePackage : IKcopPackage {
     const val NoProfileLoaded = "No Profile Loaded"
     const val NoProfileInfoFound = "No Profile Info Found"
 
+    val ProfileMenuBackgroundColor = ColorPalette.of("Color011")
+    val ProfileMenuText = ColorPalette.of("Color443")
+
+    val ProfileMainMenuText = ColorPalette.of("Color344")
 }

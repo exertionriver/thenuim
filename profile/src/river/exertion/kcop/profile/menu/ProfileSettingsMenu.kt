@@ -9,12 +9,14 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage
+import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.optionBySelectionKey
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.updateSetting
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewPackage
+import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -26,14 +28,17 @@ object ProfileSettingsMenu : DisplayViewMenu {
     override val tag = "profileSettingsMenu"
     override val label = "Profile Settings"
 
-    override val backgroundColor = ColorPalette.of("olive")
+    override val backgroundColor = ProfileMenuBackgroundColor
 
     var settings : MutableList<ProfileSettingEntry> = mutableListOf()
 
     override var menuPane = {
         Table().apply {
             Profile.availableSettings.forEach { setting ->
-                this.add(Label(setting.selectionLabel, KcopSkin.skin).apply {
+                this.add(Label(setting.selectionLabel, KcopSkin.labelStyle(
+                    FontSize.SMALL,
+                    ProfilePackage.ProfileMenuText
+                )).apply {
                     this.wrap
                 } ).left()
 
