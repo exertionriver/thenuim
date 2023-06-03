@@ -48,6 +48,7 @@ object NarrativeComponentEventHandler {
             }.forEach { timelineEvent ->
                 AiView.addHint(timelineEvent.id!!, (timelineEvent as HintTextEvent).report)
             }
+
         }
 
         return returnText

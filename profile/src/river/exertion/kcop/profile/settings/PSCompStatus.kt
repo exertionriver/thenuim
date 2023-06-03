@@ -6,16 +6,16 @@ object PSCompStatus : ProfileSetting {
 
     override val selectionKey = "completionStatus"
 
-    override val selectionLabel = "Show Completion Status"
+    override val selectionLabel = "Completion Status"
 
     override val display: Boolean = true
 
     override val options = mutableListOf (
         ProfileSettingOption("show","Show") {
-            StatusView.showCompletionStatus()
+            StatusView.showStatusByFilter(selectionKey)
         },
         ProfileSettingOption("hide", "Hide") {
-            StatusView.hideCompletionStatus()
+            StatusView.hideStatusByFilter(selectionKey)
         }
     )
 }

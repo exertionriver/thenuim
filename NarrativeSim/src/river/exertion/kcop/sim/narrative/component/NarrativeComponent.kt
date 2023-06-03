@@ -6,12 +6,11 @@ import com.badlogic.gdx.ai.msg.Telegraph
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.asset.ProfileAsset
+import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
@@ -27,7 +26,6 @@ import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.sim.narrative.view.DVLayout
-import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
@@ -86,8 +84,14 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun currentFontSize() = if (isInitialized) narrative.currentFontSize() else FontSize.TEXT
 
+    fun shortNarrativeName() = narrativeName().subSequence(0, 3)
+
     fun seqNarrativeProgress() : Float = ((narrative.currentIdx().plus(1)).toFloat()) / (narrative.narrativeBlocks.size)
-    fun sequentialStatusKey() : String = "progress(${narrativeName().subSequence(0, 3)})"
+    fun sequentialStatusLabel() : String = "progress(${shortNarrativeName()})"
+
+    fun addOrUpdateCompletionStatus() {
+        StatusView.addOrUpdateStatus("${PSCompStatus.selectionKey}_${shortNarrativeName()}", sequentialStatusLabel(), seqNarrativeProgress())
+    }
 
     override fun initialize(initData: Any?) {
 
@@ -108,7 +112,9 @@ class NarrativeComponent : IComponent, Telegraph {
         DisplayView.currentDisplayViewLayoutHandler = NarrativePackage.displayViewLayoutHandler()
 
         narrativeState.blockFlags.clear()
+
         StatusView.clearStatuses()
+        addOrUpdateCompletionStatus()
 
         changed = true
 

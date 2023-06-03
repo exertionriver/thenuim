@@ -8,7 +8,7 @@ object PSShowTimer : ProfileSetting {
 
     override val selectionKey = "showTimer"
 
-    override val selectionLabel = "Show Timer"
+    override val selectionLabel = "Timer"
 
     override val display: Boolean = true
 

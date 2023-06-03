@@ -35,6 +35,7 @@ import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.PauseView
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
@@ -83,6 +84,12 @@ object NarrativePackage : IImmersionPackage {
                 PSShowTimer.options.firstOrNull { it.optionValue == PSShowTimer.ShowProfile }?.optionAction?.let { it() }
             }
         })
+
+        PauseView.toggleImmersionPause = {
+            val messageType = if (PauseView.isChecked) NarrativeComponentMessage.NarrativeMessageType.Pause else NarrativeComponentMessage.NarrativeMessageType.Unpause
+            MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(messageType) )
+        }
+
     }
 
     override fun loadMenus() {

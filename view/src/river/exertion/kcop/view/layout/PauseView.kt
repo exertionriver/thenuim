@@ -24,6 +24,8 @@ object PauseView : ViewBase {
         //override from ctrl
         innerButton.isChecked = this@PauseView.isChecked
 
+        KcopSkin.addOnClick(innerButton)
+
         innerButton.onClick {
             this@PauseView.isChecked = !this@PauseView.isChecked
             toggleImmersionPause()
@@ -32,10 +34,7 @@ object PauseView : ViewBase {
         return innerButton
     }
 
-    fun toggleImmersionPause() {
-//        val messageType = if (isChecked) NarrativeMessage.NarrativeMessageType.Pause else NarrativeMessage.NarrativeMessageType.Unpause
-//        MessageChannelEnum.NARRATIVE_BRIDGE.send(null, NarrativeMessage(messageType, null) )
-    }
+    var toggleImmersionPause = {}
 
     override fun buildCtrl() {
         viewTable.add(Stack().apply {

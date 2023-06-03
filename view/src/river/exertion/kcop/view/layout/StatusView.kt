@@ -1,27 +1,17 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.asset.FontSize
-import kotlin.math.roundToInt
 
 object StatusView : ViewBase {
 
     override var viewType = ViewType.STATUS
     override var viewTable = Table()
 
-    val displayStatuses : MutableMap<String, Float> = mutableMapOf()
+    val displayStatuses : MutableList<DisplayStatus> = mutableListOf()
 
     private lateinit var scrollPane : ScrollPane
-
-    fun statusColorTexture(overrideColor : ColorPalette? = null) : TextureRegion {
-        return SdcHandler.get("statusColor", overrideColor ?: backgroundColor().triad().first).textureRegion().apply {
-            this.setRegion(0, 0, ViewType.padWidth(KcopSkin.screenWidth).roundToInt(), ViewType.padHeight(KcopSkin.screenHeight).roundToInt())
-        }
-    }
 
     fun textScrollPane() : ScrollPane {
 
@@ -33,13 +23,13 @@ object StatusView : ViewBase {
             ViewType.padHeight(KcopSkin.screenHeight)
         )
 
-        displayStatuses.forEach {
+        displayStatuses.filter { it.display }.forEach {
             val barStack = Stack()
 
             barStack.add(
                 ProgressBar(0f, 1f, .01f, false, KcopSkin.skin).apply { this.value = it.value } )
             barStack.add(
-                Label(it.key, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().triad().first.incr(2)))
+                Label(it.label, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label().incr(2)))
             )
 
             innerTable.add(barStack)
@@ -72,19 +62,31 @@ object StatusView : ViewBase {
         viewTable.clip()
     }
 
-    fun addOrUpdateStatus(key : String, value : Float) {
-        displayStatuses[key] = value
+    fun addOrUpdateStatus(key : String, label : String, value : Float) {
+        if (displayStatuses.map { it.key }.contains(key)) {
+            displayStatuses.first { it.key == key }.value = value
+            displayStatuses.first { it.key == key }.label = label
+        } else {
+            displayStatuses.add(DisplayStatus(key, label, value))
+        }
     }
 
     fun clearStatuses() {
         displayStatuses.clear()
     }
 
+    @Suppress("NewApi")
     fun removeStatus(key : String) {
-        displayStatuses.remove(key)
+        displayStatuses.removeIf { key == it.label }
     }
 
-    fun showCompletionStatus() {}
+    fun showStatusByFilter(keyFilter : String) {
+        displayStatuses.filter { it.key.contains(keyFilter) }.forEach { it.display = true }
+        build()
+    }
 
-    fun hideCompletionStatus() {}
+    fun hideStatusByFilter(keyFilter : String) {
+        displayStatuses.filter { it.key.contains(keyFilter) }.forEach { it.display = false }
+        build()
+    }
 }

@@ -49,7 +49,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             currentDvLayout.panes().forEach { dvPane ->
                 val randomColor = ColorPalette.randomW3cBasic()
                 val randomColorImage = Image(TextureRegionDrawable(paneColorTexture(dvPane, randomColor).texture))
-                val randomColorLabelStyle = KcopSkin.labelStyle(FontSize.TEXT, randomColor)
+                val randomColorLabelStyle = KcopSkin.labelStyle(FontSize.TEXT, randomColor.label())
 
                 when (dvPane) {
                     is DVImagePane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)

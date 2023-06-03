@@ -36,8 +36,8 @@ object TextView : ViewBase {
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
 
-        if (AiView.hintText().isNotBlank()) {
-            val hintLabel = Label(AiView.hintText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().triad().first))
+        if (AiView.isChecked && AiView.hintText().isNotBlank()) {
+            val hintLabel = Label(AiView.hintText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label().decr(4)))
 
             innerTable.row()
             innerTable.add(hintLabel).growX()

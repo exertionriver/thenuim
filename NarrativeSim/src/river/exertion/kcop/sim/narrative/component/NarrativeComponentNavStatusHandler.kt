@@ -3,6 +3,7 @@ package river.exertion.kcop.sim.narrative.component
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.view.layout.AiView
@@ -80,7 +81,7 @@ object NarrativeComponentNavStatusHandler {
                 blockInstImmersionTimers[narrativeCurrBlockId()]?.resetTimer()
                 blockInstImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
 
-                StatusView.addOrUpdateStatus(sequentialStatusKey(), seqNarrativeProgress())
+                addOrUpdateCompletionStatus()
                 AiView.clearHints()
 
                 location.immersionBlockId = narrativeCurrBlockId()

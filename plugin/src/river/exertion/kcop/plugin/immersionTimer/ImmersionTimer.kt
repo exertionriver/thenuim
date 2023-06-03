@@ -40,14 +40,18 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
     }
 
     fun pauseTimer() {
-        stateMachine.changeState(ImmersionTimerState.PAUSED)
-        pausedAtTime = TimeUtils.millis()
+        if (stateMachine.currentState != ImmersionTimerState.PAUSED) {
+            stateMachine.changeState(ImmersionTimerState.PAUSED)
+            pausedAtTime = TimeUtils.millis()
+        }
     }
 
     fun resumeTimer() {
-        stateMachine.changeState(ImmersionTimerState.RUNNING)
-        pausedDurationMillis += TimeUtils.timeSinceMillis(pausedAtTime)
-        pausedAtTime = 0
+        if (stateMachine.currentState != ImmersionTimerState.RUNNING) {
+            stateMachine.changeState(ImmersionTimerState.RUNNING)
+            pausedDurationMillis += TimeUtils.timeSinceMillis(pausedAtTime)
+            pausedAtTime = 0
+        }
     }
 
     fun onOrPast(timeString : String?) : Boolean {
