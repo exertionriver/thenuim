@@ -1,6 +1,6 @@
 package river.exertion.kcop.sim.narrative.structure.events
 
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 
 interface ITriggerEvent {
     val trigger: String

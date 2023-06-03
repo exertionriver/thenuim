@@ -2,21 +2,17 @@ package river.exertion.kcop.ecs.component
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.TimeUtils
+import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimerState
 import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerState
-import river.exertion.kcop.messaging.Id
-import river.exertion.kcop.messaging.MessageChannelHandler
 
 class ImmersionTimerComponent(startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) :
     IComponent {
 
     //ImmersionTimerComponent allows TimeLogSystem to easily update log view for active timers
-    val id = Id.randomId()
-    override fun componentId() = id
+    override var componentId = Id.randomId()
 
     var immersionTimerPair = ImmersionTimerPair(
         ImmersionTimer(startTime, startState),

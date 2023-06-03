@@ -6,7 +6,7 @@ import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IRLTimeComponent
-import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.asset.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IKcopPackage

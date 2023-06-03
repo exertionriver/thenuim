@@ -2,12 +2,12 @@ package river.exertion.kcop.sim.narrative.structure
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import river.exertion.kcop.messaging.Id
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 
 @Serializable
 class NarrativeState(
-        override var id : String = genId(),
+        var id : String = genId(),
 
         var location : ImmersionLocation = ImmersionLocation(),
 
@@ -15,7 +15,7 @@ class NarrativeState(
 
         var flags : MutableList<ImmersionStatus> = mutableListOf()
 
-) : Id {
+) {
 
     fun immersionBlockId() = location.immersionBlockId ?: UnknownBlockId
 

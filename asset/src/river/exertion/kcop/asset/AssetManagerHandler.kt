@@ -1,5 +1,6 @@
 package river.exertion.kcop.asset
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
@@ -8,7 +9,6 @@ import ktx.assets.disposeSafely
 import ktx.assets.load
 import ktx.assets.unloadSafely
 import ktx.collections.gdxArrayOf
-import river.exertion.kcop.messaging.Id.Companion.logDebug
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 
@@ -52,4 +52,14 @@ object AssetManagerHandler {
         assets.disposeSafely()
     }
 
+    fun logDebug(tag : String, message : String) : String {
+        val returnLog = "$tag: $message"
+
+        if (Gdx.app != null)
+            Gdx.app.debug(tag, message)
+        else
+            println(returnLog)
+
+        return returnLog
+    }
 }

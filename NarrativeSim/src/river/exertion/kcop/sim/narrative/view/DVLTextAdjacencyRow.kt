@@ -1,7 +1,7 @@
 package river.exertion.kcop.sim.narrative.view
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.asset.Id
 
 @Serializable
 data class DVLTextAdjacencyRow(

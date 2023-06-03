@@ -5,8 +5,7 @@ import com.badlogic.ashley.core.Component
 interface IComponent : Component {
 
     var isInitialized : Boolean
-
-    fun componentId() : String
+    var componentId : String
 
     //done automatically by EngineHandler::addComponent()
     fun initialize(initData: Any?) {

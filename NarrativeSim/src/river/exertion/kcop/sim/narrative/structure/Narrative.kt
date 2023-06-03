@@ -5,14 +5,14 @@ import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.asset.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.view.asset.FontSize
 
 @Serializable
 data class Narrative(
-    override var id: String = Id.randomId(),
+    var id: String = Id.randomId(),
     val name : String = "",
     val description : String = "",
     val layoutTag : String = DVLayout.DvLayoutTag,
@@ -20,7 +20,7 @@ data class Narrative(
     val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
     val eventBlocks : MutableList<EventBlock> = mutableListOf(),
     val timelineEvents : MutableList<Event> = mutableListOf(),
-    ) : Id {
+    ) {
 
     @Transient
     var currentBlockId = ""

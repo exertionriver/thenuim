@@ -1,4 +1,4 @@
-package river.exertion.kcop.plugin.immersionTimer
+package river.exertion.kcop.asset.immersionTimer
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine
 import com.badlogic.gdx.utils.TimeUtils

@@ -7,7 +7,7 @@ import ktx.assets.getAsset
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.settings.ProfileSettingEntry

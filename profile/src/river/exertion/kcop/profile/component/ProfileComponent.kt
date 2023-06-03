@@ -3,14 +3,15 @@ package river.exertion.kcop.profile.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import river.exertion.kcop.asset.Id
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.ecs.entity.SubjectEntity
 import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
 import river.exertion.kcop.profile.asset.ProfileAsset
@@ -23,7 +24,7 @@ class ProfileComponent : IComponent, Telegraph {
         get() = ProfileAsset.currentProfileAsset.profile
         set(value) { ProfileAsset.currentProfileAsset.profile = value }
 
-    override fun componentId() = profile.id
+    override var componentId = profile.id
 
     override var isInitialized = false
 

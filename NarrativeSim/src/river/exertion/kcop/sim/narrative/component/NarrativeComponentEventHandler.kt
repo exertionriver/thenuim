@@ -1,6 +1,6 @@
 package river.exertion.kcop.sim.narrative.component
 
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.sim.narrative.structure.events.Event
 import river.exertion.kcop.sim.narrative.structure.events.HintTextEvent
 import river.exertion.kcop.sim.narrative.structure.events.ITriggerEvent

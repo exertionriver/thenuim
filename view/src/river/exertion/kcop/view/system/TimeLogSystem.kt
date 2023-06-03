@@ -5,7 +5,7 @@ import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.oneOf
 import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.view.layout.LogView
 
 class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class).get(), 1/60f) {

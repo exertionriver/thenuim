@@ -3,18 +3,18 @@ package river.exertion.kcop.sim.narrative.view
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.asset.Id
 import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.ViewType
 
 @Serializable
 data class DVLayout(
-    override var id: String = Id.randomId(),
+    var id: String = Id.randomId(),
     val name : String,
     val layout : MutableList<DVTable> = mutableListOf(),
     val textAdjacencyRows: MutableList<DVLTextAdjacencyRow> = mutableListOf(),
     val textAdjacencyTopPads: MutableList<DVLTextAdjacencyTopPad> = mutableListOf()
-) : Id {
+) {
 
     @Suppress("UNCHECKED_CAST")
     fun panes() = layout.flatMap { it.panes }.filter { it.cellType == DVLayoutCell.DVLCellTypes.PANE } as List<DVPane>

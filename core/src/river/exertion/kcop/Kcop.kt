@@ -67,7 +67,7 @@ class Kcop : KtxGame<KtxScreen>() {
         val initViewportWidth = 1280F
         val initViewportHeight = 720F
 
-        val title = "koboldCave Operating Platform (kcop) v0.11"
+        val title = "koboldCave Operating Platform (kcop) v0.12"
         val loglevel = LOG_DEBUG
 
         const val TwoBatchBridge = "TwoBatchBridge"

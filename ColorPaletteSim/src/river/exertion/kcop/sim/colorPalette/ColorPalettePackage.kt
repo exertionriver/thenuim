@@ -1,11 +1,8 @@
 package river.exertion.kcop.sim.colorPalette
 
-import river.exertion.kcop.messaging.Id
-import river.exertion.kcop.messaging.MessageChannel
-import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.asset.Id
 import river.exertion.kcop.plugin.IDisplayPackage
 import river.exertion.kcop.plugin.IInternalPackage
-import river.exertion.kcop.sim.colorPalette.messaging.ColorPaletteMessage
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteInputProcessor
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 

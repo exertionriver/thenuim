@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test
 
-class TestNarrativeTimers {
+class TestImmersionTimer {
 
     @Test
     fun testNarrativeTimer() {

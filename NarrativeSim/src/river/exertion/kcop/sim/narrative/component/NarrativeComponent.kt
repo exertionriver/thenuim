@@ -7,8 +7,8 @@ import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.sim.narrative.NarrativePackage
@@ -40,8 +40,7 @@ class NarrativeComponent : IComponent, Telegraph {
         get() = NarrativeStateAsset.currentNarrativeStateAsset.narrativeState
         set(value) { NarrativeStateAsset.currentNarrativeStateAsset.narrativeState = value }
 
-    override fun componentId() = narrative.id
-
+    override var componentId = narrative.id
     override var isInitialized = false
 
     val instImmersionTimer = ImmersionTimer()

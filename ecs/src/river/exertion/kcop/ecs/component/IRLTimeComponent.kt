@@ -1,15 +1,14 @@
 package river.exertion.kcop.ecs.component
 
 import com.badlogic.ashley.core.Entity
-import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.asset.Id
 import java.time.LocalDateTime
 import java.util.*
 
 @Suppress("NewApi")
 class IRLTimeComponent : IComponent {
 
-    val id = Id.randomId()
-    override fun componentId() = id
+    override var componentId = Id.randomId()
 
     fun irlTime() = Calendar.getInstance()
 

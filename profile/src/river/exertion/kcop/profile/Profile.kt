@@ -3,8 +3,8 @@ package river.exertion.kcop.profile
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.asset.character.NameTypes
-import river.exertion.kcop.messaging.Id
-import river.exertion.kcop.plugin.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.profile.settings.PSCompStatus.settingByKey
 import river.exertion.kcop.profile.settings.PSShowTimer
@@ -13,11 +13,11 @@ import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 @Serializable
 data class Profile(
-        override var id : String = Id.randomId(),
+        var id : String = Id.randomId(),
         var name : String = genName(),
         private var sCumlTime : String = ImmersionTimer.CumlTimeZero,
         var settingEntries : MutableList<ProfileSettingEntry> = defaultSettings()
-    ) : Id {
+    ) {
 
     @Transient
     var cumlTimer : ImmersionTimer = ImmersionTimer().apply {

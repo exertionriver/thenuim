@@ -5,7 +5,7 @@ import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.system.SystemHandler
-import river.exertion.kcop.messaging.Id
+import river.exertion.kcop.asset.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IImmersionPackage

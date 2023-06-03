@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.character.NameTypes
 
-class TestNameCreation {
+class TestNameTypes {
 
     @Test
     fun testCelestialNameCreation() {

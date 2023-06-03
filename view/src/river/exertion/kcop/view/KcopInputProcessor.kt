@@ -9,6 +9,7 @@ object KcopInputProcessor : InputProcessor {
 
     override fun keyDown(keycode: Int): Boolean {
         InputView.keyEvent(Input.Keys.toString(keycode))
+        InputView.build()
 
         if (keycode == Input.Keys.ESCAPE) MenuView.closeMenu()
 
@@ -17,26 +18,36 @@ object KcopInputProcessor : InputProcessor {
 
     override fun keyUp(keycode: Int): Boolean {
         InputView.releaseEvent()
+        InputView.build()
+
         return false
     }
 
     override fun keyTyped(character: Char): Boolean {
         InputView.keyEvent(character.toString())
+        InputView.build()
+
         return false
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         InputView.touchEvent(screenX, screenY, button)
+        InputView.build()
+
         return false
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         InputView.releaseEvent()
+        InputView.build()
+
         return false
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
         InputView.touchEvent(screenX, screenY, -1)
+        InputView.build()
+
         return false
     }
 
