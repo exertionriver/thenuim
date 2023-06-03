@@ -7,6 +7,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuBackgroundColor
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuText
+import river.exertion.kcop.sim.narrative.NarrativePackage.NoNarrativeLoaded
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
@@ -30,11 +31,24 @@ object RestartProgressMenu : DisplayViewMenu {
     override var menuPane = {
         Table().apply {
 
-            NarrativeStateAsset.currentNarrativeStateAsset.assetInfo().forEach { assetInfo ->
-                this.add(Label(assetInfo, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText)).apply {
-                    this.wrap = true
-                }).colspan(2).growX()
+            if ( NarrativeAsset.isNarrativeLoaded() ) {
+
+                this.add(Label("Restarting:", KcopSkin.labelStyle(FontSize.MEDIUM, NarrativeMenuText)))
+
                 this.row()
+
+                NarrativeAsset.currentNarrativeAsset.assetInfo().forEach { assetInfo ->
+                    this.add(Label(assetInfo, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText)).apply {
+                        this.wrap = true
+                    }).colspan(2).growX()
+                    this.row()
+                }
+
+                this.add(Label("Are you sure?", KcopSkin.labelStyle(FontSize.MEDIUM, NarrativeMenuText)))
+                this@RestartProgressMenu.assignableActions.firstOrNull { it.label == "Restart" }?.enabled = true
+            } else {
+                this.add(Label(NoNarrativeLoaded, KcopSkin.labelStyle(FontSize.MEDIUM, NarrativeMenuText)))
+                this@RestartProgressMenu.assignableActions.firstOrNull { it.label == "Restart" }?.enabled = false
             }
 
             this.top()
@@ -48,7 +62,7 @@ object RestartProgressMenu : DisplayViewMenu {
 
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
-    override val actions = mutableListOf(
+    override val assignableActions = mutableListOf(
         MenuActionParam("Restart", {
             MenuView.closeMenu()
 

@@ -9,8 +9,6 @@ import river.exertion.kcop.messaging.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.plugin.IImmersionPackage
-import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.menu.SaveProgressMenu
 import river.exertion.kcop.profile.menu.SaveProgressMenu.SaveLabel
 import river.exertion.kcop.profile.settings.PSShowTimer
@@ -108,6 +106,10 @@ object NarrativePackage : IImmersionPackage {
             MenuActionParam("Narrative >", {
                 DisplayViewMenuHandler.currentMenuTag = NarrativeMenu.tag
             }) )
+        MainMenu.assignableNavs.add(
+            MenuActionParam("Restart Narrative >", {
+                DisplayViewMenuHandler.currentMenuTag = RestartProgressMenu.tag
+            }) )
     }
 
     private fun addNarrativeInfoToMainMenu() {
@@ -152,9 +154,9 @@ object NarrativePackage : IImmersionPackage {
     }
 
     private fun addNarrativeStateSaveToSaveProgress() {
-        val saveProgressAction = SaveProgressMenu.actions.firstOrNull { it.label == SaveLabel }!!.action
+        val saveProgressAction = SaveProgressMenu.assignableActions.firstOrNull { it.label == SaveLabel }!!.action
 
-        SaveProgressMenu.actions.firstOrNull { it.label == SaveLabel }!!.action = {
+        SaveProgressMenu.assignableActions.firstOrNull { it.label == SaveLabel }!!.action = {
             saveProgressAction()
             currentNarrativeStateAsset.save()
         }

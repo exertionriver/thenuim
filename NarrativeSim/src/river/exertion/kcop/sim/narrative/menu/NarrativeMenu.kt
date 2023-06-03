@@ -55,11 +55,8 @@ object NarrativeMenu : DisplayViewMenu {
     override val assignableNavs = mutableListOf(
             MenuActionParam("Load >", {
                 DisplayViewMenuHandler.currentMenuTag = LoadNarrativeMenu.tag
-            }),
-            MenuActionParam("Restart >", {
-                DisplayViewMenuHandler.currentMenuTag = RestartProgressMenu.tag
             })
     )
 
-    override val actions = mutableListOf<MenuActionParam>()
+    override val assignableActions = mutableListOf<MenuActionParam>()
 }

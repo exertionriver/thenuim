@@ -37,13 +37,13 @@ object LoadProfileMenu : DisplayViewMenu {
                     this.row()
                 }
 //        this.debug()
-                this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }
+                this@LoadProfileMenu.assignableActions.firstOrNull { it.label == "Yes" }
                     ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
             } else {
                 this.add(
                     Label(NoProfileInfoFound, KcopSkin.labelStyle(FontSize.SMALL, ProfileMenuText))
                 ).growX().left()
-                this@LoadProfileMenu.actions.firstOrNull { it.label == "Yes" }
+                this@LoadProfileMenu.assignableActions.firstOrNull { it.label == "Yes" }
                     ?.apply { this.label = "Error"; this.action = {} }
             }
             this.top()
@@ -56,7 +56,7 @@ object LoadProfileMenu : DisplayViewMenu {
 
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
-    override val actions = mutableListOf(
+    override val assignableActions = mutableListOf(
         MenuActionParam("Yes", {
             MenuView.closeMenu()
             MessageChannelHandler.send(ProfilePackage.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))

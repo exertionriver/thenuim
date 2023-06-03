@@ -2,12 +2,8 @@ package river.exertion.kcop.sim.narrative.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.profile.asset.ProfileAsset
-import river.exertion.kcop.profile.messaging.ProfileComponentMessage
-import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuBackgroundColor
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuText
@@ -19,7 +15,6 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -45,12 +40,12 @@ object LoadNarrativeMenu : DisplayViewMenu {
                 this.row()
             }
 //        this.debug()
-            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
+            this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
         } else {
             this.add(Label("no narrative info found", KcopSkin.skin)
                     //LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()
-            this@LoadNarrativeMenu.actions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
+            this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }
         }
         this.top()
     } }
@@ -62,7 +57,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
 
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
-    override val actions = mutableListOf(
+    override val assignableActions = mutableListOf(
         MenuActionParam("Yes", {
             MenuView.closeMenu()
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))

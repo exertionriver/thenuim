@@ -20,7 +20,7 @@ object MainMenu : DisplayViewMenu {
 
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
-    override val actions = mutableListOf(
+    override val assignableActions = mutableListOf(
         MenuActionParam("Exit kcop", {
             Gdx.app.exit()
             exitProcess(0)

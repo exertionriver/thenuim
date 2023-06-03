@@ -45,7 +45,7 @@ object SaveProgressMenu : DisplayViewMenu {
 
     const val SaveLabel = "Save"
 
-    override val actions = mutableListOf(
+    override val assignableActions = mutableListOf(
         MenuActionParam(SaveLabel, {
             ProfileAsset.currentProfileAsset.save()
             MenuView.closeMenu()

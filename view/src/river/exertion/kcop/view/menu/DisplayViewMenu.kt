@@ -19,7 +19,7 @@ interface DisplayViewMenu {
     val backgroundColor : ColorPalette
 
     val breadcrumbEntries : Map<String, String> //menu tags -> menu labels
-    val actions : MutableList<MenuActionParam> //Button Label -> log text + action to run
+    val assignableActions : MutableList<MenuActionParam> //Button Label -> log text + action to run
     val assignableNavs : MutableList<MenuActionParam>
 
     var menuPane : () -> Table
@@ -45,15 +45,17 @@ interface DisplayViewMenu {
     fun actionButtonPane() : Table = Table().apply {
      //   this.debug()
 
-        this@DisplayViewMenu.actions.forEach { actionEntry ->
+        this@DisplayViewMenu.assignableActions.forEach { actionEntry ->
             this.add(
                 TextButton(actionEntry.label, KcopSkin.skin)
                         //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
                         .apply {
-                    this.onClick {
-                        if (actionEntry.log != null)
-                            LogView.addLog(actionEntry.log!!)
-                        actionEntry.action()
+                    if (actionEntry.enabled) {
+                        this.onClick {
+                            if (actionEntry.log != null)
+                                LogView.addLog(actionEntry.log!!)
+                            actionEntry.action()
+                        }
                     }
                 }
             ).right().padRight(ViewType.padWidth(KcopSkin.screenWidth))

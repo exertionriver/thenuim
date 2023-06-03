@@ -60,5 +60,5 @@ object ProfileMenu : DisplayViewMenu {
             })
     )
 
-    override val actions = mutableListOf<MenuActionParam>()
+    override val assignableActions = mutableListOf<MenuActionParam>()
 }

@@ -62,7 +62,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
 
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
-    override val actions = mutableListOf(
+    override val assignableActions = mutableListOf(
         MenuActionParam("Update", {
             MenuView.closeMenu()
             ProfileAsset.currentProfileAsset.settings = settings
