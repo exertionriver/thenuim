@@ -1,6 +1,12 @@
 # kcop
 koboldCave Operating Platform
 
+<b>v0.11 - Major refactoring into modules, display 'fullscreen' toggle, json-loaded display panes, colorPalette nav from assignable button
+  
+https://github.com/exertionriver/kcop/assets/13192685/7d207b3d-fe08-43ad-a364-38f9514fd9b1
+  
+---
+
 <b>v0.10 - Immersion state persist, profile settings, AI hints
 
 https://user-images.githubusercontent.com/13192685/232177215-5eb3a67b-3306-42b3-8a57-ab05a2e6ec5f.mp4
