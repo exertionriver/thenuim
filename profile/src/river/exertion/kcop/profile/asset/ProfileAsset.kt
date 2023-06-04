@@ -1,26 +1,27 @@
 package river.exertion.kcop.profile.asset
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
-import kotlinx.serialization.json.encodeToJsonElement
-import ktx.assets.getAsset
-import river.exertion.kcop.asset.AssetManagerHandler.json
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 
 class ProfileAsset(var profile : Profile = Profile()) : IAsset {
+
+    override fun assetData() : Any = profile
+
+    override var assetId = profile.id
+    override var assetName = profile.name
+
     override var assetPath : String? = newAssetFilename()
+    override var assetTitle = assetPath ?: AssetNotFound
+
     override var status : String? = null
     override var statusDetail : String? = null
     override var persisted : Boolean = false
 
-    override fun assetId() = profile.id
-    override fun assetName() = profile.name
-    override fun assetTitle() = assetPath ?: AssetNotFound
+
     override fun newAssetFilename(): String = ProfileAssets.iAssetPath(super.newAssetFilename())
 
     var settings : MutableList<ProfileSettingEntry>
@@ -42,22 +43,15 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
         return returnList.toList()
     }
 
-    fun save(renameAssetPath : String? = null) {
+    override fun saveTyped(assetSaveLocation : String?) {
+        persisted = AssetManagerHandler.saveAsset<Profile>(this, assetSaveLocation).persisted
+    }
+
+    override fun save(assetSaveLocation : String?) {
         //used to update serializable field
         cumlTimer = cumlTimer
 
-        val jsonProfile = json.encodeToJsonElement(profile)
-
-        if (renameAssetPath == null) {
-            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
-        } else {
-            Gdx.files.local(assetPath).writeString(jsonProfile.toString(), false)
-            if (renameAssetPath != assetPath) {
-                Gdx.files.local(assetPath).moveTo(Gdx.files.local(renameAssetPath))
-            }
-        }
-
-        persisted = true
+        this.saveTyped(assetSaveLocation)
     }
 
     companion object {

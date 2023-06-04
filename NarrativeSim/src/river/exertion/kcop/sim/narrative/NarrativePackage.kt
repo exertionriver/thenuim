@@ -55,7 +55,7 @@ object NarrativePackage : IImmersionPackage {
         DisplayViewLayoutAssets.reload()
     }
 
-    fun dvLayoutByTag(dvTag : String) = (DisplayViewLayoutAssets.byName(dvTag) as DisplayViewLayoutAsset).dvLayout ?: DVLayout.dvLayout()
+    fun dvLayoutByTag(dvTag : String) = (DisplayViewLayoutAssets.byName(dvTag) as DisplayViewLayoutAsset).dvLayout
 
     override fun loadSystems() {
         SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())

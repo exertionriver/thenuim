@@ -5,19 +5,19 @@ interface IAssets {
     var values: MutableList<IAsset>
 
     @Suppress("UNCHECKED_CAST")
-    fun <T:IAsset>byIdTyped(assetId : String?) : T? = values.firstOrNull { it.assetId() == assetId } as T?
+    fun <T:IAsset>byIdTyped(assetId : String?) : T? = values.firstOrNull { it.assetId == assetId } as T?
 
     fun byId(assetId : String?) : Any?
 
     @Suppress("UNCHECKED_CAST")
-    fun <T:IAsset>byTitleTyped(assetTitle : String?) : T? = values.firstOrNull { it.assetTitle() == assetTitle } as T?
-
-    fun byTitle(assetTitle : String?) : Any?
-
-    @Suppress("UNCHECKED_CAST")
-    fun <T:IAsset>byNameTyped(assetName : String?) : T? = values.firstOrNull { it.assetName() == assetName } as T?
+    fun <T:IAsset>byNameTyped(assetName : String?) : T? = values.firstOrNull { it.assetName == assetName } as T?
 
     fun byName(assetName : String?) : Any?
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T:IAsset>byTitleTyped(assetTitle : String?) : T? = values.firstOrNull { it.assetTitle == assetTitle } as T?
+
+    fun byTitle(assetTitle : String?) : Any?
 
     //must be overridden, there is no IAsset loader
     fun <T:IAsset>reloadTyped() : MutableList<T> {

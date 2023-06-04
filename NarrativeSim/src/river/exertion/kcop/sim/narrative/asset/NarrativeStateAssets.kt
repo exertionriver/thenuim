@@ -3,8 +3,6 @@ package river.exertion.kcop.sim.narrative.asset
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAssets
-import river.exertion.kcop.profile.asset.ProfileAsset
-import river.exertion.kcop.profile.asset.ProfileAssets
 
 object NarrativeStateAssets : IAssets {
 
@@ -12,9 +10,9 @@ object NarrativeStateAssets : IAssets {
 
     override fun byId(assetId : String?) : NarrativeStateAsset? = super.byIdTyped(assetId)
 
-    override fun byTitle(assetTitle : String?) : NarrativeStateAsset? = super.byTitleTyped(assetTitle)
-
     override fun byName(assetName : String?) : NarrativeStateAsset? = super.byNameTyped(assetName)
+
+    override fun byTitle(assetTitle : String?) : NarrativeStateAsset? = super.byTitleTyped(assetTitle)
 
     override fun <T:IAsset>reloadTyped() : MutableList<T> {
         values = AssetManagerHandler.reloadLocalAssets<NarrativeStateAsset>(iAssetLocation).toMutableList()

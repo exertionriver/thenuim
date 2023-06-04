@@ -1,3 +1,5 @@
+package view
+
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.view.ColorPalette
 import kotlin.math.pow

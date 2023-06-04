@@ -5,14 +5,19 @@ import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
 import river.exertion.kcop.sim.narrative.structure.Narrative
 
 class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
+
+    override fun assetData() : Any = narrative
+
+    override var assetId : String = narrative.id
+    override var assetName : String = narrative.name
+
     override var assetPath : String? = null
+    override var assetTitle = assetPath ?: AssetNotFound
+
     override var status : String? = null
     override var statusDetail : String? = null
     override var persisted = false
 
-    override fun assetId() : String = narrative.id
-    override fun assetName() : String = narrative.name
-    override fun assetTitle() = assetPath ?: AssetNotFound
 
     override fun newAssetFilename(): String = NarrativeAssets.iAssetPath(super.newAssetFilename())
 

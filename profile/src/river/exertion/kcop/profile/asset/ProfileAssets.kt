@@ -10,9 +10,9 @@ object ProfileAssets : IAssets {
 
     override fun byId(assetId : String?) : ProfileAsset? = super.byIdTyped(assetId)
 
-    override fun byTitle(assetTitle : String?) : ProfileAsset? = super.byTitleTyped(assetTitle)
-
     override fun byName(assetName : String?) : ProfileAsset? = super.byNameTyped(assetName)
+
+    override fun byTitle(assetTitle : String?) : ProfileAsset? = super.byTitleTyped(assetTitle)
 
     override fun <T:IAsset>reloadTyped() : MutableList<T> {
         values = AssetManagerHandler.reloadLocalAssets<ProfileAsset>(iAssetLocation).toMutableList()

@@ -1,17 +1,31 @@
 package river.exertion.kcop.asset
 
 interface IAsset {
+    fun assetData() : Any
+
+    var assetId : String
+    var assetName : String
+
     var assetPath : String?
+    var assetTitle : String
+
     var status : String?
     var statusDetail : String?
     var persisted : Boolean
 
-    fun assetId() : String
-    fun assetName() : String
-    fun assetTitle() : String
     fun assetInfo() : List<String>
+    fun assetInfoStr() = assetInfo().reduceOrNull { acc, s -> acc + "\n$s"} ?: ""
 
-    fun newAssetFilename() = newAssetFilename(assetName(), assetId())
+    fun newAssetFilename() = newAssetFilename(assetName, assetId)
+
+    //must be overridden, there is no IAsset loader
+    fun saveTyped(assetSaveLocation : String? = null) {
+        persisted = AssetManagerHandler.saveAsset<IAsset>(this, assetSaveLocation).persisted
+    }
+
+    fun save(assetSaveLocation : String? = null) {
+        this.saveTyped(assetSaveLocation)
+    }
 
     companion object {
         val replaceChars = """[.@{}!\\`´"^=()&\[\]$'~#%*:+<>?/|, /\r/\n/\t]"""

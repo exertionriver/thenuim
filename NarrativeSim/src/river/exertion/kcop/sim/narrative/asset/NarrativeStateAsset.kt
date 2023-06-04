@@ -1,34 +1,30 @@
 package river.exertion.kcop.sim.narrative.asset
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
-import kotlinx.serialization.json.encodeToJsonElement
-import ktx.assets.getAsset
-import river.exertion.kcop.asset.AssetManagerHandler.json
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.asset.ProfileAsset
-import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset.Companion.isNarrativeLoaded
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 
 class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()) : IAsset {
 
+    override fun assetData() : Any = narrativeState
+
+    override var assetId = narrativeState.id
+    override var assetName = assetId
+
     override var assetPath : String? = null
+    override var assetTitle = assetPath ?: IAsset.AssetNotFound
+
     override var status : String? = null
     override var statusDetail : String? = null
     override var persisted = false
 
-    override fun assetId() = narrativeState.id
-
-    override fun assetName() = assetId()
-
-    override fun assetTitle() = assetPath ?: IAsset.AssetNotFound
-
     override fun newAssetFilename(): String {
-        narrativeState.id = NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId(), NarrativeAsset.currentNarrativeAsset.assetId())
-        return NarrativeStateAssets.iAssetPath(assetId())
+        narrativeState.id = NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId, NarrativeAsset.currentNarrativeAsset.assetId)
+        return NarrativeStateAssets.iAssetPath(assetId)
     }
 
     var cumlImmersionTimer : ImmersionTimer
@@ -48,7 +44,11 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
         return returnList.toList()
     }
 
-    fun save() {
+    override fun saveTyped(assetSaveLocation : String?) {
+        persisted = AssetManagerHandler.saveAsset<NarrativeState>(this, assetSaveLocation).persisted
+    }
+
+    override fun save(assetSaveLocation : String?) {
         if (isNarrativeLoaded()) {
             //used to update serializable fields
             cumlImmersionTimer = cumlImmersionTimer
@@ -56,10 +56,7 @@ class NarrativeStateAsset(var narrativeState : NarrativeState = NarrativeState()
 
             if (assetPath == null) assetPath = newAssetFilename()
 
-            val jsonNarrativeImmersion = json.encodeToJsonElement(this.narrativeState)
-            Gdx.files.local(assetPath).writeString(jsonNarrativeImmersion.toString(), false)
-
-            persisted = true
+            this.saveTyped(assetSaveLocation)
         }
     }
 
