@@ -15,7 +15,7 @@ object ProfileAssets : IAssets {
     override fun byTitle(assetTitle : String?) : ProfileAsset? = super.byTitleTyped(assetTitle)
 
     override fun <T:IAsset>reloadTyped() : MutableList<T> {
-        values = AssetManagerHandler.reloadLocalAssets<ProfileAsset>(iAssetLocation).toMutableList()
+        values = AssetManagerHandler.reloadLocalAssets<ProfileAsset>(iAssetsLocation, iAssetsExtension).toMutableList()
         return getTyped()
     }
 
@@ -23,6 +23,6 @@ object ProfileAssets : IAssets {
 
     override fun get() : MutableList<ProfileAsset> = super.getTyped()
 
-    override val iAssetLocation = "kcop/profile/"
-    override val iAssetExtension = ".json"
+    override val iAssetsLocation = "kcop/profile/"
+    override val iAssetsExtension = "json"
 }

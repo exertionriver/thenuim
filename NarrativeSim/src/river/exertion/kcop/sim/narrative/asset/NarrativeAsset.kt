@@ -1,23 +1,22 @@
 package river.exertion.kcop.sim.narrative.asset
 
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
 import river.exertion.kcop.sim.narrative.structure.Narrative
 
 class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
 
     override fun assetData() : Any = narrative
 
-    override var assetId : String = narrative.id
-    override var assetName : String = narrative.name
+    override fun assetId() : String = narrative.id
+    override fun assetName() : String = narrative.name
 
-    override var assetPath : String? = null
-    override var assetTitle = assetPath ?: AssetNotFound
+    override fun assetPath() : String = newAssetFilename()
+    override fun assetTitle() = assetPath()
 
-    override var status : String? = null
-    override var statusDetail : String? = null
+    override var assetStatus : AssetStatus? = null
+
     override var persisted = false
-
 
     override fun newAssetFilename(): String = NarrativeAssets.iAssetPath(super.newAssetFilename())
 
@@ -25,7 +24,7 @@ class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
 
         val returnList = mutableListOf<String>()
 
-        returnList.add("path: $assetPath")
+        returnList.add("path: ${assetPath()}")
         returnList.addAll(narrative.narrativeInfo())
 
         return returnList.toList()
@@ -35,10 +34,10 @@ class NarrativeAsset(var narrative : Narrative = Narrative()) : IAsset {
         var selectedNarrativeAsset = NarrativeAsset()
         var currentNarrativeAsset = NarrativeAsset()
 
-        fun isNarrativeLoaded() = (currentNarrativeAsset.assetPath != null)
+        fun isNarrativeLoaded() = currentNarrativeAsset.persisted
 
         fun isValid(narrativeAsset: NarrativeAsset?) : Boolean {
-            return (narrativeAsset?.narrative != null && narrativeAsset.status == null)
+            return (narrativeAsset?.narrative != null && narrativeAsset.assetStatus == null)
         }
     }
 }

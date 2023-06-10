@@ -24,7 +24,7 @@ object NarrativeMenu : DisplayViewMenu {
     override var menuPane = {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
-        val narrativeAssetsMap = NarrativeAssets.reload().associateBy { it.assetTitle }
+        val narrativeAssetsMap = NarrativeAssets.reload().associateBy { it.assetTitle() }
 
         if (narrativeAssetsMap.isNotEmpty()) {
             NarrativeAsset.selectedNarrativeAsset = narrativeAssetsMap.entries.first().value

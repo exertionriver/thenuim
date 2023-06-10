@@ -24,7 +24,7 @@ object ProfileMenu : DisplayViewMenu {
     override var menuPane = {
 
         val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
-        val profileAssetsMap = ProfileAssets.reload().associateBy { it.assetTitle }
+        val profileAssetsMap = ProfileAssets.reload().associateBy { it.assetTitle() }
 
         if (profileAssetsMap.isNotEmpty()) {
             ProfileAsset.selectedProfileAsset = profileAssetsMap.entries.first().value

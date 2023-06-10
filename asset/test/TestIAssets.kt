@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAssets
@@ -16,22 +17,27 @@ class TestIAssets : IAssets {
     override fun reload() : MutableList<TestIAsset> = reloadTyped()
     override fun get(): MutableList<TestIAsset> = super.getTyped()
 
-    //not used
-    override val iAssetLocation: String = "kcop/TestIAssets"
-    override val iAssetExtension: String = ".json"
+    override val iAssetsLocation: String = Companion.iAssetsLocation
+    override val iAssetsExtension: String = Companion.iAssetsExtension
+
+    companion object {
+        val iAssetsLocation: String = ""
+        val iAssetsExtension: String = "json"
+        fun iAssetPath(iAssetFilename : String) = "$iAssetsLocation$iAssetFilename.$iAssetsExtension"
+    }
 
     @Test
     fun testReload() {
 
         println("init values:")
-        values.forEach { println("assetId: ${it.assetId}") }
-        assert(values.size == 0)
+        values.forEach { println("assetId: ${it.assetId()}") }
+        assertEquals(0, values.size)
 
         reload()
 
         println("loaded values:")
-        values.forEach { println("assetId: ${it.assetId}")}
-        assert(values.size == 3)
+        values.forEach { println("assetId: ${it.assetId()}")}
+        assertEquals(3, values.size)
     }
 
     @Test
@@ -39,9 +45,9 @@ class TestIAssets : IAssets {
         reload()
 
         val testAsset = values[0]
-        val byIdAsset = byId(testAsset.assetId)
+        val byIdAsset = byId(testAsset.assetId())
 
-        assert(testAsset.assetName == byIdAsset?.assetName)
+        assertEquals(testAsset.assetName(), byIdAsset?.assetName())
     }
 
     @Test
@@ -49,9 +55,9 @@ class TestIAssets : IAssets {
         reload()
 
         val testAsset = values[1]
-        val byNameAsset = byName(testAsset.assetName)
+        val byNameAsset = byName(testAsset.assetName())
 
-        assert(testAsset.assetTitle == byNameAsset?.assetTitle)
+        assertEquals(testAsset.assetTitle(), byNameAsset?.assetTitle())
     }
 
     @Test
@@ -59,9 +65,9 @@ class TestIAssets : IAssets {
         reload()
 
         val testAsset = values[2]
-        val byTitleAsset = byTitle(testAsset.assetTitle)
+        val byTitleAsset = byTitle(testAsset.assetTitle())
 
-        assert(testAsset.assetId == byTitleAsset?.assetId)
+        assertEquals(testAsset.assetId(), byTitleAsset?.assetId())
     }
 
     @Test
@@ -72,9 +78,9 @@ class TestIAssets : IAssets {
         val getTestIAssets = super.getTyped<TestIAsset>()
         val getIAssets = super.getTyped<IAsset>()
 
-        assert(getAssets.size == 3)
-        assert(getTestIAssets.size == 3)
-        assert(getIAssets.size == 3)
+        assertEquals(3, getAssets.size)
+        assertEquals(3, getTestIAssets.size)
+        assertEquals(3, getIAssets.size)
     }
 
 }

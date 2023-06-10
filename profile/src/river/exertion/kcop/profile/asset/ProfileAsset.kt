@@ -1,8 +1,8 @@
 package river.exertion.kcop.profile.asset
 
 import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
@@ -11,16 +11,14 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
 
     override fun assetData() : Any = profile
 
-    override var assetId = profile.id
-    override var assetName = profile.name
+    override fun assetId() = profile.id
+    override fun assetName() = profile.name
 
-    override var assetPath : String? = newAssetFilename()
-    override var assetTitle = assetPath ?: AssetNotFound
+    override fun assetPath() : String = newAssetFilename()
+    override fun assetTitle() = assetPath()
 
-    override var status : String? = null
-    override var statusDetail : String? = null
+    override var assetStatus : AssetStatus? = null
     override var persisted : Boolean = false
-
 
     override fun newAssetFilename(): String = ProfileAssets.iAssetPath(super.newAssetFilename())
 
@@ -37,7 +35,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
 
         val returnList = mutableListOf<String>()
 
-        returnList.add("path: $assetPath")
+        returnList.add("path: ${assetPath()}")
         returnList.addAll(profile.profileInfo())
 
         return returnList.toList()
@@ -62,9 +60,7 @@ class ProfileAsset(var profile : Profile = Profile()) : IAsset {
         fun new(saveName : String? = null) : ProfileAsset {
             return ProfileAsset(Profile().apply {
                 this.name = saveName ?: this.name
-            } ).apply {
-                this.assetPath = this.newAssetFilename()
-            }
+            } )
         }
     }
 }

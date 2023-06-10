@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.asset.AssetManagerHandler.json
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.sim.narrative.view.DVLayout
 
 class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
@@ -24,22 +25,16 @@ class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
 
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: DisplayViewLayoutAssetParameter?): DisplayViewLayoutAsset {
 
-        lateinit var errorStatus : String
-
-        try {
+        return try {
             rawData = file.readString()
             val jsonElement = json.parseToJsonElement(rawData)
             val dvLayout = json.decodeFromJsonElement(jsonElement) as DVLayout
 
-            errorStatus = "${dvLayout.name} not loaded"
-
-            return DisplayViewLayoutAsset(dvLayout).apply { this.assetPath = fileName }
+            DisplayViewLayoutAsset(dvLayout)
 
         } catch (ex : Exception) {
-            return DisplayViewLayoutAsset().apply {
-                this.assetPath = fileName
-                this.status = errorStatus
-                this.statusDetail = ex.message
+            DisplayViewLayoutAsset().apply {
+                this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", ex.message)
             }
         }
     }

@@ -32,13 +32,13 @@ allprojects {
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
-        ktxVersion = '1.11.0-rc5'
+        ktxVersion = '1.11.0-rc6'
         kotlinxVersion = '1.6.1'
         kotlinxCoroutineVersion = '1.7.0-Beta'
         kotlinxSerializationVersion = '1.4.1'
         gltfVersion = '2.0.0-rc.1'
         shapedrawerVersion = '2.6.0' //https://github.com/earlygrey/shapedrawer
-        junitVersion = '5.8.2'
+        junitVersion = '5.9.3'
     }
 
     repositories {
@@ -131,6 +131,7 @@ project(":core") {
         implementation "space.earlygrey:shapedrawer:$shapedrawerVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+        testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
         testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxVersion"
         implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"

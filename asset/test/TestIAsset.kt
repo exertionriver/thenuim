@@ -1,6 +1,8 @@
 import kotlinx.serialization.Serializable
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.Id
 import kotlin.random.Random
@@ -10,19 +12,22 @@ class TestIAsset : IAsset {
     @Serializable
     class TestIAssetData(var dataString : String = Id.randomId())
 
-    override fun assetData() : Any = TestIAssetData()
+    var testIAssetData = TestIAssetData()
+    override fun assetData() : Any = testIAssetData
 
-    override var assetId: String = Id.randomId()
-    override var assetName: String = "testIAsset_name_$assetId"
+    override fun assetId() : String = testIAssetData.dataString
+    override fun assetName() : String = "testIAsset_name_${assetId()}"
 
-    override var assetTitle: String = "testIAsset_title_$assetId"
-    override var assetPath: String? = newAssetFilename()
+    override fun assetTitle() : String = "testIAsset_title_${assetId()}"
+    override fun assetPath() : String = newAssetFilename()
 
-    override var status: String? = null
-    override var statusDetail: String? = null
+    override var assetStatus: AssetStatus? = null
+
     override var persisted: Boolean = false
 
-    override fun assetInfo(): List<String> = listOf(assetId, "test", "IAsset", "Info")
+    override fun newAssetFilename(): String = TestIAssets.iAssetPath(super.newAssetFilename())
+
+    override fun assetInfo(): List<String> = listOf(assetId(), "test", "IAsset", "Info")
 
     override fun saveTyped(assetSaveLocation : String?) {
         persisted = AssetManagerHandler.saveAsset<TestIAssetData>(this, assetSaveLocation).persisted
@@ -37,7 +42,7 @@ class TestIAsset : IAsset {
         println ("special char filename:$specialCharFilename")
         println ("sanitized special char filename:$sanSpecialCharFilename")
 
-        assert(sanSpecialCharFilename == "_")
+        assertEquals("_", sanSpecialCharFilename)
 
         val specialCharAlphaNumFilename = "a.0sdf@9q{w}8e!rt\\z`7x´c\"v^uio=6p(h)j&k5[4l]v\$b'~#%3n*:<>?2/|,1 m"
         val sanSpecialCharAlphaNumFilename = IAsset.sanitizeFilename(specialCharAlphaNumFilename)
@@ -45,7 +50,7 @@ class TestIAsset : IAsset {
         println ("special char alphanum filename:$specialCharAlphaNumFilename")
         println ("sanitized special char alphanu, filename:$sanSpecialCharAlphaNumFilename")
 
-        assert(sanSpecialCharAlphaNumFilename == "a_0sdf_9q_w_8e_rt_z_7x_c_v_uio_6p_h_j_k5_4l_v_b_3n_2_1_m")
+        assertEquals("a_0sdf_9q_w_8e_rt_z_7x_c_v_uio_6p_h_j_k5_4l_v_b_3n_2_1_m", sanSpecialCharAlphaNumFilename)
 
         val newAssetFileName = "asdf!@#\$QW\nER%^&*zXcV(      )_+\tg"
         val randId = Random.nextInt(9999).toString().padStart(4, '0')
@@ -55,17 +60,17 @@ class TestIAsset : IAsset {
         println ("newAssetFileName:$newAssetFileName")
         println ("sanNewAssetFileName:$sanNewAssetFileName")
 
-        assert(sanNewAssetFileName == "asdf_QW_ER_zXcV_g_$randId")
+        assertEquals("asdf_QW_ER_zXcV_g_$randId", sanNewAssetFileName)
     }
 
     @Test
     fun testAssetInfoStr() {
 
-        println("assetId: $assetId")
+        println("assetId: ${assetId()}")
 
         val assetInfo = assetInfo()
-        assert(assetInfo.size == 4)
-        assert(assetInfo[0] == assetId)
+        assertEquals(4, assetInfo.size)
+        assertEquals(assetInfo[0], assetId())
 
         val assetInfoStr = assetInfoStr()
 

@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.json.decodeFromJsonElement
 import ktx.assets.Asset
 import river.exertion.kcop.asset.AssetManagerHandler.json
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.events.IImageEvent
 import river.exertion.kcop.sim.narrative.structure.events.ISoundEvent
@@ -35,7 +36,7 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             val jsonElement = json.parseToJsonElement(rawData)
             val narrative = json.decodeFromJsonElement(jsonElement) as Narrative
 
-            val returnNarrativeAsset = NarrativeAsset(narrative).apply { this.assetPath = fileName }
+            val returnNarrativeAsset = NarrativeAsset(narrative)
             val errorStatus = "${narrative.name} not loaded"
 
             narrative.eventBlocks.forEach { eventBlock ->
@@ -105,9 +106,7 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
 
         } catch (ex : Exception) {
             return NarrativeAsset().apply {
-                this.assetPath = fileName
-                this.status = "$fileName not loaded"
-                this.statusDetail = ex.message
+                this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", ex.message)
             }
         }
     }

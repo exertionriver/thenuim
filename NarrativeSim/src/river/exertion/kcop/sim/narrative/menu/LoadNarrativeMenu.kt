@@ -40,7 +40,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
                 this.row()
             }
 //        this.debug()
-            this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName}" }
+            this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
         } else {
             this.add(Label("no narrative info found", KcopSkin.skin)
                     //LabelStyle(bitmapFont, backgroundColor.label().color()))
@@ -62,7 +62,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
             MenuView.closeMenu()
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
             NarrativeAsset.currentNarrativeAsset = NarrativeAsset.selectedNarrativeAsset
-            NarrativeStateAsset.currentNarrativeStateAsset = NarrativeStateAssets.reload().firstOrNull { it.assetId == NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId, NarrativeAsset.currentNarrativeAsset.assetId ) } ?: NarrativeStateAsset()
+            NarrativeStateAsset.currentNarrativeStateAsset = NarrativeStateAssets.reload().firstOrNull { it.assetId() == NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId(), NarrativeAsset.currentNarrativeAsset.assetId() ) } ?: NarrativeStateAsset()
 
             NarrativeComponent.ecsInit()
         }, "Narrative Loaded!"),

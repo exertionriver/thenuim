@@ -38,7 +38,7 @@ object LoadProfileMenu : DisplayViewMenu {
                 }
 //        this.debug()
                 this@LoadProfileMenu.assignableActions.firstOrNull { it.label == "Yes" }
-                    ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName}" }
+                    ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
             } else {
                 this.add(
                     Label(NoProfileInfoFound, KcopSkin.labelStyle(FontSize.SMALL, ProfileMenuText))

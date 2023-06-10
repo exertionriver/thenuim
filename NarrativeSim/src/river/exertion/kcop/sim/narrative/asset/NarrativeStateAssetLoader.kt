@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.asset.AssetManagerHandler.json
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 
 class NarrativeStateAssetLoader(resolver: FileHandleResolver?) :
@@ -28,7 +29,7 @@ class NarrativeStateAssetLoader(resolver: FileHandleResolver?) :
             val jsonElement = json.parseToJsonElement(rawData)
             val narrativeState = json.decodeFromJsonElement(jsonElement) as NarrativeState
 
-            val returnNarrativeStateAsset = NarrativeStateAsset(narrativeState).apply { this.assetPath = fileName }
+            val returnNarrativeStateAsset = NarrativeStateAsset(narrativeState)
             //val errorStatus = "${narrativeImmersion.id} not loaded"
 
             returnNarrativeStateAsset.persisted = true
@@ -37,9 +38,7 @@ class NarrativeStateAssetLoader(resolver: FileHandleResolver?) :
 
         } catch (ex : Exception) {
             return NarrativeStateAsset().apply {
-                this.assetPath = fileName
-                this.status = "$fileName not loaded"
-                this.statusDetail = ex.message
+                this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", ex.message)
             }
         }
     }

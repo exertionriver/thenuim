@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.Id
 
@@ -12,7 +13,7 @@ class TestId {
             val randomId = Id.randomId()
             println("id:$randomId")
 
-            assert(randomId.length == 36)
+            assertEquals(36, randomId.length)
             assert(idRegex.toRegex().matches(randomId))
         }
     }

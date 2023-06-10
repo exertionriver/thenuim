@@ -8,8 +8,4 @@ class TestAssetManagerHandler {
         assert(AssetManagerHandler.logDebug("tag", "message") == "tag: message")
     }
 
-    @Test
-    fun testSaveAsset() {
-        AssetManagerHandler.saveAsset<TestIAsset.TestIAssetData>(TestIAsset())
-    }
 }

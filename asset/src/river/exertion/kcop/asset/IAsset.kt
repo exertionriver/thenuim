@@ -3,20 +3,20 @@ package river.exertion.kcop.asset
 interface IAsset {
     fun assetData() : Any
 
-    var assetId : String
-    var assetName : String
+    fun assetId() : String
+    fun assetName() : String
 
-    var assetPath : String?
-    var assetTitle : String
+    fun assetPath() : String
+    fun assetTitle() : String
 
-    var status : String?
-    var statusDetail : String?
+    var assetStatus : AssetStatus?
+
     var persisted : Boolean
 
     fun assetInfo() : List<String>
     fun assetInfoStr() = assetInfo().reduceOrNull { acc, s -> acc + "\n$s"} ?: ""
 
-    fun newAssetFilename() = newAssetFilename(assetName, assetId)
+    fun newAssetFilename() = newAssetFilename(assetName(), assetId())
 
     //must be overridden, there is no IAsset loader
     fun saveTyped(assetSaveLocation : String? = null) {
@@ -31,11 +31,11 @@ interface IAsset {
         val replaceChars = """[.@{}!\\`´"^=()&\[\]$'~#%*:+<>?/|, /\r/\n/\t]"""
         val reduceUnderscores = """_+"""
 
-        private fun replaceFileName(assetName : String) = assetName.replace(replaceChars.toRegex(), "_")
+        private fun replaceFilename(assetName : String) = assetName.replace(replaceChars.toRegex(), "_")
 
         private fun reduceFilename(assetName: String) = assetName.replace(reduceUnderscores.toRegex(), "_")
 
-        fun sanitizeFilename(assetName : String) = reduceFilename(replaceFileName(assetName))
+        fun sanitizeFilename(assetName : String) = reduceFilename(replaceFilename(assetName))
 
         fun newAssetFilename(assetName : String, assetId : String) = "${sanitizeFilename(assetName)}_${assetId.substring(0, 4)}"
 

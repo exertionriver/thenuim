@@ -16,7 +16,7 @@ object DisplayViewLayoutAssets : IAssets {
     override fun byTitle(assetTitle : String?) : DisplayViewLayoutAsset? = super.byTitleTyped(assetTitle)
 
     override fun <T:IAsset>reloadTyped() : MutableList<T> {
-        values = AssetManagerHandler.reloadLocalAssets<DisplayViewLayoutAsset>(iAssetLocation).toMutableList()
+        values = AssetManagerHandler.reloadLocalAssets<DisplayViewLayoutAsset>(iAssetsLocation, iAssetsExtension).toMutableList()
         return getTyped()
     }
 
@@ -24,6 +24,6 @@ object DisplayViewLayoutAssets : IAssets {
 
     override fun get() : MutableList<DisplayViewLayoutAsset> = super.getTyped()
 
-    override val iAssetLocation = "kcop/layout/"
-    override val iAssetExtension = ".json"
+    override val iAssetsLocation = "kcop/layout/"
+    override val iAssetsExtension = "json"
 }

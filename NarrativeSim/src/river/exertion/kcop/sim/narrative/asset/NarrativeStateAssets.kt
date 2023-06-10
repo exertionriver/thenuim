@@ -15,7 +15,7 @@ object NarrativeStateAssets : IAssets {
     override fun byTitle(assetTitle : String?) : NarrativeStateAsset? = super.byTitleTyped(assetTitle)
 
     override fun <T:IAsset>reloadTyped() : MutableList<T> {
-        values = AssetManagerHandler.reloadLocalAssets<NarrativeStateAsset>(iAssetLocation).toMutableList()
+        values = AssetManagerHandler.reloadLocalAssets<NarrativeStateAsset>(iAssetsLocation, iAssetsExtension).toMutableList()
         return getTyped()
     }
 
@@ -23,6 +23,6 @@ object NarrativeStateAssets : IAssets {
 
     override fun get() : MutableList<NarrativeStateAsset> = super.getTyped()
 
-    override val iAssetLocation = "kcop/narrativeState/"
-    override val iAssetExtension = ".json"
+    override val iAssetsLocation = "kcop/narrativeState/"
+    override val iAssetsExtension = "json"
 }
