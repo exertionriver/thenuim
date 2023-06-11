@@ -194,7 +194,12 @@ enum class ColorPalette {
     ;
 
     open fun tags() : List<String> = listOf(this.name)
+
+    fun rSetting(offset : Int = 0) = (this.name.substring(5,6).toInt() + offset).coerceIn(0, 6)
+    fun gSetting(offset : Int = 0) = (this.name.substring(6,7).toInt() + offset).coerceIn(0, 6)
+    fun bSetting(offset : Int = 0) = (this.name.substring(7,8).toInt() + offset).coerceIn(0, 6)
     fun color() = Color(colorThresholdsFloat[rSetting()], colorThresholdsFloat[gSetting()], colorThresholdsFloat[bSetting()], defaultAlpha)
+
     fun incr(by : Int = 1) = of(rSetting(by), gSetting(by), bSetting(by) )
     fun incrR(by : Int = 1) = of(rSetting(by), gSetting(), bSetting() )
     fun incrG(by : Int = 1) = of(rSetting(), gSetting(by), bSetting() )
@@ -218,29 +223,26 @@ enum class ColorPalette {
         of(bSetting(), rSetting(), gSetting()),
     )
 
+    //used to get reasonably good fg if this cp is bg
+    fun label() : ColorPalette {
+        val thisColorV3 = Vector3(rSetting().toFloat(), gSetting().toFloat(), bSetting().toFloat())
+
+        val cmpColors = mapOf (
+                inv() to Vector3(inv().rSetting().toFloat(), inv().gSetting().toFloat(), inv().bSetting().toFloat()),
+                comp() to Vector3(comp().rSetting().toFloat(), comp().gSetting().toFloat(), comp().bSetting().toFloat()),
+                incr(2) to Vector3(incr(2).rSetting().toFloat(), incr(2).gSetting().toFloat(), incr(2).bSetting().toFloat())
+        )
+
+        return cmpColors.maxBy { it.value.dst(thisColorV3) }.key
+    }
+
     fun spectrum() = listOf(
         this.decr(6), this.decr(5), this.decr(4), this.decr(3), this.decr(2), this.decr(1),
         this,
         this.incr(1), this.incr(2), this.incr(3), this.incr(4), this.incr(5), this.incr(6),
     ).distinct()
 
-    fun labelledSpectrum(labelOverride : String? = null) : Map<String, ColorPalette> = spectrum().associateBy { if ((labelOverride != null) && (it == this@ColorPalette)) labelOverride else it.tags()[0] }
-
-    fun rSetting(offset : Int = 0) = (this.name.substring(5,6).toInt() + offset).coerceIn(0, 6)
-    fun gSetting(offset : Int = 0) = (this.name.substring(6,7).toInt() + offset).coerceIn(0, 6)
-    fun bSetting(offset : Int = 0) = (this.name.substring(7,8).toInt() + offset).coerceIn(0, 6)
-
-    fun label() : ColorPalette {
-        val thisColorV3 = Vector3(rSetting().toFloat(), gSetting().toFloat(), bSetting().toFloat())
-
-        val cmpColors = mapOf (
-            inv() to Vector3(inv().rSetting().toFloat(), inv().gSetting().toFloat(), inv().bSetting().toFloat()),
-            comp() to Vector3(comp().rSetting().toFloat(), comp().gSetting().toFloat(), comp().bSetting().toFloat()),
-            incr(2) to Vector3(incr(2).rSetting().toFloat(), incr(2).gSetting().toFloat(), incr(2).bSetting().toFloat())
-        )
-
-        return cmpColors.maxBy { it.value.dst(thisColorV3) }.key
-    }
+    fun labelledSpectrum(labelOverride : String? = null) : Map<String, ColorPalette> = spectrum().associateBy { if ((labelOverride != null) && (it == this@ColorPalette) && (it.tags().contains(labelOverride))) labelOverride else it.tags()[0] }
 
     companion object {
         // r, g, b, each 0 - 255
@@ -257,7 +259,6 @@ enum class ColorPalette {
         }
         fun of(rSetting : Int, gSetting : Int, bSetting : Int) = ColorPalette.values().firstOrNull { it.name == "Color$rSetting$gSetting$bSetting" } ?: Color000
         fun of(tag : String) = ColorPalette.values().firstOrNull { it.tags().contains(tag) } ?: Color000
-        fun ofKind(tag : String) = ColorPalette.values().filter { it.tags().contains(tag) }
 
         val colorThresholdsInt : List<Int> = listOf(8, 48, 88, 128, 168, 208, 248)
         val colorThresholdsFloat : List<Float> = colorThresholdsInt.map { it / 255f }
