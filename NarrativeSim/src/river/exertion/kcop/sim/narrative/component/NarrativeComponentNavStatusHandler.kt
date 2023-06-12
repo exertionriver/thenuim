@@ -3,21 +3,19 @@ package river.exertion.kcop.sim.narrative.component
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.profile.settings.PSCompStatus
 import river.exertion.kcop.sim.narrative.NarrativePackage
 import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
 import river.exertion.kcop.view.layout.AiView
-import river.exertion.kcop.view.layout.StatusView
 
 object NarrativeComponentNavStatusHandler {
 
     fun NarrativeComponent.unpause() {
         if (isInitialized) {
-            cumlImmersionTimer.resumeTimer()
-            instImmersionTimer.resumeTimer()
+            cumlImmersionTimer.startOrResumeTimer()
+            instImmersionTimer.startOrResumeTimer()
 
-            blockCumlImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
-            blockInstImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
+            blockCumlImmersionTimers[narrativeCurrBlockId()]?.startOrResumeTimer()
+            blockInstImmersionTimers[narrativeCurrBlockId()]?.startOrResumeTimer()
         }
     }
 
@@ -76,10 +74,10 @@ object NarrativeComponentNavStatusHandler {
                 blockCumlImmersionTimers[narrativePrevBlockId()]?.pauseTimer()
                 blockInstImmersionTimers[narrativePrevBlockId()]?.pauseTimer()
 
-                blockCumlImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
+                blockCumlImmersionTimers[narrativeCurrBlockId()]?.startOrResumeTimer()
 
                 blockInstImmersionTimers[narrativeCurrBlockId()]?.resetTimer()
-                blockInstImmersionTimers[narrativeCurrBlockId()]?.resumeTimer()
+                blockInstImmersionTimers[narrativeCurrBlockId()]?.startOrResumeTimer()
 
                 addOrUpdateCompletionStatus()
                 AiView.clearHints()

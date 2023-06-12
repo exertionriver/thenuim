@@ -92,12 +92,12 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
             narrative.promptBlocks.forEach { promptBlock ->
                 promptBlock.prompts.forEach { prompt ->
                     if (prompt.promptNextId != null && prompt.promptRandomId != null) {
-                        returnNarrativeAsset.status = errorStatus
+                        returnNarrativeAsset.assetStatus = AssetStatus(returnNarrativeAsset.assetPath(), errorStatus)
                         val errorDetail = "narrative ${narrative.name} block ${promptBlock.narrativeBlockId} prompt ${prompt.promptKey} cannot have both promptNextId and promptRandomId"
-                        if (returnNarrativeAsset.statusDetail == null)
-                            returnNarrativeAsset.statusDetail = errorDetail
+                        if (returnNarrativeAsset.assetStatus?.statusDetail.isNullOrBlank())
+                            returnNarrativeAsset.assetStatus?.statusDetail = errorDetail
                         else
-                            returnNarrativeAsset.statusDetail += "\n$errorDetail"
+                            returnNarrativeAsset.assetStatus?.statusDetail += "\n$errorDetail"
                     }
                 }
             }

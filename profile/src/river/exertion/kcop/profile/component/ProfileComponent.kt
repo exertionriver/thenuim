@@ -3,12 +3,9 @@ package river.exertion.kcop.profile.component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.asset.Id
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
-import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.messaging.EngineComponentMessage
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
@@ -52,9 +49,9 @@ class ProfileComponent : IComponent, Telegraph {
         if (isInitialized) {
 
             instTimer.resetTimer()
-            instTimer.resumeTimer()
+            instTimer.startOrResumeTimer()
 
-            cumlTimer.resumeTimer()
+            cumlTimer.startOrResumeTimer()
 
             MessageChannelHandler.enableReceive(ProfileBridge, this)
         }

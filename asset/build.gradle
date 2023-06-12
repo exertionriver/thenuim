@@ -12,6 +12,7 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "io.github.libktx:ktx-assets:$ktxVersion"
     api "io.github.libktx:ktx-collections:$ktxVersion"

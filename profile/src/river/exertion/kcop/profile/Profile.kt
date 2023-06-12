@@ -21,7 +21,7 @@ data class Profile(
 
     @Transient
     var cumlTimer : ImmersionTimer = ImmersionTimer().apply {
-        this.setPastStartTime(ImmersionTimer.inMilliseconds(sCumlTime))
+        this.setPastStartTime(sCumlTime)
     }
         set(value) {
             field = value

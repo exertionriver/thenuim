@@ -1,15 +1,28 @@
 package immersionTimer
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimerState
 
 class TestImmersionTimerState {
 
     @Test
-    fun testNarrativeTimer() {
+    fun testTimerStateTransition() {
 
-        val timeSplit = "00:12:23".split(":")
+        val testTimer = ImmersionTimer()
 
-        println(timeSplit)
+        println("current state: ${testTimer.stateMachine.currentState}")
+        assertEquals(testTimer.stateMachine.currentState, ImmersionTimerState.PAUSED)
 
+        testTimer.stateMachine.update()
+
+        println("update(), current state: ${testTimer.stateMachine.currentState}")
+        assertEquals(testTimer.stateMachine.currentState, ImmersionTimerState.RUNNING)
+
+        testTimer.stateMachine.update()
+
+        println("update(), current state: ${testTimer.stateMachine.currentState}")
+        assertEquals(testTimer.stateMachine.currentState, ImmersionTimerState.PAUSED)
     }
 }

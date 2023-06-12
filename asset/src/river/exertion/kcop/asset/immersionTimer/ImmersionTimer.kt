@@ -3,20 +3,22 @@ package river.exertion.kcop.asset.immersionTimer
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine
 import com.badlogic.gdx.utils.TimeUtils
 
-class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : ImmersionTimerState = ImmersionTimerState.PAUSED) {
+class ImmersionTimer {
 
-    val stateMachine = DefaultStateMachine(this, startState)
+    val stateMachine = DefaultStateMachine(this, ImmersionTimerState.PAUSED)
 
-    var pausedAtTime : Long = 0
-    var pausedDurationMillis : Long = 0
+    private var startTimeMillis : Long = currentTimeMillis()
+    private var pausedAtTimeMillis : Long = 0
+    private var pausedDurationMillis : Long = 0
 
     init {
-        if (startState == ImmersionTimerState.PAUSED) pausedAtTime = startTime //init timer in paused mode
+        //init at paused
+        pausedAtTimeMillis = startTimeMillis
     }
 
-    private fun pausedTime() = if (pausedAtTime > 0) TimeUtils.timeSinceMillis(pausedAtTime) + pausedDurationMillis else pausedDurationMillis
-
-    private fun activeTime() = TimeUtils.timeSinceMillis(startTime) - pausedTime()
+    //paused time aggregates over timer lifespan unless timer is reset
+    private fun pausedTime() = if (pausedAtTimeMillis > 0) timeSinceMillis(pausedAtTimeMillis) + pausedDurationMillis else pausedDurationMillis
+    private fun activeTime() = TimeUtils.timeSinceMillis(startTimeMillis) - pausedTime()
 
     private fun immersionTimeHours() = activeTime() / (1000f * 60f * 60f)
     private fun immersionTimeMinutes() = activeTime() / (1000f * 60f)
@@ -27,56 +29,59 @@ class ImmersionTimer(var startTime : Long = TimeUtils.millis(), startState : Imm
     private fun immersionTimeSecondsStr() = (immersionTimeSeconds().toInt() % 60).toString().padStart(2, '0')
 
     fun immersionTime() = "${immersionTimeHoursStr()}:${immersionTimeMinutesStr()}:${immersionTimeSecondsStr()}"
+    fun immersionTimeInSeconds() = inSeconds(immersionTime())
 
-    fun setPastStartTime(millisAgo : Long = 0L) {
-        pausedAtTime = startTime
-        startTime -= millisAgo
+    fun setPastStartTime(timeString : String?) = setPastStartTime(inMilliseconds(timeString ?: CumlTimeZero))
+
+    private fun setPastStartTime(millisAgo : Long = 0L) {
+        pausedAtTimeMillis = startTimeMillis
+        startTimeMillis -= millisAgo
     }
 
     fun resetTimer() {
-        startTime = TimeUtils.millis()
+        startTimeMillis = currentTimeMillis()
+        pausedAtTimeMillis = if (stateMachine.currentState == ImmersionTimerState.PAUSED) startTimeMillis else 0
         pausedDurationMillis = 0
-        pausedAtTime = if (stateMachine.currentState == ImmersionTimerState.PAUSED) startTime else 0
     }
+
+    private fun setPausedTimeAtCurrentTime() { pausedAtTimeMillis = currentTimeMillis() }
 
     fun pauseTimer() {
         if (stateMachine.currentState != ImmersionTimerState.PAUSED) {
             stateMachine.changeState(ImmersionTimerState.PAUSED)
-            pausedAtTime = TimeUtils.millis()
+            setPausedTimeAtCurrentTime()
         }
     }
 
-    fun resumeTimer() {
+    private fun addPausedTimeToDurationTimeAndClearPausedTime() {
+        pausedDurationMillis += timeSinceMillis(pausedAtTimeMillis)
+        pausedAtTimeMillis = 0
+    }
+
+    fun startOrResumeTimer() {
         if (stateMachine.currentState != ImmersionTimerState.RUNNING) {
+            addPausedTimeToDurationTimeAndClearPausedTime()
             stateMachine.changeState(ImmersionTimerState.RUNNING)
-            pausedDurationMillis += TimeUtils.timeSinceMillis(pausedAtTime)
-            pausedAtTime = 0
         }
     }
 
-    fun onOrPast(timeString : String?) : Boolean {
-        return if (timeString == null) {
-            false
-        } else {
-            immersionTimeSeconds() >= inSeconds(timeString)
-        }
-    }
+    fun onOrPast(timeString : String?) : Boolean = immersionTimeSeconds() >= inSeconds(timeString)
 
     companion object {
 
         const val CumlTimeZero = "00:00:00"
 
+        private fun currentTimeMillis() = TimeUtils.millis()
+        private fun timeSinceMillis(millisAgo : Long = 0L) = TimeUtils.timeSinceMillis(millisAgo)
+
         fun isValidTime(timeString : String) : Boolean = "^[0-9]{2}:[0-9]{2}:[0-9]{2}\$".toRegex().matches(timeString)
 
         fun inSeconds(timeString : String?) : Long {
-            return if (timeString == null) {
-                0L
-            } else {
-                val timeSplit = timeString.split(":")
-                timeSplit[0].toInt() * 3600L + timeSplit[1].toInt() * 60L + timeSplit[2].toInt()
-            }
+            val timeSplit = (timeString ?: CumlTimeZero).split(":")
+
+            return timeSplit[0].toInt() * 3600L + timeSplit[1].toInt() * 60L + timeSplit[2].toInt()
         }
 
-        fun inMilliseconds(timeString : String? = CumlTimeZero) : Long = inSeconds(timeString!!) * 1000L
+        fun inMilliseconds(timeString : String?) : Long = inSeconds(timeString) * 1000L
     }
 }

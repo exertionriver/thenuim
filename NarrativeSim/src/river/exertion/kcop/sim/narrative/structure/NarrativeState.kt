@@ -20,7 +20,7 @@ class NarrativeState(
     fun immersionBlockId() = location.immersionBlockId ?: UnknownBlockId
 
     @Transient
-    var cumlImmersionTimer : ImmersionTimer = ImmersionTimer().apply { this.setPastStartTime(ImmersionTimer.inMilliseconds(location.cumlImmersionTime)) }
+    var cumlImmersionTimer : ImmersionTimer = ImmersionTimer().apply { this.setPastStartTime(location.cumlImmersionTime) }
         set(value) {
             location.cumlImmersionTime = value.immersionTime()
             field = value
@@ -28,7 +28,7 @@ class NarrativeState(
 
     //persisted as cuml timer
     @Transient
-    var blockCumlImmersionTimers : MutableMap<String, ImmersionTimer> = sBlockCumlImmersionTimers.mapValues { (_, values) -> ImmersionTimer().apply { this.setPastStartTime(ImmersionTimer.inMilliseconds(values)) } }.toMutableMap()
+    var blockCumlImmersionTimers : MutableMap<String, ImmersionTimer> = sBlockCumlImmersionTimers.mapValues { (_, values) -> ImmersionTimer().apply { this.setPastStartTime(values) } }.toMutableMap()
         set(value) {
             sBlockCumlImmersionTimers = value.mapValues { (_,values) -> values.immersionTime() }.toMutableMap()
             field = value
