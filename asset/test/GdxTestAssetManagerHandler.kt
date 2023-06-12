@@ -45,6 +45,8 @@ class GdxTestAssetManagerHandler : ApplicationListener {
             Path(it.assetPath()).deleteIfExists()
             println("deleted: ${it.assetPath()}")
         }
+
+        AssetManagerHandler.clearAssets<TestIAsset>()
     }
 
     @Test

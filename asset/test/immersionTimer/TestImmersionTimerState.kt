@@ -15,12 +15,12 @@ class TestImmersionTimerState {
         println("current state: ${testTimer.stateMachine.currentState}")
         assertEquals(testTimer.stateMachine.currentState, ImmersionTimerState.PAUSED)
 
-        testTimer.stateMachine.update()
+        testTimer.stateMachine.changeState(ImmersionTimerState.RUNNING)
 
         println("update(), current state: ${testTimer.stateMachine.currentState}")
         assertEquals(testTimer.stateMachine.currentState, ImmersionTimerState.RUNNING)
 
-        testTimer.stateMachine.update()
+        testTimer.stateMachine.changeState(ImmersionTimerState.PAUSED)
 
         println("update(), current state: ${testTimer.stateMachine.currentState}")
         assertEquals(testTimer.stateMachine.currentState, ImmersionTimerState.PAUSED)
