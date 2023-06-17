@@ -1,8 +1,8 @@
 package river.exertion.kcop.sim.colorPalette
 
 import river.exertion.kcop.asset.Id
-import river.exertion.kcop.plugin.IDisplayPackage
-import river.exertion.kcop.plugin.IInternalPackage
+import river.exertion.kcop.bundle.IDisplayPackage
+import river.exertion.kcop.bundle.IInternalPackage
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteInputProcessor
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 

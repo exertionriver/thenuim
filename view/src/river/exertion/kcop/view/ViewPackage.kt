@@ -12,16 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.assets.getAsset
 import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.bundle.IKcopPackage
+import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.IKcopPackage
 import river.exertion.kcop.view.asset.*
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
-import river.exertion.kcop.view.messaging.*
+import river.exertion.kcop.view.messaging.KcopSimulationMessage
 import river.exertion.kcop.view.system.TimeLogSystem
 
 object ViewPackage : IKcopPackage {

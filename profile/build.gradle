@@ -13,7 +13,7 @@ dependencies {
     implementation project(":messaging")
     implementation project(":asset")
     implementation project(":ecs")
-    implementation project(":plugin")
+    implementation project(":package")
     implementation project(":view")
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"

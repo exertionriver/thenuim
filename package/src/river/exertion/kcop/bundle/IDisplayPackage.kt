@@ -1,7 +1,6 @@
-package river.exertion.kcop.plugin
+package river.exertion.kcop.bundle
 
 import com.badlogic.gdx.InputProcessor
-import com.badlogic.gdx.scenes.scene2d.Actor
 
 interface IDisplayPackage {
 

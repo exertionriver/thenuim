@@ -3,7 +3,7 @@ package river.exertion.kcop.sim.colorPalette.view
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
+import river.exertion.kcop.bundle.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewType

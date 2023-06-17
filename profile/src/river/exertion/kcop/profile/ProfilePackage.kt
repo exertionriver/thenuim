@@ -9,7 +9,7 @@ import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.asset.Id
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.IKcopPackage
+import river.exertion.kcop.bundle.IKcopPackage
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAsset.Companion.currentProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssetLoader

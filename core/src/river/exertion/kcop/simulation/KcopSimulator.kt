@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.plugin.IPackage
+import river.exertion.kcop.bundle.IPackage
 import river.exertion.kcop.profile.ProfilePackage
 import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
 import river.exertion.kcop.sim.narrative.NarrativeInputProcessor

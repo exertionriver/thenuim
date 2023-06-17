@@ -7,10 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.bundle.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.asset.FontSize
-import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.layout.AudioView
 
 object DVLayoutHandler : IDisplayViewLayoutHandler {

@@ -1,10 +1,5 @@
-import com.badlogic.gdx.Application
-import com.badlogic.gdx.ApplicationListener
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.backends.headless.HeadlessApplication
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.AssetManagerHandler
@@ -13,22 +8,19 @@ import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.AssetManagerHandler.loadAssets
 import river.exertion.kcop.asset.AssetManagerHandler.logAssets
 import river.exertion.kcop.asset.AssetStatus
+import river.exertion.kcop.base.GdxTestBase
 import kotlin.io.path.Path
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.extension
 import kotlin.io.path.listDirectoryEntries
 
-class GdxTestAssetManagerHandler : ApplicationListener {
+class GdxTestAssetManagerHandler : GdxTestBase() {
 
-    init {
-        val conf = HeadlessApplicationConfiguration()
-        HeadlessApplication(this, conf)
-    }
-
-    var testData : MutableList<TestIAsset> = mutableListOf()
+    private var testData : MutableList<TestIAsset> = mutableListOf()
 
     @BeforeEach
     fun initTestData() {
+        init(this)
 
         testData = mutableListOf(TestIAsset(), TestIAsset(), TestIAsset())
 
@@ -98,20 +90,8 @@ class GdxTestAssetManagerHandler : ApplicationListener {
     }
 
     override fun create() {
-        Gdx.app.logLevel = Application.LOG_DEBUG
         AssetManagerHandler.assets.setLoader(TestIAsset::class.java, TestIAssetLoader(lfhr))
-    }
-
-    override fun resize(width: Int, height: Int) {
-    }
-
-    override fun render() {
-    }
-
-    override fun pause() {
-    }
-
-    override fun resume() {
+        super.create()
     }
 
     override fun dispose() {

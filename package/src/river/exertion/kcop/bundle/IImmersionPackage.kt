@@ -1,4 +1,4 @@
-package river.exertion.kcop.plugin
+package river.exertion.kcop.bundle
 
 interface IImmersionPackage : IKcopPackage, IDisplayPackage {
 

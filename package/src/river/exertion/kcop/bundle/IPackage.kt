@@ -1,10 +1,9 @@
-package river.exertion.kcop.plugin
+package river.exertion.kcop.bundle
 
 interface IPackage {
     var id : String
     var name : String
 
     fun load()
-
     fun dispose()
 }

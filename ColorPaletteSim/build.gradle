@@ -17,7 +17,7 @@ dependencies {
     implementation project(path: ':view')
     implementation project(path: ':messaging')
     implementation project(path: ':asset')
-    implementation project(path: ':plugin')
+    implementation project(path: ':package')
 }
 
 compileKotlin {

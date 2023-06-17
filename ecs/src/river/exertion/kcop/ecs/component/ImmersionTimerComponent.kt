@@ -8,15 +8,14 @@ import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerState
 import river.exertion.kcop.ecs.EngineHandler
 
-class ImmersionTimerComponent(startTime : Long = TimeUtils.millis()) :
-    IComponent {
+class ImmersionTimerComponent : IComponent {
 
     //ImmersionTimerComponent allows TimeLogSystem to easily update log view for active timers
     override var componentId = Id.randomId()
 
     var immersionTimerPair = ImmersionTimerPair(
-        ImmersionTimer(startTime),
-        ImmersionTimer(startTime)
+        ImmersionTimer(),
+        ImmersionTimer()
     )
 
     override var isInitialized = false

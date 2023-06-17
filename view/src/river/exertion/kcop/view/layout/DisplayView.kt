@@ -2,7 +2,7 @@ package river.exertion.kcop.view.layout
 
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.plugin.IDisplayViewLayoutHandler
+import river.exertion.kcop.bundle.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler.currentMenuTag
 

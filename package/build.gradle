@@ -1,5 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
+apply plugin: "kotlin"
+apply plugin: "idea"
+
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -8,12 +11,12 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
-    implementation project(path: ':view')
-    implementation project(path: ':package')
-    implementation project(path: ':profile')
-    implementation project(path: ':ColorPaletteSim')
-    implementation project(path: ':NarrativeSim')
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 }
+
 compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
 }
