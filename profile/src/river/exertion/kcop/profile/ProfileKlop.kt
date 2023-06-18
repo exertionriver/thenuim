@@ -3,13 +3,15 @@ package river.exertion.kcop.profile
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
+import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IRLTimeComponent
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.bundle.IKcopPackage
+import river.exertion.kcop.messaging.klop.IMessagingKlop
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAsset.Companion.currentProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssetLoader
@@ -18,14 +20,24 @@ import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
 
-object ProfilePackage : IKcopPackage {
+object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
     override var id = Id.randomId()
     override var name = this::class.simpleName.toString()
+
+    override fun load() {
+        loadChannels()
+        loadAssets()
+        loadSystems()
+        loadMenus()
+    }
+
+    override fun unload() { }
 
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(ProfileAsset::class.java, ProfileAssetLoader(lfhr))

@@ -1,18 +1,22 @@
 package river.exertion.kcop.sim.colorPalette
 
+import com.badlogic.gdx.InputMultiplexer
 import river.exertion.kcop.asset.Id
-import river.exertion.kcop.bundle.IDisplayPackage
-import river.exertion.kcop.bundle.IInternalPackage
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteInputProcessor
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
+import river.exertion.kcop.view.klop.IDisplayViewKlop
 
-object ColorPalettePackage : IInternalPackage, IDisplayPackage {
+object ColorPaletteKlopDisplay : IDisplayViewKlop {
 
     override var id = Id.randomId()
 
     override var name = this::class.simpleName.toString()
 
-    override fun loadChannels() { }
+    override var inputMultiplexer: InputMultiplexer? = null
+
+    override fun load() { }
+
+    override fun unload() { hideView() }
 
     override fun inputProcessor() = ColorPaletteInputProcessor
 

@@ -102,6 +102,8 @@ class NarrativeAssetLoader(resolver: FileHandleResolver?) :
                 }
             }
 
+            returnNarrativeAsset.persisted = true //loaded from fs
+
             return returnNarrativeAsset
 
         } catch (ex : Exception) {

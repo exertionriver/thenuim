@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.KcopBridge
+import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.KcopSimulationMessage

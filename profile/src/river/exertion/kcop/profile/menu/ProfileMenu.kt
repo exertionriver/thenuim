@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
+import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssets
 import river.exertion.kcop.view.KcopSkin

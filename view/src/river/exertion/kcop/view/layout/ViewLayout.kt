@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.KcopBridge
+import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 object ViewLayout {

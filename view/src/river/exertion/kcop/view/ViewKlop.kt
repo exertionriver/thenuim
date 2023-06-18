@@ -13,22 +13,34 @@ import ktx.assets.getAsset
 import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.bundle.IKcopPackage
+import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.messaging.klop.IMessagingKlop
 import river.exertion.kcop.view.asset.*
+import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
 import river.exertion.kcop.view.system.TimeLogSystem
 
-object ViewPackage : IKcopPackage {
+object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
     override var id = Id.randomId()
 
     override var name = this::class.simpleName.toString()
+
+    override fun load() {
+        loadChannels()
+        loadAssets()
+        loadSystems()
+        loadMenus()
+    }
+
+    override fun unload() { }
 
     override fun loadChannels() {
         MessageChannelHandler.addChannel(MessageChannel(KcopBridge, KcopSimulationMessage::class))

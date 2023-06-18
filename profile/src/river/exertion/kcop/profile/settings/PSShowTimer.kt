@@ -1,7 +1,7 @@
 package river.exertion.kcop.profile.settings
 
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
+import river.exertion.kcop.profile.ProfileKlop.ProfileBridge
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 
 object PSShowTimer : ProfileSetting {

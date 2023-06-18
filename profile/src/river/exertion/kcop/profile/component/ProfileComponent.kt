@@ -10,7 +10,7 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.ProfilePackage.ProfileBridge
+import river.exertion.kcop.profile.ProfileKlop.ProfileBridge
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.profile.settings.ProfileSettingEntry

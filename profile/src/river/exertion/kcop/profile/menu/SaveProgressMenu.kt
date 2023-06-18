@@ -2,9 +2,8 @@ package river.exertion.kcop.profile.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
+import river.exertion.kcop.profile.ProfileKlop
+import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.asset.FontSize
@@ -26,7 +25,7 @@ object SaveProgressMenu : DisplayViewMenu {
         Table().apply {
 
             ProfileAsset.currentProfileAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfilePackage.ProfileMenuText)
+                this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfileKlop.ProfileMenuText)
                 ).apply {
                     this.wrap = true
                 }).colspan(2).growX()

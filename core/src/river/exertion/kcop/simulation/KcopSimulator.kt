@@ -8,16 +8,16 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
+import river.exertion.kcop.base.IKlop
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.bundle.IPackage
-import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.sim.colorPalette.ColorPalettePackage
+import river.exertion.kcop.profile.ProfileKlop
+import river.exertion.kcop.sim.colorPalette.ColorPaletteKlopDisplay
 import river.exertion.kcop.sim.narrative.NarrativeInputProcessor
-import river.exertion.kcop.sim.narrative.NarrativePackage
+import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage.KcopBridge
+import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewLayout
@@ -28,10 +28,10 @@ import river.exertion.kcop.view.messaging.KcopSimulationMessage
 class KcopSimulator(private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
 
-    val packages = mutableListOf<IPackage>(
-        ProfilePackage,
-        NarrativePackage,
-        ColorPalettePackage
+    val packages = mutableListOf<IKlop>(
+        ProfileKlop,
+        NarrativeKlop,
+        ColorPaletteKlopDisplay
     )
 
     init {
@@ -65,8 +65,13 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(KcopInputProcessor)
         inputMultiplexer.addProcessor(stage)
-        inputMultiplexer.addProcessor(NarrativeInputProcessor)
+
+        NarrativeKlop.inputMultiplexer = inputMultiplexer
+        ColorPaletteKlopDisplay.inputMultiplexer = inputMultiplexer
+
         Gdx.input.inputProcessor = inputMultiplexer
+
+        NarrativeKlop.showView()
 
         viewLayout.build(stage)
     }
@@ -99,13 +104,12 @@ class KcopSimulator(private val stage: Stage,
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
-                            DisplayView.currentDisplayViewLayoutHandler = ColorPalettePackage.displayViewLayoutHandler()
-                            DisplayView.build()
-                            inputMultiplexer.addProcessor(ColorPalettePackage.inputProcessor())
+                            NarrativeKlop.hideView()
+                            ColorPaletteKlopDisplay.showView()
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
-                            ColorPalettePackage.displayViewLayoutHandler().clearContent()
-                            inputMultiplexer.removeProcessor(ColorPalettePackage.inputProcessor())
+                            ColorPaletteKlopDisplay.hideView()
+                            NarrativeKlop.showView()
                         }
                     }
 

@@ -5,17 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
-import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.Profile
-import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
+import river.exertion.kcop.profile.ProfileKlop
+import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.optionBySelectionKey
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.updateSetting
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.ViewPackage
 import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
@@ -37,7 +34,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
             Profile.availableSettings.forEach { setting ->
                 this.add(Label(setting.selectionLabel, KcopSkin.labelStyle(
                     FontSize.SMALL,
-                    ProfilePackage.ProfileMenuText
+                    ProfileKlop.ProfileMenuText
                 )).apply {
                     this.wrap
                 } ).left()

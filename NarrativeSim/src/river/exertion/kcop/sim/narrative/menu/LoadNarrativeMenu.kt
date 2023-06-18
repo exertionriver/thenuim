@@ -4,9 +4,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.asset.ProfileAsset
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuBackgroundColor
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuText
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeBridge
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeMenuBackgroundColor
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeMenuText
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAssets

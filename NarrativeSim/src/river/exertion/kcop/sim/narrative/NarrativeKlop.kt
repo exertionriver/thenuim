@@ -1,14 +1,17 @@
 package river.exertion.kcop.sim.narrative
 
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.Id
+import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.bundle.IImmersionPackage
+import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.messaging.klop.IMessagingKlop
 import river.exertion.kcop.profile.menu.SaveProgressMenu
 import river.exertion.kcop.profile.menu.SaveProgressMenu.SaveLabel
 import river.exertion.kcop.profile.settings.PSShowTimer
@@ -31,16 +34,27 @@ import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.klop.IDisplayViewKlop
+import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.layout.PauseView
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
 
-object NarrativePackage : IImmersionPackage {
+object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
     override var id = Id.randomId()
     override var name = this::class.simpleName.toString()
+
+    override fun load() {
+        loadChannels()
+        loadAssets()
+        loadSystems()
+        loadMenus()
+    }
+
+    override fun unload() { }
 
     override fun loadChannels() {
         MessageChannelHandler.addChannel(MessageChannel(NarrativeBridge, NarrativeComponentMessage::class))
@@ -176,9 +190,22 @@ object NarrativePackage : IImmersionPackage {
         }
     }
 
+    override var inputMultiplexer: InputMultiplexer? = null
+
     override fun displayViewLayoutHandler() = DVLayoutHandler
 
     override fun inputProcessor() = NarrativeInputProcessor
+
+    override fun showView() {
+        MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Unpause))
+        MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Refresh))
+        super.showView()
+    }
+
+    override fun hideView() {
+        MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Pause))
+        super.hideView()
+    }
 
     override fun dispose() {
 

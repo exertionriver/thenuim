@@ -2,12 +2,11 @@ package river.exertion.kcop.sim.narrative.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.NarrativePackage
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuBackgroundColor
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeMenuText
-import river.exertion.kcop.sim.narrative.NarrativePackage.NoNarrativeLoaded
+import river.exertion.kcop.sim.narrative.NarrativeKlop
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeMenuBackgroundColor
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeMenuText
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NoNarrativeLoaded
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
@@ -66,7 +65,7 @@ object RestartProgressMenu : DisplayViewMenu {
         MenuActionParam("Restart", {
             MenuView.closeMenu()
 
-            MessageChannelHandler.send(NarrativePackage.NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
+            MessageChannelHandler.send(NarrativeKlop.NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState = NarrativeState()
             NarrativeComponent.ecsInit()
 

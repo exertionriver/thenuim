@@ -1,4 +1,4 @@
-package river.exertion.kcop.bundle
+package river.exertion.kcop.view.klop
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 

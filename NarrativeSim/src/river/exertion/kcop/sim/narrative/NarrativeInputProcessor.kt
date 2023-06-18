@@ -3,7 +3,7 @@ package river.exertion.kcop.sim.narrative
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.view.layout.PauseView
 

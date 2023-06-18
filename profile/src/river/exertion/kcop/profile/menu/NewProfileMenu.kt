@@ -4,8 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
+import river.exertion.kcop.profile.ProfileKlop
+import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
@@ -38,7 +38,7 @@ object NewProfileMenu : DisplayViewMenu {
         }
 
         Table().apply {
-            this.add(Label("profile name: ", KcopSkin.labelStyle(FontSize.SMALL, ProfilePackage.ProfileMenuText)))
+            this.add(Label("profile name: ", KcopSkin.labelStyle(FontSize.SMALL, ProfileKlop.ProfileMenuText)))
             this.add(nameTextField).growX().top()
             this.row()
             this.top()
@@ -59,7 +59,7 @@ object NewProfileMenu : DisplayViewMenu {
     override val assignableActions = mutableListOf(
         MenuActionParam("Create", {
             MenuView.closeMenu()
-            MessageChannelHandler.send(ProfilePackage.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
+            MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
             ProfileAsset.currentProfileAsset.save()
             ProfileComponent.ecsInit()

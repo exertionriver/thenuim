@@ -11,8 +11,8 @@ import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.settings.PSCompStatus
-import river.exertion.kcop.sim.narrative.NarrativePackage
-import river.exertion.kcop.sim.narrative.NarrativePackage.NarrativeBridge
+import river.exertion.kcop.sim.narrative.NarrativeKlop
+import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeBridge
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentNavStatusHandler.activate
@@ -26,6 +26,7 @@ import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.sim.narrative.view.DVLayout
+import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
 import river.exertion.kcop.view.asset.FontSize
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
@@ -108,7 +109,8 @@ class NarrativeComponent : IComponent, Telegraph {
             }
         }
 
-        DisplayView.currentDisplayViewLayoutHandler = NarrativePackage.displayViewLayoutHandler()
+        DisplayView.currentDisplayViewLayoutHandler = NarrativeKlop.displayViewLayoutHandler()
+        DVLayoutHandler.currentDvLayout = NarrativeKlop.dvLayoutByTag(layoutTag())
 
         narrativeState.blockFlags.clear()
 
@@ -145,6 +147,10 @@ class NarrativeComponent : IComponent, Telegraph {
                     NarrativeComponentMessage.NarrativeMessageType.Unpause -> unpause()
                     NarrativeComponentMessage.NarrativeMessageType.Inactivate -> inactivate()
                     NarrativeComponentMessage.NarrativeMessageType.Next -> if (narrativeComponentMessage.promptNext != null) next(narrativeComponentMessage.promptNext)
+                    NarrativeComponentMessage.NarrativeMessageType.Refresh -> {
+                        this.narrativeState.blockFlags.clear()
+                        this.changed = true
+                    }
                 }
                 return true
             }

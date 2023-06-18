@@ -3,10 +3,10 @@ package river.exertion.kcop.profile.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfilePackage
-import river.exertion.kcop.profile.ProfilePackage.NoProfileInfoFound
-import river.exertion.kcop.profile.ProfilePackage.ProfileMenuBackgroundColor
-import river.exertion.kcop.profile.ProfilePackage.ProfileMenuText
+import river.exertion.kcop.profile.ProfileKlop
+import river.exertion.kcop.profile.ProfileKlop.NoProfileInfoFound
+import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
+import river.exertion.kcop.profile.ProfileKlop.ProfileMenuText
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
@@ -59,7 +59,7 @@ object LoadProfileMenu : DisplayViewMenu {
     override val assignableActions = mutableListOf(
         MenuActionParam("Yes", {
             MenuView.closeMenu()
-            MessageChannelHandler.send(ProfilePackage.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
+            MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.selectedProfileAsset
             ProfileComponent.ecsInit()
         }, "Profile Loaded!"),

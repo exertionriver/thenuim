@@ -2,8 +2,7 @@ package river.exertion.kcop.view.menu
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.view.ViewPackage.MainMenuBackgroundColor
+import river.exertion.kcop.view.ViewKlop.MainMenuBackgroundColor
 import river.exertion.kcop.view.layout.MenuView
 import kotlin.system.exitProcess
 
