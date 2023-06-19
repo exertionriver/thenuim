@@ -1,4 +1,4 @@
-package river.exertion.kcop.asset
+package river.exertion.kcop.base
 
 import java.util.*
 

@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Texture
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.base.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.view.asset.FontSize

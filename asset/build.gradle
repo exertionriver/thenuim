@@ -10,20 +10,17 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    implementation project(path: ':base')
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
+    api project(path: ':base')
+
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion"
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    api "io.github.libktx:ktx-assets:$ktxVersion"
-    api "io.github.libktx:ktx-collections:$ktxVersion"
     implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+
+    implementation "io.github.libktx:ktx-assets:$ktxVersion"
+    implementation "io.github.libktx:ktx-collections:$ktxVersion"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-
-    testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }
 
 test {

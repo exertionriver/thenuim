@@ -1,7 +1,7 @@
 package river.exertion.kcop.ecs.component
 
 import com.badlogic.ashley.core.Entity
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.base.Id
 import java.time.LocalDateTime
 import java.util.*
 

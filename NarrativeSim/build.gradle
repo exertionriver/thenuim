@@ -17,8 +17,10 @@ dependencies {
     implementation project(":ecs")
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    api "io.github.libktx:ktx-assets:$ktxVersion"
+    implementation "io.github.libktx:ktx-collections:$ktxVersion"
+
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "io.github.libktx:ktx-assets:$ktxVersion"
     implementation project(path: ':profile')
 }
 

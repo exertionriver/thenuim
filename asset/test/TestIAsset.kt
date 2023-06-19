@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.base.Id
 import kotlin.random.Random
 
 class TestIAsset : IAsset {

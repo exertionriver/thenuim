@@ -1,11 +1,9 @@
 package river.exertion.kcop.ecs.component
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.utils.TimeUtils
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.base.Id
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.asset.immersionTimer.ImmersionTimerState
 import river.exertion.kcop.ecs.EngineHandler
 
 class ImmersionTimerComponent : IComponent {

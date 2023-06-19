@@ -4,7 +4,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.base.Id
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.klop.IECSKlop

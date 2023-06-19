@@ -1,7 +1,7 @@
 package river.exertion.kcop.sim.narrative.structure
 
 import kotlinx.serialization.Serializable
-import river.exertion.kcop.asset.Id
+import river.exertion.kcop.base.Id
 
 @Serializable
 data class NarrativeBlock(
