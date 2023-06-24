@@ -14,7 +14,6 @@ interface IAsset {
     var persisted : Boolean
 
     fun assetInfo() : List<String>
-    fun assetInfoStr() = assetInfo().reduceOrNull { acc, s -> acc + "\n$s"} ?: ""
 
     fun newAssetFilename() = newAssetFilename(assetName(), assetId())
 

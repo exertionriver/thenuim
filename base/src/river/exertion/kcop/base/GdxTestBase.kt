@@ -5,12 +5,16 @@ import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.headless.HeadlessApplication
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration
+import org.junit.jupiter.api.TestInstance
 
-open class GdxTestBase : ApplicationListener {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+open class GdxTestBase : ApplicationListener, TestBase() {
 
     fun init(testClass : ApplicationListener) {
-        val conf = HeadlessApplicationConfiguration()
-        HeadlessApplication(testClass, conf)
+        if (Gdx.app == null) {
+            val conf = HeadlessApplicationConfiguration()
+            HeadlessApplication(testClass, conf)
+        }
     }
 
     override fun create() {

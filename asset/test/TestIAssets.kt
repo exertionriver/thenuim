@@ -1,9 +1,13 @@
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.asset.IAssets
+import river.exertion.kcop.base.GdxTestBase
+import river.exertion.kcop.base.Log
+import river.exertion.kcop.base.TestBase
 
-class TestIAssets : IAssets {
+class TestIAssets : IAssets, TestBase() {
 
     override var values: MutableList<IAsset> = mutableListOf()
 
@@ -26,17 +30,22 @@ class TestIAssets : IAssets {
         fun iAssetPath(iAssetFilename : String) = "$iAssetsLocation$iAssetFilename.$iAssetsExtension"
     }
 
+    @AfterEach
+    fun clearValues() {
+        values.clear()
+    }
+
     @Test
     fun testReload() {
 
-        println("init values:")
-        values.forEach { println("assetId: ${it.assetId()}") }
+        Log.test("init values")
+        values.forEach { Log.test("assetId", it.assetId()) }
         assertEquals(0, values.size)
 
         reload()
 
-        println("loaded values:")
-        values.forEach { println("assetId: ${it.assetId()}")}
+        Log.test("loaded values")
+        values.forEach { Log.test("assetId", it.assetId()) }
         assertEquals(3, values.size)
     }
 

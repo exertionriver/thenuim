@@ -26,7 +26,7 @@ object ColorPaletteInputProcessor : InputProcessor {
             Input.Keys.V -> { colorBaseDecrB() }
 
             Input.Keys.UP -> { colorBaseIncr() }
-            Input.Keys.DOWN -> {colorBaseDecr() }
+            Input.Keys.DOWN -> { colorBaseDecr() }
             Input.Keys.LEFT -> { colorSamplePrev() }
             Input.Keys.RIGHT -> { colorSampleNext() }
         }

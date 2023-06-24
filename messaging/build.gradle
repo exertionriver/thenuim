@@ -11,13 +11,9 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
     api project(":base")
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 }
 
 test {

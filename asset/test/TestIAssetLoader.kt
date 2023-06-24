@@ -33,7 +33,7 @@ class TestIAssetLoader(resolver: FileHandleResolver?) :
 
         } catch (ex : Exception) {
             TestIAsset().apply {
-                this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", ex.message)
+                this.assetStatus = AssetStatus(this.assetPath(), AssetStatus.AssetNotLoaded, ex.message)
             }
         }
     }

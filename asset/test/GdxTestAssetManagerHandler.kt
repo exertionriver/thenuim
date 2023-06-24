@@ -1,5 +1,8 @@
+import com.badlogic.gdx.Gdx
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.AssetManagerHandler
@@ -9,6 +12,7 @@ import river.exertion.kcop.asset.AssetManagerHandler.loadAssets
 import river.exertion.kcop.asset.AssetManagerHandler.logAssets
 import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.base.GdxTestBase
+import river.exertion.kcop.base.Log
 import kotlin.io.path.Path
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.extension
@@ -18,14 +22,17 @@ class GdxTestAssetManagerHandler : GdxTestBase() {
 
     private var testData : MutableList<TestIAsset> = mutableListOf()
 
+    @BeforeAll
+    fun initGdx() {
+        init(this)
+    }
+
     @BeforeEach
     fun initTestData() {
-        init(this)
-
         testData = mutableListOf(TestIAsset(), TestIAsset(), TestIAsset())
 
         testData.forEach {
-            println("persisting: ${it.assetPath()}")
+            Log.test("persisting", it.assetPath())
             AssetManagerHandler.saveAsset<TestIAsset.TestIAssetData>(it)
         }
     }
@@ -35,10 +42,16 @@ class GdxTestAssetManagerHandler : GdxTestBase() {
 
         testData.forEach {
             Path(it.assetPath()).deleteIfExists()
-            println("deleted: ${it.assetPath()}")
+            Log.test("deleted", it.assetPath())
         }
 
         AssetManagerHandler.clearAssets<TestIAsset>()
+    }
+
+    @AfterAll
+    fun exitGdx() {
+        dispose()
+        Gdx.app.exit()
     }
 
     @Test
@@ -82,7 +95,7 @@ class GdxTestAssetManagerHandler : GdxTestBase() {
 
         loadAssets<TestIAsset>(TestIAssets.iAssetsLocation, TestIAssets.iAssetsExtension)
 
-        getAssets<TestIAsset>()[0].assetStatus = AssetStatus("assetPath", "error", "failed load test")
+        getAssets<TestIAsset>()[0].assetStatus = AssetStatus("assetPath", "test_status", "test_status_detail")
 
         val failedAssets = logAssets<TestIAsset>()
 

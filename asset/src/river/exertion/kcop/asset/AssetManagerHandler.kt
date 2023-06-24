@@ -10,6 +10,7 @@ import ktx.assets.disposeSafely
 import ktx.assets.load
 import ktx.assets.unloadSafely
 import ktx.collections.gdxArrayOf
+import river.exertion.kcop.base.Log
 import kotlin.io.path.Path
 import kotlin.io.path.extension
 import kotlin.io.path.listDirectoryEntries
@@ -56,7 +57,7 @@ object AssetManagerHandler {
         }
 
         returnList.forEach {
-            logDebug(it.assetPath, "${it.status}: ${it.statusDetail}")
+            Log.debug(it.assetPath, "${it.status}: ${it.statusDetail}")
         }
 
         return returnList
@@ -84,16 +85,5 @@ object AssetManagerHandler {
 
     fun dispose() {
         assets.disposeSafely()
-    }
-
-    fun logDebug(tag : String, message : String) : String {
-        val returnLog = "$tag: $message"
-
-        if (Gdx.app != null)
-            Gdx.app.debug(tag, message)
-        else //for non-Gdx unit tests
-            println(returnLog)
-
-        return returnLog
     }
 }

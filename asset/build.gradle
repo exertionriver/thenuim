@@ -19,6 +19,9 @@ dependencies {
     implementation "io.github.libktx:ktx-assets:$ktxVersion"
     implementation "io.github.libktx:ktx-collections:$ktxVersion"
 
+    testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }

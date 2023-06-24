@@ -2,26 +2,28 @@ package character
 
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.character.NameTypes
+import river.exertion.kcop.base.TestBase
+import river.exertion.kcop.base.Log
 
-class TestNameTypes {
+class TestNameTypes : TestBase() {
 
     @Test
     fun testCelestialNameCreation() {
 
         (0..36).forEach { _ ->
-            println("celestial name (Osh): ${NameTypes.CELESTIAL_OSH.capName()}")
+            Log.test("celestial name (Osh)", NameTypes.CELESTIAL_OSH.capName())
         }
         (0..36).forEach { _ ->
-            println("celestial name (Ur): ${NameTypes.CELESTIAL_UR.capName()}")
+            Log.test("celestial name (Ur)", NameTypes.CELESTIAL_UR.capName())
         }
         (0..36).forEach { _ ->
-            println("celestial name (La): ${NameTypes.CELESTIAL_LA.capName()}")
+            Log.test("celestial name (La)", NameTypes.CELESTIAL_LA.capName())
         }
         (0..36).forEach { _ ->
-            println("celestial name (Di): ${NameTypes.CELESTIAL_DI.capName()}")
+            Log.test("celestial name (Di)", NameTypes.CELESTIAL_DI.capName())
         }
         (0..36).forEach { _ ->
-            println("below god name (Se): ${NameTypes.CELESTIAL_SE.capName()}")
+            Log.test("below god name (Se)", NameTypes.CELESTIAL_SE.capName())
         }
     }
 
@@ -30,14 +32,14 @@ class TestNameTypes {
 
         (0..36).forEach { idx ->
 
-            println("$idx")
-            println("continent name: ${NameTypes.CONTINENT.capName()}")
-            println("title name: ${NameTypes.TITLE.capName()}")
-            println("lower name: ${NameTypes.LOWER.capName()}")
-            println("common name: ${NameTypes.COMMON.capName()}")
-            println("land name: ${NameTypes.LAND.capName()}")
-            println("priest name: ${NameTypes.PRIEST.capName()}")
-            println("royal name: ${NameTypes.ROYAL.capName()}")
+            Log.test("$idx")
+            Log.test("continent name", NameTypes.CONTINENT.capName())
+            Log.test("title name", NameTypes.TITLE.capName())
+            Log.test("lower name", NameTypes.LOWER.capName())
+            Log.test("common name", NameTypes.COMMON.capName())
+            Log.test("land name", NameTypes.LAND.capName())
+            Log.test("priest name", NameTypes.PRIEST.capName())
+            Log.test("royal name", NameTypes.ROYAL.capName())
 
         }
     }
