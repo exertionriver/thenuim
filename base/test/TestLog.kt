@@ -8,12 +8,12 @@ class TestLog {
 
     @Test
     fun testLogDebug() {
-        assert(Log.debug("tag", "message") == "${Log.debugPrefix} tag: message")
+        assert(Log.debug("tag", "message") == "[${Log.debugPrefix} tag] message")
     }
 
     @Test
     fun testLogTest() {
-        assert(Log.test("tag", "message") == "${Log.testPrefix} tag: message")
+        assert(Log.test("tag", "message") == "[${Log.testPrefix} tag] message")
     }
 
     @Test

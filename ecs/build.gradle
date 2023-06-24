@@ -10,9 +10,9 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    implementation project(":base")
-    implementation project(":asset")
-    implementation project(":messaging")
+    api project(path: ':asset')
+    api project(path: ':messaging')
+
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "com.badlogicgames.gdx:gdx-ai:$aiVersion"

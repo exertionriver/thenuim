@@ -10,10 +10,8 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    implementation project(path: ':asset')
-    implementation project(path: ':messaging')
-    implementation project(path: ':base')
-    implementation project(path: ':ecs')
+    api project(path: ':ecs')
+
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"

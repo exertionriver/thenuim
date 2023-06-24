@@ -7,13 +7,11 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
-    implementation project(path: ':base')
-    implementation project(path: ':view')
     implementation project(path: ':profile')
     implementation project(path: ':ColorPaletteSim')
     implementation project(path: ':NarrativeSim')
 }
+
 compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
 }
