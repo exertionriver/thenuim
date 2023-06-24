@@ -9,10 +9,18 @@ sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
+configurations {
+    testDependencies.extendsFrom(testImplementation)
+}
+
 dependencies {
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
     implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     implementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+
+    testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

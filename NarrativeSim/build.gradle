@@ -10,15 +10,9 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    api project(path: ':view')
+    api project(path: ':profile')
 
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
-    implementation "io.github.libktx:ktx-collections:$ktxVersion"
-
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation "io.github.libktx:ktx-assets:$ktxVersion"
-    implementation project(path: ':profile')
+    testImplementation project(path: ':base', configuration: 'testDependencies')
 }
 
 compileKotlin {

@@ -7,7 +7,6 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    implementation project(path: ':profile')
     implementation project(path: ':ColorPaletteSim')
     implementation project(path: ':NarrativeSim')
 }

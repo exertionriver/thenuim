@@ -11,9 +11,9 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
     api project(":base")
-    implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+    api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation project(path: ':base', configuration: 'testDependencies')
 }
 
 test {
