@@ -6,8 +6,8 @@ import com.badlogic.gdx.ai.msg.Telegraph
 
 object MessageChannelHandler {
 
-    private var messageChannelsIdx = 0
-    val messageChannels = mutableListOf<MessageChannelEntry>()
+    private var messageChannelsIdx = -1
+    private val messageChannels = mutableListOf<MessageChannelEntry>()
 
     fun checkByTag(messageChannelTag : String) : MessageChannelEntry? {
         return messageChannels.firstOrNull { it.messageChannelTag == messageChannelTag }
@@ -21,10 +21,14 @@ object MessageChannelHandler {
         return messageChannels.firstOrNull { it.messageChannelIdx == messageChannelIdx } ?: throw Exception("${this::class.simpleName}:${MessageChannelHandler::byId.name} : messageChannel at $messageChannelIdx not found")
     }
 
-    fun addChannel(messageChannel : MessageChannel) {
+    fun addChannel(messageChannel : MessageChannel) : Int {
+        messageChannelsIdx++
+
         val channelEntryCheck = checkByTag(messageChannel.messageChannelTag)
 
-        if (channelEntryCheck == null) messageChannels.add(MessageChannelEntry(messageChannelsIdx++, messageChannel)) else throw Exception("${this::class.simpleName}:${MessageChannelHandler::addChannel.name} : channel ${messageChannel.messageChannelTag} already added")
+        if (channelEntryCheck == null) messageChannels.add(MessageChannelEntry(messageChannelsIdx, messageChannel)) else throw Exception("${this::class.simpleName}:${MessageChannelHandler::addChannel.name} : channel ${messageChannel.messageChannelTag} already added")
+
+        return messageChannelsIdx
     }
 
     fun addChannels(messageChannels : List<MessageChannel>) {
@@ -60,6 +64,10 @@ object MessageChannelHandler {
     inline fun <reified T:Any> receiveMessage(messageChannelTag: String, message : Any) : T {
         return if (T::class == byTag(messageChannelTag).messageClass) message as T
             else throw Exception("${this::class.simpleName}:${MessageChannelHandler::send.name}:$messageChannelTag requires ${byTag(messageChannelTag).messageClass}, found ${T::class}")
+    }
+
+    fun dispose() {
+        messageChannels.clear()
     }
 }
 

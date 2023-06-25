@@ -1,34 +1,40 @@
-import com.badlogic.gdx.Gdx
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.getAssets
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.AssetManagerHandler.loadAssets
 import river.exertion.kcop.asset.AssetManagerHandler.logAssets
 import river.exertion.kcop.asset.AssetStatus
+import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.base.GdxTestBase
+import river.exertion.kcop.base.Id
 import river.exertion.kcop.base.Log
 import kotlin.io.path.Path
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.extension
 import kotlin.io.path.listDirectoryEntries
 
-class GdxTestAssetManagerHandler : GdxTestBase() {
+class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
 
     private var testData : MutableList<TestIAsset> = mutableListOf()
 
+    override var id = Id.randomId()
+    override var name = this::class.simpleName.toString()
+
+    override fun loadAssets() {
+        AssetManagerHandler.assets.setLoader(TestIAsset::class.java, TestIAssetLoader(lfhr))
+    }
+
     @BeforeAll
-    fun initGdx() {
+    override fun load() {
         init(this)
     }
 
     @BeforeEach
     fun initTestData() {
+        loadAssets()
+
         testData = mutableListOf(TestIAsset(), TestIAsset(), TestIAsset())
 
         testData.forEach {
@@ -49,9 +55,9 @@ class GdxTestAssetManagerHandler : GdxTestBase() {
     }
 
     @AfterAll
-    fun exitGdx() {
-        dispose()
-        Gdx.app.exit()
+    override fun unload() {
+        AssetManagerHandler.dispose()
+        super.dispose()
     }
 
     @Test
@@ -101,14 +107,4 @@ class GdxTestAssetManagerHandler : GdxTestBase() {
 
         assertEquals(1, failedAssets.size)
     }
-
-    override fun create() {
-        AssetManagerHandler.assets.setLoader(TestIAsset::class.java, TestIAssetLoader(lfhr))
-        super.create()
-    }
-
-    override fun dispose() {
-        AssetManagerHandler.dispose()
-    }
-
 }
