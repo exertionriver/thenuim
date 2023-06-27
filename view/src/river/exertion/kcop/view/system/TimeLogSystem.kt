@@ -6,14 +6,15 @@ import ktx.ashley.oneOf
 import river.exertion.kcop.ecs.component.IRLTimeComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
+import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.view.layout.LogView
 
 class TimeLogSystem : IntervalIteratingSystem(oneOf(ImmersionTimerComponent::class, IRLTimeComponent::class).get(), 1/60f) {
 
     override fun processEntity(entity: Entity) {
 
-        val immersionTimerComponent = ImmersionTimerComponent.getFor(entity)
-        val irlTimeComponent = IRLTimeComponent.getFor(entity)
+        val immersionTimerComponent = EngineHandler.getComponentFor<ImmersionTimerComponent>(entity)
+        val irlTimeComponent = EngineHandler.getComponentFor<IRLTimeComponent>(entity)
 
         if (irlTimeComponent != null) {
             LogView.localTimeStr = irlTimeComponent.localTime()

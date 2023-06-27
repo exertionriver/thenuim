@@ -1,6 +1,5 @@
 package river.exertion.kcop.ecs.component
 
-import com.badlogic.ashley.core.Entity
 import river.exertion.kcop.base.Id
 import java.time.LocalDateTime
 import java.util.*
@@ -9,10 +8,9 @@ import java.util.*
 class IRLTimeComponent : IComponent {
 
     override var componentId = Id.randomId()
-
-    fun irlTime() = Calendar.getInstance()
-
     override var isInitialized = false
+
+    private fun irlTime() = Calendar.getInstance()
 
     private fun localDateTime() = LocalDateTime.of(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH) + 1, irlTime().get(Calendar.DAY_OF_MONTH),
         irlTime().get(Calendar.HOUR_OF_DAY), irlTime().get(Calendar.MINUTE), irlTime().get(Calendar.SECOND))
@@ -22,9 +20,4 @@ class IRLTimeComponent : IComponent {
     private fun localSecondsStr() = localDateTime().second.toString().padStart(2, '0')
 
     fun localTime() = "${localHoursStr()}:${localMinutesStr()}:${localSecondsStr()}"
-
-    companion object {
-        fun has(entity : Entity) : Boolean = entity.components.firstOrNull{ it is IRLTimeComponent } != null
-        fun getFor(entity : Entity) : IRLTimeComponent? = if (has(entity)) entity.components.first { it is IRLTimeComponent } as IRLTimeComponent else null
-    }
 }

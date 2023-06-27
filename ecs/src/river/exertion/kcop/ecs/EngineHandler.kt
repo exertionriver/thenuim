@@ -2,48 +2,51 @@ package river.exertion.kcop.ecs
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.core.PooledEngine
 import ktx.ashley.entity
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.entity.IEntity
 import river.exertion.kcop.ecs.entity.SubjectEntity
-import river.exertion.kcop.ecs.system.SystemHandler
+import javax.security.auth.Subject
 import kotlin.reflect.KClass
 import kotlin.reflect.full.valueParameters
 
 object EngineHandler {
 
-    var engine = SystemHandler.pooledEngine
+    var engine = PooledEngine()
     val entities = mutableMapOf<IEntity, Entity>()
-    val subjectEntity = instantiateEntity(SubjectEntity::class.java)
+    val subjectEntity = instantiateEntity<SubjectEntity>()
+
+    fun update(deltaTime : Float) = engine.update(deltaTime)
+
+    fun iEntityByName(entityName : String) : IEntity = entities.entries.firstOrNull { it.key.entityName == entityName }?.key ?: throw Exception("iEntityByName:$entityName not found")
 
     fun entityByName(entityName : String) : Entity = entities.entries.firstOrNull{ it.key.entityName == entityName }?.value ?: throw Exception("entityByName:$entityName not found")
 
-    inline fun <reified T:Component> hasComponent(entityName : String) : Boolean = hasComponent<T>(entityByName(entityName))
-    inline fun <reified T:Component> hasComponent(entity : Entity) : Boolean { return entity.components.firstOrNull{ it is T } != null }
+    fun iEntityByEntity(entity : Entity) : IEntity = entities.entries.firstOrNull { it.value == entity }?.key ?: throw Exception("iEntityByEntity:$entity not found")
 
-    inline fun <reified T:Component> getComponentFor(entityName : String) : T? = getComponentFor(entityByName(entityName))
-    inline fun <reified T:Component> getComponentFor(entity : Entity) : T? = if (hasComponent<T>(entity)) entity.components.firstOrNull { it is T } as T else null
-
-    inline fun <reified T:Component> getFirst() : Entity? = engine.entities.firstOrNull { entity -> entity.components.firstOrNull { it is T } != null }
-    inline fun <reified T:Component> getAll() : List<Entity> = engine.entities.filter { entity -> entity.components.firstOrNull { it is T } != null }
-
-    fun removeEntity(removeIEntity : IEntity) {
-        engine.removeEntity(entities[removeIEntity])
-        entities.remove(removeIEntity)
+    fun removeEntity(entityName : String) {
+        removeEntity(iEntityByName(entityName))
     }
 
-    fun removeEntity(entityClass : Class<*>) {
-        val removeEntityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.javaClass == entityClass) }.firstOrNull()
+    fun removeEntity(iEntity : IEntity) {
+        engine.removeEntity(entities[iEntity])
+        entities.remove(iEntity)
+    }
+
+    fun removeEntity(entityClass : KClass<*>) {
+        val removeEntityEntry = entities.entries.firstOrNull { entityEntry -> (entityEntry.key::class == entityClass) }
 
         if (removeEntityEntry != null) {
             removeEntity(removeEntityEntry.key)
         }
     }
 
-    fun instantiateEntity(entityClass : Class<*>, initInfo : Any? = null) : Entity {
+    inline fun <reified T:IEntity> instantiateEntity(initInfo : Any? = null) : Entity {
         val newEntity = engine.entity()
-        val instance = entityClass.getDeclaredConstructor().newInstance()
-        val initMethod = entityClass.getMethod(
+        val instance = T::class.java.getDeclaredConstructor().newInstance()
+        val initMethod = T::class.java.getMethod(
             IEntity::initialize.name,
             (IEntity::initialize.valueParameters[0].type.classifier as KClass<*>).java,
             (IEntity::initialize.valueParameters[1].type.classifier as KClass<*>).java)
@@ -54,47 +57,59 @@ object EngineHandler {
         return newEntity
     }
 
-    fun removeComponent(entityName : String = SubjectEntity.entityName, componentClass: Class<*>) {
-        val entityEntry = entities.entries.filter { entityEntry -> (entityEntry.key.entityName == entityName) }.firstOrNull()
+    inline fun <reified T:IComponent> hasComponent(entity : Entity) : Boolean = entity.components.firstOrNull{ it is T } != null
+    inline fun <reified T:IComponent> getComponentFor(entity : Entity) : T? = if (hasComponent<T>(entity)) entity.components.firstOrNull { it is T } as T else null
 
-        if (entityEntry != null) {
-            val componentToRemove = entityEntry.value.components.filter { componentEntry -> (componentEntry.javaClass == componentClass) }.firstOrNull()
+    inline fun <reified T:IComponent> removeComponent(entityName : String = SubjectEntity.entityName) {
+        val entityEntry = entityByName(entityName)
 
-            if (componentToRemove != null && (componentClass.interfaces.contains(IComponent::class.java))) {
-                (componentToRemove as IComponent).dispose()
-                @Suppress("UNCHECKED_CAST")
-                entityEntry.value.remove(componentClass as Class<Component>)
-            }
+        val componentToRemove = entityEntry.components.firstOrNull { componentEntry -> (componentEntry::class == T::class) }
+
+        if (componentToRemove != null && (T::class.java.interfaces.contains(IComponent::class.java))) {
+            (componentToRemove as IComponent).dispose()
+            @Suppress("UNCHECKED_CAST")
+            entityEntry.remove(T::class.java as Class<Component>)
         }
     }
 
-    fun addComponentInstance(entity : Entity = subjectEntity, componentInstance : IComponent) {
-        engine.entities.firstOrNull { it == entity }?.add(componentInstance)
+    inline fun <reified T:IComponent> addComponentInstance(entityName : String = SubjectEntity.entityName, componentInstance : IComponent) {
+        val entityEntry = entityByName(entityName)
+
+        if (!hasComponent<T>(entityEntry)) {
+            engine.entities.firstOrNull { it == entityEntry }?.add(componentInstance)
+        }
     }
 
-    fun addInstantiateComponent(entity : Entity = subjectEntity, componentClass : Class<*>, initInfo : Any? = null) {
-        val instance = componentClass.getDeclaredConstructor().newInstance()
-        val initMethod = componentClass.getMethod(
+    inline fun <reified T:IComponent> instantiateComponent(entityName : String = SubjectEntity.entityName, initInfo : Any? = null) {
+        val instance = T::class.java.getDeclaredConstructor().newInstance()
+        val initMethod = T::class.java.getMethod(
             IComponent::initialize.name,
             (IComponent::initialize.valueParameters[0].type.classifier as KClass<*>).java
         )
 
-        addComponentInstance(entity, instance as IComponent)
+        addComponentInstance<T>(entityName, instance as IComponent)
         initMethod.invoke(instance, initInfo)
     }
 
-    fun addComponent(entityName : String = SubjectEntity.entityName, componentClass : Class<*>, initInfo : Any? = null) {
-        val entityEntry = entities.entries.firstOrNull { it.key.entityName == entityName }
+    inline fun <reified T:IComponent> addComponent(entityName : String = SubjectEntity.entityName, initInfo : Any? = null) {
+        val entityEntry = entityByName(entityName)
 
-        if (entityEntry != null) {
-            addInstantiateComponent(entityEntry.value, componentClass, initInfo)
+        if (!hasComponent<T>(entityEntry)) {
+            instantiateComponent<T>(entityName, initInfo)
         }
     }
 
-    fun replaceComponent(entityName : String = SubjectEntity.entityName, componentClass : Class<*>, initInfo : Any? = null) {
-        removeComponent(entityName, componentClass)
-        addComponent(entityName, componentClass, initInfo)
+    inline fun <reified T:IComponent> replaceComponent(entityName : String = SubjectEntity.entityName, initInfo : Any? = null) {
+        removeComponent<T>(entityName)
+        addComponent<T>(entityName, initInfo)
     }
 
-    fun dispose() { }
+    fun addSystem(system : EntitySystem) = engine.addSystem(system)
+    fun removeSystem(system : EntitySystem) = engine.removeSystem(system)
+
+    fun dispose() {
+        engine.removeAllEntities()
+        engine.removeAllSystems()
+        entities.clear()
+    }
 }

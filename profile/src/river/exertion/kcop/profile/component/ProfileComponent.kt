@@ -99,7 +99,7 @@ class ProfileComponent : IComponent, Telegraph {
         fun getFor(entity : Entity?) : ProfileComponent? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileComponent } as ProfileComponent else null
 
         fun ecsInit() {
-            EngineHandler.replaceComponent(componentClass = ProfileComponent::class.java)
+            EngineHandler.replaceComponent<ProfileComponent>()
         }
 
         fun isValid(profileComponent: ProfileComponent?) : Boolean {

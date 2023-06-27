@@ -13,13 +13,11 @@ import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.sim.colorPalette.ColorPaletteKlopDisplay
-import river.exertion.kcop.sim.narrative.NarrativeInputProcessor
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.layout.AudioView
-import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
@@ -28,7 +26,7 @@ import river.exertion.kcop.view.messaging.KcopSimulationMessage
 class KcopSimulator(private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
 
-    val packages = mutableListOf<IKlop>(
+    private val packages = mutableListOf<IKlop>(
         ProfileKlop,
         NarrativeKlop,
         ColorPaletteKlopDisplay
@@ -43,11 +41,8 @@ class KcopSimulator(private val stage: Stage,
     }
 
     val viewLayout = ViewLayout
- //   val colorPaletteLayout = ColorPaletteLayout(orthoCamera.viewportWidth, orthoCamera.viewportHeight). apply { this.hide() }
- //   val colorPaletteInputProcessor = ColorPaletteInputProcessor()
-    lateinit var inputMultiplexer : InputMultiplexer
+    private lateinit var inputMultiplexer : InputMultiplexer
 
-    @Suppress("NewApi")
     override fun render(delta: Float) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
@@ -55,7 +50,7 @@ class KcopSimulator(private val stage: Stage,
         stage.act(Gdx.graphics.deltaTime)
         stage.draw()
 
-        EngineHandler.engine.update(delta)
+        EngineHandler.update(delta)
     }
 
     override fun hide() {

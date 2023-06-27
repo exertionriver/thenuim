@@ -4,11 +4,11 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
-import river.exertion.kcop.base.Id
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.base.Id
+import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
-import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.klop.IMessagingKlop
@@ -71,7 +71,7 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
     fun dvLayoutByTag(dvTag : String) = (DisplayViewLayoutAssets.byName(dvTag) as DisplayViewLayoutAsset).dvLayout
 
     override fun loadSystems() {
-        SystemHandler.pooledEngine.addSystem(NarrativeTextSystem())
+        EngineHandler.addSystem(NarrativeTextSystem())
 
         val profileAction = PSShowTimer.options[0].optionAction
 

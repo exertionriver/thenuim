@@ -12,11 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.assets.getAsset
 import ktx.assets.load
 import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.base.Id
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.base.Id
+import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
-import river.exertion.kcop.ecs.system.SystemHandler
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.klop.IMessagingKlop
@@ -64,7 +64,7 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     }
 
     override fun loadSystems() {
-        SystemHandler.pooledEngine.addSystem(TimeLogSystem())
+        EngineHandler.addSystem(TimeLogSystem())
     }
 
     override fun loadMenus() {

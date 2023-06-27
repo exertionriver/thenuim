@@ -22,6 +22,10 @@ dependencies {
     testImplementation project(path: ':base', configuration: 'testDependencies')
 }
 
+test {
+    useJUnitPlatform()
+}
+
 compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
 }

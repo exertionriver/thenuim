@@ -18,7 +18,10 @@ dependencies {
     api "io.github.libktx:ktx-ashley:$ktxVersion"
 
     testImplementation project(path: ':base', configuration: 'testDependencies')
+}
 
+test {
+    useJUnitPlatform()
 }
 
 compileKotlin {

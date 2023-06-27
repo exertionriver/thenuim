@@ -170,7 +170,7 @@ class NarrativeComponent : IComponent, Telegraph {
             //inactivate current narrative
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
 
-            EngineHandler.replaceComponent(componentClass = NarrativeComponent::class.java)
+            EngineHandler.replaceComponent<NarrativeComponent>()
         }
     }
 }

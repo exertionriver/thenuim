@@ -102,7 +102,7 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     }
 
     override fun loadSystems() {
-        EngineHandler.replaceComponent(componentClass = IRLTimeComponent::class.java)
+        EngineHandler.replaceComponent<IRLTimeComponent>()
 
         ProfileComponent.ecsInit()
     }
