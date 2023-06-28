@@ -137,11 +137,11 @@ class NarrativeComponent : IComponent, Telegraph {
                     }
                     NarrativeComponentMessage.NarrativeMessageType.ReplaceCumlTimer -> {
                         blockCumlTimer = false
-                        ImmersionTimerComponent.ecsInit(ImmersionTimerPair(instImmersionTimer, cumlImmersionTimer))
+                        ImmersionTimerComponent.ecsInit(immersionTimerPair = ImmersionTimerPair(instImmersionTimer, cumlImmersionTimer))
                     }
                     NarrativeComponentMessage.NarrativeMessageType.ReplaceBlockCumlTimer -> {
                         blockCumlTimer = true
-                        ImmersionTimerComponent.ecsInit(ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
+                        ImmersionTimerComponent.ecsInit(immersionTimerPair = ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
                     }
                     NarrativeComponentMessage.NarrativeMessageType.Pause -> pause()
                     NarrativeComponentMessage.NarrativeMessageType.Unpause -> unpause()

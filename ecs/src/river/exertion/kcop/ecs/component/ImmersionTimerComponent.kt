@@ -4,6 +4,7 @@ import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.kcop.ecs.entity.SubjectEntity
 
 class ImmersionTimerComponent : IComponent {
 
@@ -30,8 +31,8 @@ class ImmersionTimerComponent : IComponent {
     fun cumlImmersionTime() = if (isInitialized) immersionTimerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
 
     companion object {
-        fun ecsInit(immersionTimerPair : ImmersionTimerPair) {
-            EngineHandler.replaceComponent<ImmersionTimerComponent>(initInfo = immersionTimerPair)
+        fun ecsInit(entityName : String = SubjectEntity.entityName, immersionTimerPair : ImmersionTimerPair? = null) {
+            EngineHandler.replaceComponent<ImmersionTimerComponent>(entityName, immersionTimerPair)
         }
     }
 }
