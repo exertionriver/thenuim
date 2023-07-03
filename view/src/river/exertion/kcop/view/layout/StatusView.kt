@@ -2,7 +2,7 @@ package river.exertion.kcop.view.layout
 
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 object StatusView : ViewBase {
 
@@ -29,7 +29,7 @@ object StatusView : ViewBase {
             barStack.add(
                 ProgressBar(0f, 1f, .01f, false, KcopSkin.skin).apply { this.value = it.value } )
             barStack.add(
-                Label(it.label, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label().incr(2)))
+                Label(it.label, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label().incr(2)))
             )
 
             innerTable.add(barStack)

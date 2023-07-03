@@ -9,7 +9,7 @@ import ktx.actors.onClick
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
 
@@ -64,7 +64,7 @@ class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidt
             }
         }
 
-        val swatchLabel = Label(colorPaletteEntry.key, KcopSkin.labelStyle(FontSize.TEXT, colorPaletteEntry.value.label()))
+        val swatchLabel = Label(colorPaletteEntry.key, KcopSkin.labelStyle(KcopFont.TEXT, colorPaletteEntry.value.label()))
         swatchLabel.setAlignment(Align.center)
 
         stack.add(swatchImg)

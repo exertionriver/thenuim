@@ -14,7 +14,7 @@ import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -33,7 +33,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
 
         if (NarrativeAsset.selectedNarrativeAsset.assetInfo().isNotEmpty()) {
             NarrativeAsset.selectedNarrativeAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
+                this.add(Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, NarrativeMenuText))
                         .apply {
                     this.wrap = true
                 }).growX().left()

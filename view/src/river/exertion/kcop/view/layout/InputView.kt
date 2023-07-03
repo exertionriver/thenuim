@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 object InputView : ViewBase {
 
@@ -54,12 +54,12 @@ object InputView : ViewBase {
 
         val innerTable = Table()
 
-        innerTable.add(Label(keyText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label())))
+        innerTable.add(Label(keyText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())))
         .expandY()
 
         innerTable.row()
 
-        if (isTouchEvent()) innerTable.add(Label(touchText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label())))
+        if (isTouchEvent()) innerTable.add(Label(touchText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())))
 
 //        innerTable.debug()
 

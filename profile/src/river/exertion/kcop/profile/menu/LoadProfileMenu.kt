@@ -11,7 +11,7 @@ import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -30,7 +30,7 @@ object LoadProfileMenu : DisplayViewMenu {
 
             if (ProfileAsset.selectedProfileAsset.assetInfo().isNotEmpty()) {
                 ProfileAsset.selectedProfileAsset.assetInfo().forEach { profileEntry ->
-                    this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfileMenuText))
+                    this.add(Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, ProfileMenuText))
                         .apply {
                             this.wrap = true
                         }).growX().left()
@@ -41,7 +41,7 @@ object LoadProfileMenu : DisplayViewMenu {
                     ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
             } else {
                 this.add(
-                    Label(NoProfileInfoFound, KcopSkin.labelStyle(FontSize.SMALL, ProfileMenuText))
+                    Label(NoProfileInfoFound, KcopSkin.labelStyle(KcopFont.SMALL, ProfileMenuText))
                 ).growX().left()
                 this@LoadProfileMenu.assignableActions.firstOrNull { it.label == "Yes" }
                     ?.apply { this.label = "Error"; this.action = {} }

@@ -27,7 +27,7 @@ import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.sim.narrative.view.DVLayout
 import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
 
@@ -82,7 +82,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun currentDisplayText() = if (isInitialized) narrative.currentDisplayText() else "<no display text>"
 
-    fun currentFontSize() = if (isInitialized) narrative.currentFontSize() else FontSize.TEXT
+    fun currentFontSize() = if (isInitialized) narrative.currentFontSize() else KcopFont.TEXT
 
     fun shortNarrativeName() = narrativeName().subSequence(0, 3)
 

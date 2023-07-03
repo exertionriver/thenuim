@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 interface ViewBase {
 
@@ -43,7 +43,7 @@ interface ViewBase {
     }
 
     fun layoutLabel() : Label {
-        return Label(viewType.name, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label())).apply {
+        return Label(viewType.name, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())).apply {
             this.setAlignment(Align.center)
         }
     }

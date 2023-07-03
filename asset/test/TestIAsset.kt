@@ -10,7 +10,7 @@ import river.exertion.kcop.base.Log
 import river.exertion.kcop.base.TestBase
 import kotlin.random.Random
 
-class TestIAsset : IAsset, TestBase() {
+class TestIAsset(val assetPathOverride : String? = null) : IAsset, TestBase() {
 
     @Serializable
     class TestIAssetData(var dataString : String = Id.randomId())
@@ -28,7 +28,7 @@ class TestIAsset : IAsset, TestBase() {
 
     override var persisted: Boolean = false
 
-    override fun newAssetFilename(): String = TestIAssets.iAssetPath(super.newAssetFilename())
+    override fun newAssetFilename(): String = assetPathOverride ?: TestIAssets.iAssetPath(super.newAssetFilename())
 
     override fun assetInfo(): List<String> = listOf(assetId(), "test", "IAsset", "Info")
 

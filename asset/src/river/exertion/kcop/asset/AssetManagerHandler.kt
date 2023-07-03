@@ -14,6 +14,7 @@ import ktx.assets.unloadSafely
 import ktx.collections.gdxArrayOf
 import river.exertion.kcop.base.Log
 import kotlin.io.path.Path
+import kotlin.io.path.exists
 import kotlin.io.path.extension
 import kotlin.io.path.listDirectoryEntries
 
@@ -78,14 +79,22 @@ object AssetManagerHandler {
         return returnList
     }
 
-    inline fun <reified T: Any>saveAsset(asset : IAsset, assetSaveLocation : String? = null) : IAsset {
+    inline fun <reified T: Any>safeSave(asset : IAsset, assetSavePath : String) : IAsset {
+
+        if (Path(assetSavePath).exists()) {
+            throw Exception ("safeSave() : $assetSavePath already exists!")
+        }
+
+        return saveAsset<T>(asset, assetSavePath)
+    }
+
+    inline fun <reified T: Any>saveAsset(asset : IAsset, assetSavePath : String? = null) : IAsset {
         val jsonAssetData = json.encodeToJsonElement(asset.assetData() as T)
 
         Gdx.files.local(asset.assetPath()).writeString(jsonAssetData.toString(), false)
 
-        if (assetSaveLocation != null && assetSaveLocation != asset.assetPath()) {
-
-            Gdx.files.local(asset.assetPath()).moveTo(Gdx.files.local(assetSaveLocation))
+        if (assetSavePath != null && assetSavePath != asset.assetPath()) {
+            Gdx.files.local(asset.assetPath()).moveTo(Gdx.files.local(assetSavePath))
         }
 
         return asset.apply { this.persisted = true }
@@ -97,6 +106,8 @@ object AssetManagerHandler {
 
         return assetArray.toList()
     }
+
+    inline fun <reified T: Any>getAssets(assetLoadPaths : List<String>) : List<T> = assetLoadPaths.map { getAsset<T>(it) }
 
     inline fun <reified T: Any>getAsset(assetLoadPath : String) : T = assets.getAsset<T>(assetLoadPath)
 

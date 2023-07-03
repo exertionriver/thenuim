@@ -19,7 +19,7 @@ import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -79,13 +79,13 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
         MainMenu.menuPane = {
             mainMenuPane().apply {
-                this.add(Label("Profile:", KcopSkin.labelStyle(FontSize.MEDIUM, ProfileMainMenuText))).left()
+                this.add(Label("Profile:", KcopSkin.labelStyle(KcopFont.MEDIUM, ProfileMainMenuText))).left()
                 this.row()
 
                 if (currentProfileAsset.persisted && currentProfileAsset.assetInfo().isNotEmpty()) {
                     currentProfileAsset.assetInfo().forEach { profileEntry ->
                         this.add(
-                            Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfileMainMenuText))
+                            Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, ProfileMainMenuText))
                                 .apply {
                                     this.wrap = true
                                 }).growX().left()
@@ -93,7 +93,7 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
                     }
                 } else {
                     this.add(
-                        Label(NoProfileLoaded, KcopSkin.labelStyle(FontSize.SMALL, ProfileMainMenuText))
+                        Label(NoProfileLoaded, KcopSkin.labelStyle(KcopFont.SMALL, ProfileMainMenuText))
                     ).growX().left()
                 }
                 this.top()

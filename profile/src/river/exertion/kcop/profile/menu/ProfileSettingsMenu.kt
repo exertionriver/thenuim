@@ -13,7 +13,7 @@ import river.exertion.kcop.profile.settings.ProfileSettingEntry
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.optionBySelectionKey
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.updateSetting
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -33,7 +33,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
         Table().apply {
             Profile.availableSettings.forEach { setting ->
                 this.add(Label(setting.selectionLabel, KcopSkin.labelStyle(
-                    FontSize.SMALL,
+                    KcopFont.SMALL,
                     ProfileKlop.ProfileMenuText
                 )).apply {
                     this.wrap

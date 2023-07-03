@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.base.Id
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.ViewType
 
 @Serializable
@@ -25,7 +25,7 @@ data class DVLayout(
     @Suppress("UNCHECKED_CAST")
     fun textPanes() = panes().filter { it.paneType == DVPane.DVPaneTypes.TEXT.tag() } as List<DVTextPane>
 
-    fun setAdjacencies(fontSize: FontSize) {
+    fun setAdjacencies(fontSize: KcopFont) {
         textPanes().forEach { dvTextPane ->
             dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.idx == dvTextPane.idx }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
                     ?: 0

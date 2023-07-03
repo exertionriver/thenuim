@@ -8,7 +8,7 @@ import kotlinx.serialization.Transient
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
 import river.exertion.kcop.sim.narrative.view.DVLayout
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 @Serializable
 data class Narrative(
@@ -63,7 +63,7 @@ data class Narrative(
 
     fun currentDisplayText() = currentBlock()?.toDisplayString() ?: ""
 
-    fun currentFontSize() = FontSize.byTag(currentBlock()?.fontSize)
+    fun currentFontSize() = KcopFont.byTag(currentBlock()?.fontSize)
 
     fun currentPrompts() : List<String> =
         if (isSequential()) {

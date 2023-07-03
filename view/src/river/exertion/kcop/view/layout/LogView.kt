@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Align
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 object LogView : ViewBase {
 
@@ -68,7 +68,7 @@ object LogView : ViewBase {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(instImmersionTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
+                    this.add(Label(instImmersionTimeStr, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -80,7 +80,7 @@ object LogView : ViewBase {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(cumlImmersionTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
+                    this.add(Label(cumlImmersionTimeStr, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -93,7 +93,7 @@ object LogView : ViewBase {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(localTimeStr, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
+                    this.add(Label(localTimeStr, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -134,7 +134,7 @@ object LogView : ViewBase {
 
         if (isLog()) {
             (currentLog!!.size - 1 downTo 0).forEach { revEntryIdx ->
-                val logLabel = Label(currentLog!![revEntryIdx], KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
+                val logLabel = Label(currentLog!![revEntryIdx], KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).growX()
                 innerTable.row()

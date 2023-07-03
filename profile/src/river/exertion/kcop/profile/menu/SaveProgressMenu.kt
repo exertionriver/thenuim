@@ -6,7 +6,7 @@ import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
@@ -25,7 +25,7 @@ object SaveProgressMenu : DisplayViewMenu {
         Table().apply {
 
             ProfileAsset.currentProfileAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.labelStyle(FontSize.SMALL, ProfileKlop.ProfileMenuText)
+                this.add(Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, ProfileKlop.ProfileMenuText)
                 ).apply {
                     this.wrap = true
                 }).colspan(2).growX()

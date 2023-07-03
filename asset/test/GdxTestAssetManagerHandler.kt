@@ -13,6 +13,7 @@ import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.base.GdxTestBase
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.base.Log
+import river.exertion.kcop.base.str
 import kotlin.io.path.Path
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.extension
@@ -140,7 +141,6 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
         assertEquals(paramTestString, loadedAsset.assetStatus?.statusDetail)
     }
 
-
     @Test
     fun testLogAssets() {
 
@@ -151,5 +151,38 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
         val failedAssets = logAssets<TestIAsset>()
 
         assertEquals(1, failedAssets.size)
+    }
+
+    fun persistTestIAssetStore() {
+
+        TestIAssetStore.values().forEach {
+            Log.test("persisting", it.path)
+            val persistAsset = TestIAsset(it.path).apply { this.testIAssetData.dataString = it.path }
+            AssetManagerHandler.safeSave<TestIAsset.TestIAssetData>(persistAsset, it.path)
+        }
+    }
+
+
+    fun cleanupTestIAssetStore() {
+
+        TestIAssetStore.values().forEach {
+            Path(it.path).deleteIfExists()
+            Log.test("deleted", it.path)
+        }
+    }
+
+    @Test
+    fun testIAssetStore() {
+        persistTestIAssetStore()
+
+        TestIAssetStore.loadAll()
+
+        val loadedVals = TestIAssetStore.getAll()
+
+        Log.test("loadedVals", loadedVals.map { it.testIAssetData.dataString }.str(", "))
+
+        TestIAssetStore.values().forEachIndexed { idx, it -> assertEquals(it.path, loadedVals[idx].testIAssetData.dataString) }
+
+        cleanupTestIAssetStore()
     }
 }

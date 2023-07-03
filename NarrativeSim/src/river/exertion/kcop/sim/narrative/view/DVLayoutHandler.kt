@@ -10,13 +10,13 @@ import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.view.klop.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.AudioView
 
 object DVLayoutHandler : IDisplayViewLayoutHandler {
 
     var currentText = ""
-    var currentFontSize = FontSize.SMALL
+    var currentFontSize = KcopFont.SMALL
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {
@@ -49,7 +49,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             currentDvLayout.panes().forEach { dvPane ->
                 val randomColor = ColorPalette.randomW3cBasic()
                 val randomColorImage = Image(TextureRegionDrawable(paneColorTexture(dvPane, randomColor).texture))
-                val randomColorLabelStyle = KcopSkin.labelStyle(FontSize.TEXT, randomColor.label())
+                val randomColorLabelStyle = KcopSkin.labelStyle(KcopFont.TEXT, randomColor.label())
 
                 when (dvPane) {
                     is DVImagePane -> paneContent.data[dvPane.idx()] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)

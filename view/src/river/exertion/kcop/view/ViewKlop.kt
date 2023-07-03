@@ -46,16 +46,16 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         AssetManagerHandler.assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(AssetManagerHandler.ifhr))
         AssetManagerHandler.assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(AssetManagerHandler.ifhr))
 
-        AssetManagerHandler.loadAssetsByPath<BitmapFont>(FreeTypeFontAssetStore.values().map { it.path }, FreeTypeFontAssetStore.values().map { it.ftflp() } )
-        AssetManagerHandler.loadAssetsByPath<Texture>(TextureAssetStore.values().map { it.path } )
-        AssetManagerHandler.loadAssetsByPath<Skin>(SkinAssetStore.values().map { it.path } )
-        AssetManagerHandler.loadAssetsByPath<Music>(SoundAssetStore.values().map { it.path } )
-        AssetManagerHandler.loadAssetsByPath<Music>(MusicAssetStore.values().map { it.path } )
+        FreeTypeFontAssetStore.loadAll()
+        TextureAssetStore.loadAll()
+        SkinAssetStore.loadAll()
+        SoundAssetStore.loadAll()
+        MusicAssetStore.loadAll()
 
-        KcopSkin.skin = AssetManagerHandler.getAsset<Skin>(SkinAssetStore.KcopUi.path)
-        KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = AssetManagerHandler.getAsset<Music>(SoundAssetStore.Click.path)
-        KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = AssetManagerHandler.getAsset<Music>(SoundAssetStore.Enter.path)
-        KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = AssetManagerHandler.getAsset<Music>(SoundAssetStore.Swoosh.path)
+        KcopSkin.skin = SkinAssetStore.KcopUi.get()
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = SoundAssetStore.Click.get()
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = SoundAssetStore.Enter.get()
+        KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = SoundAssetStore.Swoosh.get()
     }
 
     override fun loadSystems() {

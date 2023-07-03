@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 
 object TextView : ViewBase {
 
@@ -31,13 +31,13 @@ object TextView : ViewBase {
             ViewType.padHeight(KcopSkin.screenHeight)
         )
 
-        val textLabel = Label(currentText, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
+        val textLabel = Label(currentText, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
 
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
 
         if (AiView.isChecked && AiView.hintText().isNotBlank()) {
-            val hintLabel = Label(AiView.hintText(), KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label().decr(4)))
+            val hintLabel = Label(AiView.hintText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label().decr(4)))
 
             innerTable.row()
             innerTable.add(hintLabel).growX()
@@ -72,7 +72,7 @@ object TextView : ViewBase {
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, KcopSkin.labelStyle(FontSize.TEXT, backgroundColor().label()))
+                val logLabel = Label(entry, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()

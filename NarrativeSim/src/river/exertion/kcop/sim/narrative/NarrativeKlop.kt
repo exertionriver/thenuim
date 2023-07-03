@@ -33,7 +33,7 @@ import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAsset
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.layout.MenuView
@@ -131,13 +131,13 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
         MainMenu.menuPane = {
             mainMenuPane().apply {
                 this.row() // profile is above this
-                this.add(Label("Narrative:", KcopSkin.labelStyle(FontSize.MEDIUM, NarrativeMenuText))).left()
+                this.add(Label("Narrative:", KcopSkin.labelStyle(KcopFont.MEDIUM, NarrativeMenuText))).left()
                 this.row()
 
                 if (isNarrativeLoaded() && currentNarrativeAsset.assetInfo().isNotEmpty()) {
                     currentNarrativeAsset.assetInfo().forEach { narrativeEntry ->
                         this.add(
-                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
+                            Label(narrativeEntry, KcopSkin.labelStyle(KcopFont.SMALL, NarrativeMenuText))
                                 .apply {
                                     this.wrap = true
                                 }).growX().left()
@@ -145,7 +145,7 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
                     }
                 } else {
                     this.add(
-                        Label(NoNarrativeLoaded, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
+                        Label(NoNarrativeLoaded, KcopSkin.labelStyle(KcopFont.SMALL, NarrativeMenuText))
                     ).growX().left()
                 }
 
@@ -153,7 +153,7 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
                     this.row()
                     currentNarrativeStateAsset.assetInfo().forEach { narrativeEntry ->
                         this.add(
-                            Label(narrativeEntry, KcopSkin.labelStyle(FontSize.SMALL, NarrativeMenuText))
+                            Label(narrativeEntry, KcopSkin.labelStyle(KcopFont.SMALL, NarrativeMenuText))
                                 .apply {
                                     this.wrap = true
                                 }).growX().left()

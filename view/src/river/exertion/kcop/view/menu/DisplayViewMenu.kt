@@ -5,10 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.asset.FontSize
+import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.LogView
 import river.exertion.kcop.view.layout.ViewType
 
@@ -66,7 +65,7 @@ interface DisplayViewMenu {
       //  this.debug()
 
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
-            this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(FontSize.SMALL, backgroundColor.label()))
+            this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(KcopFont.SMALL, backgroundColor.label()))
                     .apply {
                 this.onClick {
                     DisplayViewMenuHandler.currentMenuTag = menuLabel.key
@@ -94,7 +93,7 @@ interface DisplayViewMenu {
                         this.add(breadcrumbPane()).right().growX()
                         this.add(
                             Table().apply {
-                                this.add(Label(this@DisplayViewMenu.label, KcopSkin.labelStyle(FontSize.MEDIUM, backgroundColor.label()))
+                                this.add(Label(this@DisplayViewMenu.label, KcopSkin.labelStyle(KcopFont.MEDIUM, backgroundColor.label()))
                             .apply {
                                 this.setAlignment(Align.center)
                             }).padRight(ViewType.padWidth(KcopSkin.screenWidth))
