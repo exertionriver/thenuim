@@ -1,12 +1,14 @@
 package river.exertion.kcop.asset
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.assets.loaders.resolvers.LocalFileHandleResolver
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import ktx.assets.disposeSafely
+import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.assets.unloadSafely
 import ktx.collections.gdxArrayOf
@@ -26,7 +28,7 @@ object AssetManagerHandler {
     inline fun <reified T: IAsset>reloadLocalAssets(assetLoadLocation : String, assetLoadExtension : String): List<T> {
 
         clearAssets<T>()
-        loadAssets<T>(assetLoadLocation, assetLoadExtension)
+        loadAssetsByLocation<T>(assetLoadLocation, assetLoadExtension)
         logAssets<T>()
 
         return getAssets<T>()
@@ -39,11 +41,24 @@ object AssetManagerHandler {
         }
     }
 
-    inline fun <reified T: IAsset>loadAssets(assetLoadLocation : String, assetLoadExtension : String) {
+    inline fun <reified T: IAsset>loadAssetsByLocation(assetLoadLocation : String, assetLoadExtension : String) {
 
         Path(assetLoadLocation).listDirectoryEntries().filter { assetLoadExtension == it.extension }.forEach {
             assets.load<T>(it.toString())
         }
+        assets.finishLoading()
+    }
+
+    inline fun <reified T: Any>loadAssetsByPath(assetLoadPaths : List<String>, params: List<AssetLoaderParameters<T>?>? = null) {
+
+        assetLoadPaths.forEachIndexed { idx, assetPath ->
+            assets.load<T>(assetPath, params?.get(idx))
+        }
+        assets.finishLoading()
+    }
+
+    inline fun <reified T: Any>loadAssetByPath(assetLoadPath : String, param: AssetLoaderParameters<T>? = null) {
+        assets.load<T>(assetLoadPath, param)
         assets.finishLoading()
     }
 
@@ -82,6 +97,8 @@ object AssetManagerHandler {
 
         return assetArray.toList()
     }
+
+    inline fun <reified T: Any>getAsset(assetLoadPath : String) : T = assets.getAsset<T>(assetLoadPath)
 
     fun dispose() {
         assets.disposeSafely()

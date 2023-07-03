@@ -14,10 +14,10 @@ object KcopFont {
 
     fun font(fontSize: FontSize) : BitmapFont {
         return when (fontSize) {
-            FontSize.TEXT -> AssetManagerHandler.assets[FreeTypeFontAssetStore.NotoSansSymbolsSemiBoldText].apply { this.data.setScale(FreeTypeFontAssetStore.NotoSansSymbolsSemiBoldText.baseFontSize().fontScale())}
-            FontSize.SMALL -> AssetManagerHandler.assets[FreeTypeFontAssetStore.ImmortalSmall].apply { this.data.setScale(FreeTypeFontAssetStore.ImmortalSmall.baseFontSize().fontScale())}
-            FontSize.MEDIUM -> AssetManagerHandler.assets[FreeTypeFontAssetStore.ImmortalMedium].apply { this.data.setScale(FreeTypeFontAssetStore.ImmortalMedium.baseFontSize().fontScale())}
-            FontSize.LARGE -> AssetManagerHandler.assets[FreeTypeFontAssetStore.ImmortalLarge].apply { this.data.setScale(FreeTypeFontAssetStore.ImmortalLarge.baseFontSize().fontScale())}
+            FontSize.TEXT -> AssetManagerHandler.getAsset<BitmapFont>(FreeTypeFontAssetStore.NotoSansSymbolsSemiBoldText.path).apply { this.data.setScale(FreeTypeFontAssetStore.NotoSansSymbolsSemiBoldText.baseFontSize().fontScale())}
+            FontSize.SMALL -> AssetManagerHandler.getAsset<BitmapFont>(FreeTypeFontAssetStore.ImmortalSmall.path).apply { this.data.setScale(FreeTypeFontAssetStore.ImmortalSmall.baseFontSize().fontScale())}
+            FontSize.MEDIUM -> AssetManagerHandler.getAsset<BitmapFont>(FreeTypeFontAssetStore.ImmortalMedium.path).apply { this.data.setScale(FreeTypeFontAssetStore.ImmortalMedium.baseFontSize().fontScale())}
+            FontSize.LARGE -> AssetManagerHandler.getAsset<BitmapFont>(FreeTypeFontAssetStore.ImmortalLarge.path).apply { this.data.setScale(FreeTypeFontAssetStore.ImmortalLarge.baseFontSize().fontScale())}
         }
     }
 }

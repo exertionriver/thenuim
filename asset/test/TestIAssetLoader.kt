@@ -9,18 +9,18 @@ import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.AssetStatus
 
 class TestIAssetLoader(resolver: FileHandleResolver?) :
-    AsynchronousAssetLoader<TestIAsset?, TestIAssetLoader.TestIAssetParameter?>(resolver) {
+    AsynchronousAssetLoader<TestIAsset, TestIAssetLoader.TestIAssetLoaderParameter>(resolver) {
 
     lateinit var rawData: String
 
-    override fun getDependencies(fileName: String?, file: FileHandle?, parameter: TestIAssetParameter?): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
+    override fun getDependencies(fileName: String?, file: FileHandle?, parameter: TestIAssetLoaderParameter?): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
         return null
     }
 
-    override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: TestIAssetParameter?) {
+    override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: TestIAssetLoaderParameter?) {
     }
 
-    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: TestIAssetParameter?): TestIAsset {
+    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: TestIAssetLoaderParameter?): TestIAsset {
         return try {
             rawData = file.readString()
             val jsonElement = json.parseToJsonElement(rawData)
@@ -29,6 +29,8 @@ class TestIAssetLoader(resolver: FileHandleResolver?) :
             TestIAsset().apply {
                 this.testIAssetData = testIAssetData
                 this.persisted = true
+
+                this.assetStatus = AssetStatus(this.assetPath(), AssetStatus.AssetLoaded, parameter?.testString)
             }
 
         } catch (ex : Exception) {
@@ -38,5 +40,7 @@ class TestIAssetLoader(resolver: FileHandleResolver?) :
         }
     }
 
-    class TestIAssetParameter : AssetLoaderParameters<TestIAsset?>()
+    class TestIAssetLoaderParameter : AssetLoaderParameters<TestIAsset>() {
+        var testString : String = ""
+    }
 }
