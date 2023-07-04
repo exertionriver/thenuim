@@ -10,18 +10,11 @@ import ktx.app.KtxGame
 import ktx.app.KtxScreen
 import ktx.inject.Context
 import ktx.inject.register
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.base.IKlop
 import river.exertion.kcop.simulation.KcopSimulator
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
-import river.exertion.kcop.view.ViewKlop
 
 class Kcop : KtxGame<KtxScreen>() {
-
-    val packages = mutableListOf<IKlop>(
-        ViewKlop
-    )
 
     init {
         KcopSkin.screenWidth = initViewportWidth
@@ -29,12 +22,11 @@ class Kcop : KtxGame<KtxScreen>() {
     }
 
     lateinit var twoBatch : PolygonSpriteBatch
-    lateinit var sdcHandler : SdcHandler
 
     private val context = Context()
 
     override fun create() {
-        Gdx.app.logLevel = loglevel
+        Gdx.app.logLevel = LOG_DEBUG
 
 //        val perspectiveCamera = PerspectiveCamera(75f, initViewportWidth, initViewportHeight )
         val orthoCamera = OrthographicCamera().apply { setToOrtho(false, initViewportWidth, initViewportHeight) }
@@ -43,8 +35,6 @@ class Kcop : KtxGame<KtxScreen>() {
         twoBatch = PolygonSpriteBatch()
         val stage = Stage(viewport, twoBatch)
         SdcHandler.batch = twoBatch
-
-        loadPackages()
 
         context.register {
             bindSingleton(orthoCamera)
@@ -56,29 +46,11 @@ class Kcop : KtxGame<KtxScreen>() {
         setScreen<KcopSimulator>()
     }
 
-    fun loadPackages() {
-
-        packages.forEach {
-            it.load()
-        }
-    }
-
     companion object {
         val initViewportWidth = 1280F
         val initViewportHeight = 720F
 
         val title = "koboldCave Operating Platform (kcop) v0.12"
-        val loglevel = LOG_DEBUG
-
-        const val TwoBatchBridge = "TwoBatchBridge"
     }
 
-    override fun dispose() {
-        packages.forEach {
-            it.dispose()
-        }
-        super.dispose()
-
-        AssetManagerHandler.dispose()
-    }
 }

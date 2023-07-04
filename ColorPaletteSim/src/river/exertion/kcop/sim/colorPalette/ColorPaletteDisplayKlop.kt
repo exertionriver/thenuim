@@ -6,7 +6,7 @@ import river.exertion.kcop.sim.colorPalette.view.ColorPaletteInputProcessor
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 
-object ColorPaletteKlopDisplay : IDisplayViewKlop {
+object ColorPaletteDisplayKlop : IDisplayViewKlop {
 
     override var id = Id.randomId()
 

@@ -5,4 +5,5 @@ import river.exertion.kcop.base.IKlop
 interface IMenuKlop : IKlop {
 
     fun loadMenus()
+
 }

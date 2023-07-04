@@ -20,6 +20,7 @@ import river.exertion.kcop.profile.menu.*
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
+import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -31,6 +32,8 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     override var name = this::class.simpleName.toString()
 
     override fun load() {
+        ViewKlop.load()
+
         loadChannels()
         loadAssets()
         loadSystems()
@@ -107,7 +110,10 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         ProfileComponent.ecsInit()
     }
 
-    override fun dispose() {}
+    override fun dispose() {
+
+        ViewKlop.dispose()
+    }
 
     const val ProfileBridge = "ProfileBridge"
     const val NoProfileLoaded = "No Profile Loaded"

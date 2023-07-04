@@ -9,7 +9,7 @@ import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
 
-class GdxTestSdcHandler : IECSKlop, GdxTestBase() {
+class GdxTestViewKlop : IECSKlop, GdxTestBase() {
 
     override var id = Id.randomId()
     override var name = this::class.simpleName.toString()

@@ -12,6 +12,7 @@ import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.klop.IMessagingKlop
+import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.profile.menu.SaveProgressMenu
 import river.exertion.kcop.profile.menu.SaveProgressMenu.SaveLabel
 import river.exertion.kcop.profile.settings.PSShowTimer
@@ -34,6 +35,7 @@ import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
+import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.layout.MenuView
@@ -48,6 +50,8 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
     override var name = this::class.simpleName.toString()
 
     override fun load() {
+        ProfileKlop.load()
+
         loadChannels()
         loadAssets()
         loadSystems()
@@ -209,6 +213,7 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
 
     override fun dispose() {
 
+        ProfileKlop.dispose()
     }
 
     const val NarrativeBridge = "NarrativeBridge"

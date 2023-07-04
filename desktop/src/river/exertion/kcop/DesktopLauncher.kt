@@ -14,6 +14,6 @@ object DesktopLauncher {
             setBackBufferConfig(8, 8, 8, 8, 24, 0, 8)
         }
 
-        Lwjgl3Application(Kcop(), config).logLevel = Kcop.loglevel
+        Lwjgl3Application(Kcop(), config)
     }
 }

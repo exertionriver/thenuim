@@ -11,8 +11,7 @@ import ktx.app.KtxScreen
 import river.exertion.kcop.base.IKlop
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.profile.ProfileKlop
-import river.exertion.kcop.sim.colorPalette.ColorPaletteKlopDisplay
+import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
@@ -27,9 +26,8 @@ class KcopSimulator(private val stage: Stage,
                     private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
 
     private val packages = mutableListOf<IKlop>(
-        ProfileKlop,
         NarrativeKlop,
-        ColorPaletteKlopDisplay
+        ColorPaletteDisplayKlop
     )
 
     init {
@@ -62,7 +60,7 @@ class KcopSimulator(private val stage: Stage,
         inputMultiplexer.addProcessor(stage)
 
         NarrativeKlop.inputMultiplexer = inputMultiplexer
-        ColorPaletteKlopDisplay.inputMultiplexer = inputMultiplexer
+        ColorPaletteDisplayKlop.inputMultiplexer = inputMultiplexer
 
         Gdx.input.inputProcessor = inputMultiplexer
 
@@ -100,10 +98,10 @@ class KcopSimulator(private val stage: Stage,
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
                             NarrativeKlop.hideView()
-                            ColorPaletteKlopDisplay.showView()
+                            ColorPaletteDisplayKlop.showView()
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
-                            ColorPaletteKlopDisplay.hideView()
+                            ColorPaletteDisplayKlop.hideView()
                             NarrativeKlop.showView()
                         }
                     }
@@ -113,5 +111,13 @@ class KcopSimulator(private val stage: Stage,
             }
         }
         return false
+    }
+
+    override fun dispose() {
+        packages.forEach {
+            it.dispose()
+        }
+
+        super.dispose()
     }
 }

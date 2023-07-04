@@ -25,15 +25,14 @@ class GdxTestMessageChannelHandler : IMessagingKlop, GdxTestBase() {
     }
 
     @AfterEach
-    fun removeChannel() {
+    override fun unload() {
         if (MessageChannelHandler.checkByTag(TestMessageBridge) != null)
             MessageChannelHandler.removeChannel(MessageChannelHandler.byTag(TestMessageBridge).messageChannel)
     }
 
     @AfterAll
-    override fun unload() {
-        MessageChannelHandler.dispose()
-        super.dispose()
+    override fun dispose() {
+        super<IMessagingKlop>.dispose()
     }
 
     @Test

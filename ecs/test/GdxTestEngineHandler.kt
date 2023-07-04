@@ -28,14 +28,13 @@ class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
     }
 
     @AfterEach
-    fun removeChannel() {
+    override fun unload() {
         testRunning = false
-        EngineHandler.dispose()
     }
 
     @AfterAll
-    override fun unload() {
-        super.dispose()
+    override fun dispose() {
+        super<IECSKlop>.dispose()
     }
 
     override fun render() {

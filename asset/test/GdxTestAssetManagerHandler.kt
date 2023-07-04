@@ -50,8 +50,7 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
     }
 
     @AfterEach
-    fun cleanupTestData() {
-
+    override fun unload() {
         testData.forEach {
             Path(it.assetPath()).deleteIfExists()
             Log.test("deleted", it.assetPath())
@@ -61,9 +60,8 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
     }
 
     @AfterAll
-    override fun unload() {
-        AssetManagerHandler.dispose()
-        super.dispose()
+    override fun dispose() {
+        super<IAssetKlop>.dispose()
     }
 
     @Test

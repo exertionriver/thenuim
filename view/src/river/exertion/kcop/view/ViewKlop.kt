@@ -67,6 +67,10 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     override fun dispose() {
         SdcHandler.dispose()
         KcopSkin.dispose()
+
+        super<IMessagingKlop>.dispose()
+        super<IAssetKlop>.dispose()
+        super<IECSKlop>.dispose()
     }
 
     const val KcopBridge = "KcopBridge"

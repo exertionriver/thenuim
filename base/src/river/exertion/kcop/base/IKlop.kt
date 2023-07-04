@@ -7,5 +7,5 @@ interface IKlop {
     fun load()
     fun unload()
 
-    fun dispose()
+    fun dispose() {}
 }
