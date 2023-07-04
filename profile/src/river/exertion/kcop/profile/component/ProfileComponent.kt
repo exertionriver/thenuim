@@ -80,7 +80,7 @@ class ProfileComponent : IComponent, Telegraph {
                     if (isValid(this)) {
                         when (profileComponentMessage.profileMessageType) {
                             ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer -> {
-                                ImmersionTimerComponent.ecsInit(immersionTimerPair = ImmersionTimerPair(instTimer, cumlTimer))
+                                ImmersionTimerComponent.ecsInit(initData = ImmersionTimerPair(instTimer, cumlTimer))
                             }
                             ProfileComponentMessage.ProfileMessageType.Inactivate -> {
                                 inactivate()

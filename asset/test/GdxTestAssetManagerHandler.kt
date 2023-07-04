@@ -1,3 +1,4 @@
+import com.badlogic.gdx.utils.GdxRuntimeException
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import river.exertion.kcop.asset.AssetManagerHandler
@@ -184,5 +185,21 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
         TestIAssetStore.values().forEachIndexed { idx, it -> assertEquals(it.path, loadedVals[idx].testIAssetData.dataString) }
 
         cleanupTestIAssetStore()
+    }
+
+    @Test
+    fun testNoLoadGetException() {
+
+        Log.test("attempting to getAsset without load", TestIAssetStore.TestIAsset0.path)
+
+        val getAssetNoLoadException = Assertions.assertThrows(GdxRuntimeException::class.java) { TestIAssetStore.TestIAsset0.get() }
+        Log.test("getAsset() exception correctly thrown for unloaded asset", getAssetNoLoadException.message)
+
+
+        Log.test("attempting to getAssets without load", TestIAssetStore.values().map { it.path }.str(","))
+
+        val getAssetsNoLoadException = Assertions.assertThrows(GdxRuntimeException::class.java) { TestIAssetStore.getAll() }
+        Log.test("getAssets() exception correctly thrown for unloaded asset", getAssetsNoLoadException.message)
+
     }
 }

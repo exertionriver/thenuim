@@ -88,7 +88,7 @@ object NarrativeComponentNavStatusHandler {
                 changed = true
 
                 if (blockCumlTimer)
-                    ImmersionTimerComponent.ecsInit(immersionTimerPair = ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
+                    ImmersionTimerComponent.ecsInit(initData = ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
             }
 
         }

@@ -1,6 +1,7 @@
 package river.exertion.kcop.ecs.component
 
 import river.exertion.kcop.base.Id
+import river.exertion.kcop.ecs.EngineHandler
 import java.time.LocalDateTime
 import java.util.*
 
@@ -20,4 +21,10 @@ class IRLTimeComponent : IComponent {
     private fun localSecondsStr() = localDateTime().second.toString().padStart(2, '0')
 
     fun localTime() = "${localHoursStr()}:${localMinutesStr()}:${localSecondsStr()}"
+
+    companion object : IComponentCompanion {
+        override fun ecsInit(entityName : String, initData : Any?) {
+            EngineHandler.replaceComponent<IRLTimeComponent>(entityName, initData)
+        }
+    }
 }

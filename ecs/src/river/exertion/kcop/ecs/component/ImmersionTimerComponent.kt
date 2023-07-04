@@ -30,9 +30,9 @@ class ImmersionTimerComponent : IComponent {
     fun instImmersionTime() = if (isInitialized) immersionTimerPair.instImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
     fun cumlImmersionTime() = if (isInitialized) immersionTimerPair.cumlImmersionTimer.immersionTime() else ImmersionTimer.CumlTimeZero
 
-    companion object {
-        fun ecsInit(entityName : String = SubjectEntity.entityName, immersionTimerPair : ImmersionTimerPair? = null) {
-            EngineHandler.replaceComponent<ImmersionTimerComponent>(entityName, immersionTimerPair)
+    companion object : IComponentCompanion {
+        override fun ecsInit(entityName : String, initData : Any?) {
+            EngineHandler.replaceComponent<ImmersionTimerComponent>(entityName, initData)
         }
     }
 }
