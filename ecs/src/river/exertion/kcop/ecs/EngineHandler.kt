@@ -18,6 +18,11 @@ object EngineHandler {
     val entities = mutableMapOf<IEntity, Entity>()
     val subjectEntity = instantiateEntity<SubjectEntity>()
 
+    fun systemsSize() = engine.systems.size()
+    fun entitiesSize() = engine.entities.size()
+
+    fun iEntitiesSize() = entities.size
+
     fun update(deltaTime : Float) = engine.update(deltaTime)
 
     fun iEntityByName(entityName : String) : IEntity = entities.entries.firstOrNull { it.key.entityName == entityName }?.key ?: throw Exception("iEntityByName:$entityName not found")

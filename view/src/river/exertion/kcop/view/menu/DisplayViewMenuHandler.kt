@@ -5,13 +5,15 @@ import river.exertion.kcop.view.layout.DisplayView
 
 object DisplayViewMenuHandler {
 
-    val displayViewMenus = mutableListOf<DisplayViewMenu>()
+    private val displayViewMenus = mutableListOf<DisplayViewMenu>()
 
     var currentMenuTag = MainMenu.tag
         set(value) {
             field = value
             DisplayView.build()
         }
+
+    fun size() = displayViewMenus.size
 
     fun checkByTag(menuTag : String) : DisplayViewMenu? {
         return displayViewMenus.firstOrNull { it.tag == menuTag }

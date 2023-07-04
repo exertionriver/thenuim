@@ -11,6 +11,11 @@ dependencies {
     implementation project(path: ':NarrativeSim')
 }
 
+test {
+    useJUnitPlatform()
+    jvmArgs "-Xshare:off"
+}
+
 compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
 }

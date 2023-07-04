@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeBridge
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
+import river.exertion.kcop.view.layout.InputView
 import river.exertion.kcop.view.layout.PauseView
 
 object NarrativeInputProcessor : InputProcessor {
@@ -30,6 +31,10 @@ object NarrativeInputProcessor : InputProcessor {
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        return false
+    }
+
+    override fun touchCancelled(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         return false
     }
 

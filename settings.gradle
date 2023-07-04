@@ -1,6 +1,6 @@
 rootProject.name = 'kcop'
 
-include 'desktop', 'android', 'core'
+include 'desktop', 'core'
 include 'ColorPaletteSim'
 include 'base'
 include 'view'

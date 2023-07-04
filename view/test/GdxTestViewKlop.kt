@@ -1,189 +1,72 @@
-import com.badlogic.gdx.Gdx
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Id
 import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.ecs.klop.IECSKlop
+import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.view.SdcHandler
+import river.exertion.kcop.view.ViewKlop
+import river.exertion.kcop.view.asset.*
+import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 
-class GdxTestViewKlop : IECSKlop, GdxTestBase() {
+class GdxTestViewKlop : GdxTestBase() {
 
-    override var id = Id.randomId()
-    override var name = this::class.simpleName.toString()
-
-//    var testSystem = TestSystem()
     var testRunning = false
 
     @BeforeAll
-    override fun load() {
+    fun init() {
         init(this)
     }
 
     @BeforeEach
-    override fun loadSystems() {
- //       EngineHandler.addSystem(testSystem)
+    fun loadKlop() {
+        ViewKlop.load()
     }
 
     @AfterEach
-    override fun unload() {
+    fun unloadKlop() {
         testRunning = false
+
+        ViewKlop.dispose()
     }
 
-    @AfterAll
-    override fun dispose() {
-        super<IECSKlop>.dispose()
-    }
-
-    override fun render() {
-        if (testRunning) {
-            Log.test("render() delta time", Gdx.app.graphics.deltaTime.toString())
-            EngineHandler.update(Gdx.app.graphics.deltaTime)
-        }
-    }
-/*
-    @Test
-    fun testInitRemoveEntity() {
-        Log.test("instantiating ${TestEntity.EntityName}")
-        EngineHandler.instantiateEntity<TestEntity>()
-
-        EngineHandler.entityByName(TestEntity.EntityName)
-        Log.test(TestEntity.EntityName, "found!")
-
-        val byWrongNameException = assertThrows(Exception::class.java) { EngineHandler.entityByName(TestEntity.EntityName + "notFound") }
-        Log.test("byName() exception correctly thrown for bad name", byWrongNameException.message)
-
-        Log.test("removing ${TestEntity.EntityName} by name")
-        EngineHandler.removeEntity(TestEntity.EntityName)
-
-        var byRightNameException = assertThrows(Exception::class.java) { EngineHandler.entityByName(TestEntity.EntityName) }
-        Log.test("byName() exception correctly thrown for removed, good name", byRightNameException.message)
-
-        Log.test("instantiating ${TestEntity.EntityName} again")
-        EngineHandler.instantiateEntity<TestEntity>()
-
-        EngineHandler.entityByName(TestEntity.EntityName)
-        Log.test(TestEntity.EntityName, "found!")
-
-        Log.test("removing ${TestEntity.EntityName} by class")
-        EngineHandler.removeEntity(TestEntity::class)
-
-        byRightNameException = assertThrows(Exception::class.java) { EngineHandler.entityByName(TestEntity.EntityName) }
-        Log.test("byName() exception correctly thrown for removed, good name", byRightNameException.message)
-
-        Log.test("instantiating ${TestEntity.EntityName} again")
-        EngineHandler.instantiateEntity<TestEntity>()
-
-        EngineHandler.entityByName(TestEntity.EntityName)
-        Log.test(TestEntity.EntityName, "found!")
-
-        Log.test("removing ${TestEntity.EntityName} by IEntity")
-        EngineHandler.removeEntity(EngineHandler.iEntityByName(TestEntity.EntityName))
-
-        byRightNameException = assertThrows(Exception::class.java) { EngineHandler.entityByName(TestEntity.EntityName) }
-        Log.test("byName() exception correctly thrown for removed, good name", byRightNameException.message)
-
-        Log.test("initializing ${TestEntity.EntityName}")
-        val entityInitName = "entityInitName"
-        EngineHandler.instantiateEntity<TestEntity>(entityInitName)
-
-        EngineHandler.entityByName(entityInitName)
-        Log.test(entityInitName, "found!")
+    override fun create() {
+        super.create()
+        SdcHandler.batch = twoBatch
     }
 
     @Test
-    fun badInitEntity() {
-        val integer : Int = 123
+    fun testLoadedSizes() {
+        Log.test("loaded counts")
 
-        val initException = assertThrows(Exception::class.java) { EngineHandler.instantiateEntity<TestEntity>(integer) }
-        Log.test("init exception", "correctly thrown for wrong init type: ${initException.cause}")
+        val channelsSize = 1
+
+        Log.test("MessageChannelHandler", MessageChannelHandler.size().toString())
+        assertEquals(channelsSize, MessageChannelHandler.size())
+
+        //ftf is doubled since it generates bitmapFont assets
+        val assetsSize = 2 * FreeTypeFontAssetStore.values().size +
+                MusicAssetStore.values().size +
+                // skin loads .json, .png, .atlas
+                3 * SkinAssetStore.values().size +
+                SoundAssetStore.values().size +
+                TextureAssetStore.values().size
+
+        Log.test("AssetManagerHandler", AssetManagerHandler.loadedSize().toString())
+        assertEquals(assetsSize, AssetManagerHandler.loadedSize())
+
+        val systemsSize = 1
+
+        Log.test("EngineHandler (systems)", EngineHandler.systemsSize().toString())
+        assertEquals(systemsSize, EngineHandler.systemsSize())
+
+        val displayViewMenusSize = 1
+
+        Log.test("DisplayViewMenus", DisplayViewMenuHandler.size().toString())
+        assertEquals(displayViewMenusSize, DisplayViewMenuHandler.size())
     }
-
-    @Test
-    fun testAddInitRemoveComponent() {
-
-        Log.test("instantiating ${TestEntity.EntityName}")
-        EngineHandler.instantiateEntity<TestEntity>()
-
-        var componentIsPresent = EngineHandler.hasComponent<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        var presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-
-        assertFalse(componentIsPresent)
-        assertNull(presentComponent)
-
-        Log.test("adding component", TestComponent.ComponentName)
-        EngineHandler.addComponent<TestComponent>(TestEntity.EntityName)
-
-        componentIsPresent = EngineHandler.hasComponent<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-
-        assertTrue(componentIsPresent)
-        assertEquals(TestComponent.ComponentName, presentComponent?.componentName)
-
-        Log.test("removing component", TestComponent.ComponentName)
-        EngineHandler.removeComponent<TestComponent>(TestEntity.EntityName)
-
-        componentIsPresent = EngineHandler.hasComponent<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-
-        assertFalse(componentIsPresent)
-        assertNull(presentComponent)
-
-        val manualInitComponentName = "manualInitComponentName"
-        val manualInitComponent = TestComponent().apply { this.componentName = "manualInitComponentName" }
-
-        Log.test("adding manual init component", manualInitComponent.componentName)
-        EngineHandler.addComponentInstance<TestComponent>(TestEntity.EntityName, manualInitComponent)
-
-        presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        assertNotNull(presentComponent)
-        assertEquals(manualInitComponentName, presentComponent?.componentName)
-
-        val initComponentName = "initComponentName"
-
-        Log.test("replacing with init component", manualInitComponent.componentName)
-        EngineHandler.replaceComponent<TestComponent>(TestEntity.EntityName, initComponentName)
-
-        presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        assertNotNull(presentComponent)
-        assertEquals(initComponentName, presentComponent?.componentName)
-
-        Log.test("testing add component when already added", initComponentName)
-        EngineHandler.addComponent<TestComponent>(TestEntity.EntityName, initComponentName)
-        presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        assertEquals(initComponentName, presentComponent?.componentName)
-
-        EngineHandler.addComponentInstance<TestComponent>(TestEntity.EntityName, manualInitComponent)
-        presentComponent = EngineHandler.getComponentFor<TestComponent>(EngineHandler.entityByName(TestEntity.EntityName))
-        assertEquals(initComponentName, presentComponent?.componentName)
-
-    }
-
-    @Test
-    fun badInitComponent() {
-        val integer : Int = 123
-
-        EngineHandler.instantiateEntity<TestEntity>()
-
-        val initException = assertThrows(Exception::class.java) { EngineHandler.addComponent<TestComponent>(initInfo = integer) }
-        Log.test("init exception", "correctly thrown for wrong init type: ${initException.cause}")
-    }
-
-    @Test
-    fun testSystem() {
-        testRunning = true
-
-        EngineHandler.instantiateEntity<TestEntity>(TestSystemEntityInitName)
-
-        val componentInitName = "testSystemComponentInitName"
-        EngineHandler.addComponent<TestComponent>(TestSystemEntityInitName, componentInitName)
-
-        runBlocking { delay(2000L) }
-    }
-
-    companion object {
-        const val TestSystemEntityInitName = "testSystemEntityInitName"
-    }*/
 }

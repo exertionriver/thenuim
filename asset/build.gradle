@@ -8,6 +8,8 @@ sourceCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
+sourceSets.main.resources.srcDirs = ["res/"]
+sourceSets.test.resources.srcDirs = ["res/"]
 
 dependencies {
     api project(path: ':messaging')
@@ -23,6 +25,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    jvmArgs "-Xshare:off"
 }
 
 compileKotlin {

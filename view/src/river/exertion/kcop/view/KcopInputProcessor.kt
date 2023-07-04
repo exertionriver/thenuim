@@ -44,6 +44,13 @@ object KcopInputProcessor : InputProcessor {
         return false
     }
 
+    override fun touchCancelled(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        InputView.releaseEvent()
+        InputView.build()
+
+        return false
+    }
+
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
         InputView.touchEvent(screenX, screenY, -1)
         InputView.build()

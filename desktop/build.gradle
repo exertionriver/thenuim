@@ -1,9 +1,8 @@
 sourceCompatibility = 16
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../android/assets"]
 
 project.ext.mainClassName = "river.exertion.kcop.DesktopLauncher"
-project.ext.assetsDir = new File("../android/assets")
+project.ext.assetsDir = new File("../asset/src")
 
 import org.gradle.internal.os.OperatingSystem
 

@@ -26,6 +26,8 @@ object AssetManagerHandler {
 
     val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; isLenient = true }
 
+    fun loadedSize() = assets.loadedAssets
+
     inline fun <reified T: IAsset>reloadLocalAssets(assetLoadLocation : String, assetLoadExtension : String): List<T> {
 
         clearAssets<T>()

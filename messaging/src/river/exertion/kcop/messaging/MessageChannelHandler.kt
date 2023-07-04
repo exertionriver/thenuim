@@ -9,6 +9,8 @@ object MessageChannelHandler {
     private var messageChannelsIdx = -1
     private val messageChannels = mutableListOf<MessageChannelEntry>()
 
+    fun size() = messageChannels.size
+
     fun checkByTag(messageChannelTag : String) : MessageChannelEntry? {
         return messageChannels.firstOrNull { it.messageChannelTag == messageChannelTag }
     }
