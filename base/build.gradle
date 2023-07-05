@@ -16,6 +16,8 @@ configurations {
 dependencies {
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
 
+    api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+
     implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     implementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     implementation "io.mockk:mockk:1.13.5"

@@ -1,6 +1,5 @@
 package river.exertion.kcop.base
 
-import com.badlogic.gdx.Application
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Graphics
@@ -8,11 +7,6 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.GL30
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.utils.viewport.FitViewport
-import com.badlogic.gdx.utils.viewport.Viewport
 import io.mockk.mockk
 import org.junit.jupiter.api.TestInstance
 
@@ -33,13 +27,14 @@ open class GdxTestBase : ApplicationListener, TestBase() {
     }
 
     override fun create() {
-        KcopBase.init(true)
+        KcopBase.create(true)
     }
 
     override fun resize(width: Int, height: Int) {
     }
 
     override fun render() {
+        KcopBase.render(Gdx.app.graphics.deltaTime)
     }
 
     override fun pause() {

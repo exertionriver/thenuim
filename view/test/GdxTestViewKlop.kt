@@ -8,14 +8,11 @@ import river.exertion.kcop.base.GdxTestBase
 import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.asset.*
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 
 class GdxTestViewKlop : GdxTestBase() {
-
-    var testRunning = false
 
     @BeforeAll
     fun init() {
@@ -29,8 +26,6 @@ class GdxTestViewKlop : GdxTestBase() {
 
     @AfterEach
     fun unloadKlop() {
-        testRunning = false
-
         ViewKlop.dispose()
     }
 

@@ -9,18 +9,9 @@ import river.exertion.kcop.simulation.KcopSimulator
 
 class Kcop : KtxGame<KtxScreen>() {
 
-    private val context = Context()
-
     override fun create() {
-        KcopBase.init()
-
-        context.register {
-            bindSingleton(KcopBase.orthoCamera)
-            bindSingleton(KcopBase.stage)
-
-            addScreen(KcopSimulator( inject(), inject() ) )
-        }
-
+        KcopBase.create()
+        addScreen(KcopSimulator())
         setScreen<KcopSimulator>()
     }
 }

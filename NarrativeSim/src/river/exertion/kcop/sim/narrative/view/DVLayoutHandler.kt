@@ -20,13 +20,13 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {
-        return SdcHandler.get("pane_${dvPane.idx}", overrideColor ?: KcopSkin.BackgroundColor).textureRegion().apply {
+        return SdcHandler.getorad("pane_${dvPane.idx}", overrideColor ?: KcopSkin.BackgroundColor).textureRegion().apply {
             this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
         }
     }
 
     fun paneBATexture(dvPane: DVPane) : TextureRegion {
-        return SdcHandler.getBlackAlpha("bapane_${dvPane.idx}", dvPane.alphaMask).textureRegion().apply {
+        return SdcHandler.getoradBackgroundAlpha("bapane_${dvPane.idx}", dvPane.alphaMask).textureRegion().apply {
             this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
         }
     }

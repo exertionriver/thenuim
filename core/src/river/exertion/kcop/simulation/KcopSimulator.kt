@@ -9,12 +9,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ktx.app.KtxScreen
 import river.exertion.kcop.base.IKlop
+import river.exertion.kcop.base.KcopBase
+import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.ViewLayout
@@ -22,8 +26,7 @@ import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 
-class KcopSimulator(private val stage: Stage,
-                    private val orthoCamera: OrthographicCamera) : Telegraph, KtxScreen {
+class KcopSimulator : Telegraph, KtxScreen {
 
     private val packages = mutableListOf<IKlop>(
         NarrativeKlop,
@@ -43,12 +46,7 @@ class KcopSimulator(private val stage: Stage,
 
     override fun render(delta: Float) {
 
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
-
-        stage.act(Gdx.graphics.deltaTime)
-        stage.draw()
-
-        EngineHandler.update(delta)
+        KcopBase.render(delta, EngineHandler.engine)
     }
 
     override fun hide() {
@@ -57,7 +55,7 @@ class KcopSimulator(private val stage: Stage,
     override fun show() {
         inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(KcopInputProcessor)
-        inputMultiplexer.addProcessor(stage)
+        inputMultiplexer.addProcessor(KcopBase.stage)
 
         NarrativeKlop.inputMultiplexer = inputMultiplexer
         ColorPaletteDisplayKlop.inputMultiplexer = inputMultiplexer
@@ -66,7 +64,7 @@ class KcopSimulator(private val stage: Stage,
 
         NarrativeKlop.showView()
 
-        viewLayout.build(stage)
+        viewLayout.build(KcopBase.stage)
     }
 
     override fun pause() {
@@ -76,9 +74,9 @@ class KcopSimulator(private val stage: Stage,
     }
 
     override fun resize(width: Int, height: Int) {
-        orthoCamera.viewportWidth = width.toFloat()
-        orthoCamera.viewportHeight = height.toFloat()
-        stage.viewport.update(width, height)
+        KcopBase.orthoCamera.viewportWidth = width.toFloat()
+        KcopBase.orthoCamera.viewportHeight = height.toFloat()
+        KcopBase.stage.viewport.update(width, height)
     }
 
     override fun handleMessage(msg: Telegram?): Boolean {
@@ -89,11 +87,11 @@ class KcopSimulator(private val stage: Stage,
 
                     when (kcopSimulationMessage.kcopMessageType) {
                         KcopSimulationMessage.KcopMessageType.FullScreen -> {
-                            viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.KcopScreen -> {
-                            viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(stage.width, stage.height))
+                            viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {

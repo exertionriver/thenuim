@@ -1,7 +1,9 @@
 package river.exertion.kcop.base
 
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
@@ -25,16 +27,25 @@ object KcopBase {
 
     fun appTitleFull() = "$appTitle $appVersion"
 
-    fun init(isTesting : Boolean? = false) {
+    fun create(isTesting : Boolean? = false) {
 
         Gdx.app.logLevel = Application.LOG_DEBUG
 
-        orthoCamera = OrthographicCamera().apply { setToOrtho(false, initViewportWidth, initViewportHeight) }
+        orthoCamera = if (isTesting == true) mockk<OrthographicCamera>(relaxed = true) else OrthographicCamera().apply { setToOrtho(false, initViewportWidth, initViewportHeight) }
 
         viewport = if (isTesting == true) mockk<FitViewport>(relaxed = true) else FitViewport(initViewportWidth, initViewportHeight, orthoCamera)
 
         twoBatch = if (isTesting == true) mockk<PolygonSpriteBatch>(relaxed = true) else PolygonSpriteBatch()
 
-        stage = Stage(viewport, twoBatch)
+        stage = if (isTesting == true) mockk<Stage>(relaxed = true) else Stage(viewport, twoBatch)
+    }
+
+    fun render(delta : Float, pooledEngine : PooledEngine? = null) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+
+        stage.act(delta)
+        stage.draw()
+
+        pooledEngine?.update(delta)
     }
 }

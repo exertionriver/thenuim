@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.PooledEngine
 import ktx.ashley.entity
+import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.entity.IEntity
 import river.exertion.kcop.ecs.entity.SubjectEntity

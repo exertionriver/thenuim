@@ -14,7 +14,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
 
-    api "com.badlogicgames.ashley:ashley:$ashleyVersion"
     api "io.github.libktx:ktx-ashley:$ktxVersion"
 
     testImplementation project(path: ':base', configuration: 'testDependencies')
