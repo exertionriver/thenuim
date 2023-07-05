@@ -6,6 +6,10 @@ project.ext.assetsDir = new File("../asset/src")
 
 import org.gradle.internal.os.OperatingSystem
 
+dependencies {
+    implementation project(path: ':base')
+}
+
 tasks.register('run', JavaExec) {
     dependsOn classes
     mainClass = project.mainClassName

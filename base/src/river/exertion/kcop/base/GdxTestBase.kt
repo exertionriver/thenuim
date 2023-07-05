@@ -19,9 +19,6 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class GdxTestBase : ApplicationListener, TestBase() {
 
-    lateinit var viewport : Viewport
-    lateinit var twoBatch : Batch
-
     fun init(testClass : ApplicationListener) {
         if (Gdx.app == null) {
             val conf = HeadlessApplicationConfiguration()
@@ -36,16 +33,7 @@ open class GdxTestBase : ApplicationListener, TestBase() {
     }
 
     override fun create() {
-        val initViewportWidth = 1280F
-        val initViewportHeight = 720F
-
-        Gdx.app.logLevel = Application.LOG_DEBUG
-
-        val orthoCamera = OrthographicCamera().apply { setToOrtho(false, initViewportWidth, initViewportHeight) }
-
-        viewport = FitViewport(initViewportWidth, initViewportHeight, orthoCamera)
-
-        twoBatch = mockk<PolygonSpriteBatch>(relaxed = true)
+        KcopBase.init(true)
     }
 
     override fun resize(width: Int, height: Int) {

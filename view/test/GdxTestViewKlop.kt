@@ -34,11 +34,6 @@ class GdxTestViewKlop : GdxTestBase() {
         ViewKlop.dispose()
     }
 
-    override fun create() {
-        super.create()
-        SdcHandler.batch = twoBatch
-    }
-
     @Test
     fun testLoadedSizes() {
         Log.test("loaded counts")

@@ -8,14 +8,15 @@ import ktx.actors.onClick
 import ktx.actors.onEnter
 import ktx.assets.disposeSafely
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.view.layout.AudioView
 
 object KcopSkin {
 
     val uiSounds = mutableMapOf<UiSounds, Music>()
 
-    var screenWidth = 50f
-    var screenHeight = 50f
+    var screenWidth = KcopBase.initViewportWidth
+    var screenHeight = KcopBase.initViewportHeight
 
     lateinit var skin : Skin
 

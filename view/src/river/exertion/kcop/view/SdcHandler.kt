@@ -1,16 +1,15 @@
 package river.exertion.kcop.view
 
-import com.badlogic.gdx.graphics.g2d.Batch
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.asset.view.ColorPalette.Companion.randomW3cBasic
+import river.exertion.kcop.base.KcopBase
 
 object SdcHandler {
 
     var sdcRegister = mutableMapOf<String, ShapeDrawerConfig>()
-    lateinit var batch : Batch
 
     private fun add(tag : String, baseCP : ColorPalette, alpha : Float? = 1f) { sdcRegister[tag] =
-        ShapeDrawerConfig(batch, baseCP.color(), alpha)
+        ShapeDrawerConfig(KcopBase.twoBatch, baseCP.color(), alpha)
     }
 
     fun getBlackAlpha(tag : String, alpha: Float? = 1f) : ShapeDrawerConfig {
