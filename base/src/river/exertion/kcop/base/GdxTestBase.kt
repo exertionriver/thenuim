@@ -8,15 +8,23 @@ import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.GL30
 import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.TestInstance
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class GdxTestBase : ApplicationListener, TestBase() {
 
-    fun init(testClass : ApplicationListener) {
+    var gdxTestRunning = false
+    var gdxTestShowRender = false
+
+    @BeforeAll
+    fun init() {
         if (Gdx.app == null) {
             val conf = HeadlessApplicationConfiguration()
-            HeadlessApplication(testClass, conf)
+            HeadlessApplication(this, conf)
         }
         if (Gdx.gl == null) {
             Gdx.gl = mockk<GL20>(relaxed = true)
@@ -24,6 +32,13 @@ open class GdxTestBase : ApplicationListener, TestBase() {
             Gdx.gl30 = mockk<GL30>(relaxed = true)
             Gdx.graphics = mockk<Graphics>(relaxed = true)
         }
+    }
+
+    //each test is on the hook for enabling GdxTestRunning, which enables render() loop
+    //gdxShowRender can be set per test suite, as desired
+    @AfterEach
+    fun disableGdxTestRunning() {
+        gdxTestRunning = false
     }
 
     override fun create() {
@@ -34,7 +49,12 @@ open class GdxTestBase : ApplicationListener, TestBase() {
     }
 
     override fun render() {
-        KcopBase.render(Gdx.app.graphics.deltaTime)
+        if (gdxTestRunning) {
+            if (gdxTestShowRender) {
+                Log.test("render() delta time", Gdx.graphics.deltaTime.toString())
+            }
+            KcopBase.render(Gdx.graphics.deltaTime)
+        }
     }
 
     override fun pause() {

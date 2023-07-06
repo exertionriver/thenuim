@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.base.GdxTestBase
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
@@ -18,12 +19,7 @@ class GdxTestComponentInit : GdxTestBase()  {
 
     @BeforeAll
     fun loadSystem() {
-        init(this)
         EngineHandler.addSystem(TestComponentSystem())
-    }
-
-    override fun render() {
-        EngineHandler.update(Gdx.app.graphics.deltaTime)
     }
 
     @Test

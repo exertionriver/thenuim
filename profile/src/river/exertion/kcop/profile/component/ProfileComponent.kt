@@ -1,14 +1,13 @@
 package river.exertion.kcop.profile.component
 
-import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
+import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
-import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.kcop.profile.Profile
 import river.exertion.kcop.profile.ProfileKlop.ProfileBridge
 import river.exertion.kcop.profile.asset.ProfileAsset
@@ -95,9 +94,6 @@ class ProfileComponent : IComponent, Telegraph {
     }
 
     companion object {
-        fun has(entity : Entity?) : Boolean = entity?.components?.firstOrNull{ it is ProfileComponent } != null
-        fun getFor(entity : Entity?) : ProfileComponent? = if (has(entity)) entity?.components?.firstOrNull { it is ProfileComponent } as ProfileComponent else null
-
         fun ecsInit() {
             EngineHandler.replaceComponent<ProfileComponent>()
         }

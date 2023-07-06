@@ -14,16 +14,18 @@ class GdxTestMessageChannelHandler : IMessagingKlop, GdxTestBase() {
 
     var channelIdx = -1
 
+    //used for IMessagingKlop overload
     @BeforeAll
     override fun load() {
-        init(this)
     }
 
+    //used for IMessagingKlop overload
     @BeforeEach
     override fun loadChannels() {
         channelIdx = MessageChannelHandler.addChannel(MessageChannel(TestMessageBridge, TestMessage::class))
     }
 
+    //used for IMessagingKlop overload
     @AfterEach
     override fun unload() {
         if (MessageChannelHandler.checkByTag(TestMessageBridge) != null)

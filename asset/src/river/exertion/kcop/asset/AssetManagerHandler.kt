@@ -70,7 +70,7 @@ object AssetManagerHandler {
         val returnList = mutableListOf<AssetStatus>()
 
         //log any load errors
-        getAssets<T>().filter { it.assetStatus != null }.forEach {
+        getAssets<T>().filter { it.assetStatus?.status == AssetStatus.AssetNotLoaded }.forEach {
             returnList.add(it.assetStatus!!)
         }
 

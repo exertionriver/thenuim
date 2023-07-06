@@ -13,7 +13,7 @@ object SdcHandler {
         ShapeDrawerConfig(KcopBase.twoBatch, baseCP.color(), alpha)
     }
 
-    fun has(tag : String) = sdcRegister.keys.firstOrNull { keyTag -> keyTag == tag }
+    fun has(tag : String) = sdcRegister.keys.firstOrNull { keyTag -> keyTag == tag } != null
 
     fun getoradBackgroundAlpha(tag : String, alpha: Float? = 1f, baseCP: ColorPalette? = KcopSkin.BackgroundColor) : ShapeDrawerConfig {
         return getorad(tag, baseCP!!, alpha!!)

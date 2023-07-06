@@ -1,4 +1,3 @@
-import com.badlogic.gdx.Gdx
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
@@ -15,33 +14,25 @@ class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
     override var name = this::class.simpleName.toString()
 
     var testSystem = TestSystem()
-    var testRunning = false
 
+    //used for IECSKlop overload
     @BeforeAll
-    override fun load() {
-        init(this)
-    }
+    override fun load() {}
 
+    //used for IECSKlop overload
     @BeforeEach
     override fun loadSystems() {
         EngineHandler.addSystem(testSystem)
     }
 
+    //used for IECSKlop overload
     @AfterEach
     override fun unload() {
-        testRunning = false
     }
 
     @AfterAll
     override fun dispose() {
         super<IECSKlop>.dispose()
-    }
-
-    override fun render() {
-        if (testRunning) {
-            Log.test("render() delta time", Gdx.app.graphics.deltaTime.toString())
-            EngineHandler.update(Gdx.app.graphics.deltaTime)
-        }
     }
 
     @Test
@@ -173,7 +164,7 @@ class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
 
     @Test
     fun testSystem() {
-        testRunning = true
+        gdxTestRunning = true
 
         EngineHandler.instantiateEntity<TestEntity>(TestSystemEntityInitName)
 

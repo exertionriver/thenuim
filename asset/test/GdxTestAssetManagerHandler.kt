@@ -28,19 +28,14 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
     override var name = this::class.simpleName.toString()
 
     //used for IAssetKlop overload, does not actually load assets
+    @BeforeEach
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(TestIAsset::class.java, TestIAssetLoader(lfhr))
     }
 
-    @BeforeAll
-    override fun load() {
-        init(this)
-    }
-
+    //used for IAssetKlop overload
     @BeforeEach
-    fun initTestData() {
-        loadAssets()
-
+    override fun load() {
         testData = mutableListOf(TestIAsset(), TestIAsset(), TestIAsset())
 
         testData.forEach {
@@ -49,6 +44,7 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
         }
     }
 
+    //used for IAssetKlop overload
     @AfterEach
     override fun unload() {
         testData.forEach {
@@ -145,7 +141,7 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
 
         loadAssetsByLocation<TestIAsset>(TestIAssets.iAssetsLocation, TestIAssets.iAssetsExtension)
 
-        getAssets<TestIAsset>()[0].assetStatus = AssetStatus("assetPath", "test_status", "test_status_detail")
+        getAssets<TestIAsset>()[0].assetStatus = AssetStatus("assetPath", AssetStatus.AssetNotLoaded, "test_status_detail")
 
         val failedAssets = logAssets<TestIAsset>()
 

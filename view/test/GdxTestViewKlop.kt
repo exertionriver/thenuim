@@ -14,11 +14,6 @@ import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 
 class GdxTestViewKlop : GdxTestBase() {
 
-    @BeforeAll
-    fun init() {
-        init(this)
-    }
-
     @BeforeEach
     fun loadKlop() {
         ViewKlop.load()
