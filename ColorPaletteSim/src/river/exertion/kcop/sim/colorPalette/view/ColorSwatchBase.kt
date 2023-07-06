@@ -50,7 +50,7 @@ class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidt
 
     fun addSwatch(idx : Int, colorPaletteEntry : Map.Entry<String?, ColorPalette>) {
 
-        val swatchTexture = SdcHandler.getorad("cpSwatch_${colorPaletteEntry.key}", colorPaletteEntry.value).textureRegion().apply {
+        val swatchTexture = SdcHandler.updorad("cpSwatch_${colorPaletteEntry.key}", colorPaletteEntry.value).textureRegion().apply {
             this.setRegion(topX.toInt(), (topY - swatchHeight * idx).toInt(), swatchWidth.toInt(), swatchHeight.toInt())
         }
 

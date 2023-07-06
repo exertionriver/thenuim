@@ -1,9 +1,7 @@
 package river.exertion.kcop.view
 
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.asset.view.ColorPalette.Companion.randomW3cBasic
 import river.exertion.kcop.base.KcopBase
-import river.exertion.kcop.base.Log
 
 object SdcHandler {
 
@@ -15,14 +13,18 @@ object SdcHandler {
 
     fun has(tag : String) = sdcRegister.keys.firstOrNull { keyTag -> keyTag == tag } != null
 
-    fun getoradBackgroundAlpha(tag : String, alpha: Float? = 1f, baseCP: ColorPalette? = KcopSkin.BackgroundColor) : ShapeDrawerConfig {
-        return getorad(tag, baseCP!!, alpha!!)
+    fun updoradBackgroundAlpha(tag : String, alpha: Float? = 1f) : ShapeDrawerConfig {
+        return getorad(tag).apply { this.setColor(this.baseColor, alpha)}
     }
 
-    fun getorad(tag: String, baseCP: ColorPalette, alpha: Float? = 1f) : ShapeDrawerConfig {
-        return if ( sdcRegister.containsKey(tag) ) sdcRegister[tag]!!.apply { this.setColor(baseCP.color(), alpha) }
+    fun updorad(tag: String, baseCP: ColorPalette? = KcopSkin.BackgroundColor, alpha: Float? = 1f) : ShapeDrawerConfig {
+        return getorad(tag, baseCP, alpha).apply { this.setColor(baseCP!!.color(), alpha!!) }
+    }
+
+    fun getorad(tag: String, baseCP: ColorPalette? = KcopSkin.BackgroundColor, alpha: Float? = 1f) : ShapeDrawerConfig {
+        return if ( sdcRegister.containsKey(tag) ) sdcRegister[tag]!!
         else {
-            add(tag, baseCP, alpha)
+            add(tag, baseCP!!, alpha!!)
             sdcRegister[tag]!!
         }
     }

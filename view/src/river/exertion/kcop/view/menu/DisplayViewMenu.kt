@@ -78,7 +78,7 @@ interface DisplayViewMenu {
     }
 
     fun menuColorTexture() : TextureRegion {
-        return SdcHandler.getorad("menu_$tag", backgroundColor).textureRegion().apply {
+        return SdcHandler.updorad("menu_$tag", backgroundColor).textureRegion().apply {
             this.setRegion(0, 0, ViewType.secondWidth(KcopSkin.screenWidth).toInt() - 1, ViewType.secondHeight(KcopSkin.screenHeight).toInt() - 1)
         }
     }

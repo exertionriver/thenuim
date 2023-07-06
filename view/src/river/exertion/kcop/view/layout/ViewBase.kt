@@ -27,7 +27,7 @@ interface ViewBase {
     fun backgroundColor() = if (KcopSkin.displayMode) viewType.defaultColor() else KcopSkin.BackgroundColor
 
     fun backgroundColorTexture() : TextureRegion {
-        return SdcHandler.getorad("background_${viewType}", backgroundColor()).textureRegion().apply {
+        return SdcHandler.updorad("background_${viewType}", backgroundColor()).textureRegion().apply {
                 this.setRegion(0, 0, tableWidth().toInt() - 1, tableHeight().toInt() - 1)
         }
     }

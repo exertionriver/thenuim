@@ -27,7 +27,7 @@ object LogView : ViewBase {
     private var scrollPane : ScrollPane = textScrollPane()
 
     fun textTimeBackgroundColorTexture() : TextureRegion {
-        return SdcHandler.getorad("textTime", backgroundColor().triad().second).textureRegion().apply {
+        return SdcHandler.updorad("textTime", backgroundColor().triad().second).textureRegion().apply {
                 this.setRegion(0, 0, textTimePaneDimensions.x.toInt() - 1, textTimePaneDimensions.y.toInt() - 1)
             }
     }
