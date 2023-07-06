@@ -7,6 +7,7 @@ import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.Id
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
@@ -40,6 +41,7 @@ import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.layout.MenuView
 import river.exertion.kcop.view.layout.PauseView
+import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam

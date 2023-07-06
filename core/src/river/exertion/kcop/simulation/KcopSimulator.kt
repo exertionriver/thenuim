@@ -5,7 +5,6 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.app.KtxScreen
-import river.exertion.kcop.base.IKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -14,6 +13,7 @@ import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
+import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
@@ -22,21 +22,22 @@ import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 class KcopSimulator : Telegraph, KtxScreen {
 
-    private val packages = mutableListOf<IKlop>(
+    private val displayViewPackages = mutableListOf<IDisplayViewKlop>(
         NarrativeKlop,
         ColorPaletteDisplayKlop
     )
 
     init {
-        packages.forEach {
+        displayViewPackages.forEach {
             it.load()
         }
 
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-    val viewLayout = ViewLayout
     private lateinit var inputMultiplexer : InputMultiplexer
+    var currentDisplayViewKlop : IDisplayViewKlop = NarrativeKlop
+
 
     override fun render(delta: Float) {
 
@@ -57,8 +58,7 @@ class KcopSimulator : Telegraph, KtxScreen {
         Gdx.input.inputProcessor = inputMultiplexer
 
         NarrativeKlop.showView()
-
-        viewLayout.build(KcopBase.stage)
+        ViewLayout.build(KcopBase.stage)
     }
 
     override fun pause() {
@@ -73,6 +73,7 @@ class KcopSimulator : Telegraph, KtxScreen {
         KcopBase.stage.viewport.update(width, height)
     }
 
+
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
@@ -81,20 +82,30 @@ class KcopSimulator : Telegraph, KtxScreen {
 
                     when (kcopSimulationMessage.kcopMessageType) {
                         KcopSimulationMessage.KcopMessageType.FullScreen -> {
-                            viewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
+                            ViewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.KcopScreen -> {
-                            viewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
+                            ViewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
-                            NarrativeKlop.hideView()
-                            ColorPaletteDisplayKlop.showView()
+                            currentDisplayViewKlop = ColorPaletteDisplayKlop
+
+                            displayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
+                                it.hideView()
+                            }
+
+                            currentDisplayViewKlop.showView()
                         }
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
-                            ColorPaletteDisplayKlop.hideView()
-                            NarrativeKlop.showView()
+                            currentDisplayViewKlop = NarrativeKlop
+
+                            displayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
+                                it.hideView()
+                            }
+
+                            currentDisplayViewKlop.showView()
                         }
                     }
 
@@ -106,7 +117,7 @@ class KcopSimulator : Telegraph, KtxScreen {
     }
 
     override fun dispose() {
-        packages.forEach {
+        displayViewPackages.forEach {
             it.dispose()
         }
 

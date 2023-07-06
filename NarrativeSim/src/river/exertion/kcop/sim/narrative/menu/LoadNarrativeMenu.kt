@@ -39,7 +39,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
                 }).growX().left()
                 this.row()
             }
-//        this.debug()
+            this.debug = KcopSkin.displayMode
             this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
         } else {
             this.add(Label("no narrative info found", KcopSkin.skin)

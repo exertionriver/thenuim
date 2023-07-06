@@ -36,7 +36,7 @@ object LoadProfileMenu : DisplayViewMenu {
                         }).growX().left()
                     this.row()
                 }
-//        this.debug()
+                this.debug = KcopSkin.displayMode
                 this@LoadProfileMenu.assignableActions.firstOrNull { it.label == "Yes" }
                     ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
             } else {

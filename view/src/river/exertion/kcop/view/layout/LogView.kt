@@ -101,7 +101,7 @@ object LogView : ViewBase {
                 })
             }).size(this.textTimePaneDimensions.x, this.textTimePaneDimensions.y)
 
-       // innerTable.debug()
+        if (KcopSkin.displayMode) innerTable.debug()
 
         return innerTable
     }
@@ -142,7 +142,7 @@ object LogView : ViewBase {
         }
 
         innerTable.top()
-//        innerTable.debug()
+        if (KcopSkin.displayMode) innerTable.debug()
 
         val scrollPane = ScrollPane(innerTable, KcopSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
@@ -151,7 +151,7 @@ object LogView : ViewBase {
             this.validate()
             //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
             this.layout()
-//            this.debug()
+            this.debug = KcopSkin.displayMode
         }
 
         this.scrollPane = scrollPane
@@ -166,12 +166,12 @@ object LogView : ViewBase {
                 this.add(backgroundColorImg()).grow()
             })
             this.add(Table().apply {
-//                this.debug()
+                this.debug = KcopSkin.displayMode
                 this.add(textTimeReadout())
                 this.row()
                 this.add(textScrollPane()).grow()
             })
- //           this.debug()
+            this.debug = KcopSkin.displayMode
         }).size(this.tableWidth(), this.tableHeight())
         viewTable.clip()
     }

@@ -37,7 +37,7 @@ object StatusView : ViewBase {
         }
 
         innerTable.top()
-//        innerTable.debug()
+        if (KcopSkin.displayMode) innerTable.debug()
 
             val scrollPane = ScrollPane(innerTable, KcopSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane

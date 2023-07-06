@@ -23,46 +23,68 @@ interface DisplayViewMenu {
 
     var menuPane : () -> Table
 
+    fun lastAssignableActionsIdx() = assignableActions.size - 1
+
+    fun addAssignableAction(menuActionParam : MenuActionParam, idx : Int? = lastAssignableActionsIdx()) {
+
+         assignableActions.add(idx!!, menuActionParam)
+    }
+
+    fun removeAssignableAction(menuActionParam : MenuActionParam) {
+
+        assignableActions.remove(menuActionParam)
+    }
+
+    fun lastAssignableNavsIdx() = assignableNavs.size - 1
+
+    fun addAssignableNav(menuActionParam : MenuActionParam, idx : Int? = lastAssignableNavsIdx()) {
+
+        assignableNavs.add(idx!!, menuActionParam)
+    }
+
+    fun removeAssignableNav(menuActionParam : MenuActionParam) {
+
+        assignableNavs.remove(menuActionParam)
+    }
+
     fun navButtonPane() : Table = Table().apply {
-       // this.debug()
+        this.debug = KcopSkin.displayMode
 
         this@DisplayViewMenu.assignableNavs.forEach { navEntry ->
             this.add(
-                TextButton(navEntry.label, KcopSkin.skin)
-                        //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
-                        .apply {
+                TextButton(navEntry.label, KcopSkin.skin).apply {
                     this.onClick {
                         navEntry.action()
                     this.center()
                     }
                 }
             ).padTop(ViewType.padHeight(KcopSkin.screenHeight))
+                .padRight(ViewType.padWidth(KcopSkin.screenWidth)).right()
             if (navEntry != this@DisplayViewMenu.assignableNavs.last()) this.row()
         }
     }
 
     fun actionButtonPane() : Table = Table().apply {
-     //   this.debug()
+        this.debug = KcopSkin.displayMode
 
         this@DisplayViewMenu.assignableActions.forEach { actionEntry ->
             this.add(
-                TextButton(actionEntry.label, KcopSkin.skin)
-                        //TextButton.TextButtonStyle().apply { this.font = bitmapFont} )
-                        .apply {
+                TextButton(actionEntry.label, KcopSkin.skin).apply {
                     if (actionEntry.enabled) {
                         this.onClick {
                             if (actionEntry.log != null)
                                 LogView.addLog(actionEntry.log!!)
                             actionEntry.action()
+                        this.center()
                         }
                     }
                 }
-            ).right().padRight(ViewType.padWidth(KcopSkin.screenWidth))
+            ).padBottom(ViewType.padHeight(KcopSkin.screenHeight)).right().padRight(ViewType.padWidth(KcopSkin.screenWidth))
         }
     }
 
     fun breadcrumbPane() = Table().apply {
-      //  this.debug()
+        this.debug = KcopSkin.displayMode
 
         breadcrumbEntries.entries.reversed().forEach { menuLabel ->
             this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(KcopFont.SMALL, backgroundColor.label()))
@@ -115,11 +137,11 @@ interface DisplayViewMenu {
                         this.add(navButtonPane()).top()
                         this.row()
                         this.add(actionButtonPane()).colspan(2).right()
-             //           this.debug()
+                        this.debug = KcopSkin.displayMode
                     }
                 )
             })
-          //  this.debug()
+            this.debug = KcopSkin.displayMode
         }
     }
 }

@@ -31,7 +31,7 @@ object MenuView : ViewBase {
         displayMode to {
             KcopSkin.displayMode = isChecked[displayMode]!!
             ViewLayout.rebuild()
-        },
+       },
         2 to {
             if (isChecked[2] == true) {
                 LogView.addLog("Color Palette On")

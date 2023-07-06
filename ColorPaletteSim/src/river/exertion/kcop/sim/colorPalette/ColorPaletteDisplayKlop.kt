@@ -2,9 +2,12 @@ package river.exertion.kcop.sim.colorPalette
 
 import com.badlogic.gdx.InputMultiplexer
 import river.exertion.kcop.base.Id
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteInputProcessor
 import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout
 import river.exertion.kcop.view.klop.IDisplayViewKlop
+import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.ViewLayout
 
 object ColorPaletteDisplayKlop : IDisplayViewKlop {
 

@@ -40,7 +40,7 @@ object NarrativeMenu : DisplayViewMenu {
 
             this.add(listCtrl).growY().top().left()
 //            this.add(Table())
-//            this.debug()
+            this.debug = KcopSkin.displayMode
             this.top()
             this.left()
         }

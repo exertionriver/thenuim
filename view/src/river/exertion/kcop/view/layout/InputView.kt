@@ -61,7 +61,7 @@ object InputView : ViewBase {
 
         if (isTouchEvent()) innerTable.add(Label(touchText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())))
 
-//        innerTable.debug()
+        if (KcopSkin.displayMode) innerTable.debug()
 
         return innerTable
     }
