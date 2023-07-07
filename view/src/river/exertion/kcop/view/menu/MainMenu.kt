@@ -3,7 +3,7 @@ package river.exertion.kcop.view.menu
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.view.ViewKlop.MainMenuBackgroundColor
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import kotlin.system.exitProcess
 
 object MainMenu : DisplayViewMenu {
@@ -25,7 +25,7 @@ object MainMenu : DisplayViewMenu {
             exitProcess(0)
         }, "Peace Out"),
         MenuActionParam("Close Menu", {
-            MenuView.closeMenu()
+            ButtonView.closeMenu()
         })
     )
 }

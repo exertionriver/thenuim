@@ -15,7 +15,7 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -39,7 +39,6 @@ object LoadNarrativeMenu : DisplayViewMenu {
                 }).growX().left()
                 this.row()
             }
-            this.debug = KcopSkin.displayMode
             this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
         } else {
             this.add(Label("no narrative info found", KcopSkin.skin)
@@ -59,7 +58,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
 
     override val assignableActions = mutableListOf(
         MenuActionParam("Yes", {
-            MenuView.closeMenu()
+            ButtonView.closeMenu()
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
             NarrativeAsset.currentNarrativeAsset = NarrativeAsset.selectedNarrativeAsset
             NarrativeStateAsset.currentNarrativeStateAsset = NarrativeStateAssets.reload().firstOrNull { it.assetId() == NarrativeState.genId(ProfileAsset.currentProfileAsset.assetId(), NarrativeAsset.currentNarrativeAsset.assetId() ) } ?: NarrativeStateAsset()

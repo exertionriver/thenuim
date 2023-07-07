@@ -3,7 +3,7 @@ package river.exertion.kcop.view
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.view.layout.InputView
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 
 object KcopInputProcessor : InputProcessor {
 
@@ -11,7 +11,7 @@ object KcopInputProcessor : InputProcessor {
         InputView.keyEvent(Input.Keys.toString(keycode))
         InputView.build()
 
-        if (keycode == Input.Keys.ESCAPE) MenuView.closeMenu()
+        if (keycode == Input.Keys.ESCAPE) ButtonView.closeMenu()
 
         return false
     }

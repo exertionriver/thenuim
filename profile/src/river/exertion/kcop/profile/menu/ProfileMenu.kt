@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.kcop.profile.Profile
+import river.exertion.kcop.profile.ProfileKlop.NoProfileInfoFound
 import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.profile.asset.ProfileAssets
@@ -35,13 +36,14 @@ object ProfileMenu : DisplayViewMenu {
 
             listCtrl.setItems(profileAssetsMap.keys.toGdxArray())
         } else {
-            listCtrl.setItems(listOf("no profiles found").toGdxArray() )
+            listCtrl.setItems(listOf(NoProfileInfoFound).toGdxArray() )
+            assignableNavs.firstOrNull { it.label == "Load >" }?.enabled = false
         }
 
         listCtrl.alignment = Align.topLeft
 
         Table().apply {
-            this.add(listCtrl).growY().top().left()
+            this.add(listCtrl).grow().top().left()
             this.top()
             this.left()
         }

@@ -106,7 +106,6 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
                     dvLayout.layout.firstOrNull { it.tableIdx == dvLayoutCell.tableIdx }?.panes?.forEach {
                         dvPane -> this.paneCell(dvLayout, paneContent, dvPane)
                     }
-                this.debug = KcopSkin.displayMode
             }).colspan(dvLayoutCell.colspan())
             }
         }

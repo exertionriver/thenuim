@@ -151,7 +151,6 @@ object LogView : ViewBase {
             this.validate()
             //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
             this.layout()
-            this.debug = KcopSkin.displayMode
         }
 
         this.scrollPane = scrollPane
@@ -166,12 +165,10 @@ object LogView : ViewBase {
                 this.add(backgroundColorImg()).grow()
             })
             this.add(Table().apply {
-                this.debug = KcopSkin.displayMode
                 this.add(textTimeReadout())
                 this.row()
                 this.add(textScrollPane()).grow()
             })
-            this.debug = KcopSkin.displayMode
         }).size(this.tableWidth(), this.tableHeight())
         viewTable.clip()
     }

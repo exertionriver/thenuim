@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.base.GdxTestBase
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -34,12 +35,12 @@ class GdxTestViewKlop : GdxTestBase() {
         assertEquals(channelsSize, MessageChannelHandler.size())
 
         //ftf is doubled since it generates bitmapFont assets
-        val assetsSize = 2 * FreeTypeFontAssetStore.values().size +
-                MusicAssetStore.values().size +
+        val assetsSize = 2 * FreeTypeFontAssetStore.entries.size +
+                MusicAssetStore.entries.size +
                 // skin loads .json, .png, .atlas
-                3 * SkinAssetStore.values().size +
-                SoundAssetStore.values().size +
-                TextureAssetStore.values().size
+                3 * SkinAssetStore.entries.size +
+                SoundAssetStore.entries.size +
+                TextureAssetStore.entries.size
 
         Log.test("AssetManagerHandler", AssetManagerHandler.loadedSize().toString())
         assertEquals(assetsSize, AssetManagerHandler.loadedSize())

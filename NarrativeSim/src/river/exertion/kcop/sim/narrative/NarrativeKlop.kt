@@ -7,7 +7,6 @@ import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.Id
-import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
@@ -36,12 +35,10 @@ import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
 import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.klop.IMenuKlop
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.layout.PauseView
-import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.menu.MenuActionParam
@@ -121,14 +118,15 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
     }
 
     private fun addNarrativeNavsToMainMenu() {
-        MainMenu.assignableNavs.add(
+        MainMenu.addAssignableNav(
             MenuActionParam("Narrative >", {
                 DisplayViewMenuHandler.currentMenuTag = NarrativeMenu.tag
-            }) )
-        MainMenu.assignableNavs.add(
+            }), 2 )
+
+        MainMenu.addAssignableNav(
             MenuActionParam("Restart Narrative >", {
                 DisplayViewMenuHandler.currentMenuTag = RestartProgressMenu.tag
-            }) )
+            }), 3 )
     }
 
     private fun addNarrativeInfoToMainMenu() {
@@ -182,15 +180,15 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
     }
 
     private fun addNarrativePauseToMenuAction() {
-        val menuOpenButtonAction = MenuView.openMenu
-        val menuCloseButtonAction = MenuView.closeMenu
+        val menuOpenButtonAction = ButtonView.openMenu
+        val menuCloseButtonAction = ButtonView.closeMenu
 
-        MenuView.openMenu = {
+        ButtonView.openMenu = {
             menuOpenButtonAction()
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Pause))
         }
 
-        MenuView.closeMenu = {
+        ButtonView.closeMenu = {
             menuCloseButtonAction()
             MessageChannelHandler.send(NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Unpause))
         }

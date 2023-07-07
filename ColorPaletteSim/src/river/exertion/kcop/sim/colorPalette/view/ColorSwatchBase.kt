@@ -30,8 +30,6 @@ class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidt
     fun create() {
         clearTable()
 
-        this.debug = KcopSkin.displayMode
-
         swatchEntries.entries.forEachIndexed { idx, colorPaletteEntry ->
             addSwatch(idx, colorPaletteEntry)
         }
@@ -70,7 +68,6 @@ class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidt
         stack.add(swatchImg)
         stack.add(swatchLabel)
         this.add(stack)
-        this.debug = KcopSkin.displayMode
         this.row()
     }
 }

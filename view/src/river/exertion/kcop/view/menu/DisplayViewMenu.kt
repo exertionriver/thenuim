@@ -47,52 +47,49 @@ interface DisplayViewMenu {
         assignableNavs.remove(menuActionParam)
     }
 
-    fun navButtonPane() : Table = Table().apply {
-        this.debug = KcopSkin.displayMode
-
-        this@DisplayViewMenu.assignableNavs.forEach { navEntry ->
-            this.add(
-                TextButton(navEntry.label, KcopSkin.skin).apply {
-                    this.onClick {
-                        navEntry.action()
+    fun menuActionButton(menuActionParam: MenuActionParam) : TextButton {
+        return TextButton(menuActionParam.label, KcopSkin.skin).apply {
+            if (menuActionParam.enabled) {
+                this.onClick {
+                    if (menuActionParam.log != null) LogView.addLog(menuActionParam.log!!)
+                    menuActionParam.action()
                     this.center()
-                    }
                 }
-            ).padTop(ViewType.padHeight(KcopSkin.screenHeight))
-                .padRight(ViewType.padWidth(KcopSkin.screenWidth)).right()
+            }
+        }
+    }
+
+    fun navButtonPane() : Table = Table().apply {
+        this@DisplayViewMenu.assignableNavs.forEach { navEntry ->
+            this.add( menuActionButton(navEntry) )
+                .padTop(ViewType.padHeight(KcopSkin.screenHeight))
+                .padRight(ViewType.padWidth(KcopSkin.screenWidth))
+                .right()
             if (navEntry != this@DisplayViewMenu.assignableNavs.last()) this.row()
         }
     }
 
     fun actionButtonPane() : Table = Table().apply {
-        this.debug = KcopSkin.displayMode
-
         this@DisplayViewMenu.assignableActions.forEach { actionEntry ->
-            this.add(
-                TextButton(actionEntry.label, KcopSkin.skin).apply {
-                    if (actionEntry.enabled) {
-                        this.onClick {
-                            if (actionEntry.log != null)
-                                LogView.addLog(actionEntry.log!!)
-                            actionEntry.action()
-                        this.center()
-                        }
-                    }
-                }
-            ).padBottom(ViewType.padHeight(KcopSkin.screenHeight)).right().padRight(ViewType.padWidth(KcopSkin.screenWidth))
+            this.add( menuActionButton(actionEntry) )
+                .padBottom(ViewType.padHeight(KcopSkin.screenHeight))
+                .padRight(ViewType.padWidth(KcopSkin.screenWidth))
+                .right()
         }
     }
 
-    fun breadcrumbPane() = Table().apply {
-        this.debug = KcopSkin.displayMode
-
-        breadcrumbEntries.entries.reversed().forEach { menuLabel ->
-            this.add(Label("${menuLabel.value} > ", KcopSkin.labelStyle(KcopFont.SMALL, backgroundColor.label()))
-                    .apply {
+    fun breadcrumbLabel(menuTag : String, menuLabel: String) : Label {
+        return Label("$menuLabel > ", KcopSkin.labelStyle(KcopFont.SMALL, backgroundColor.label()))
+            .apply {
                 this.onClick {
-                    DisplayViewMenuHandler.currentMenuTag = menuLabel.key
+                    DisplayViewMenuHandler.currentMenuTag = menuTag
                 }
-            } )
+            }
+    }
+
+    fun breadcrumbPane() = Table().apply {
+        breadcrumbEntries.entries.reversed().forEach { breadcrumbEntry ->
+            this.add( breadcrumbLabel(breadcrumbEntry.key, breadcrumbEntry.value) )
         }
         this.right()
 
@@ -105,43 +102,67 @@ interface DisplayViewMenu {
         }
     }
 
+    fun menuScrollPane() : ScrollPane {
+        return ScrollPane(menuPane(), KcopSkin.skin).apply {
+            // https://github.com/raeleus/skin-composer/wiki/ScrollPane
+            this.fadeScrollBars = false
+            this.setFlickScroll(false)
+            this.validate()
+            //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
+            this.layout()
+        }
+    }
+
+    fun menuLabel() : Label {
+        return Label(this@DisplayViewMenu.label, KcopSkin.labelStyle(KcopFont.MEDIUM, backgroundColor.label()))
+            .apply {
+                this.setAlignment(Align.center)
+            }
+    }
+
+    fun menuContent() : Table {
+        return Table().apply {
+            this.add(breadcrumbPane())
+                .growX()
+                .right()
+            this.add(menuLabel())
+                .padRight(ViewType.padWidth(KcopSkin.screenWidth))
+                .right()
+            this.row()
+            //scrollPane / nav superpane
+            if ( (assignableNavs.isEmpty()) && (assignableActions.isEmpty()) ) {
+                this.add(menuScrollPane())
+                    .padLeft(ViewType.padWidth(KcopSkin.screenWidth))
+                    .padBottom(ViewType.padHeight(KcopSkin.screenHeight))
+                    .grow().left().top().colspan(2)
+            } else if (assignableNavs.isEmpty()) {
+                this.add(menuScrollPane())
+                    .padLeft(ViewType.padWidth(KcopSkin.screenWidth))
+                    .grow().left().top().colspan(2)
+            } else { //if (assignableActions.isEmpty())
+                this.add(menuScrollPane())
+                    .padLeft(ViewType.padWidth(KcopSkin.screenWidth))
+                    .padBottom(ViewType.padHeight(KcopSkin.screenHeight))
+                    .grow().left().top()
+            }
+            if (assignableNavs.isNotEmpty()) {
+                this.add(navButtonPane()).top()
+            }
+            // action pane
+            this.row()
+            this.add(actionButtonPane()).colspan(2).right()
+        }
+    }
+
     fun menuLayout() : Table {
 
         return Table().apply {
             this.add(Stack().apply {
                 this.add(Image(menuColorTexture()))
-                this.add(
-                    Table().apply {
-                        this.add(breadcrumbPane()).right().growX()
-                        this.add(
-                            Table().apply {
-                                this.add(Label(this@DisplayViewMenu.label, KcopSkin.labelStyle(KcopFont.MEDIUM, backgroundColor.label()))
-                            .apply {
-                                this.setAlignment(Align.center)
-                            }).padRight(ViewType.padWidth(KcopSkin.screenWidth))
-                            }
-                        ).center().right()
-                        this.row()
-                        this.add(
-                            ScrollPane(menuPane(), KcopSkin.skin).apply {
-                                // https://github.com/raeleus/skin-composer/wiki/ScrollPane
-                                this.fadeScrollBars = false
-                                this.setFlickScroll(false)
-                                this.validate()
-                                //https://gamedev.stackexchange.com/questions/96096/libgdx-scrollpane-wont-scroll-to-bottom-after-adding-children-to-contained-tab
-                                this.layout()
-                            }
-                        ).height(ViewType.secondHeight(KcopSkin.screenHeight) - 3 * KcopFont.large().lineHeight)
-                            .width(ViewType.secondWidth(KcopSkin.screenWidth) - 3 * KcopFont.large().lineHeight)
-                            .growY().top()
-                        this.add(navButtonPane()).top()
-                        this.row()
-                        this.add(actionButtonPane()).colspan(2).right()
-                        this.debug = KcopSkin.displayMode
-                    }
-                )
-            })
-            this.debug = KcopSkin.displayMode
+                this.add(menuContent())
+            }).height(ViewType.secondHeight(KcopSkin.screenHeight) + ViewType.seventhHeight(KcopSkin.screenHeight))
+                .width(ViewType.secondWidth(KcopSkin.screenWidth) + ViewType.seventhWidth(KcopSkin.screenWidth))
+                .growY()
         }
     }
 }

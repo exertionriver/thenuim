@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
@@ -12,7 +13,7 @@ import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
-object MenuView : ViewBase {
+object ButtonView : ViewBase {
 
     override var viewType = ViewType.MENU
     override var viewTable = Table()
@@ -30,6 +31,7 @@ object MenuView : ViewBase {
         },
         displayMode to {
             KcopSkin.displayMode = isChecked[displayMode]!!
+            KcopBase.stage.isDebugAll = KcopSkin.displayMode
             ViewLayout.rebuild()
        },
         2 to {
@@ -65,10 +67,10 @@ object MenuView : ViewBase {
             val innerButton = Button(KcopSkin.skin).apply { KcopSkin.addOnClick(this) }
 
             //override from ctrl
-            innerButton.isChecked = this@MenuView.isChecked[idx] == true
+            innerButton.isChecked = this@ButtonView.isChecked[idx] == true
 
             innerButton.onClick {
-                this@MenuView.isChecked[idx] = !(this@MenuView.isChecked[idx] ?: false)
+                this@ButtonView.isChecked[idx] = !(this@ButtonView.isChecked[idx] ?: false)
 
                 assignableButtons[idx]?.let { it() }
             }
@@ -118,7 +120,7 @@ object MenuView : ViewBase {
 
     var closeMenu = {
         isChecked[menuButton] = false
-        MenuView.build()
+        ButtonView.build()
         PauseView.isChecked = false
         PauseView.build()
         DisplayView.menuOpen = false

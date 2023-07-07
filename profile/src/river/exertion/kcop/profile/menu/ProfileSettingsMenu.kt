@@ -14,7 +14,7 @@ import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.option
 import river.exertion.kcop.profile.settings.ProfileSettingEntry.Companion.updateSetting
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -45,11 +45,11 @@ object ProfileSettingsMenu : DisplayViewMenu {
                     this.items = setting.options.map { it.optionValue }.toGdxArray()
                     this.selected = settings.optionBySelectionKey(setting.selectionKey)
                     this.onChange { settings.updateSetting(setting.selectionKey, this.selected) }
-                })
+                }).right()
                 this.row()
             }
 
-            this.top()
+            this.top().left()
         }
     }
 
@@ -61,7 +61,7 @@ object ProfileSettingsMenu : DisplayViewMenu {
 
     override val assignableActions = mutableListOf(
         MenuActionParam("Update", {
-            MenuView.closeMenu()
+            ButtonView.closeMenu()
             ProfileAsset.currentProfileAsset.settings = settings
             ProfileAsset.currentProfileAsset.profile.execSettings()
 

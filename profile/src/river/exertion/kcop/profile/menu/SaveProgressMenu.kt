@@ -7,7 +7,7 @@ import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
 import river.exertion.kcop.profile.asset.ProfileAsset
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -47,7 +47,7 @@ object SaveProgressMenu : DisplayViewMenu {
     override val assignableActions = mutableListOf(
         MenuActionParam(SaveLabel, {
             ProfileAsset.currentProfileAsset.save()
-            MenuView.closeMenu()
+            ButtonView.closeMenu()
         }, "Progress Saved!"),
         MenuActionParam("Cancel", {
             DisplayViewMenuHandler.currentMenuTag = breadcrumbEntries.keys.toList()[0]

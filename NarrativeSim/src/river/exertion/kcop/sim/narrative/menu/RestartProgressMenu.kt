@@ -14,7 +14,7 @@ import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -46,11 +46,11 @@ object RestartProgressMenu : DisplayViewMenu {
                 this.add(Label("Are you sure?", KcopSkin.labelStyle(KcopFont.MEDIUM, NarrativeMenuText)))
                 this@RestartProgressMenu.assignableActions.firstOrNull { it.label == "Restart" }?.enabled = true
             } else {
-                this.add(Label(NoNarrativeLoaded, KcopSkin.labelStyle(KcopFont.MEDIUM, NarrativeMenuText)))
+                this.add(Label(NoNarrativeLoaded, KcopSkin.labelStyle(KcopFont.SMALL, NarrativeMenuText)))
                 this@RestartProgressMenu.assignableActions.firstOrNull { it.label == "Restart" }?.enabled = false
             }
 
-            this.top()
+            this.top().left()
         }
     }
 
@@ -63,7 +63,7 @@ object RestartProgressMenu : DisplayViewMenu {
 
     override val assignableActions = mutableListOf(
         MenuActionParam("Restart", {
-            MenuView.closeMenu()
+            ButtonView.closeMenu()
 
             MessageChannelHandler.send(NarrativeKlop.NarrativeBridge, NarrativeComponentMessage(NarrativeComponentMessage.NarrativeMessageType.Inactivate))
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState = NarrativeState()

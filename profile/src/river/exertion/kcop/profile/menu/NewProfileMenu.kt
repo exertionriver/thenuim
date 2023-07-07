@@ -11,7 +11,7 @@ import river.exertion.kcop.profile.component.ProfileComponent
 import river.exertion.kcop.profile.messaging.ProfileComponentMessage
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.layout.MenuView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.menu.DisplayViewMenu
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
@@ -58,7 +58,7 @@ object NewProfileMenu : DisplayViewMenu {
 
     override val assignableActions = mutableListOf(
         MenuActionParam("Create", {
-            MenuView.closeMenu()
+            ButtonView.closeMenu()
             MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
             ProfileAsset.currentProfileAsset.save()
