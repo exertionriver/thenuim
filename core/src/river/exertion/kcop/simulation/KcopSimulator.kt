@@ -1,10 +1,15 @@
 package river.exertion.kcop.simulation
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.PixmapIO
 import ktx.app.KtxScreen
+import ktx.graphics.takeScreenshot
+import river.exertion.kcop.asset.irlTime.IrlTime
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -18,6 +23,8 @@ import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
+import java.nio.ByteBuffer
+import java.util.zip.Deflater
 
 
 class KcopSimulator : Telegraph, KtxScreen {
@@ -42,6 +49,13 @@ class KcopSimulator : Telegraph, KtxScreen {
     override fun render(delta: Float) {
 
         KcopBase.render(delta, EngineHandler.engine)
+
+
+        when {
+            Gdx.input.isKeyJustPressed(Input.Keys.S) -> {
+                takeScreenshot(Gdx.files.local("mypixmap${IrlTime.localTime("_")}.png"))
+            }
+        }
     }
 
     override fun hide() {

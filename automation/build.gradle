@@ -8,17 +8,12 @@ sourceCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
-sourceSets.main.resources.srcDirs = ["res/"]
-sourceSets.test.resources.srcDirs = ["res/"]
 
 dependencies {
-    api project(path: ':messaging')
+    api project(path: ':base')
 
-    api "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion"
-
-    api "io.github.libktx:ktx-assets:$ktxVersion"
-    api "io.github.libktx:ktx-collections:$ktxVersion"
+    implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+    implementation "io.github.libktx:ktx-ai:$ktxVersion"
 
     testImplementation project(path: ':base', configuration: 'testDependencies')
 }

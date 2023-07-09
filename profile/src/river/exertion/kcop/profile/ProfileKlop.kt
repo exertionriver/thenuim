@@ -7,7 +7,7 @@ import river.exertion.kcop.base.Id
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.ecs.component.IRLTimeComponent
+import river.exertion.kcop.ecs.component.IrlTimeComponent
 import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -105,8 +105,7 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     }
 
     override fun loadSystems() {
-        EngineHandler.replaceComponent<IRLTimeComponent>()
-
+        IrlTimeComponent.ecsInit()
         ProfileComponent.ecsInit()
     }
 

@@ -11,6 +11,8 @@ import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.asset.*
+import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 
 class GdxTestViewKlop : GdxTestBase() {
@@ -54,5 +56,21 @@ class GdxTestViewKlop : GdxTestBase() {
 
         Log.test("DisplayViewMenus", DisplayViewMenuHandler.size().toString())
         assertEquals(displayViewMenusSize, DisplayViewMenuHandler.size())
+    }
+
+    override fun render() {
+        super.render()
+
+        val hitActor = KcopBase.stage.hit(100f, 100f, true)
+
+        Log.test(hitActor.toString())
+
+    }
+
+    @Test
+    fun testHits() {
+        gdxTestRunning = true
+
+        ViewLayout.build(KcopBase.stage)
     }
 }

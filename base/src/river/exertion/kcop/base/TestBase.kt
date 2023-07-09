@@ -1,5 +1,7 @@
 package river.exertion.kcop.base
 
+import com.badlogic.gdx.Application
+import com.badlogic.gdx.Gdx
 import org.junit.jupiter.api.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -8,6 +10,8 @@ open class TestBase {
     @Suppress("NewApi")
     @BeforeAll
     fun testBaseSuiteBegin(testInfo: TestInfo) {
+        Gdx.app.logLevel = Application.LOG_DEBUG
+
         Log.test("begin_suite", testInfo.testClass.get().simpleName)
     }
 

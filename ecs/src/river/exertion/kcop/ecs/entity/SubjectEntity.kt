@@ -1,7 +1,7 @@
 package river.exertion.kcop.ecs.entity
 
 import com.badlogic.ashley.core.Component
-import river.exertion.kcop.ecs.component.IRLTimeComponent
+import river.exertion.kcop.ecs.component.IrlTimeComponent
 
 class SubjectEntity : IEntity {
 
@@ -9,7 +9,7 @@ class SubjectEntity : IEntity {
     override var isInitialized = false
 
     override var components : MutableList<Component> = mutableListOf(
-        IRLTimeComponent()
+        IrlTimeComponent()
     )
 
     companion object {
