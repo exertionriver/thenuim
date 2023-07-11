@@ -1,8 +1,8 @@
 package river.exertion.kcop.automation.btree.task
 
-import river.exertion.kcop.automation.btree.UserTask
+import river.exertion.kcop.automation.btree.AutoUserTask
 
-class NoopTask(param : Int) : UserTask() {
+class NoopTask : AutoUserTask() {
 
-    override val name: String = "noopTask$param"
+    override fun executeTask() {}
 }

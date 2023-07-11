@@ -3,6 +3,7 @@ package river.exertion.kcop.profile.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.profile.ProfileKlop.ProfileMenuBackgroundColor
@@ -62,7 +63,7 @@ object NewProfileMenu : DisplayViewMenu {
             MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
             ProfileAsset.currentProfileAsset.save()
-            ProfileComponent.ecsInit()
+            IComponent.ecsInit<ProfileComponent>()
         }, "Profile Created!"),
         //go back a menu
         MenuActionParam("Cancel", {

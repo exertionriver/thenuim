@@ -8,6 +8,7 @@ import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.Id
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
@@ -31,6 +32,8 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         loadAssets()
         loadSystems()
         loadMenus()
+
+        KcopBase.inputMultiplexer.addProcessor(KcopInputProcessor)
     }
 
     override fun unload() { }

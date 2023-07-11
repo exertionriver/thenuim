@@ -2,6 +2,7 @@ package river.exertion.kcop.profile.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.profile.ProfileKlop.NoProfileInfoFound
@@ -60,7 +61,7 @@ object LoadProfileMenu : DisplayViewMenu {
             ButtonView.closeMenu()
             MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.selectedProfileAsset
-            ProfileComponent.ecsInit()
+            IComponent.ecsInit<ProfileComponent>()
         }, "Profile Loaded!"),
         //go back a menu
         MenuActionParam("No", {

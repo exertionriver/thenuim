@@ -79,7 +79,7 @@ class ProfileComponent : IComponent, Telegraph {
                     if (isValid(this)) {
                         when (profileComponentMessage.profileMessageType) {
                             ProfileComponentMessage.ProfileMessageType.ReplaceCumlTimer -> {
-                                ImmersionTimerComponent.ecsInit(initData = ImmersionTimerPair(instTimer, cumlTimer))
+                                IComponent.ecsInit<ImmersionTimerComponent>(initData = ImmersionTimerPair(instTimer, cumlTimer))
                             }
                             ProfileComponentMessage.ProfileMessageType.Inactivate -> {
                                 inactivate()
@@ -94,9 +94,6 @@ class ProfileComponent : IComponent, Telegraph {
     }
 
     companion object {
-        fun ecsInit() {
-            EngineHandler.replaceComponent<ProfileComponent>()
-        }
 
         fun isValid(profileComponent: ProfileComponent?) : Boolean {
             return (profileComponent?.profile != null && profileComponent.isInitialized)

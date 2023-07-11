@@ -3,6 +3,7 @@ package river.exertion.kcop.sim.narrative.component
 import river.exertion.kcop.ecs.component.ImmersionTimerComponent
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
+import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop.NarrativeBridge
 import river.exertion.kcop.view.layout.AiView
@@ -88,7 +89,7 @@ object NarrativeComponentNavStatusHandler {
                 changed = true
 
                 if (blockCumlTimer)
-                    ImmersionTimerComponent.ecsInit(initData = ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
+                    IComponent.ecsInit<ImmersionTimerComponent>(initData = ImmersionTimerPair(blockInstImmersionTimer(), blockCumlImmersionTimer()))
             }
 
         }

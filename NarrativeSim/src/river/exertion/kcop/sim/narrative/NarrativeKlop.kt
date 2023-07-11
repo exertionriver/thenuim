@@ -194,8 +194,6 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
         }
     }
 
-    override var inputMultiplexer: InputMultiplexer? = null
-
     override fun displayViewLayoutHandler() = DVLayoutHandler
 
     override fun inputProcessor() = NarrativeInputProcessor

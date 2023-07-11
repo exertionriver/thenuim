@@ -2,20 +2,20 @@ package river.exertion.kcop.simulation
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.PixmapIO
 import ktx.app.KtxScreen
 import ktx.graphics.takeScreenshot
 import river.exertion.kcop.asset.irlTime.IrlTime
+import river.exertion.kcop.automation.AutomationKlop
+import river.exertion.kcop.automation.btree.AutoUser
+import river.exertion.kcop.automation.btree.AutoUserBehaviorHandler
+import river.exertion.kcop.automation.btree.behavior.ClickDisplayModeButtonBehavior
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
-import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.klop.IDisplayViewKlop
@@ -23,8 +23,6 @@ import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
-import java.nio.ByteBuffer
-import java.util.zip.Deflater
 
 
 class KcopSimulator : Telegraph, KtxScreen {
@@ -42,9 +40,7 @@ class KcopSimulator : Telegraph, KtxScreen {
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-    private lateinit var inputMultiplexer : InputMultiplexer
     var currentDisplayViewKlop : IDisplayViewKlop = NarrativeKlop
-
 
     override fun render(delta: Float) {
 
@@ -56,22 +52,22 @@ class KcopSimulator : Telegraph, KtxScreen {
                 takeScreenshot(Gdx.files.local("mypixmap${IrlTime.localTime("_")}.png"))
             }
         }
+
+        when {
+            Gdx.input.isKeyJustPressed(Input.Keys.A) -> {
+                AutoUserBehaviorHandler.behaviorSequenceList.add(ClickDisplayModeButtonBehavior())
+                AutoUserBehaviorHandler.execBehavior()
+            }
+        }
     }
 
     override fun hide() {
     }
 
     override fun show() {
-        inputMultiplexer = InputMultiplexer()
-        inputMultiplexer.addProcessor(KcopInputProcessor)
-        inputMultiplexer.addProcessor(KcopBase.stage)
+        AutomationKlop.load()
+        currentDisplayViewKlop.showView()
 
-        NarrativeKlop.inputMultiplexer = inputMultiplexer
-        ColorPaletteDisplayKlop.inputMultiplexer = inputMultiplexer
-
-        Gdx.input.inputProcessor = inputMultiplexer
-
-        NarrativeKlop.showView()
         ViewLayout.build(KcopBase.stage)
     }
 

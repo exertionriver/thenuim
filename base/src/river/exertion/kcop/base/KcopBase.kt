@@ -3,6 +3,7 @@ package river.exertion.kcop.base
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -18,6 +19,7 @@ object KcopBase {
     lateinit var twoBatch : Batch
     lateinit var orthoCamera : OrthographicCamera
     lateinit var stage : Stage
+    lateinit var inputMultiplexer : InputMultiplexer
 
     val initViewportWidth = 1280F
     val initViewportHeight = 720F
@@ -38,6 +40,12 @@ object KcopBase {
         twoBatch = if (isTesting == true) mockk<PolygonSpriteBatch>(relaxed = true) else PolygonSpriteBatch()
 
         stage = if (isTesting == true) mockk<Stage>(relaxed = true) else Stage(viewport, twoBatch)
+
+        inputMultiplexer = InputMultiplexer()
+
+        if (isTesting == false) {
+            Gdx.input.inputProcessor = inputMultiplexer
+        }
     }
 
     fun render(delta : Float, pooledEngine : PooledEngine? = null) {

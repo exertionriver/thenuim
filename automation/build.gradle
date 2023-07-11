@@ -10,7 +10,8 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.test.java.srcDirs = [ "test/" ]
 
 dependencies {
-    api project(path: ':base')
+    api project(path: ':view')
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutineVersion"
 
     implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
     implementation "io.github.libktx:ktx-ai:$ktxVersion"

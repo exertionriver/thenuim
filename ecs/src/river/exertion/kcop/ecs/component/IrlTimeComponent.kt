@@ -11,10 +11,4 @@ class IrlTimeComponent : IComponent {
     override var isInitialized = false
 
     fun localTime() = IrlTime.localTime()
-
-    companion object : IComponentCompanion {
-        override fun ecsInit(entityName : String, initData : Any?) {
-            EngineHandler.replaceComponent<IrlTimeComponent>(entityName, initData)
-        }
-    }
 }

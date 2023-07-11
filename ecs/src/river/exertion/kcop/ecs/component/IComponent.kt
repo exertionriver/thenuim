@@ -1,6 +1,8 @@
 package river.exertion.kcop.ecs.component
 
 import com.badlogic.ashley.core.Component
+import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.kcop.ecs.entity.SubjectEntity
 
 interface IComponent : Component {
 
@@ -21,6 +23,10 @@ interface IComponent : Component {
                 }
             }
             else null
+        }
+
+        inline fun <reified T : IComponent> ecsInit(entityName: String = SubjectEntity.entityName, initData: Any? = null) {
+            EngineHandler.replaceComponent<T>(entityName, initData)
         }
     }
 

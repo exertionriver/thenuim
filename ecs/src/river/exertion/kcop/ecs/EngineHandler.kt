@@ -5,11 +5,9 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.PooledEngine
 import ktx.ashley.entity
-import river.exertion.kcop.base.Log
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.entity.IEntity
 import river.exertion.kcop.ecs.entity.SubjectEntity
-import javax.security.auth.Subject
 import kotlin.reflect.KClass
 import kotlin.reflect.full.valueParameters
 
@@ -17,7 +15,6 @@ object EngineHandler {
 
     var engine = PooledEngine()
     val entities = mutableMapOf<IEntity, Entity>()
-    val subjectEntity = instantiateEntity<SubjectEntity>()
 
     fun systemsSize() = engine.systems.size()
     fun entitiesSize() = engine.entities.size()
