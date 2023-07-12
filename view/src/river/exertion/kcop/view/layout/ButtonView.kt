@@ -1,5 +1,6 @@
 package river.exertion.kcop.view.layout
 
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -17,6 +18,14 @@ object ButtonView : ViewBase {
 
     override var viewType = ViewType.MENU
     override var viewTable = Table()
+
+    var buttonList = mutableListOf<Button>()
+
+    fun buttonLocation(idx : Int? = 0) : Vector2 {
+//        return buttonList[idx!!].stage.stageToScreenCoordinates(
+            val buttonLocation = buttonList[idx!!].localToScreenCoordinates(Vector2(3f, 3f))
+        return buttonLocation
+    }
 
     val menuButton = 0
     val displayMode = 1
@@ -60,7 +69,7 @@ object ButtonView : ViewBase {
 
     fun buttonLayout() : Table {
         //idx 0 is large button, idx 1 - 5 are smaller bordering buttons
-        val buttonList = mutableListOf<Button>()
+        buttonList.clear()
 
         (0..5).forEach { idx ->
 

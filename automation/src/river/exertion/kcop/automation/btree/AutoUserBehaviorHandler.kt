@@ -12,7 +12,7 @@ object AutoUserBehaviorHandler {
     val taskSequenceList = mutableListOf<AutoUserTask>()
     val taskLogList = mutableListOf<AutoUserTask>()
 
-    val autoUser = AutoUser()
+    private val autoUser = AutoUser()
 
     fun execBehavior() {
         if (behaviorSequenceList.isNotEmpty()) {
@@ -25,8 +25,9 @@ object AutoUserBehaviorHandler {
             behaviorLogList.add(currentBehavior)
             behaviorSequenceList.removeFirst()
         } else {
-            Log.debug("AutoUserBehaviorHandler::execBehavior()", "no sequenced behaviors left")
+        //    Log.debug("AutoUserBehaviorHandler::execBehavior()", "no sequenced behaviors left")
         }
     }
 }
+
 

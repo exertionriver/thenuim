@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
+import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
@@ -14,6 +15,10 @@ import river.exertion.kcop.view.messaging.KcopSimulationMessage
 object ViewLayout {
 
     lateinit var kcopButton : Button
+
+    fun kcopButtonLocation() : Vector2 {
+        return kcopButton.localToScreenCoordinates(Vector2(3f, 3f))
+    }
 
     fun build(stage: Stage) {
         stage.addActor(DisplayView.apply { this.build() }.viewTable)
