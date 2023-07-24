@@ -1,7 +1,9 @@
 package river.exertion.kcop.view
 
 import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.actors.onClick
@@ -10,6 +12,7 @@ import ktx.assets.disposeSafely
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.view.layout.AudioView
+import river.exertion.kcop.view.layout.ButtonView
 
 object KcopSkin {
 
@@ -45,3 +48,5 @@ object KcopSkin {
 
     val BackgroundColor = ColorPalette.BackgroundColor
 }
+
+fun Button.screenLocation() : Vector2 = this.localToScreenCoordinates(Vector2(3f, 3f))

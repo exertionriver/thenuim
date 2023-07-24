@@ -10,7 +10,7 @@ open class TestBase {
     @Suppress("NewApi")
     @BeforeAll
     fun testBaseSuiteBegin(testInfo: TestInfo) {
-        Gdx.app.logLevel = Application.LOG_DEBUG
+        if (Gdx.app != null) Gdx.app.logLevel = Application.LOG_DEBUG
 
         Log.test("begin_suite", testInfo.testClass.get().simpleName)
     }

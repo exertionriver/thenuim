@@ -5,11 +5,9 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.app.KtxScreen
-import ktx.graphics.takeScreenshot
-import river.exertion.kcop.asset.irlTime.IrlTime
+import river.exertion.kcop.automation.AutoUserTest
+import river.exertion.kcop.automation.AutoUserTestHandler
 import river.exertion.kcop.automation.AutomationKlop
-import river.exertion.kcop.automation.btree.AutoUser
-import river.exertion.kcop.automation.btree.AutoUserBehaviorHandler
 import river.exertion.kcop.automation.btree.behavior.ClickDisplayModeButtonBehavior
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
@@ -20,6 +18,7 @@ import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.layout.AudioView
+import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
@@ -29,13 +28,15 @@ class KcopSimulator : Telegraph, KtxScreen {
 
     private val displayViewPackages = mutableListOf<IDisplayViewKlop>(
         NarrativeKlop,
-        ColorPaletteDisplayKlop
+        ColorPaletteDisplayKlop,
     )
 
     init {
         displayViewPackages.forEach {
             it.load()
         }
+
+        AutomationKlop.load()
 
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
@@ -46,29 +47,15 @@ class KcopSimulator : Telegraph, KtxScreen {
 
         KcopBase.render(delta, EngineHandler.engine)
 
-
-        when {
-            Gdx.input.isKeyJustPressed(Input.Keys.S) -> {
-                takeScreenshot(Gdx.files.local("mypixmap${IrlTime.localTime("_")}.png"))
-            }
-        }
-
-        when {
-            Gdx.input.isKeyJustPressed(Input.Keys.A) -> {
-                AutoUserBehaviorHandler.behaviorSequenceList.add(ClickDisplayModeButtonBehavior())
-                AutoUserBehaviorHandler.execBehavior()
-            }
-        }
     }
 
     override fun hide() {
     }
 
     override fun show() {
-        AutomationKlop.load()
         currentDisplayViewKlop.showView()
-
         ViewLayout.build(KcopBase.stage)
+        ButtonView.assignableButtons[5] = { GdxDesktopTestBehavior.testBehavior() }
     }
 
     override fun pause() {

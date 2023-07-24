@@ -1,13 +1,13 @@
-package river.exertion.kcop.automation.btree.task
+package river.exertion.kcop.automation.btree.task.core
 
 import com.badlogic.gdx.Gdx
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import river.exertion.kcop.automation.btree.AutoUserBehaviorHandler
+import river.exertion.kcop.automation.AutoUserTestHandler
 import river.exertion.kcop.automation.btree.AutoUserTask
-import river.exertion.kcop.base.Log
+import java.util.*
 
 class WaitTask(private val waitSeconds : Float) : AutoUserTask() {
+
+    override val id = UUID.fromString("fbc8c300-f888-4b80-90b6-257606f2187e")
 
     override fun executeTask() { }
 
@@ -15,7 +15,7 @@ class WaitTask(private val waitSeconds : Float) : AutoUserTask() {
         val noopsToAdd = (waitSeconds / Gdx.graphics.deltaTime).toInt()
 
         repeat(noopsToAdd) {
-            AutoUserBehaviorHandler.taskSequenceList.add(NoopTask())
+            AutoUserTestHandler.currentBehavior.readyTasks.add(NoopTask())
         }
 
         return super.execute()

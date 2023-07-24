@@ -15,6 +15,7 @@ dependencies {
 
     implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
     implementation "io.github.libktx:ktx-ai:$ktxVersion"
+    implementation "io.github.libktx:ktx-graphics:$ktxVersion"
 
     testImplementation project(path: ':base', configuration: 'testDependencies')
 }

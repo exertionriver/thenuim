@@ -1,4 +1,4 @@
-package river.exertion.kcop.automation.btree
+package river.exertion.kcop.automation
 
 class AutoUser {
 

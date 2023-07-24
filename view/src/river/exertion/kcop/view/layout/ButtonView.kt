@@ -21,12 +21,6 @@ object ButtonView : ViewBase {
 
     var buttonList = mutableListOf<Button>()
 
-    fun buttonLocation(idx : Int? = 0) : Vector2 {
-//        return buttonList[idx!!].stage.stageToScreenCoordinates(
-            val buttonLocation = buttonList[idx!!].localToScreenCoordinates(Vector2(3f, 3f))
-        return buttonLocation
-    }
-
     val menuButton = 0
     val displayMode = 1
     val fullScreen = 3

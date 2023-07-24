@@ -16,10 +16,6 @@ object ViewLayout {
 
     lateinit var kcopButton : Button
 
-    fun kcopButtonLocation() : Vector2 {
-        return kcopButton.localToScreenCoordinates(Vector2(3f, 3f))
-    }
-
     fun build(stage: Stage) {
         stage.addActor(DisplayView.apply { this.build() }.viewTable)
         stage.addActor(TextView.apply { this.build() }.viewTable)

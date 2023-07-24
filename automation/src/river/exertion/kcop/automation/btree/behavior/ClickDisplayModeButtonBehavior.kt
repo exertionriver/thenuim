@@ -1,16 +1,17 @@
 package river.exertion.kcop.automation.btree.behavior
 
 import ktx.ai.*
-import river.exertion.kcop.automation.btree.AutoUser
+import river.exertion.kcop.automation.AutoUser
 import river.exertion.kcop.automation.btree.AutoUserBehavior
-import river.exertion.kcop.automation.btree.task.BehaviorCompleteControlTask
-import river.exertion.kcop.automation.btree.task.ButtonViewClickTask
-import river.exertion.kcop.automation.btree.task.KcopButtonClickTask
-import river.exertion.kcop.automation.btree.task.WaitTask
+import river.exertion.kcop.automation.btree.task.control.BehaviorCompleteControlTask
+import river.exertion.kcop.automation.btree.task.view.ButtonViewClickTask
+import river.exertion.kcop.automation.btree.task.view.KcopButtonClickTask
+import river.exertion.kcop.automation.btree.task.core.WaitTask
+import java.util.*
 
 class ClickDisplayModeButtonBehavior : AutoUserBehavior() {
 
-    override val name: String = "clickBehavior"
+    override val id = UUID.fromString("f1bcbbe2-f125-4287-a200-1b7a00cf9965")
 
     override fun btree(autoUser: AutoUser) =
         behaviorTree(blackboard = autoUser) {
