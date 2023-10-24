@@ -1,15 +1,15 @@
-package river.exertion.kcop.sim.narrative.view
+package river.exertion.kcop.view.layout.displayViewLayout
 
 import kotlinx.serialization.Serializable
 import river.exertion.kcop.view.KcopFont
 
 @Serializable
-class DVLTARFontRow(
+class DVLTATPFontPads(
     var fontSize : String? = KcopFont.SMALL.fontTag(),
-    var allowRows : String? = 0.toString()
+    var yOffset : String? = 0.toString()
 ) {
 
     fun fontSize() = KcopFont.byTag(fontSize)
-    fun allowRows() = allowRows?.toIntOrNull() ?: 0
+    fun yOffset() = yOffset?.toIntOrNull() ?: 0
 
 }

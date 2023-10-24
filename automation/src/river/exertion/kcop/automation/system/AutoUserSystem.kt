@@ -9,6 +9,7 @@ import river.exertion.kcop.asset.irlTime.IrlTime
 import river.exertion.kcop.automation.AutoUserTest
 import river.exertion.kcop.automation.AutoUserTestHandler
 import river.exertion.kcop.automation.component.AutoUserComponent
+import river.exertion.kcop.view.layout.LogView
 
 class AutoUserSystem : IteratingSystem(allOf(AutoUserComponent::class).get()) {
 
@@ -28,6 +29,7 @@ class AutoUserSystem : IteratingSystem(allOf(AutoUserComponent::class).get()) {
 
         //execTasks
         if (testableBehaviorEntry != null)  {
+            if (testableBehaviorEntry.key.completedTasks.isEmpty()) LogView.addLog("beginning ${testableBehaviorEntry.key.name}")
 
             if ( testableTask!!.allowScreenshot() )
             {
@@ -40,6 +42,11 @@ class AutoUserSystem : IteratingSystem(allOf(AutoUserComponent::class).get()) {
             testableBehaviorEntry.key.completedTasks[testableTask] = AutoUserTest.TestResult.COMPLETED
             testableBehaviorEntry.key.readyTasks.removeFirst()
 
+            if (testableBehaviorEntry.key.readyTasks.isEmpty()) {
+                AutoUserTestHandler.currentTest.logBehaviors[testableBehaviorEntry.key] = testableBehaviorEntry.key.getResults()
+                LogView.addLog("ending ${testableBehaviorEntry.key.name}")
+                LogView.addLog("result: ${testableBehaviorEntry.value.name}")
+            }
         }
     }
 }

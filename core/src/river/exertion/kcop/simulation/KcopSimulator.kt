@@ -1,14 +1,10 @@
 package river.exertion.kcop.simulation
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
+import GdxDesktopTestBehavior
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.app.KtxScreen
-import river.exertion.kcop.automation.AutoUserTest
-import river.exertion.kcop.automation.AutoUserTestHandler
 import river.exertion.kcop.automation.AutomationKlop
-import river.exertion.kcop.automation.btree.behavior.ClickDisplayModeButtonBehavior
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.messaging.MessageChannelHandler
@@ -22,6 +18,9 @@ import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
+import java.net.URL
+import java.net.URLClassLoader
+import java.util.jar.JarFile
 
 
 class KcopSimulator : Telegraph, KtxScreen {
@@ -31,17 +30,39 @@ class KcopSimulator : Telegraph, KtxScreen {
         ColorPaletteDisplayKlop,
     )
 
+    var loadedKlop : IDisplayViewKlop? = null
+
     init {
+        val jarPath = "./plugins/SweetAstroConsole-kcop-0.4.jar"
+        val jarFile = JarFile(jarPath)
+        val jarEnumeration = jarFile.entries()
+        val classLoader = URLClassLoader.newInstance(arrayOf(URL("jar:file:$jarPath!/")))
+
+
+        while (jarEnumeration.hasMoreElements()) {
+            val jarEntry = jarEnumeration.nextElement()
+
+            if (jarEntry.isDirectory || !jarEntry.name.endsWith(".class")) continue
+
+            val className = jarEntry.name.substring(0, jarEntry.name.length - 6).replace('/', '.')
+
+            if (className.contains("Klop")) {
+                loadedKlop = (classLoader.loadClass(className) as Class<IDisplayViewKlop>).kotlin.objectInstance
+            }
+        }
+
         displayViewPackages.forEach {
             it.load()
         }
+
+        loadedKlop?.load()
 
         AutomationKlop.load()
 
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-    var currentDisplayViewKlop : IDisplayViewKlop = NarrativeKlop
+    var currentDisplayViewKlop : IDisplayViewKlop = loadedKlop ?: NarrativeKlop
 
     override fun render(delta: Float) {
 

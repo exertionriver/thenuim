@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import river.exertion.kcop.sim.narrative.asset.NarrativeAsset
 import river.exertion.kcop.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
-import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 
 @Serializable
 @SerialName("fadeImage")

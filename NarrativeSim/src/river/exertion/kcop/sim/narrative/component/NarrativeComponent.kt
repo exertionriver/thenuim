@@ -25,8 +25,8 @@ import river.exertion.kcop.sim.narrative.structure.ImmersionLocation
 import river.exertion.kcop.sim.narrative.structure.ImmersionStatus
 import river.exertion.kcop.sim.narrative.structure.Narrative
 import river.exertion.kcop.sim.narrative.structure.NarrativeState
-import river.exertion.kcop.sim.narrative.view.DVLayout
-import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayout
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView

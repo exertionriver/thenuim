@@ -12,7 +12,7 @@ sourceSets.test.java.srcDirs = [ "test/" ]
 dependencies {
     api project(path: ':asset')
 
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
+    api "org.jetbrains.kotlin:kotlin-reflect:1.9.10"
 
     api "io.github.libktx:ktx-ashley:$ktxVersion"
 

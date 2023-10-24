@@ -1,6 +1,5 @@
 package river.exertion.kcop.sim.narrative
 
-import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.AssetManagerHandler.lfhr
@@ -29,10 +28,10 @@ import river.exertion.kcop.sim.narrative.menu.NarrativeMenu
 import river.exertion.kcop.sim.narrative.menu.RestartProgressMenu
 import river.exertion.kcop.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.kcop.sim.narrative.system.NarrativeTextSystem
-import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
-import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAsset
-import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssetLoader
-import river.exertion.kcop.sim.narrative.view.asset.DisplayViewLayoutAssets
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAsset
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAssetLoader
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.klop.IDisplayViewKlop

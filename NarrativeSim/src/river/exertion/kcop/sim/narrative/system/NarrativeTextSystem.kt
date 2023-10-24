@@ -3,13 +3,12 @@ package river.exertion.kcop.sim.narrative.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.allOf
-import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.sim.narrative.component.NarrativeComponent
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.currentBlockTimer
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.currentText
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.executeReadyBlockEvents
 import river.exertion.kcop.sim.narrative.component.NarrativeComponentEventHandler.executeReadyTimelineEvents
-import river.exertion.kcop.sim.narrative.view.DVLayoutHandler
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
 import river.exertion.kcop.view.layout.TextView

@@ -1,10 +1,8 @@
-package river.exertion.kcop.sim.narrative.view.asset
+package river.exertion.kcop.view.layout.displayViewLayout.asset
 
 import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.asset.IAsset.Companion.AssetNotFound
-import river.exertion.kcop.profile.asset.ProfileAssets
-import river.exertion.kcop.sim.narrative.view.DVLayout
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayout
 
 class DisplayViewLayoutAsset(var dvLayout: DVLayout = DVLayout.dvLayout()) : IAsset {
 

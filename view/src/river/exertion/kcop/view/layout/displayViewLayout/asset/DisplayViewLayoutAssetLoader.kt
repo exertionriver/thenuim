@@ -1,4 +1,4 @@
-package river.exertion.kcop.sim.narrative.view.asset
+package river.exertion.kcop.view.layout.displayViewLayout.asset
 
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetLoaderParameters
@@ -9,7 +9,7 @@ import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.asset.AssetStatus
-import river.exertion.kcop.sim.narrative.view.DVLayout
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayout
 
 class DisplayViewLayoutAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<DisplayViewLayoutAsset?, DisplayViewLayoutAssetLoader.DisplayViewLayoutAssetParameter?>(resolver) {

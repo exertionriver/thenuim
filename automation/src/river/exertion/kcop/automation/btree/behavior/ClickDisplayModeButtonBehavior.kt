@@ -16,7 +16,7 @@ class ClickDisplayModeButtonBehavior : AutoUserBehavior() {
     override fun btree(autoUser: AutoUser) =
         behaviorTree(blackboard = autoUser) {
             sequence {
-                (0..5).forEach {
+                (0..4).forEach {
                     add(ButtonViewClickTask(it))
                     add(WaitTask(.75f))
                     if (it == 3) {

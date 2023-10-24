@@ -1,4 +1,4 @@
-package river.exertion.kcop.sim.narrative.view
+package river.exertion.kcop.view.layout.displayViewLayout
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -67,7 +67,9 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
                 paneContent.data[dvPane.idx()] = Stack().apply {
                     this.add(dvPane.emptyPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
                     this.add(dvPane.contentPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
-                    this.add(dvPane.alphaPane(KcopSkin.screenWidth, KcopSkin.screenHeight, Image(TextureRegionDrawable(paneBATexture(dvPane)))))
+                    this.add(dvPane.alphaPane(KcopSkin.screenWidth, KcopSkin.screenHeight, Image(TextureRegionDrawable(
+                        paneBATexture(dvPane)
+                    ))))
                 }
             }
         }

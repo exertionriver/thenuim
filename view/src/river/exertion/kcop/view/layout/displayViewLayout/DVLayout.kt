@@ -1,4 +1,4 @@
-package river.exertion.kcop.sim.narrative.view
+package river.exertion.kcop.view.layout.displayViewLayout
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label

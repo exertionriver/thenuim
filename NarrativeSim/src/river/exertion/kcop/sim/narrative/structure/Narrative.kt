@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.sim.narrative.structure.events.Event
-import river.exertion.kcop.sim.narrative.view.DVLayout
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayout
 import river.exertion.kcop.view.KcopFont
 
 @Serializable
