@@ -25,7 +25,7 @@ import java.util.jar.JarFile
 
 class KcopSimulator : Telegraph, KtxScreen {
 
-    private val displayViewPackages = mutableListOf<IDisplayViewKlop>(
+    val coreDisplayViewPackages = mutableListOf<IDisplayViewKlop>(
         NarrativeKlop,
         ColorPaletteDisplayKlop,
     )
@@ -38,20 +38,23 @@ class KcopSimulator : Telegraph, KtxScreen {
         val jarEnumeration = jarFile.entries()
         val classLoader = URLClassLoader.newInstance(arrayOf(URL("jar:file:$jarPath!/")))
 
+        val coreDisplayViewPackageNames = coreDisplayViewPackages.map { it::class.qualifiedName }
 
         while (jarEnumeration.hasMoreElements()) {
             val jarEntry = jarEnumeration.nextElement()
 
-            if (jarEntry.isDirectory || !jarEntry.name.endsWith(".class")) continue
+            if (jarEntry.isDirectory || !jarEntry.name.endsWith("Klop.class")) continue
 
             val className = jarEntry.name.substring(0, jarEntry.name.length - 6).replace('/', '.')
 
-            if (className.contains("Klop")) {
+            if (classLoader.loadClass(className).interfaces.contains(IDisplayViewKlop::class.java) &&
+                !coreDisplayViewPackageNames.contains(className) ) {
+
                 loadedKlop = (classLoader.loadClass(className) as Class<IDisplayViewKlop>).kotlin.objectInstance
             }
         }
 
-        displayViewPackages.forEach {
+        coreDisplayViewPackages.forEach {
             it.load()
         }
 
@@ -110,7 +113,7 @@ class KcopSimulator : Telegraph, KtxScreen {
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
                             currentDisplayViewKlop = ColorPaletteDisplayKlop
 
-                            displayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
+                            coreDisplayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
                                 it.hideView()
                             }
 
@@ -119,7 +122,7 @@ class KcopSimulator : Telegraph, KtxScreen {
                         KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
                             currentDisplayViewKlop = NarrativeKlop
 
-                            displayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
+                            coreDisplayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
                                 it.hideView()
                             }
 
@@ -135,7 +138,7 @@ class KcopSimulator : Telegraph, KtxScreen {
     }
 
     override fun dispose() {
-        displayViewPackages.forEach {
+        coreDisplayViewPackages.forEach {
             it.dispose()
         }
 
