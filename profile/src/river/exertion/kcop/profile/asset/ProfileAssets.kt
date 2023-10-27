@@ -23,6 +23,6 @@ object ProfileAssets : IAssets {
 
     override fun get() : MutableList<ProfileAsset> = super.getTyped()
 
-    override val iAssetsLocation = "kcop/profile/"
+    override val iAssetsLocation = "./kcop/profile/"
     override val iAssetsExtension = "json"
 }

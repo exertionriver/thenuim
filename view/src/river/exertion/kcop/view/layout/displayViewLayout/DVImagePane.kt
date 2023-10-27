@@ -17,10 +17,10 @@ import river.exertion.kcop.view.layout.DisplayView
 class DVImagePane : DVPane() {
 
     override var idx : String? = null
-    override val width : String? = null
-    override val height : String? = null
-    override val refineX : String? = null
-    override val refineY : String? = null
+    override var width : String? = null
+    override var height : String? = null
+    override var refineX : String? = null
+    override var refineY : String? = null
 
     @Transient
     override var paneType: String? = DVPaneTypes.IMAGE.tag()

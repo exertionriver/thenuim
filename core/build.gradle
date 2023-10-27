@@ -20,3 +20,13 @@ test {
 compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
 }
+/*
+tasks.register('kcopCoreFatJar', Jar) {
+    manifest {
+        attributes 'Main-Class': 'river.exertion.kcop'
+    }
+    archiveBaseName = 'kcop-core'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}*/

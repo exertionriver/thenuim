@@ -49,3 +49,13 @@ tasks.register('dist', Jar) {
 }
 
 dist.dependsOn classes
+
+tasks.register('kcopFatJar', Jar) {
+    manifest {
+        attributes 'Main-Class': 'river.exertion.kcop.DesktopLauncher'
+    }
+    archiveBaseName = 'kcop'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

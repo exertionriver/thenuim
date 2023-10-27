@@ -38,6 +38,10 @@ data class DVLayout(
         imagePanes().firstOrNull { it.idx() == paneIdx }?.paneTexture = texture
     }
 
+    fun setTextPaneContent(paneIdx : Int, text : String?) {
+        textPanes().firstOrNull { it.idx() == paneIdx }?.paneText = text
+    }
+
     fun fadeImageIn(paneIdx : Int, texture : Texture?) {
         imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageIn(texture)
     }
@@ -68,7 +72,7 @@ data class DVLayout(
         textPanes().forEach { it.textLabelStyle = textLabelStyle }
     }
 
-    fun setTextPaneContent(screenWidth: Float, screenHeight: Float, currentText: String) {
+    fun setFullTextPaneContent(screenWidth: Float, screenHeight: Float, currentText: String) {
 
         val textContentMap = mutableMapOf<Int, String?>()
 
@@ -145,7 +149,7 @@ data class DVLayout(
         }
 
         if (textContentMap.isNotEmpty()) {
-            textPanes().forEachIndexed { idx, dvTextPane -> dvTextPane.paneText = textContentMap[idx] }
+            textContentMap.entries.forEach { textContentMapEntry -> setTextPaneContent(textDVPs[textContentMapEntry.key].idx(), textContentMapEntry.value) }
         }
     }
 

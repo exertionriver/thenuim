@@ -13,10 +13,10 @@ sealed class DVPane : DVLayoutCell() {
 
     override var idx : String? = null
     override var cellType: DVLCellTypes = DVLCellTypes.PANE
-    abstract val width : String?
-    abstract val height : String?
-    abstract val refineX : String?
-    abstract val refineY : String?
+    abstract var width : String?
+    abstract var height : String?
+    abstract var refineX : String?
+    abstract var refineY : String?
 
     abstract var paneType: String?
 

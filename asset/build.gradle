@@ -20,6 +20,8 @@ dependencies {
     api "io.github.libktx:ktx-assets:$ktxVersion"
     api "io.github.libktx:ktx-collections:$ktxVersion"
 
+    api "org.jetbrains.kotlinx:kotlinx-datetime-jvm:$kotlinxDatetimeVersion"
+
     testImplementation project(path: ':base', configuration: 'testDependencies')
 }
 

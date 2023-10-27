@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 buildscript {
-    ext.kotlinVersion = '1.9.0'
+    ext.kotlinVersion = '1.9.10'
 
     repositories {
         mavenLocal()
@@ -34,9 +34,9 @@ allprojects {
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
         ktxVersion = '1.12.0-rc1'
-        kotlinxVersion = '1.6.1'
-        kotlinxCoroutineVersion = '1.7.0-Beta'
-        kotlinxSerializationVersion = '1.4.1'
+        kotlinxCoroutineVersion = '1.7.3'
+        kotlinxSerializationVersion = '1.6.0'
+        kotlinxDatetimeVersion = '0.4.1'
         gltfVersion = '2.0.0-rc.1'
         shapedrawerVersion = '2.6.0' //https://github.com/earlygrey/shapedrawer
         junitVersion = '5.9.3'

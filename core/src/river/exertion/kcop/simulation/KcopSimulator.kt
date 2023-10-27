@@ -33,7 +33,7 @@ class KcopSimulator : Telegraph, KtxScreen {
     var loadedKlop : IDisplayViewKlop? = null
 
     init {
-        val jarPath = "./plugins/SweetAstroConsole-kcop-0.4.jar"
+        val jarPath = "./kcop/plugins/SweetAstroConsole-kcop-0.4.jar"
         val jarFile = JarFile(jarPath)
         val jarEnumeration = jarFile.entries()
         val classLoader = URLClassLoader.newInstance(arrayOf(URL("jar:file:$jarPath!/")))

@@ -61,7 +61,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             val textLabelStyle = KcopSkin.labelStyle(currentFontSize)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
-            currentDvLayout.setTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
+            currentDvLayout.setFullTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
 
             currentDvLayout.panes().forEach { dvPane ->
                 paneContent.data[dvPane.idx()] = Stack().apply {
