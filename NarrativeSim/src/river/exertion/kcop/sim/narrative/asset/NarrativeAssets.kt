@@ -23,6 +23,6 @@ object NarrativeAssets : IAssets {
 
     override fun get() : MutableList<NarrativeAsset> = super.getTyped()
 
-    override val iAssetsLocation = "./kcop/narrative/"
+    override val iAssetsLocation = "narrative/"
     override val iAssetsExtension = "json"
 }

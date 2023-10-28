@@ -23,6 +23,6 @@ object DisplayViewLayoutAssets : IAssets {
 
     override fun get() : MutableList<DisplayViewLayoutAsset> = super.getTyped()
 
-    override val iAssetsLocation = "./kcop/layout/"
+    override val iAssetsLocation = "layout/"
     override val iAssetsExtension = "json"
 }
