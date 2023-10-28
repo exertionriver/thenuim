@@ -46,10 +46,14 @@ object AssetManagerHandler {
 
     inline fun <reified T: IAsset>loadAssetsByLocation(assetLoadLocation : String, assetLoadExtension : String) {
 
-        Path(assetLoadLocation).listDirectoryEntries().filter { assetLoadExtension == it.extension }.forEach {
-            assets.load<T>(it.toString())
+        try {
+            Path(assetLoadLocation).listDirectoryEntries().filter { assetLoadExtension == it.extension }.forEach {
+                assets.load<T>(it.toString())
+            }
+            assets.finishLoading()
+        } catch (ex : Exception) {
+            println(ex)
         }
-        assets.finishLoading()
     }
 
     inline fun <reified T: Any>loadAssetsByPath(assetLoadPaths : List<String>, params: List<AssetLoaderParameters<T>?>? = null) {

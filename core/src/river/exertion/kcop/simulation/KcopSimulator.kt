@@ -4,6 +4,10 @@ import GdxDesktopTestBehavior
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.app.KtxScreen
+import river.exertion.kcop.asset.AssetManagerHandler
+import river.exertion.kcop.asset.PluginAsset
+import river.exertion.kcop.asset.PluginAssetLoader
+import river.exertion.kcop.asset.PluginAssets
 import river.exertion.kcop.automation.AutomationKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
@@ -17,6 +21,9 @@ import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.ButtonView
 import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.ViewType
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAsset
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAssetLoader
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAssets
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
 import java.net.URL
 import java.net.URLClassLoader
@@ -32,40 +39,21 @@ class KcopSimulator : Telegraph, KtxScreen {
 
     var loadedKlop : IDisplayViewKlop? = null
 
-    init {/*
-        val jarPath = "plugins/SweetAstroConsole-kcop-0.4.jar"
-        val jarFile = JarFile(jarPath)
-        val jarEnumeration = jarFile.entries()
-        val classLoader = URLClassLoader.newInstance(arrayOf(URL("jar:file:$jarPath!/")))
-
-        val coreDisplayViewPackageNames = coreDisplayViewPackages.map { it::class.qualifiedName }
-
-        while (jarEnumeration.hasMoreElements()) {
-            val jarEntry = jarEnumeration.nextElement()
-
-            if (jarEntry.isDirectory || !jarEntry.name.endsWith("Klop.class")) continue
-
-            val className = jarEntry.name.substring(0, jarEntry.name.length - 6).replace('/', '.')
-
-            if (classLoader.loadClass(className).interfaces.contains(IDisplayViewKlop::class.java) &&
-                !coreDisplayViewPackageNames.contains(className) ) {
-
-                loadedKlop = (classLoader.loadClass(className) as Class<IDisplayViewKlop>).kotlin.objectInstance
-            }
-        }
-*/
+    init {
         coreDisplayViewPackages.forEach {
-            it.load()
+            PluginAssets.values.add(PluginAsset(it::javaClass.get()))
         }
 
-        loadedKlop?.load()
+        AssetManagerHandler.assets.setLoader(PluginAsset::class.java, PluginAssetLoader(AssetManagerHandler.lfhr))
+        PluginAssets.reload()
+        PluginAssets.values.forEach { (it.assetData() as IDisplayViewKlop).load() }
 
         AutomationKlop.load()
 
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-    var currentDisplayViewKlop : IDisplayViewKlop = loadedKlop ?: NarrativeKlop
+    var currentDisplayViewKlop : IDisplayViewKlop = NarrativeKlop
 
     override fun render(delta: Float) {
 
