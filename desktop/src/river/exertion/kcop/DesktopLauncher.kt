@@ -2,6 +2,7 @@ package river.exertion.kcop
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
+import river.exertion.kcop.asset.AppArgHandler
 import river.exertion.kcop.base.KcopBase
 
 object DesktopLauncher {
@@ -14,7 +15,8 @@ object DesktopLauncher {
     }
 
     @JvmStatic
-    fun main(arg: Array<String>) {
+    fun main(args: Array<String>) {
+        AppArgHandler.setAppArgs(args)
         Lwjgl3Application(Kcop(), config())
     }
 }

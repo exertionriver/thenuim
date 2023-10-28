@@ -11,7 +11,7 @@ import river.exertion.kcop.ecs.klop.IECSKlop
 class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
 
     override var id = Id.randomId()
-    override var name = this::class.simpleName.toString()
+    override var tag = this::class.simpleName.toString()
 
     var testSystem = TestSystem()
 

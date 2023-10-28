@@ -1,6 +1,5 @@
 package river.exertion.kcop.view.layout
 
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -38,13 +37,8 @@ object ButtonView : ViewBase {
             ViewLayout.rebuild()
        },
         2 to {
-            if (isChecked[2] == true) {
-                LogView.addLog("Color Palette On")
-                MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.ColorPaletteOn))
-            } else {
-                LogView.addLog("Color Palette Off")
-                MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.ColorPaletteOff))
-            }
+            LogView.addLog("Cycle Plugin")
+            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.NextPlugin))
         },
         fullScreen to {
             MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.FullScreen))

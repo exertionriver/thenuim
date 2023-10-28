@@ -5,18 +5,19 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
-import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
+import java.time.Duration
 
 object ViewLayout {
 
     lateinit var kcopButton : Button
 
-    fun build(stage: Stage) {
+    fun build(stage: Stage, loadDisplayOpen : Boolean = false) {
         stage.addActor(DisplayView.apply { this.build() }.viewTable)
         stage.addActor(TextView.apply { this.build() }.viewTable)
         stage.addActor(LogView.apply { this.build() }.viewTable)
@@ -31,7 +32,11 @@ object ViewLayout {
         }}
 
         stage.addActor(kcopButton)
-        kcopButton.addAction(Actions.sequence(Actions.hide()))
+
+        if (loadDisplayOpen)
+            displayScreenImmediate()
+        else
+            kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
     fun rebuild() {
@@ -49,7 +54,7 @@ object ViewLayout {
     val fadeInDuration = fadeOutDuration * 4
     val moveDuration = fadeOutDuration * 2
 
-    fun kcopScreen(offset : Vector2) {
+    fun kcopScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)) {
         DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, moveDuration, Interpolation.linear)))
         DisplayView.viewType = ViewType.DISPLAY
 
@@ -64,9 +69,14 @@ object ViewLayout {
         kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
-    fun fullScreen(offset : Vector2) {
+    fun displayScreenImmediate() {
+        displayScreenTransition(moveDuration = 0f, fadeOutDuration = 0f)
+    }
+
+    fun displayScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
+                                , moveDuration : Float = this.moveDuration, fadeOutDuration: Float = this.fadeOutDuration ) {
         DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, moveDuration, Interpolation.linear)))
-        DisplayView.viewType = ViewType.DISPLAY_FULLSCREEN
+        DisplayView.viewType = ViewType.DISPLAY_ONLY
         TextView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
         LogView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
         StatusView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))

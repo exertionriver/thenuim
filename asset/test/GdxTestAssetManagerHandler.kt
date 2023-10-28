@@ -25,7 +25,7 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
     private var testData : MutableList<TestIAsset> = mutableListOf()
 
     override var id = Id.randomId()
-    override var name = this::class.simpleName.toString()
+    override var tag = this::class.simpleName.toString()
 
     //used for IAssetKlop overload, does not actually load assets
     @BeforeEach

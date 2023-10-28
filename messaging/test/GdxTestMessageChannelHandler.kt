@@ -10,7 +10,7 @@ import river.exertion.kcop.messaging.klop.IMessagingKlop
 class GdxTestMessageChannelHandler : IMessagingKlop, GdxTestBase() {
 
     override var id = Id.randomId()
-    override var name = this::class.simpleName.toString()
+    override var tag = this::class.simpleName.toString()
 
     var channelIdx = -1
 

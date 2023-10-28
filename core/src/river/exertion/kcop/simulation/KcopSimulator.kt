@@ -4,10 +4,7 @@ import GdxDesktopTestBehavior
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.app.KtxScreen
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.asset.PluginAsset
-import river.exertion.kcop.asset.PluginAssetLoader
-import river.exertion.kcop.asset.PluginAssets
+import river.exertion.kcop.asset.*
 import river.exertion.kcop.automation.AutomationKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
@@ -17,27 +14,17 @@ import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.klop.IDisplayViewKlop
-import river.exertion.kcop.view.layout.AudioView
-import river.exertion.kcop.view.layout.ButtonView
-import river.exertion.kcop.view.layout.ViewLayout
-import river.exertion.kcop.view.layout.ViewType
-import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAsset
-import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAssetLoader
-import river.exertion.kcop.view.layout.displayViewLayout.asset.DisplayViewLayoutAssets
+import river.exertion.kcop.view.layout.*
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
-import java.net.URL
-import java.net.URLClassLoader
-import java.util.jar.JarFile
+import kotlin.properties.Delegates
 
 
 class KcopSimulator : Telegraph, KtxScreen {
 
-    val coreDisplayViewPackages = mutableListOf<IDisplayViewKlop>(
+    private val coreDisplayViewPackages = mutableListOf(
         NarrativeKlop,
         ColorPaletteDisplayKlop,
     )
-
-    var loadedKlop : IDisplayViewKlop? = null
 
     init {
         coreDisplayViewPackages.forEach {
@@ -53,7 +40,13 @@ class KcopSimulator : Telegraph, KtxScreen {
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
-    var currentDisplayViewKlop : IDisplayViewKlop = NarrativeKlop
+    private var currentIDisplayViewKlopIdx = 0
+    private fun currentIDisplayViewKlop() = PluginAssets.get()[currentIDisplayViewKlopIdx].assetDataTyped()
+    private fun nextIDisplayViewKlopIdx() {
+        currentIDisplayViewKlopIdx++
+        if (currentIDisplayViewKlopIdx >= PluginAssets.get().size)
+            currentIDisplayViewKlopIdx = 0
+    }
 
     override fun render(delta: Float) {
 
@@ -65,8 +58,16 @@ class KcopSimulator : Telegraph, KtxScreen {
     }
 
     override fun show() {
-        currentDisplayViewKlop.showView()
-        ViewLayout.build(KcopBase.stage)
+        val pluginArgIdx = AppArgHandler.appArgs.keys.toList().indexOf("-plugin")
+        val pluginArgValue = if (pluginArgIdx >= 0) AppArgHandler.appArgs.values.toList()[pluginArgIdx] else null
+        val loadPlugin = PluginAssets.byName(pluginArgValue)
+
+        currentIDisplayViewKlopIdx = if (loadPlugin != null) PluginAssets.values.indexOf(loadPlugin as IAsset) else 0
+
+        currentIDisplayViewKlop().showView()
+        LogView.addLog("kcop loaded with plugin:${currentIDisplayViewKlop().tag}")
+
+        ViewLayout.build(KcopBase.stage, AppArgHandler.appArgs.keys.contains("-displayOpen"))
         ButtonView.assignableButtons[5] = { GdxDesktopTestBehavior.testBehavior() }
     }
 
@@ -82,7 +83,6 @@ class KcopSimulator : Telegraph, KtxScreen {
         KcopBase.stage.viewport.update(width, height)
     }
 
-
     override fun handleMessage(msg: Telegram?): Boolean {
         if (msg != null) {
             when {
@@ -91,30 +91,22 @@ class KcopSimulator : Telegraph, KtxScreen {
 
                     when (kcopSimulationMessage.kcopMessageType) {
                         KcopSimulationMessage.KcopMessageType.FullScreen -> {
-                            ViewLayout.fullScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
+                            ViewLayout.displayScreenTransition()
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.KcopScreen -> {
-                            ViewLayout.kcopScreen(ViewType.DISPLAY_FULLSCREEN.viewPosition(KcopBase.stage.width, KcopBase.stage.height))
+                            ViewLayout.kcopScreenTransition()
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
-                        KcopSimulationMessage.KcopMessageType.ColorPaletteOn -> {
-                            currentDisplayViewKlop = ColorPaletteDisplayKlop
+                        KcopSimulationMessage.KcopMessageType.NextPlugin -> {
+                            nextIDisplayViewKlopIdx()
 
-                            coreDisplayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
-                                it.hideView()
+                            PluginAssets.get().filter { it.assetDataTyped() != currentIDisplayViewKlop() }.forEach {
+                                it.assetDataTyped().hideView()
                             }
 
-                            currentDisplayViewKlop.showView()
-                        }
-                        KcopSimulationMessage.KcopMessageType.ColorPaletteOff -> {
-                            currentDisplayViewKlop = NarrativeKlop
-
-                            coreDisplayViewPackages.filter { it != currentDisplayViewKlop }.forEach {
-                                it.hideView()
-                            }
-
-                            currentDisplayViewKlop.showView()
+                            currentIDisplayViewKlop().showView()
+                            LogView.addLog("kcop plugin loaded:${currentIDisplayViewKlop().tag}")
                         }
                     }
 

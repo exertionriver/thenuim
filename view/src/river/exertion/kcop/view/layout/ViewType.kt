@@ -3,7 +3,6 @@ package river.exertion.kcop.view.layout
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.view.KcopSkin
 
 enum class ViewType {
 
@@ -11,7 +10,7 @@ enum class ViewType {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(0f, 0f, firstWidth(screenWidth), firstHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor
     },
-    DISPLAY_FULLSCREEN {
+    DISPLAY_ONLY {
         override fun viewRect(screenWidth: Float, screenHeight: Float) = Rectangle(secondWidth(screenWidth) / 2, 0f, firstWidth(screenWidth), firstHeight(screenHeight))
         override fun defaultColor() = firstDefaultColor
     },

@@ -11,7 +11,7 @@ object AutomationKlop : IMessagingKlop, IECSKlop {
 
     override var id = Id.randomId()
 
-    override var name = this::class.simpleName.toString()
+    override var tag = this::class.simpleName.toString()
 
     override fun load() {
         loadChannels()

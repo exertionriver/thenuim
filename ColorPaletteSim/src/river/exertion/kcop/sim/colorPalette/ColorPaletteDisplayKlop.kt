@@ -9,7 +9,7 @@ object ColorPaletteDisplayKlop : IDisplayViewKlop {
 
     override var id = Id.randomId()
 
-    override var name = this::class.simpleName.toString()
+    override var tag = "colorPalette"
 
     override fun load() { }
 
