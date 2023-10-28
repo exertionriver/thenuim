@@ -12,18 +12,18 @@ import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 class ImageShowEvent(
     override val type: String = "",
     override val imageFile: String = "",
-    override val layoutPaneIdx: String = ""
+    override val layoutPaneTag: String = ""
 ) : Event(), IImageEvent {
 
     override fun execEvent(previousEvent : Event?) {
         NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-        DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
+        DVLayoutHandler.showImage(layoutPaneTag, NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.hideImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"))
+            DVLayoutHandler.hideImage(layoutPaneTag)
         }
     }
 }

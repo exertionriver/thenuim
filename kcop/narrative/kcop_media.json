@@ -11,21 +11,21 @@
   {"id" : "demo_block6", "narrativeText" : ["sixth seq block"]}
 ], "eventBlocks" : [
   { "narrativeBlockId" : "demo_block2", "events" : [
-    { "type" : "showImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "2" }
+    { "type" : "showImage", "imageFile" : "images/kobold64.png", "layoutPaneTag" : "2" }
   ]},
   { "narrativeBlockId" : "demo_block3", "events" : [
     { "type" : "playMusic", "musicFile" : "music/navajo_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block4", "events" : [
-    { "type" : "fadeImage", "imageFile" : "images/kobold64b.png", "layoutPaneIdx" : "4" },
+    { "type" : "fadeImage", "imageFile" : "images/kobold64b.png", "layoutPaneTag" : "4" },
     { "type" : "fadeMusic", "musicFile" : "music/mystery_clip.wav" }
   ]},
   { "narrativeBlockId" : "demo_block5", "events" : [
-    { "type" : "fadeImage", "imageFile" : "images/kobold64b.png", "layoutPaneIdx" : "12" }
+    { "type" : "fadeImage", "imageFile" : "images/kobold64b.png", "layoutPaneTag" : "12" }
   ]},
   { "narrativeBlockId" : "demo_block6", "events" : [
-    { "type" : "fadeImage", "imageFile" : "images/kobold64.png", "layoutPaneIdx" : "12" },
-    { "type" : "showImage", "imageFile" : "images/kobold64c.png", "layoutPaneIdx" : "16" },
+    { "type" : "fadeImage", "imageFile" : "images/kobold64.png", "layoutPaneTag" : "12" },
+    { "type" : "showImage", "imageFile" : "images/kobold64c.png", "layoutPaneTag" : "16" },
     { "type" : "playSound", "trigger" : "onEntry", "musicFile" : "sounds/376748__zenithinfinitivestudios__fantasy_ui_button_6.wav" }
   ]}
 ]}

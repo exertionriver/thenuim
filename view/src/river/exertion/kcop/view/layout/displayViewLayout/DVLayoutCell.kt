@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = DVLayoutCellSerializer::class)
 sealed class DVLayoutCell {
-        open var idx: String? = null
+        open var tag: String? = null
         abstract var cellType : DVLCellTypes
 
         enum class DVLCellTypes {

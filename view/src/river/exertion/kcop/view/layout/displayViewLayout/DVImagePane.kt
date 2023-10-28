@@ -16,7 +16,7 @@ import river.exertion.kcop.view.layout.DisplayView
 @Serializable
 class DVImagePane : DVPane() {
 
-    override var idx : String? = null
+    override var tag : String? = null
     override var width : String? = null
     override var height : String? = null
     override var refineX : String? = null
@@ -55,7 +55,6 @@ class DVImagePane : DVPane() {
             this.alphaMask = 1f
             Timer.schedule(object : Timer.Task() {
                 override fun run() {
-//                    println("fadeIn[$layoutPaneIdx]: alpha:${displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]}")
 
                     if (textureLock != null && textureLock == this) {
 
@@ -69,7 +68,6 @@ class DVImagePane : DVPane() {
                             this.cancel()
                         }
                     } else {
-//                        println("texture unlocked! [$layoutPaneIdx]")
                         this@DVImagePane.alphaMask = 0f
                         DisplayView.build()
                         this.cancel()
@@ -83,7 +81,6 @@ class DVImagePane : DVPane() {
         this.alphaMask = 0f
         Timer.schedule(object : Timer.Task() {
             override fun run() {
-//                    println("fadeOut[$layoutPaneIdx]: alpha:${displayViewLayouts[currentLayoutIdx].paneTextureMaskAlpha[layoutPaneIdx]}")
 
                 if (textureLock != null && textureLock == this) {
 
@@ -99,7 +96,6 @@ class DVImagePane : DVPane() {
                         this.cancel()
                     }
                 } else {
-//                        println("texture unlocked! [$layoutPaneIdx]")
                     this@DVImagePane.alphaMask = 1f
                     DisplayView.build()
                     this.cancel()

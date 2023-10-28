@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DVTable(
-    val tableIdx : String,
+    val tableTag : String,
     override var cellType: DVLCellTypes = DVLCellTypes.TABLE,
     val colspan : String? = null,
     val panes : MutableList<DVLayoutCell> = mutableListOf()

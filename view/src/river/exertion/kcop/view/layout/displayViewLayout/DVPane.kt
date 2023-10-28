@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable(with = DVPaneSerializer::class)
 sealed class DVPane : DVLayoutCell() {
 
-    override var idx : String? = null
+    override var tag : String? = null
     override var cellType: DVLCellTypes = DVLCellTypes.PANE
     abstract var width : String?
     abstract var height : String?
@@ -23,15 +23,13 @@ sealed class DVPane : DVLayoutCell() {
     @Transient
     var alphaMask : Float = 0f
 
-    fun idx() = idx?.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!")
-
     fun refineX() = refineX?.toInt() ?: 0
     fun refineY() = refineY?.toInt() ?: 0
 
     fun dvpType() = DVPaneType.byTags(width, height)
 
     open fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String? = "") : Stack {
-        val label = idx.toString() + paneLabel
+        val label = tag + paneLabel
 
         val innerTableBg = Table()
         innerTableBg.add(randomColorImage)

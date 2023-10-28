@@ -27,27 +27,27 @@ data class DVLayout(
 
     fun setAdjacencies(fontSize: KcopFont) {
         textPanes().forEach { dvTextPane ->
-            dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.idx == dvTextPane.idx }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
+            dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.idx == dvTextPane.tag }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
                     ?: 0
-            dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.idx == dvTextPane.idx }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows()
+            dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.idx == dvTextPane.tag }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows()
                     ?: 0
         }
     }
 
-    fun setImagePaneContent(paneIdx : Int, texture : Texture?) {
-        imagePanes().firstOrNull { it.idx() == paneIdx }?.paneTexture = texture
+    fun setImagePaneContent(paneTag : String, texture : Texture?) {
+        imagePanes().firstOrNull { it.tag == paneTag }?.paneTexture = texture
     }
 
-    fun setTextPaneContent(paneIdx : Int, text : String?) {
-        textPanes().firstOrNull { it.idx() == paneIdx }?.paneText = text
+    fun setTextPaneContent(paneTag : String, text : String?) {
+        textPanes().firstOrNull { it.tag == paneTag }?.paneText = text
     }
 
-    fun fadeImageIn(paneIdx : Int, texture : Texture?) {
-        imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageIn(texture)
+    fun fadeImageIn(paneTag : String, texture : Texture?) {
+        imagePanes().firstOrNull { it.tag == paneTag }?.fadeImageIn(texture)
     }
 
-    fun fadeImageOut(paneIdx : Int) {
-        imagePanes().firstOrNull { it.idx() == paneIdx }?.fadeImageOut()
+    fun fadeImageOut(paneTag : String) {
+        imagePanes().firstOrNull { it.tag == paneTag }?.fadeImageOut()
     }
 
     fun clearContent() {
@@ -149,7 +149,7 @@ data class DVLayout(
         }
 
         if (textContentMap.isNotEmpty()) {
-            textContentMap.entries.forEach { textContentMapEntry -> setTextPaneContent(textDVPs[textContentMapEntry.key].idx(), textContentMapEntry.value) }
+            textContentMap.entries.forEach { textContentMapEntry -> setTextPaneContent(textDVPs[textContentMapEntry.key].tag!!, textContentMapEntry.value) }
         }
     }
 

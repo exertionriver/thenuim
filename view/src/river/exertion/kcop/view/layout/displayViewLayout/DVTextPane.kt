@@ -14,7 +14,7 @@ import river.exertion.kcop.view.layout.ViewType
 @Serializable
 class DVTextPane : DVPane() {
 
-    override var idx : String? = null
+    override var tag : String? = null
     override var width : String? = null
     override var height : String? = null
     override var refineX : String? = null

@@ -1,21 +1,21 @@
 {"id" : "00786ad8-111e-4a10-8d8d-01b35344d6c5",
   "name" : "basicPictureNarrative",
   "layout" : [
-  {"tableIdx" : "tlRow0",
-    "panes" : [{"idx" : "0", "width" : "large", "height" : "large"}, {"idx" : "1", "type": "text", "width" : "title", "height" : "large"}]
+  {"tableTag" : "tlRow0",
+    "panes" : [{"tag" : "0", "width" : "large", "height" : "large"}, {"tag" : "1", "type": "text", "width" : "title", "height" : "large"}]
   },
-  {"tableIdx" : "layout",
-    "panes" : [{"tableIdx" : "tlRow0"}, {}, {"idx" : "2", "type": "text", "width" : "full", "height" : "title"}]
+  {"tableTag" : "layout",
+    "panes" : [{"tableTag" : "tlRow0"}, {}, {"tag" : "2", "type": "text", "width" : "full", "height" : "title"}]
   }],
   "textAdjacencyRows" : [
-    {"idx" : "1", "fontRows" : [
+    {"tag" : "1", "fontRows" : [
       { "fontSize" : "small", "allowRows" : "2"},
       { "fontSize" : "medium", "allowRows" : "1"},
       { "fontSize" : "large", "allowRows" : "1"}
     ]}
   ],
   "textAdjacencyTopPads" : [
-    {"idx" : "2", "fontPads" : [
+    {"tag" : "2", "fontPads" : [
       { "fontSize" : "small", "yOffset" : "-9"},
       { "fontSize" : "medium", "yOffset" : "-15"},
       { "fontSize" : "large", "yOffset" : "7"}

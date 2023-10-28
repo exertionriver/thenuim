@@ -12,7 +12,7 @@ sealed class Event {
     fun isSoundEvent() = this::class.java.interfaces.contains(ISoundEvent::class.java)
 
     fun isLikeImageEvent(event: Event) = (this.isImageEvent() && event.isImageEvent()) &&
-            ( (this as IImageEvent).layoutPaneIdx == (event as IImageEvent).layoutPaneIdx )
+            ( (this as IImageEvent).layoutPaneTag == (event as IImageEvent).layoutPaneTag )
     fun isLikeMusicEvent(event: Event) = this.isMusicEvent() && event.isMusicEvent()
 
     fun isLikeEvent(event: Event) = isLikeImageEvent(event) || isLikeMusicEvent(event)

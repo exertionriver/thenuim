@@ -12,23 +12,23 @@ import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 class ImageFadeEvent(
     override val type: String = "",
     override val imageFile: String = "",
-    override val layoutPaneIdx: String = ""
+    override val layoutPaneTag: String = ""
 ) : Event(), IImageEvent {
 
     override fun execEvent(previousEvent : Event?) {
         if (previousEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.fadeImageIn(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
+            DVLayoutHandler.fadeImageIn(layoutPaneTag, NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
         } else if ( (previousEvent as IImageEvent).imageFile != imageFile ) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("exec_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.showImage(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"), NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
+            DVLayoutHandler.showImage(layoutPaneTag, NarrativeAsset.currentNarrativeAsset.narrative.textures[imageFile]!!)
         }
     }
 
     override fun resolveEvent(currentEvent: Event?) {
         if (currentEvent == null) {
             NarrativeStateAsset.currentNarrativeStateAsset.narrativeState.setBlockFlag("resolve_${id!!}", NarrativeState.EventFiredValue)
-            DVLayoutHandler.fadeImageOut(layoutPaneIdx.toIntOrNull() ?: throw Exception("non-integer idx for DVPane!"))
+            DVLayoutHandler.fadeImageOut(layoutPaneTag)
         }
     }
 }

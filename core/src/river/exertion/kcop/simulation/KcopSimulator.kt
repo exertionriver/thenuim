@@ -32,7 +32,7 @@ class KcopSimulator : Telegraph, KtxScreen {
 
     var loadedKlop : IDisplayViewKlop? = null
 
-    init {
+    init {/*
         val jarPath = "plugins/SweetAstroConsole-kcop-0.4.jar"
         val jarFile = JarFile(jarPath)
         val jarEnumeration = jarFile.entries()
@@ -53,7 +53,7 @@ class KcopSimulator : Telegraph, KtxScreen {
                 loadedKlop = (classLoader.loadClass(className) as Class<IDisplayViewKlop>).kotlin.objectInstance
             }
         }
-
+*/
         coreDisplayViewPackages.forEach {
             it.load()
         }
