@@ -8,4 +8,5 @@ android/res/**
 desktop/build/**
 local.properties
 /notes/**
-kcop/plugin/**
+assets/plugin/**
+assets/**

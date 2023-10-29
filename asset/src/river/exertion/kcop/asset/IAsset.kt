@@ -1,7 +1,7 @@
 package river.exertion.kcop.asset
 
 interface IAsset {
-    fun assetData() : Any
+    fun assetData() : Any?
 
     fun assetId() : String
     fun assetName() : String
@@ -36,7 +36,7 @@ interface IAsset {
 
         fun sanitizeFilename(assetName : String) = reduceFilename(replaceFilename(assetName))
 
-        fun newAssetFilename(assetName : String, assetId : String) = "${sanitizeFilename(assetName)}_${assetId.substring(0, 4)}"
+        fun newAssetFilename(assetName : String, assetId : String) = "${sanitizeFilename(assetName)}_${assetId.substring(0, assetId.length.coerceIn(0, 4))}"
 
         const val AssetNotFound = "not found"
     }

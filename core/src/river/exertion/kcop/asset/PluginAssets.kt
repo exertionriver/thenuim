@@ -19,6 +19,6 @@ object PluginAssets : IAssets {
 
     override fun get() : MutableList<PluginAsset> = super.getTyped()
 
-    override val iAssetsLocation = "plugin/"
+    override val iAssetsLocation = "assets/plugin/"
     override val iAssetsExtension = "jar"
 }

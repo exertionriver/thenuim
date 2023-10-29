@@ -23,6 +23,6 @@ object NarrativeStateAssets : IAssets {
 
     override fun get() : MutableList<NarrativeStateAsset> = super.getTyped()
 
-    override val iAssetsLocation = "narrativeState/"
+    override val iAssetsLocation = "assets/narrativeState/"
     override val iAssetsExtension = "json"
 }

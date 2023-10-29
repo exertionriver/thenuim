@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
+import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.json.decodeFromJsonElement
 import river.exertion.kcop.asset.AssetManagerHandler.json
 import river.exertion.kcop.sim.narrative.structure.Narrative
@@ -20,8 +21,6 @@ import java.util.jar.JarFile
 class PluginAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<PluginAsset?, PluginAssetLoader.NarrativeSequenceParameter?>(resolver) {
 
-    lateinit var rawData: String
-
     override fun getDependencies(fileName: String?, file: FileHandle?, parameter: NarrativeSequenceParameter?): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
         return null
     }
@@ -30,25 +29,27 @@ class PluginAssetLoader(resolver: FileHandleResolver?) :
     }
 
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): PluginAsset {
+        var returnPluginAsset = PluginAsset().apply {
+            this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", "no plugin found:$fileName")
+        }
+
         try {
-            lateinit var returnPluginAsset : PluginAsset
             val jarPath = fileName
             val jarFile = JarFile(jarPath)
             val jarEnumeration = jarFile.entries()
             val classLoader = URLClassLoader.newInstance(arrayOf(URL("jar:file:$jarPath!/")))
 
-            val loadedPackages = PluginAssets.values.map { it.assetName() }
-
             while (jarEnumeration.hasMoreElements()) {
                 val jarEntry = jarEnumeration.nextElement()
 
-                if (jarEntry.isDirectory || !jarEntry.name.endsWith("Klop.class")) continue
+                if (jarEntry.isDirectory || !jarEntry.name.endsWith(".class")) continue
 
                 val className = jarEntry.name.substring(0, jarEntry.name.length - 6).replace('/', '.')
 
-                if (classLoader.loadClass(className).interfaces.contains(IDisplayViewKlop::class.java) &&
-                    !loadedPackages.contains(className)
-                ) {
+                val loadedClass = classLoader.loadClass(className)
+
+                if (jarEntry.name.endsWith("Klop.class") &&
+                    loadedClass.interfaces.contains(IDisplayViewKlop::class.java)) {
                     returnPluginAsset = PluginAsset((classLoader.loadClass(className) as Class<IDisplayViewKlop>))
                 }
             }
@@ -58,8 +59,8 @@ class PluginAssetLoader(resolver: FileHandleResolver?) :
             return returnPluginAsset
 
         } catch (ex : Exception) {
-            return PluginAsset(IDisplayViewKlop::class.java).apply {
-                this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", ex.message)
+            return returnPluginAsset.apply {
+                this.assetStatus = AssetStatus(this.assetPath(), "exception:asset not loaded", ex.message)
             }
         }
     }

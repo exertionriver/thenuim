@@ -33,7 +33,8 @@ class KcopSimulator : Telegraph, KtxScreen {
 
         AssetManagerHandler.assets.setLoader(PluginAsset::class.java, PluginAssetLoader(AssetManagerHandler.lfhr))
         PluginAssets.reload()
-        PluginAssets.values.forEach { (it.assetData() as IDisplayViewKlop).load() }
+        PluginAssets.values.filter {it.assetStatus == null}.forEach { (it.assetData() as IDisplayViewKlop).load() }
+        PluginAssets.values.removeIf { it.assetStatus != null }
 
         AutomationKlop.load()
 
