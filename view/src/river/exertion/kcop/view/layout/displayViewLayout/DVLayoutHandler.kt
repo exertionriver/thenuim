@@ -46,7 +46,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
 
         if (KcopSkin.displayMode) {
 
-            currentDvLayout.panes().forEach { dvPane ->
+            currentDvLayout.layoutPanes().forEach { dvPane ->
                 val randomColor = ColorPalette.randomW3cBasic()
                 val randomColorImage = Image(TextureRegionDrawable(paneColorTexture(dvPane, randomColor).texture))
                 val randomColorLabelStyle = KcopSkin.labelStyle(KcopFont.TEXT, randomColor.label())
@@ -61,9 +61,10 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             val textLabelStyle = KcopSkin.labelStyle(currentFontSize)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
-            currentDvLayout.setFullTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
+            if (currentText.isNotEmpty())
+                currentDvLayout.setFullTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
 
-            currentDvLayout.panes().forEach { dvPane ->
+            currentDvLayout.layoutPanes().forEach { dvPane ->
                 paneContent.data[dvPane.tag!!] = Stack().apply {
                     this.add(dvPane.emptyPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
                     this.add(dvPane.contentPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
@@ -105,7 +106,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             (dvLayoutCell is DVPane) -> { this.add ( paneContent.data.entries.firstOrNull { it.key == dvLayoutCell.tag }?.value ) }
             (dvLayoutCell is DVRow) -> { this.row() }
             (dvLayoutCell is DVTable) -> { this.add( Table().apply {
-                    dvLayout.layout.firstOrNull { it.tableTag == dvLayoutCell.tableTag }?.panes?.forEach {
+                    dvLayout.layoutTables().firstOrNull { it.tableTag == dvLayoutCell.tableTag }?.panes?.forEach {
                         dvPane -> this.paneCell(dvLayout, paneContent, dvPane)
                     }
             }).colspan(dvLayoutCell.colspan())

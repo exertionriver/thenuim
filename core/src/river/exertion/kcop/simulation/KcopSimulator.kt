@@ -65,10 +65,11 @@ class KcopSimulator : Telegraph, KtxScreen {
 
         currentIDisplayViewKlopIdx = if (loadPlugin != null) PluginAssets.values.indexOf(loadPlugin as IAsset) else 0
 
+        ViewLayout.build(KcopBase.stage, AppArgHandler.appArgs.keys.contains("-displayOpen"))
+
         currentIDisplayViewKlop().showView()
         LogView.addLog("kcop loaded with plugin:${currentIDisplayViewKlop().tag}")
 
-        ViewLayout.build(KcopBase.stage, AppArgHandler.appArgs.keys.contains("-displayOpen"))
         ButtonView.assignableButtons[5] = { GdxDesktopTestBehavior.testBehavior() }
     }
 

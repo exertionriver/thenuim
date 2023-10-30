@@ -70,7 +70,7 @@ object ViewLayout {
     }
 
     fun displayScreenImmediate() {
-        displayScreenTransition(moveDuration = 0f, fadeOutDuration = 0f)
+        displayScreenTransition(offset = Vector2(0f,0f), moveDuration = 0f, fadeOutDuration = 0f)
     }
 
     fun displayScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)

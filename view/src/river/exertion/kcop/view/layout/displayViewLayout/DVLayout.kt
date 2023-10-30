@@ -3,6 +3,7 @@ package river.exertion.kcop.view.layout.displayViewLayout
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.ViewType
@@ -16,14 +17,39 @@ data class DVLayout(
     val textAdjacencyTopPads: MutableList<DVLTextAdjacencyTopPad> = mutableListOf()
 ) {
 
-    @Suppress("UNCHECKED_CAST")
-    fun panes() = layout.flatMap { it.panes }.filter { it.cellType == DVLayoutCell.DVLCellTypes.PANE } as List<DVPane>
+    @Transient
+    var layoutPanes : MutableList<DVPane> = mutableListOf()
+
+    fun layoutPanes() = if (layoutPanes.isNotEmpty() ) layoutPanes else { layout.forEach { panesOf(it) } ; layoutPanes }
+
+    fun panesOf(table : DVTable) {
+
+        if (table.panes.isNotEmpty()) {
+            layoutPanes.addAll( (table.panes.filter { it.cellType == DVLayoutCell.DVLCellTypes.PANE } as List<DVPane>).toMutableList())
+
+            (table.panes.filter { it.cellType == DVLayoutCell.DVLCellTypes.TABLE } as List<DVTable>).forEach { panesOf(it) }
+        }
+    }
+
+    @Transient
+    var layoutTables : MutableList<DVTable> = mutableListOf()
+
+    fun layoutTables() = if (layoutTables.isNotEmpty() ) layoutTables else { layout.forEach { tablesOf(it) } ; layoutTables }
+
+    fun tablesOf(table : DVTable) {
+
+        if (table.panes.isNotEmpty()) {
+            layoutTables.add(table)
+
+            (table.panes.filter { it.cellType == DVLayoutCell.DVLCellTypes.TABLE } as List<DVTable>).forEach { tablesOf(it) }
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
-    fun imagePanes() = panes().filter { it.paneType == DVPane.DVPaneTypes.IMAGE.tag() } as List<DVImagePane>
+    fun imagePanes() = layoutPanes().filter { it.paneType == DVPane.DVPaneTypes.IMAGE.tag() } as List<DVImagePane>
 
     @Suppress("UNCHECKED_CAST")
-    fun textPanes() = panes().filter { it.paneType == DVPane.DVPaneTypes.TEXT.tag() } as List<DVTextPane>
+    fun textPanes() = layoutPanes().filter { it.paneType == DVPane.DVPaneTypes.TEXT.tag() } as List<DVTextPane>
 
     fun setAdjacencies(fontSize: KcopFont) {
         textPanes().forEach { dvTextPane ->
@@ -61,7 +87,7 @@ data class DVLayout(
     }
 
     fun clearAlphaPaneContent() {
-        panes().forEach { dvPane -> dvPane.alphaMask = 0f }
+        layoutPanes().forEach { dvPane -> dvPane.alphaMask = 0f }
     }
 
     fun clearTextPaneContent() {
