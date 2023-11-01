@@ -13,6 +13,8 @@ import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
+import river.exertion.kcop.view.asset.FreeTypeFontAssetStore
+import river.exertion.kcop.view.asset.FreeTypeFontAssets
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.layout.*
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
@@ -30,6 +32,8 @@ class KcopSimulator : Telegraph, KtxScreen {
         coreDisplayViewPackages.forEach {
             PluginAssets.values.add(PluginAsset(it::javaClass.get()))
         }
+
+        FreeTypeFontAssets.reload()
 
         AssetManagerHandler.assets.setLoader(PluginAsset::class.java, PluginAssetLoader(AssetManagerHandler.lfhr))
         PluginAssets.reload()

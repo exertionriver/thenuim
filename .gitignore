@@ -8,5 +8,5 @@ android/res/**
 desktop/build/**
 local.properties
 /notes/**
-assets/plugin/**
-assets/**
+assetExt/plugin/**
+assetExt/**

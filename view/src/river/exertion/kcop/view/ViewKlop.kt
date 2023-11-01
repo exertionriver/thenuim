@@ -43,10 +43,17 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     }
 
     override fun loadAssets() {
+        //internal fonts
         AssetManagerHandler.assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(AssetManagerHandler.ifhr))
         AssetManagerHandler.assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(AssetManagerHandler.ifhr))
 
         FreeTypeFontAssetStore.loadAll()
+
+        KcopFont.TEXT.font = FreeTypeFontAssetStore.NotoSansSymbolsSemiBoldText.get()
+        KcopFont.SMALL.font = FreeTypeFontAssetStore.ImmortalSmall.get()
+        KcopFont.MEDIUM.font = FreeTypeFontAssetStore.ImmortalMedium.get()
+        KcopFont.LARGE.font = FreeTypeFontAssetStore.ImmortalLarge.get()
+
         TextureAssetStore.loadAll()
         SkinAssetStore.loadAll()
         SoundAssetStore.loadAll()

@@ -5,6 +5,7 @@ import river.exertion.kcop.asset.AssetManagerHandler
 import river.exertion.kcop.asset.IAssetStore
 import river.exertion.kcop.asset.IAssetStoreCompanion
 
+//Used for kcop-internal music files
 enum class MusicAssetStore(val path: String) : IAssetStore {
     NavajoNights("music/navajo_clip.wav"),
     Mystery("music/mystery_clip.wav")
