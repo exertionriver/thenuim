@@ -67,7 +67,7 @@ data class Narrative(
 
     fun currentPrompts() : List<String> =
         if (isSequential()) {
-            listOf("(↑"+"\u25CE"+") Prev", "(↓◎↬) Next")
+            listOf("(↑) Prev", "(↓) Next")
         } else {
             promptBlocks.firstOrNull { it.narrativeBlockId == currentBlockId }?.prompts?.map { it.promptText } ?: listOf("<narrativePrompts not found for '$name' at '$currentBlockId')>")
         }

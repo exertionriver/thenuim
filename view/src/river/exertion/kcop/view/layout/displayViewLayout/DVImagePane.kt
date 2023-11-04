@@ -37,9 +37,12 @@ class DVImagePane : DVPane() {
         val contentImage = if (paneTexture != null) Image(TextureRegionDrawable(TextureRegion(paneTexture))) else emptyImage
 
         val innerTable = Table()
-        innerTable.add(contentImage)
-            .size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            .grow()
+        innerTable.add(contentImage).apply {
+            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
+                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
+            }
+            this.grow()
+        }
 
         return Stack().apply {
             this.add(innerTable)

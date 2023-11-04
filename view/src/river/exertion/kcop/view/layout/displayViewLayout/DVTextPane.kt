@@ -46,21 +46,32 @@ class DVTextPane : DVPane() {
         val textLabel = Label(paneText, textLabelStyle)
         textLabel.setAlignment(Align.topLeft)
 
-        val textTable = Table().padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
-            .padBottom(ViewType.padHeight(screenHeight) - adjacencyTopPadOffset!!)
-            .padTop(ViewType.padHeight(screenHeight) + adjacencyTopPadOffset!!)
+        val textTable = Table().apply {
+            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
+                this.padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
+                    .padBottom(ViewType.padHeight(screenHeight) - adjacencyTopPadOffset!!)
+                    .padTop(ViewType.padHeight(screenHeight) + adjacencyTopPadOffset!!)
+            }
+        }
         textTable.top()
-        textTable.add(textLabel).size(
-            dvpType().width(screenWidth) - 2 * ViewType.padWidth(screenWidth),
-            dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight)
-        ).grow()
+        textTable.add(textLabel).apply {
+            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
+                this.size(
+                dvpType().width(screenWidth) - 2 * ViewType.padWidth(screenWidth),
+                dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight)
+                )
+            }
+        }
+        .grow()
 
         val innerTableFg = Table()
         innerTableFg.top()
-        innerTableFg.add(textTable)
-            .size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            .grow()
-
+        innerTableFg.add(textTable).apply {
+            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
+                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
+            }
+            this.grow()
+        }
         return Stack().apply {
             this.add(innerTableFg)
         }

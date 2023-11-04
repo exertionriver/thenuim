@@ -27,11 +27,21 @@ object FreeTypeFontAssets : IAssets {
         //external fonts
         AssetManagerHandler.assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(AssetManagerHandler.lfhr))
         AssetManagerHandler.assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(AssetManagerHandler.lfhr))
+        AssetManagerHandler.assets.setLoader(String::class.java, ".txt", StringLoader(AssetManagerHandler.lfhr))
 
         values.clear()
 
         Path(iAssetsLocation).listDirectoryEntries().filter { iAssetsExtension == it.extension }.forEach {
-            AssetManagerHandler.loadAssetByPath(it.pathString, FreeTypeFontAssetStore.ftflp().apply { this.fontFileName = it.pathString })
+            val charExtensionFilename = it.pathString.substring(0, it.pathString.length - 4) + "_ext.txt"
+
+            AssetManagerHandler.loadAssetByPath<String>(charExtensionFilename)
+
+            val charExtensions = AssetManagerHandler.getAsset<String>(charExtensionFilename)
+
+            AssetManagerHandler.loadAssetByPath(it.pathString, FreeTypeFontAssetStore.ftflp().apply {
+                this.fontFileName = it.pathString
+                this.fontParameters.characters += charExtensions
+            })
         }
 
         val bitmapFonts = AssetManagerHandler.getAssets<BitmapFont>()

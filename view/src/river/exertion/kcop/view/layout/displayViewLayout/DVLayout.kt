@@ -182,6 +182,11 @@ data class DVLayout(
     companion object {
         const val DvLayoutTag = "emptyLayout"
         fun dvLayout() = DVLayout(name= DvLayoutTag)
+
+        enum class Approach {
+            FIXED,
+            VARIABLE
+        }
     }
 }
 
