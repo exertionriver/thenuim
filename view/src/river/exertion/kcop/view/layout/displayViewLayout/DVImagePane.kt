@@ -38,9 +38,8 @@ class DVImagePane : DVPane() {
 
         val innerTable = Table()
         innerTable.add(contentImage).apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            }
+            if (this@DVImagePane.width != null) this.width(dvpType().width(screenWidth) + refineX())
+            if (this@DVImagePane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
 

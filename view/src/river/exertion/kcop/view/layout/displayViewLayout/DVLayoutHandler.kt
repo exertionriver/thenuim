@@ -18,7 +18,6 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
 
     var currentText = ""
     var currentFontSize = KcopFont.SMALL
-    var currentLayoutApproach = DVLayout.Companion.Approach.FIXED
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {

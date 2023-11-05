@@ -111,7 +111,6 @@ class NarrativeComponent : IComponent, Telegraph {
 
         DisplayView.currentDisplayViewLayoutHandler = NarrativeKlop.displayViewLayoutHandler()
         DVLayoutHandler.currentDvLayout = NarrativeKlop.dvLayoutByTag(layoutTag())
-        DVLayoutHandler.currentLayoutApproach = DVLayout.Companion.Approach.FIXED
 
         narrativeState.blockFlags.clear()
 

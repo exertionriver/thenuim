@@ -5,6 +5,6 @@ import river.exertion.kcop.base.Id
 
 @Serializable
 data class DVLTextAdjacencyTopPad(
-    var idx : String? = Id.randomId(),
+    var tag : String? = Id.randomId(),
     var fontPads : MutableList<DVLTATPFontPads> = mutableListOf()
 )

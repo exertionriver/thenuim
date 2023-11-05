@@ -32,11 +32,11 @@ class DVTextPane : DVPane() {
 
     //pixels padding the top of pane
     @Transient
-    var adjacencyTopPadOffset : Int? = 0
+    var adjacencyTopPadOffset : Int? = null
 
     //rows allowed after bottom of pane
     @Transient
-    var adjacencyAllowedRows : Int? = 0
+    var adjacencyAllowedRows : Int? = null
 
     override fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String?) : Stack {
         return super.layoutPane(screenWidth, screenHeight, randomColorImage, randomColorLabelStyle,  DVPaneTypes.TEXT.layoutTag())
@@ -47,7 +47,7 @@ class DVTextPane : DVPane() {
         textLabel.setAlignment(Align.topLeft)
 
         val textTable = Table().apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
+            if (this@DVTextPane.adjacencyTopPadOffset != null) {
                 this.padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
                     .padBottom(ViewType.padHeight(screenHeight) - adjacencyTopPadOffset!!)
                     .padTop(ViewType.padHeight(screenHeight) + adjacencyTopPadOffset!!)
@@ -55,23 +55,21 @@ class DVTextPane : DVPane() {
         }
         textTable.top()
         textTable.add(textLabel).apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                this.size(
-                dvpType().width(screenWidth) - 2 * ViewType.padWidth(screenWidth),
-                dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight)
-                )
-            }
+            if (this@DVTextPane.width != null) this.width(dvpType().width(screenWidth) - 2 * ViewType.padWidth(screenWidth))
+            if (this@DVTextPane.height != null) this.height(dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight))
+            this.grow()
         }
-        .grow()
+        textTable.debug = true
 
         val innerTableFg = Table()
         innerTableFg.top()
         innerTableFg.add(textTable).apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            }
+            if (this@DVTextPane.width != null) this.width(dvpType().width(screenWidth) + refineX())
+            if (this@DVTextPane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
+        innerTableFg.debug = true
+
         return Stack().apply {
             this.add(innerTableFg)
         }

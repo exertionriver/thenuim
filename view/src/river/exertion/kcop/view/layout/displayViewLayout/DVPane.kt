@@ -33,9 +33,8 @@ sealed class DVPane : DVLayoutCell() {
 
         val innerTableBg = Table()
         innerTableBg.add(randomColorImage).apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            }
+            if (this@DVPane.width != null) this.width(dvpType().width(screenWidth) + refineX())
+            if (this@DVPane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
 
@@ -45,9 +44,8 @@ sealed class DVPane : DVLayoutCell() {
         val innerLabel = Label(label, randomColorLabelStyle)
         innerLabel.setAlignment(Align.center)
         innerTableFg.add(innerLabel).apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            }
+            if (this@DVPane.width != null) this.width(dvpType().width(screenWidth) + refineX())
+            if (this@DVPane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
         innerTableFg.debug = true
@@ -63,9 +61,8 @@ sealed class DVPane : DVLayoutCell() {
     fun alphaPane(screenWidth : Float, screenHeight : Float, alphaImage : Image) : Stack {
         val innerTableFg = Table()
         innerTableFg.add(alphaImage).apply {
-            if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-            }
+            if (this@DVPane.width != null) this.width(dvpType().width(screenWidth) + refineX())
+            if (this@DVPane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
 
@@ -77,9 +74,8 @@ sealed class DVPane : DVLayoutCell() {
     fun emptyPane(screenWidth : Float, screenHeight : Float) : Table {
         return Table().apply {
             this.add(Table()).apply {
-                if (DVLayoutHandler.currentLayoutApproach == DVLayout.Companion.Approach.FIXED) {
-                    this.size(dvpType().width(screenWidth) + refineX(), dvpType().height(screenHeight) + refineY())
-                }
+                if (this@DVPane.width != null) this.width(dvpType().width(screenWidth) + refineX())
+                if (this@DVPane.height != null) this.height(dvpType().height(screenHeight) + refineY())
                 this.grow()
             }
         }

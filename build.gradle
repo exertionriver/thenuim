@@ -33,7 +33,7 @@ allprojects {
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
-        ktxVersion = '1.12.0-rc1'
+        ktxVersion = '1.12.1-rc1'
         kotlinxCoroutineVersion = '1.7.3'
         kotlinxSerializationVersion = '1.6.0'
         kotlinxDatetimeVersion = '0.4.1'

@@ -53,10 +53,8 @@ data class DVLayout(
 
     fun setAdjacencies(fontSize: KcopFont) {
         textPanes().forEach { dvTextPane ->
-            dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.idx == dvTextPane.tag }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
-                    ?: 0
-            dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.idx == dvTextPane.tag }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows()
-                    ?: 0
+            dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.tag == dvTextPane.tag }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
+            dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.tag == dvTextPane.tag }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows()
         }
     }
 
@@ -115,7 +113,7 @@ data class DVLayout(
         while (!textParsed && currentText.isNotBlank() && textDVPs.isNotEmpty()) {
             var paneParsed = false
 
-            val dvpPaneHeight = (textDVPs[currentDVPIdx].dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight))
+            val dvpPaneHeight = textDVPs[currentDVPIdx].dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight)
             var dvpRows = 0
             extraRow = textDVPs[currentDVPIdx].adjacencyAllowedRows ?: 0
 
@@ -123,7 +121,7 @@ data class DVLayout(
                 var rowParsed = false
 
                 while (!rowParsed) {
-                    val dvpRowWidth = (textDVPs[currentDVPIdx].dvpType().height(screenWidth) - 2 * ViewType.padWidth(screenWidth))
+                    val dvpRowWidth = textDVPs[currentDVPIdx].dvpType().height(screenWidth) - 2 * ViewType.padWidth(screenWidth)
 
                     var textLabel = Label(dvpText, textDVPs[currentDVPIdx].textLabelStyle)
 
@@ -182,11 +180,6 @@ data class DVLayout(
     companion object {
         const val DvLayoutTag = "emptyLayout"
         fun dvLayout() = DVLayout(name= DvLayoutTag)
-
-        enum class Approach {
-            FIXED,
-            VARIABLE
-        }
     }
 }
 
