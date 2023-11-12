@@ -36,7 +36,7 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         KcopBase.inputMultiplexer.addProcessor(KcopInputProcessor)
     }
 
-    override fun unload() { }
+    override fun unload() {}
 
     override fun loadChannels() {
         MessageChannelHandler.addChannel(MessageChannel(KcopBridge, KcopSimulationMessage::class))
@@ -68,6 +68,8 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
     override fun loadSystems() {
         EngineHandler.addSystem(TimeLogSystem())
     }
+
+    override fun unloadSystems() { }
 
     override fun loadMenus() {
         DisplayViewMenuHandler.addMenu(MainMenu)

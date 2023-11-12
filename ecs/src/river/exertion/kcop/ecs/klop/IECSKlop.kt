@@ -6,6 +6,7 @@ import river.exertion.kcop.ecs.EngineHandler
 interface IECSKlop : IKlop {
 
     fun loadSystems()
+    fun unloadSystems()
 
     override fun dispose() {
         EngineHandler.dispose()

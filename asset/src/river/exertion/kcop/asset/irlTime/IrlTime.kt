@@ -1,14 +1,16 @@
 package river.exertion.kcop.asset.irlTime
 
-import kotlinx.datetime.LocalDateTime
-import java.util.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 object IrlTime {
-    private fun irlTime() = Calendar.getInstance()
+    private fun irlTime() = Clock.System.now()
 
-    private fun localDateTime() = LocalDateTime(irlTime().get(Calendar.YEAR), irlTime().get(Calendar.MONTH) + 1, irlTime().get(
-        Calendar.DAY_OF_MONTH),
-        irlTime().get(Calendar.HOUR_OF_DAY), irlTime().get(Calendar.MINUTE), irlTime().get(Calendar.SECOND), irlTime().get(Calendar.MILLISECOND))
+    private fun localDateTime() = irlTime().toLocalDateTime(TimeZone.currentSystemDefault())
+
+    fun utcLocalDateTime() = irlTime().toLocalDateTime(TimeZone.UTC)
+    fun tzLocalDateTime(tz: TimeZone? = null) = irlTime().toLocalDateTime(tz ?: TimeZone.currentSystemDefault())
 
     private fun localHoursStr() = localDateTime().hour.toString().padStart(2, '0')
     private fun localMinutesStr() = localDateTime().minute.toString().padStart(2, '0')

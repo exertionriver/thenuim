@@ -10,6 +10,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.view.layout.ViewType
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DVAlign
 
 @Serializable
 class DVTextPane : DVPane() {
@@ -19,6 +20,7 @@ class DVTextPane : DVPane() {
     override var height : String? = null
     override var refineX : String? = null
     override var refineY : String? = null
+    override var align : String? = null
 
     @Transient
     override var paneType: String? = DVPaneTypes.TEXT.tag()
@@ -44,7 +46,7 @@ class DVTextPane : DVPane() {
 
     override fun contentPane(screenWidth : Float, screenHeight : Float) : Stack {
         val textLabel = Label(paneText, textLabelStyle)
-        textLabel.setAlignment(Align.topLeft)
+        textLabel.setAlignment(DVAlign.byTag(align))
 
         val textTable = Table().apply {
             if (this@DVTextPane.adjacencyTopPadOffset != null) {

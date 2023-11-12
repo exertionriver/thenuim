@@ -29,6 +29,10 @@ object AutomationKlop : IMessagingKlop, IECSKlop {
         EngineHandler.addSystem(AutoUserSystem())
     }
 
+    override fun unloadSystems() {
+
+    }
+
     override fun dispose() {
         super<IMessagingKlop>.dispose()
         super<IECSKlop>.dispose()

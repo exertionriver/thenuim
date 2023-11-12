@@ -113,6 +113,8 @@ object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         IComponent.ecsInit<ProfileComponent>(SubjectEntity.entityName)
     }
 
+    override fun unloadSystems() { }
+
     override fun dispose() {
 
         ViewKlop.dispose()

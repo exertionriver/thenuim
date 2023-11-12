@@ -105,6 +105,10 @@ object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, I
 
     }
 
+    override fun unloadSystems() {
+        EngineHandler.removeSystem<NarrativeTextSystem>()
+    }
+
     override fun loadMenus() {
         DisplayViewMenuHandler.addMenu(LoadNarrativeMenu)
         DisplayViewMenuHandler.addMenu(NarrativeMenu)

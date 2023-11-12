@@ -17,6 +17,7 @@ sealed class DVPane : DVLayoutCell() {
     abstract var height : String?
     abstract var refineX : String?
     abstract var refineY : String?
+    abstract var align : String?
 
     abstract var paneType: String?
 

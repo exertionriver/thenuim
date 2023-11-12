@@ -18,6 +18,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
 
     var currentText = ""
     var currentFontSize = KcopFont.SMALL
+    var currentFontColor = ColorPalette.randomW3cBasic()
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {
@@ -59,7 +60,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             }
 
         } else {
-            val textLabelStyle = KcopSkin.labelStyle(currentFontSize)
+            val textLabelStyle = KcopSkin.labelStyle(currentFontSize, currentFontColor)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
             if (currentText.isNotEmpty())

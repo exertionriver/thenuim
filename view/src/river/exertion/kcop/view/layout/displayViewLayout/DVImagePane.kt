@@ -12,6 +12,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.displayViewLayout.asset.DVAlign
 
 @Serializable
 class DVImagePane : DVPane() {
@@ -21,6 +22,7 @@ class DVImagePane : DVPane() {
     override var height : String? = null
     override var refineX : String? = null
     override var refineY : String? = null
+    override var align : String? = null
 
     @Transient
     override var paneType: String? = DVPaneTypes.IMAGE.tag()
@@ -35,6 +37,7 @@ class DVImagePane : DVPane() {
 
     override fun contentPane(screenWidth : Float, screenHeight : Float) : Stack {
         val contentImage = if (paneTexture != null) Image(TextureRegionDrawable(TextureRegion(paneTexture))) else emptyImage
+        contentImage.align = DVAlign.byTag(align)
 
         val innerTable = Table()
         innerTable.add(contentImage).apply {
@@ -42,6 +45,8 @@ class DVImagePane : DVPane() {
             if (this@DVImagePane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
+
+
 
         return Stack().apply {
             this.add(innerTable)

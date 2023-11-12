@@ -7,11 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import ktx.actors.onClick
 import river.exertion.kcop.base.KcopBase
+import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
+import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
-import java.time.Duration
 
 object ViewLayout {
 
@@ -54,8 +55,13 @@ object ViewLayout {
     val fadeInDuration = fadeOutDuration * 4
     val moveDuration = fadeOutDuration * 2
 
-    fun kcopScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)) {
-        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, moveDuration, Interpolation.linear)))
+    fun kcopScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height), currentDisplayViewKlop : IDisplayViewKlop? = null) {
+        if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
+            (currentDisplayViewKlop as IECSKlop).unloadSystems()
+
+        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, moveDuration, Interpolation.linear), Actions.run {
+            (currentDisplayViewKlop as IECSKlop).loadSystems()
+        }))
         DisplayView.viewType = ViewType.DISPLAY
 
         TextView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
@@ -74,8 +80,14 @@ object ViewLayout {
     }
 
     fun displayScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
-                                , moveDuration : Float = this.moveDuration, fadeOutDuration: Float = this.fadeOutDuration ) {
-        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, moveDuration, Interpolation.linear)))
+                                , moveDuration : Float = this.moveDuration, fadeOutDuration: Float = this.fadeOutDuration, currentDisplayViewKlop : IDisplayViewKlop? = null ) {
+        if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
+            (currentDisplayViewKlop as IECSKlop).unloadSystems()
+
+        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, moveDuration, Interpolation.linear), Actions.run {
+            if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
+                (currentDisplayViewKlop as IECSKlop).loadSystems()
+        }))
         DisplayView.viewType = ViewType.DISPLAY_ONLY
         TextView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
         LogView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))

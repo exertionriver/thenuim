@@ -60,6 +60,14 @@ object EngineHandler {
         return newEntity
     }
 
+    inline fun <reified T:EntitySystem> removeSystem() {
+        val systemToRemove = engine.systems.firstOrNull { systemEntry -> (systemEntry::class == T::class) }
+
+        if (systemToRemove != null) {
+            engine.removeSystem(systemToRemove)
+        }
+    }
+
     inline fun <reified T:IComponent> hasComponent(entity : Entity) : Boolean = entity.components.firstOrNull{ it is T } != null
     inline fun <reified T:IComponent> getComponentFor(entity : Entity) : T? = if (hasComponent<T>(entity)) entity.components.firstOrNull { it is T } as T else null
 

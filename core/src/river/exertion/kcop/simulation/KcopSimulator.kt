@@ -3,11 +3,14 @@ package river.exertion.kcop.simulation
 import GdxDesktopTestBehavior
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
+import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.app.KtxScreen
 import river.exertion.kcop.asset.*
 import river.exertion.kcop.automation.AutomationKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
@@ -97,19 +100,24 @@ class KcopSimulator : Telegraph, KtxScreen {
 
                     when (kcopSimulationMessage.kcopMessageType) {
                         KcopSimulationMessage.KcopMessageType.FullScreen -> {
-                            ViewLayout.displayScreenTransition()
+                            ViewLayout.displayScreenTransition(currentDisplayViewKlop = currentIDisplayViewKlop())
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.KcopScreen -> {
-                            ViewLayout.kcopScreenTransition()
+                            ViewLayout.kcopScreenTransition(currentDisplayViewKlop = currentIDisplayViewKlop())
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.NextPlugin -> {
+                            currentIDisplayViewKlop().hideView()
                             nextIDisplayViewKlopIdx()
 
                             PluginAssets.get().filter { it.assetDataTyped() != currentIDisplayViewKlop() }.forEach {
-                                it.assetDataTyped().hideView()
+                                if (it.assetDataTyped()::class.java.interfaces.contains(IECSKlop::class.java))
+                                    (it.assetDataTyped() as IECSKlop).unloadSystems()
                             }
+
+                            if (currentIDisplayViewKlop()::class.java.interfaces.contains(IECSKlop::class.java))
+                                (currentIDisplayViewKlop() as IECSKlop).loadSystems()
 
                             currentIDisplayViewKlop().showView()
                             LogView.addLog("kcop plugin loaded:${currentIDisplayViewKlop().tag}")

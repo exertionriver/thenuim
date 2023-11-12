@@ -30,5 +30,5 @@ test {
 }
 
 compileKotlin {
-    compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_8)
+    compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_9)
 }
