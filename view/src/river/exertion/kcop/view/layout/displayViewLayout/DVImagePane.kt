@@ -22,6 +22,8 @@ class DVImagePane : DVPane() {
     override var height : String? = null
     override var refineX : String? = null
     override var refineY : String? = null
+    override var padLeft : String? = null
+    override var padRight : String? = null
     override var align : String? = null
 
     @Transient
@@ -37,7 +39,7 @@ class DVImagePane : DVPane() {
 
     override fun contentPane(screenWidth : Float, screenHeight : Float) : Stack {
         val contentImage = if (paneTexture != null) Image(TextureRegionDrawable(TextureRegion(paneTexture))) else emptyImage
-        contentImage.align = DVAlign.byTag(align)
+        contentImage.align = DVAlign.byTag(align).align()
 
         val innerTable = Table()
         innerTable.add(contentImage).apply {
@@ -45,8 +47,6 @@ class DVImagePane : DVPane() {
             if (this@DVImagePane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
-
-
 
         return Stack().apply {
             this.add(innerTable)

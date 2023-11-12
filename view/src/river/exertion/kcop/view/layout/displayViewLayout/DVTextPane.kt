@@ -20,6 +20,8 @@ class DVTextPane : DVPane() {
     override var height : String? = null
     override var refineX : String? = null
     override var refineY : String? = null
+    override var padLeft : String? = null
+    override var padRight : String? = null
     override var align : String? = null
 
     @Transient
@@ -46,22 +48,27 @@ class DVTextPane : DVPane() {
 
     override fun contentPane(screenWidth : Float, screenHeight : Float) : Stack {
         val textLabel = Label(paneText, textLabelStyle)
-        textLabel.setAlignment(DVAlign.byTag(align))
+        textLabel.setAlignment(DVAlign.byTag(this@DVTextPane.align).align())
+//        textLabel.debug = true
+
+        val proportionalPadLeft = dvpType().width(screenWidth) * (this@DVTextPane.padLeft ?: "0").toFloat()
+        val proportionalPadRight = dvpType().width(screenWidth) * (this@DVTextPane.padRight ?: "0").toFloat()
 
         val textTable = Table().apply {
+            this.padLeft(proportionalPadLeft)
+            this.padRight(proportionalPadRight)
             if (this@DVTextPane.adjacencyTopPadOffset != null) {
-                this.padLeft(ViewType.padWidth(screenWidth)).padRight(ViewType.padWidth(screenWidth))
-                    .padBottom(ViewType.padHeight(screenHeight) - adjacencyTopPadOffset!!)
-                    .padTop(ViewType.padHeight(screenHeight) + adjacencyTopPadOffset!!)
+                this.padBottom(ViewType.padHeight(screenHeight) - adjacencyTopPadOffset!!)
+                .padTop(ViewType.padHeight(screenHeight) + adjacencyTopPadOffset!!)
             }
         }
         textTable.top()
         textTable.add(textLabel).apply {
-            if (this@DVTextPane.width != null) this.width(dvpType().width(screenWidth) - 2 * ViewType.padWidth(screenWidth))
+            if (this@DVTextPane.width != null) this.width(dvpType().width(screenWidth) - proportionalPadLeft - proportionalPadRight)
             if (this@DVTextPane.height != null) this.height(dvpType().height(screenHeight) - 2 * ViewType.padHeight(screenHeight))
-            this.grow()
         }
-        textTable.debug = true
+
+//        textTable.debug = true
 
         val innerTableFg = Table()
         innerTableFg.top()
@@ -70,7 +77,8 @@ class DVTextPane : DVPane() {
             if (this@DVTextPane.height != null) this.height(dvpType().height(screenHeight) + refineY())
             this.grow()
         }
-        innerTableFg.debug = true
+
+//        innerTableFg.debug = true
 
         return Stack().apply {
             this.add(innerTableFg)

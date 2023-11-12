@@ -228,7 +228,7 @@ enum class DVPaneType {
     open fun height(screenHeight : Float) = heightDimension().height(screenHeight)
 
     companion object {
-        private fun byDimensions(widthDim : DVPDimension, heightDim : DVPDimension) = values().firstOrNull { it.widthDimension() == widthDim && it.heightDimension() == heightDim } ?: UNIT_BY_UNIT
+        private fun byDimensions(widthDim : DVPDimension, heightDim : DVPDimension) = entries.firstOrNull { it.widthDimension() == widthDim && it.heightDimension() == heightDim } ?: UNIT_BY_UNIT
         fun byTags(widthTag : String?, heightTag : String?) = byDimensions(DVPDimension.byTag(widthTag), DVPDimension.byTag(heightTag))
     }
 

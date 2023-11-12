@@ -17,6 +17,8 @@ sealed class DVPane : DVLayoutCell() {
     abstract var height : String?
     abstract var refineX : String?
     abstract var refineY : String?
+    abstract var padLeft : String?
+    abstract var padRight : String?
     abstract var align : String?
 
     abstract var paneType: String?
@@ -88,7 +90,7 @@ sealed class DVPane : DVLayoutCell() {
         ;
         abstract fun tag() : String
         abstract fun layoutTag() : String
-        fun byTag(tag : String) = values().firstOrNull { it.tag() == tag } ?: IMAGE
+        fun byTag(tag : String) = entries.firstOrNull { it.tag() == tag } ?: IMAGE
     }
 }
 
