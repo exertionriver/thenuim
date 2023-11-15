@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.ViewType
@@ -62,8 +63,11 @@ data class DVLayout(
         imagePanes().firstOrNull { it.tag == paneTag }?.paneTexture = texture
     }
 
-    fun setTextPaneContent(paneTag : String, text : String?) {
-        textPanes().firstOrNull { it.tag == paneTag }?.paneText = text
+    fun setTextPaneContent(paneTag : String, text : String?, colorOverride : ColorPalette? = null) {
+        textPanes().firstOrNull { it.tag == paneTag }?.apply {
+            this.paneText = text
+            this.colorOverride = colorOverride
+        }
     }
 
     fun fadeImageIn(paneTag : String, texture : Texture?) {

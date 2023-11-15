@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.Align
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.layout.displayViewLayout.asset.DVAlign
 
@@ -31,6 +33,9 @@ class DVTextPane : DVPane() {
     var paneText : String? = null
 
     @Transient
+    var colorOverride : ColorPalette? = null
+
+    @Transient
     @Contextual
     var textLabelStyle : LabelStyle? = null
 
@@ -47,6 +52,8 @@ class DVTextPane : DVPane() {
     }
 
     override fun contentPane(screenWidth : Float, screenHeight : Float) : Stack {
+        if (colorOverride != null) this.textLabelStyle = KcopSkin.labelStyle(DVLayoutHandler.currentFontSize, colorOverride)
+
         val textLabel = Label(paneText, textLabelStyle)
         textLabel.setAlignment(DVAlign.byTag(this@DVTextPane.align).align())
 //        textLabel.debug = true
