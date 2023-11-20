@@ -25,6 +25,10 @@ class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
         EngineHandler.addSystem(testSystem)
     }
 
+    override fun unloadSystems() {
+        EngineHandler.removeSystem<TestSystem>()
+    }
+
     //used for IECSKlop overload
     @AfterEach
     override fun unload() {
