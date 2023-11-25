@@ -33,6 +33,7 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         loadSystems()
         loadMenus()
 
+        KcopBase.inputMultiplexer.addProcessor(KcopBase.stage)
         KcopBase.inputMultiplexer.addProcessor(KcopInputProcessor)
     }
 

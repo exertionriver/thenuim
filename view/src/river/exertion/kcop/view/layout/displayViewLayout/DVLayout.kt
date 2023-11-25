@@ -2,11 +2,14 @@ package river.exertion.kcop.view.layout.displayViewLayout
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.Id
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.view.KcopFont
+import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.ViewType
 
 @Serializable
@@ -63,10 +66,23 @@ data class DVLayout(
         imagePanes().firstOrNull { it.tag == paneTag }?.paneTexture = texture
     }
 
-    fun setTextPaneContent(paneTag : String, text : String?, colorOverride : ColorPalette? = null) {
+    fun setTextPaneContent(paneTag : String, text : String? = null, colorOverride : ColorPalette? = null) {
         textPanes().firstOrNull { it.tag == paneTag }?.apply {
-            this.paneText = text
-            this.colorOverride = colorOverride
+            if (text != null) this.paneText = text
+            if (colorOverride != null) {
+                this.colorOverride = colorOverride
+                this.textFieldStyle = KcopSkin.textFieldStyle(DVLayoutHandler.currentFontSize, colorOverride)
+                paneTextField.style = this.textFieldStyle
+            }
+        }
+    }
+
+    fun setTextPaneMode(paneTag : String, mode: DVTextPane.DVTextPaneMode, editRegex : String? = null, writeCallback : (String) -> Unit = {}) {
+        textPanes().firstOrNull { it.tag == paneTag }?.apply {
+            this.mode = mode
+            this.writeCallback = writeCallback
+            if (editRegex != null) this.editRegex = editRegex
+            if (mode == DVTextPane.DVTextPaneMode.WRITE) KcopBase.stage.setKeyboardFocus(this.paneTextField)
         }
     }
 
@@ -98,6 +114,10 @@ data class DVLayout(
 
     fun setTextLabelStyle(textLabelStyle: Label.LabelStyle) {
         textPanes().forEach { it.textLabelStyle = textLabelStyle }
+    }
+
+    fun setTextFieldStyle(textFieldStyle: TextFieldStyle) {
+        textPanes().forEach { it.textFieldStyle = textFieldStyle }
     }
 
     fun setFullTextPaneContent(screenWidth: Float, screenHeight: Float, currentText: String) {

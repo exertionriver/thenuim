@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import ktx.actors.onClick
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.view.klop.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.KcopSkin
@@ -61,8 +62,11 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
 
         } else {
             val textLabelStyle = KcopSkin.labelStyle(currentFontSize, currentFontColor)
+            val textFieldStyle = KcopSkin.textFieldStyle(currentFontSize, currentFontColor)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
+            currentDvLayout.setTextFieldStyle(textFieldStyle)
+
             if (currentText.isNotEmpty())
                 currentDvLayout.setFullTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
 
@@ -70,10 +74,10 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
                 paneContent.data[dvPane.tag!!] = Stack().apply {
                     this.add(dvPane.emptyPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
                     this.add(dvPane.contentPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
-                    this.add(dvPane.alphaPane(KcopSkin.screenWidth, KcopSkin.screenHeight, Image(TextureRegionDrawable(
-                        paneBATexture(dvPane)
-                    ))))
-                }
+                    //this.add(dvPane.alphaPane(KcopSkin.screenWidth, KcopSkin.screenHeight, Image(TextureRegionDrawable(
+                    //    paneBATexture(dvPane)
+                   // ))))
+                }//.apply { this.onClick { println("hello world!") } }
             }
         }
 

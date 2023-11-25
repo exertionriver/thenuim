@@ -10,17 +10,13 @@ interface IDisplayViewKlop : IKlop {
 
     fun showView() {
         DisplayView.currentDisplayViewLayoutHandler = displayViewLayoutHandler()
-        DisplayView.build()
         KcopBase.inputMultiplexer.addProcessor(inputProcessor())
-        //will need to come back to this later
-        KcopBase.inputMultiplexer.addProcessor(KcopBase.stage)
+        DisplayView.build()
     }
 
     fun hideView() {
         displayViewLayoutHandler().clearContent()
         KcopBase.inputMultiplexer.removeProcessor(inputProcessor())
-        //will need to come back to this later
-        KcopBase.inputMultiplexer.removeProcessor(KcopBase.stage)
     }
 
     fun displayViewLayoutHandler() : IDisplayViewLayoutHandler

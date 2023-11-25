@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import ktx.actors.onClick
 import ktx.actors.onEnter
 import ktx.assets.disposeSafely
@@ -27,6 +28,9 @@ object KcopSkin {
 
     fun labelStyle(fontSize : KcopFont, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) = LabelStyle (
         KcopFont.font(fontSize), colorPalette?.color())
+
+    fun textFieldStyle(fontSize : KcopFont, colorPalette: ColorPalette? = ColorPalette.randomW3cBasic()) =
+        TextField.TextFieldStyle().apply { this.font = KcopFont.font(fontSize); this.fontColor = colorPalette?.color() }
 
     enum class UiSounds {
         Enter, Click, Swoosh
