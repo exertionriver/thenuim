@@ -3,8 +3,6 @@ package river.exertion.kcop.simulation
 import GdxDesktopTestBehavior
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import ktx.app.KtxScreen
 import river.exertion.kcop.asset.*
 import river.exertion.kcop.automation.AutomationKlop
@@ -16,12 +14,10 @@ import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
-import river.exertion.kcop.view.asset.FreeTypeFontAssetStore
 import river.exertion.kcop.view.asset.FreeTypeFontAssets
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.layout.*
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
-import kotlin.properties.Delegates
 
 
 class KcopSimulator : Telegraph, KtxScreen {
@@ -65,6 +61,7 @@ class KcopSimulator : Telegraph, KtxScreen {
     override fun hide() {
     }
 
+
     override fun show() {
         val pluginArgIdx = AppArgHandler.appArgs.keys.toList().indexOf("-plugin")
         val pluginArgValue = if (pluginArgIdx >= 0) AppArgHandler.appArgs.values.toList()[pluginArgIdx] else null
@@ -72,7 +69,13 @@ class KcopSimulator : Telegraph, KtxScreen {
 
         currentIDisplayViewKlopIdx = if (loadPlugin != null) PluginAssets.values.indexOf(loadPlugin as IAsset) else 0
 
-        ViewLayout.build(KcopBase.stage, AppArgHandler.appArgs.keys.contains("-displayOpen"))
+        if (AppArgHandler.appArgs.keys.contains("-displayView")) {
+            DisplayViewMode.currentDVMode = DisplayViewMode.DisplayViewScreen
+        } else if (AppArgHandler.appArgs.keys.contains("-displayFull")) {
+            DisplayViewMode.currentDVMode = DisplayViewMode.DisplayFullScreen
+        }
+
+        ViewLayout.build(KcopBase.stage)
 
         currentIDisplayViewKlop().showView()
         LogView.addLog("kcop loaded with plugin:${currentIDisplayViewKlop().tag}")
@@ -99,12 +102,16 @@ class KcopSimulator : Telegraph, KtxScreen {
                     val kcopSimulationMessage: KcopSimulationMessage = MessageChannelHandler.receiveMessage(KcopBridge, msg.extraInfo)
 
                     when (kcopSimulationMessage.kcopMessageType) {
-                        KcopSimulationMessage.KcopMessageType.FullScreen -> {
-                            ViewLayout.displayScreenTransition(currentDisplayViewKlop = currentIDisplayViewKlop())
+                        KcopSimulationMessage.KcopMessageType.DisplayFullScreen -> {
+                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayFullScreen)
+                            AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
+                        }
+                        KcopSimulationMessage.KcopMessageType.DisplayViewScreen -> {
+                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayViewScreen)
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.KcopScreen -> {
-                            ViewLayout.kcopScreenTransition(currentDisplayViewKlop = currentIDisplayViewKlop())
+                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.KcopScreen)
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.NextPlugin -> {

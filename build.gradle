@@ -35,7 +35,7 @@ allprojects {
         gdxControllersVersion = '2.2.1'
         ktxVersion = '1.12.1-rc1'
         kotlinxCoroutineVersion = '1.7.3'
-        kotlinxSerializationVersion = '1.6.0'
+        kotlinxSerializationVersion = '1.6.1'
         kotlinxDatetimeVersion = '0.4.1'
         gltfVersion = '2.0.0-rc.1'
         shapedrawerVersion = '2.6.0' //https://github.com/earlygrey/shapedrawer

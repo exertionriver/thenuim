@@ -22,7 +22,8 @@ object ButtonView : ViewBase {
 
     val menuButton = 0
     val displayMode = 1
-    val fullScreen = 3
+    val displayFullScreen = 3
+    val displayViewScreen = 4
 
     var assignableButtons = mutableMapOf(
         menuButton to {
@@ -40,12 +41,11 @@ object ButtonView : ViewBase {
             LogView.addLog("Cycle Plugin")
             MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.NextPlugin))
         },
-        fullScreen to {
-            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.FullScreen))
+        displayFullScreen to {
+            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.DisplayFullScreen))
         },
-        4 to {
-//            KcopSkin.displayMode = isChecked[4]!!
-//            ViewLayout.rebuild()
+        displayViewScreen to {
+            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.DisplayViewScreen))
         },
         5 to {
 //            KcopSkin.displayMode = isChecked[5]!!

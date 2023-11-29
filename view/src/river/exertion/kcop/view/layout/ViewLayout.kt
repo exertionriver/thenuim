@@ -18,8 +18,9 @@ object ViewLayout {
 
     lateinit var kcopButton : Button
 
-    fun build(stage: Stage, loadDisplayOpen : Boolean = false) {
+    fun build(stage: Stage) {
         stage.addActor(DisplayView.apply { this.build() }.viewTable)
+        stage.addActor(DisplayAuxView.apply { this.build() }.viewTable)
         stage.addActor(TextView.apply { this.build() }.viewTable)
         stage.addActor(LogView.apply { this.build() }.viewTable)
         stage.addActor(StatusView.apply { this.build() }.viewTable)
@@ -34,14 +35,15 @@ object ViewLayout {
 
         stage.addActor(kcopButton)
 
-        if (loadDisplayOpen)
-            displayScreenImmediate()
+        if (DisplayViewMode.currentDVMode != DisplayViewMode.KcopScreen)
+            screenTransition(transitionTo = DisplayViewMode.currentDVMode, immediate = true)
         else
             kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
     fun rebuild() {
         DisplayView.build()
+        DisplayAuxView.build()
         TextView.build()
         LogView.build()
         StatusView.build()
@@ -51,51 +53,87 @@ object ViewLayout {
         PauseView.build()
     }
 
-    val fadeOutDuration = .2f
-    val fadeInDuration = fadeOutDuration * 4
-    val moveDuration = fadeOutDuration * 2
+    val defaultFadeOutDuration = .2f
+    val defaultFadeInDuration = defaultFadeOutDuration * 4
+    val defaultMoveDuration = defaultFadeOutDuration * 2
 
-    fun kcopScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height), currentDisplayViewKlop : IDisplayViewKlop? = null) {
+    fun screenTransition(currentDisplayViewKlop : IDisplayViewKlop? = null, transitionTo : DisplayViewMode, immediate : Boolean = false) {
+        //turn off ECS systems temporarily
         if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
             (currentDisplayViewKlop as IECSKlop).unloadSystems()
 
-        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(-offset.x, -offset.y, moveDuration, Interpolation.linear), Actions.run {
-            (currentDisplayViewKlop as IECSKlop).loadSystems()
-        }))
-        DisplayView.viewType = ViewType.DISPLAY
+        val fadeOutDuration = -immediate.compareTo(true) * defaultFadeOutDuration
+        val fadeInDuration = -immediate.compareTo(true) * defaultFadeInDuration
+        val moveDuration = -immediate.compareTo(true) * defaultMoveDuration
 
-        TextView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        LogView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        StatusView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        ButtonView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        InputView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        AiView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
-        PauseView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+        when {
+            (transitionTo == DisplayViewMode.DisplayFullScreen) -> {
+                val pos : Vector2 = ViewType.DISPLAY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
 
-        kcopButton.addAction(Actions.sequence(Actions.hide()))
-    }
+                DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
+                    if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
+                        (currentDisplayViewKlop as IECSKlop).loadSystems()
+                }))
 
-    fun displayScreenImmediate() {
-        displayScreenTransition(offset = Vector2(0f,0f), moveDuration = 0f, fadeOutDuration = 0f)
-    }
+                DisplayView.viewType = ViewType.DISPLAY
 
-    fun displayScreenTransition(offset : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
-                                , moveDuration : Float = this.moveDuration, fadeOutDuration: Float = this.fadeOutDuration, currentDisplayViewKlop : IDisplayViewKlop? = null ) {
-        if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
-            (currentDisplayViewKlop as IECSKlop).unloadSystems()
+                TextView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                LogView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                StatusView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                ButtonView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                InputView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                AiView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                PauseView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
 
-        DisplayView.viewTable.addAction(Actions.sequence(Actions.moveBy(offset.x, offset.y, moveDuration, Interpolation.linear), Actions.run {
-            if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
-                (currentDisplayViewKlop as IECSKlop).loadSystems()
-        }))
-        DisplayView.viewType = ViewType.DISPLAY_ONLY
-        TextView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        LogView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        StatusView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        ButtonView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        InputView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        AiView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        PauseView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
-        kcopButton.addAction(Actions.sequence(Actions.show()))
+                DisplayAuxView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeOutDuration, Interpolation.fade)))
+
+                kcopButton.addAction(Actions.sequence(Actions.show()))
+            }
+            (transitionTo == DisplayViewMode.DisplayViewScreen) -> {
+                val pos : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
+
+                DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
+                    if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
+                        (currentDisplayViewKlop as IECSKlop).loadSystems()
+                }))
+
+                DisplayView.viewType = ViewType.DISPLAY_ONLY
+
+                TextView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                LogView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                StatusView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                ButtonView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                InputView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                AiView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+                PauseView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+
+                DisplayAuxView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+
+                kcopButton.addAction(Actions.sequence(Actions.show()))
+
+            }
+            else -> { //to KcopScreen
+                val pos : Vector2 = ViewType.DISPLAY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
+
+                DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
+                    if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
+                        (currentDisplayViewKlop as IECSKlop).loadSystems()
+                }))
+
+                DisplayView.viewType = ViewType.DISPLAY
+
+                TextView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+                LogView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+                StatusView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+                ButtonView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+                InputView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+                AiView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+                PauseView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeInDuration, Interpolation.fade)))
+
+                DisplayAuxView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
+
+                kcopButton.addAction(Actions.sequence(Actions.hide()))
+            }
+        }
     }
 }
