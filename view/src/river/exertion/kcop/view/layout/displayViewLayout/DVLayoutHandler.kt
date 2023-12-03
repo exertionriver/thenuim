@@ -14,6 +14,8 @@ import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.AudioView
+import river.exertion.kcop.view.layout.DisplayAuxView
+import river.exertion.kcop.view.layout.DisplayView
 
 object DVLayoutHandler : IDisplayViewLayoutHandler {
 
@@ -84,39 +86,51 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
         return paneContent
     }
 
-    override fun build() : Table {
-
-        val paneContent = buildPaneContent()
-        val layoutTable = Table()
-
-        currentDvLayout.layout.firstOrNull{ it.tableTag == "layout" }?.panes?.forEach { dvPane ->
-            layoutTable.paneCell(currentDvLayout, paneContent, dvPane)
-        }
-
-        if (KcopSkin.displayMode) layoutTable.debug()
-
-        layoutTable.validate()
-
-        return layoutTable
-    }
-
-    override fun clearContent() {
-        AudioView.stopMusic()
-        currentDvLayout.clearContent()
-        build()
-    }
-
     fun Table.paneCell(dvLayout: DVLayout, paneContent : DVPaneContent, dvLayoutCell: DVLayoutCell) {
 
         when {
             (dvLayoutCell is DVPane) -> { this.add ( paneContent.data.entries.firstOrNull { it.key == dvLayoutCell.tag }?.value ) }
             (dvLayoutCell is DVRow) -> { this.row() }
             (dvLayoutCell is DVTable) -> { this.add( Table().apply {
-                    dvLayout.layoutTables().firstOrNull { it.tableTag == dvLayoutCell.tableTag }?.panes?.forEach {
+                dvLayout.layoutTables().firstOrNull { it.tableTag == dvLayoutCell.tableTag }?.panes?.forEach {
                         dvPane -> this.paneCell(dvLayout, paneContent, dvPane)
-                    }
+                }
             }).colspan(dvLayoutCell.colspan())
             }
         }
+    }
+
+    override fun build() {
+
+        val paneContent = buildPaneContent()
+
+        //for display view
+        DisplayView.displayViewTable.clearChildren()
+
+        currentDvLayout.layout.firstOrNull{ it.tableTag == "dvLayout" }?.panes?.forEach { dvPane ->
+            DisplayView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
+        }
+
+        if (KcopSkin.displayMode) DisplayView.displayViewTable.debug()
+
+        DisplayView.build()
+
+        //for display aux view
+        DisplayAuxView.displayViewTable.clearChildren()
+
+        currentDvLayout.layout.firstOrNull{ it.tableTag == "davLayout" }?.panes?.forEach { dvPane ->
+            DisplayAuxView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
+        }
+
+        if (KcopSkin.displayMode) DisplayAuxView.displayViewTable.debug()
+
+        DisplayAuxView.build()
+
+    }
+
+    override fun clearContent() {
+        AudioView.stopMusic()
+        currentDvLayout.clearContent()
+        build()
     }
 }

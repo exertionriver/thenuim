@@ -12,11 +12,13 @@ import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.ViewKlop.KcopBridge
 import river.exertion.kcop.view.klop.IDisplayViewKlop
+import river.exertion.kcop.view.klop.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
 
 object ViewLayout {
 
     lateinit var kcopButton : Button
+    var currentDisplayViewLayoutHandler : IDisplayViewLayoutHandler? = null
 
     fun build(stage: Stage) {
         stage.addActor(DisplayView.apply { this.build() }.viewTable)
@@ -35,15 +37,20 @@ object ViewLayout {
 
         stage.addActor(kcopButton)
 
-        if (DisplayViewMode.currentDVMode != DisplayViewMode.KcopScreen)
+        if (DisplayViewMode.currentDVMode != DisplayViewMode.DisplayViewKcop)
             screenTransition(transitionTo = DisplayViewMode.currentDVMode, immediate = true)
         else
             kcopButton.addAction(Actions.sequence(Actions.hide()))
     }
 
     fun rebuild() {
-        DisplayView.build()
-        DisplayAuxView.build()
+        if (currentDisplayViewLayoutHandler != null) {
+            currentDisplayViewLayoutHandler!!.build()
+        }
+        else {
+            DisplayView.build()
+            DisplayAuxView.build()
+        }
         TextView.build()
         LogView.build()
         StatusView.build()
@@ -67,7 +74,7 @@ object ViewLayout {
         val moveDuration = -immediate.compareTo(true) * defaultMoveDuration
 
         when {
-            (transitionTo == DisplayViewMode.DisplayFullScreen) -> {
+            (transitionTo == DisplayViewMode.DisplayViewFull) -> {
                 val pos : Vector2 = ViewType.DISPLAY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
 
                 DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
@@ -89,7 +96,7 @@ object ViewLayout {
 
                 kcopButton.addAction(Actions.sequence(Actions.show()))
             }
-            (transitionTo == DisplayViewMode.DisplayViewScreen) -> {
+            (transitionTo == DisplayViewMode.DisplayViewCenter) -> {
                 val pos : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
 
                 DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {

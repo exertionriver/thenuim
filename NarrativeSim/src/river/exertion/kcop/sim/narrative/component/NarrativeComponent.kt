@@ -30,6 +30,7 @@ import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 import river.exertion.kcop.view.KcopFont
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
+import river.exertion.kcop.view.layout.ViewLayout
 
 class NarrativeComponent : IComponent, Telegraph {
 
@@ -109,7 +110,7 @@ class NarrativeComponent : IComponent, Telegraph {
             }
         }
 
-        DisplayView.currentDisplayViewLayoutHandler = NarrativeKlop.displayViewLayoutHandler()
+        ViewLayout.currentDisplayViewLayoutHandler = NarrativeKlop.displayViewLayoutHandler()
         DVLayoutHandler.currentDvLayout = NarrativeKlop.dvLayoutByTag(layoutTag())
 
         narrativeState.blockFlags.clear()

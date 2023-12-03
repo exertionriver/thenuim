@@ -2,11 +2,11 @@ package river.exertion.kcop.view.layout
 
 enum class DisplayViewMode {
 
-    KcopScreen,
-    DisplayFullScreen,
-    DisplayViewScreen
+    DisplayViewKcop,
+    DisplayViewFull,
+    DisplayViewCenter
     ;
     companion object {
-        var currentDVMode : DisplayViewMode = KcopScreen
+        var currentDVMode : DisplayViewMode = DisplayViewKcop
     }
 }

@@ -112,7 +112,7 @@ object ButtonView : ViewBase {
         PauseView.build()
         DisplayViewMenuHandler.currentMenuTag = MainMenu.tag
         DisplayView.menuOpen = true
-        DisplayView.build()
+        ViewLayout.rebuild()
     }
 
     var closeMenu = {
@@ -121,7 +121,7 @@ object ButtonView : ViewBase {
         PauseView.isChecked = false
         PauseView.build()
         DisplayView.menuOpen = false
-        DisplayView.build()
+        ViewLayout.rebuild()
     }
 
 }

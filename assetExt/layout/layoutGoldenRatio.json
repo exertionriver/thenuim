@@ -95,7 +95,7 @@
     {"tableTag" :  "bottomRow",
       "panes" :  [{"tableTag" : "blPane", "colspan" : "8"}, {"tableTag" : "brSpiral3", "colspan" : "5"}, {"tableTag" : "brPane", "colspan" : "8"}]
     },
-    {"tableTag" :  "layout",
+    {"tableTag" :  "dvLayout",
       "panes" :  [{"tableTag" : "topRow"}, {}, {"tableTag" : "middleRow"}, {}, {"tableTag" : "bottomRow"}]
     }
   ]

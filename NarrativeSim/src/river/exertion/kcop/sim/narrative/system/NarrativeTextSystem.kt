@@ -12,6 +12,7 @@ import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
 import river.exertion.kcop.view.layout.TextView
+import river.exertion.kcop.view.layout.ViewLayout
 
 class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::class).get(), 1/10f) {
 
@@ -29,9 +30,7 @@ class NarrativeTextSystem : IntervalIteratingSystem(allOf(NarrativeComponent::cl
             if (narrativeComponent.changed) {
                 DVLayoutHandler.currentText = narrativeComponent.currentDisplayText()
                 DVLayoutHandler.currentFontSize = narrativeComponent.currentFontSize()
-                DisplayView.build()
-
-                StatusView.build()
+                ViewLayout.rebuild()
 
                 NarrativeComponent.getFor(entity)!!.changed = false
             }

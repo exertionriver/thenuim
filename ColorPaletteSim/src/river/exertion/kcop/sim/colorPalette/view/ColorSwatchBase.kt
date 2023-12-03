@@ -58,7 +58,7 @@ class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidt
 
         if (colorPaletteEntry.key != null) {
             stack.onClick {
-                ColorPaletteLayout.setBaseColor(colorPaletteEntry.key!!, colorPaletteEntry.value)
+                ColorPaletteLayoutHandler.setBaseColor(colorPaletteEntry.key!!, colorPaletteEntry.value)
             }
         }
 

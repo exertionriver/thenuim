@@ -69,15 +69,15 @@ class KcopSimulator : Telegraph, KtxScreen {
 
         currentIDisplayViewKlopIdx = if (loadPlugin != null) PluginAssets.values.indexOf(loadPlugin as IAsset) else 0
 
-        if (AppArgHandler.appArgs.keys.contains("-displayView")) {
-            DisplayViewMode.currentDVMode = DisplayViewMode.DisplayViewScreen
+        if (AppArgHandler.appArgs.keys.contains("-displayCenter")) {
+            DisplayViewMode.currentDVMode = DisplayViewMode.DisplayViewCenter
         } else if (AppArgHandler.appArgs.keys.contains("-displayFull")) {
-            DisplayViewMode.currentDVMode = DisplayViewMode.DisplayFullScreen
+            DisplayViewMode.currentDVMode = DisplayViewMode.DisplayViewFull
         }
 
         ViewLayout.build(KcopBase.stage)
-
         currentIDisplayViewKlop().showView()
+
         LogView.addLog("kcop loaded with plugin:${currentIDisplayViewKlop().tag}")
 
         ButtonView.assignableButtons[5] = { GdxDesktopTestBehavior.testBehavior() }
@@ -103,15 +103,15 @@ class KcopSimulator : Telegraph, KtxScreen {
 
                     when (kcopSimulationMessage.kcopMessageType) {
                         KcopSimulationMessage.KcopMessageType.DisplayFullScreen -> {
-                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayFullScreen)
+                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayViewFull)
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.DisplayViewScreen -> {
-                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayViewScreen)
+                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayViewCenter)
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.KcopScreen -> {
-                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.KcopScreen)
+                            ViewLayout.screenTransition(currentDisplayViewKlop = currentIDisplayViewKlop(), DisplayViewMode.DisplayViewKcop)
                             AudioView.playSound(KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh])
                         }
                         KcopSimulationMessage.KcopMessageType.NextPlugin -> {

@@ -4,14 +4,16 @@ import com.badlogic.gdx.InputProcessor
 import river.exertion.kcop.base.IKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 
 interface IDisplayViewKlop : IKlop {
 
     fun showView() {
-        DisplayView.currentDisplayViewLayoutHandler = displayViewLayoutHandler()
+        ViewLayout.currentDisplayViewLayoutHandler = displayViewLayoutHandler()
+        ViewLayout.rebuild()
+
         KcopBase.inputMultiplexer.addProcessor(inputProcessor())
-        DisplayView.build()
     }
 
     fun hideView() {

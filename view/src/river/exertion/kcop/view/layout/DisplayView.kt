@@ -13,15 +13,17 @@ object DisplayView : ViewBase {
 
     var menuOpen = false
 
+    var displayViewTable = Table()
+
     override fun buildCtrl() {
         viewTable.add(
             Stack().apply {
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-                if (currentDisplayViewLayoutHandler != null) {
+                if (!displayViewTable.cells.isEmpty) {
                     this.add(Table().apply {
-                        this.add(currentDisplayViewLayoutHandler!!.build()).grow()
+                        this.add(displayViewTable).grow()
                     })
                 }
                 if (menuOpen) {
@@ -32,7 +34,6 @@ object DisplayView : ViewBase {
            }).size(this.tableWidth(), this.tableHeight())
 
         viewTable.clip()
+        viewTable.validate()
     }
-
-    var currentDisplayViewLayoutHandler : IDisplayViewLayoutHandler? = null
 }

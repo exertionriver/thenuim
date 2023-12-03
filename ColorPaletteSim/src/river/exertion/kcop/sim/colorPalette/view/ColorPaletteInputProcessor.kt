@@ -2,16 +2,16 @@ package river.exertion.kcop.sim.colorPalette.view
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecr
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecrB
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecrG
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseDecrR
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncr
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncrB
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncrG
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorBaseIncrR
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorSampleNext
-import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayout.colorSamplePrev
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseDecr
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseDecrB
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseDecrG
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseDecrR
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseIncr
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseIncrB
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseIncrG
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorBaseIncrR
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorSampleNext
+import river.exertion.kcop.sim.colorPalette.view.ColorPaletteLayoutHandler.colorSamplePrev
 
 object ColorPaletteInputProcessor : InputProcessor {
 

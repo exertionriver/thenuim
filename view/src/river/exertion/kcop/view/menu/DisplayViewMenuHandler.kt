@@ -2,6 +2,7 @@ package river.exertion.kcop.view.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.ViewLayout
 
 object DisplayViewMenuHandler {
 
@@ -10,7 +11,7 @@ object DisplayViewMenuHandler {
     var currentMenuTag = MainMenu.tag
         set(value) {
             field = value
-            DisplayView.build()
+            ViewLayout.rebuild()
         }
 
     fun size() = displayViewMenus.size

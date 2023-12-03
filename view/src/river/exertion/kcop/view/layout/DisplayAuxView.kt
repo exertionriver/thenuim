@@ -11,7 +11,7 @@ object DisplayAuxView : ViewBase {
     override var viewType = ViewType.DISPLAY_AUX
     override var viewTable = Table()
 
-    var menuOpen = false
+    var displayViewTable = Table()
 
     override fun buildCtrl() {
         viewTable.add(
@@ -19,20 +19,14 @@ object DisplayAuxView : ViewBase {
                 this.add(Table().apply {
                     this.add(backgroundColorImg()).grow()
                 })
-                if (currentDisplayViewLayoutHandler != null) {
+                if (!displayViewTable.cells.isEmpty) {
                     this.add(Table().apply {
-                        this.add(currentDisplayViewLayoutHandler!!.build()).grow()
-                    })
-                }
-                if (menuOpen) {
-                    this.add(Table().apply {
-                        this.add(DisplayViewMenuHandler.buildByTag(currentMenuTag)).grow()
+                        this.add(displayViewTable).grow()
                     })
                 }
            }).size(this.tableWidth(), this.tableHeight())
 
         viewTable.clip()
+        viewTable.validate()
     }
-
-    var currentDisplayViewLayoutHandler : IDisplayViewLayoutHandler? = null
 }

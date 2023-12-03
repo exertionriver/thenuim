@@ -12,6 +12,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.kcop.view.layout.DisplayView
+import river.exertion.kcop.view.layout.ViewLayout
 import river.exertion.kcop.view.layout.displayViewLayout.asset.DVAlign
 
 @Serializable
@@ -68,15 +69,15 @@ class DVImagePane : DVPane() {
                         val alpha = this@DVImagePane.alphaMask
                         if (alpha >= .1f) {
                             this@DVImagePane.alphaMask = alpha - .1f
-                            DisplayView.build()
+                            ViewLayout.rebuild()
                         } else {
                             this@DVImagePane.textureLock = null
-                            DisplayView.build()
+                            ViewLayout.rebuild()
                             this.cancel()
                         }
                     } else {
                         this@DVImagePane.alphaMask = 0f
-                        DisplayView.build()
+                        ViewLayout.rebuild()
                         this.cancel()
                     }
                 }
@@ -94,17 +95,17 @@ class DVImagePane : DVPane() {
                     val alpha = this@DVImagePane.alphaMask
                     if (alpha <= .9f) {
                         this@DVImagePane.alphaMask = alpha + .1f
-                        DisplayView.build()
+                        ViewLayout.rebuild()
                     } else {
                         this@DVImagePane.textureLock = null
                         this@DVImagePane.paneTexture = null
                         this@DVImagePane.alphaMask = 1f
-                        DisplayView.build()
+                        ViewLayout.rebuild()
                         this.cancel()
                     }
                 } else {
                     this@DVImagePane.alphaMask = 1f
-                    DisplayView.build()
+                    ViewLayout.rebuild()
                     this.cancel()
                 }
             }

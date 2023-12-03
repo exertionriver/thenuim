@@ -4,7 +4,7 @@
   {"tableTag" : "tlRow0",
     "panes" : [{"tag" : "0", "width" : "large", "height" : "large"}, {"tag" : "1", "type": "text", "width" : "title", "height" : "large"}]
   },
-  {"tableTag" : "layout",
+  {"tableTag" : "dvLayout",
     "panes" : [{"tableTag" : "tlRow0"}, {}, {"tag" : "2", "type": "text", "width" : "full", "height" : "title"}]
   }],
   "textAdjacencyRows" : [
