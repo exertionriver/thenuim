@@ -72,7 +72,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             currentDvLayout.setTextFieldStyle(textFieldStyle)
 
             if (currentText.isNotEmpty())
-                currentDvLayout.setFullTextPaneContent(KcopSkin.screenWidth, KcopSkin.screenHeight, currentText)
+                currentDvLayout.setFullTextPaneContent(screenWidth, screenHeight, currentText)
 
             currentDvLayout.layoutPanes().forEach { dvPane ->
                 paneContent.data[dvPane.tag!!] = Stack().apply {
@@ -106,35 +106,36 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
 
     override fun build() {
 
-        val paneContent = buildPaneContent()
+        if (currentDvLayout.layout.isNotEmpty()) {
+            val paneContent = buildPaneContent()
 
-        //for display view
-        DisplayView.displayViewTable.clearChildren()
+            DisplayView.displayViewTable.clearChildren()
 
-        currentDvLayout.layout.firstOrNull{ it.tableTag == DVLayout.DvLayoutRootTableTag }?.panes?.forEach { dvPane ->
-            DisplayView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
+            currentDvLayout.layout.firstOrNull{ it.tableTag == DVLayout.DvLayoutRootTableTag }?.panes?.forEach { dvPane ->
+                DisplayView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
+            }
+
+            DisplayAuxView.displayViewTable.clearChildren()
+
+            currentDvLayout.layout.firstOrNull{ it.tableTag == DVLayout.DavLayoutRootTableTag }?.panes?.forEach { dvPane ->
+                DisplayAuxView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
+            }
         }
 
         if (KcopSkin.displayMode) DisplayView.displayViewTable.debug()
-
-        DisplayView.build()
-
-        //for display aux view
-        DisplayAuxView.displayViewTable.clearChildren()
-
-        currentDvLayout.layout.firstOrNull{ it.tableTag == DVLayout.DavLayoutRootTableTag }?.panes?.forEach { dvPane ->
-            DisplayAuxView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
-        }
-
         if (KcopSkin.displayMode) DisplayAuxView.displayViewTable.debug()
 
+        DisplayView.build()
         DisplayAuxView.build()
-
     }
 
     override fun clearContent() {
         AudioView.stopMusic()
+        currentText = ""
         currentDvLayout.clearContent()
+        currentDvLayout.layout.clear()
+        DisplayView.displayViewTable.clearChildren()
+        DisplayAuxView.displayViewTable.clearChildren()
         build()
     }
 }

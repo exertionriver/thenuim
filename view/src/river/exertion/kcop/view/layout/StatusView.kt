@@ -73,6 +73,7 @@ object StatusView : ViewBase {
 
     fun clearStatuses() {
         displayStatuses.clear()
+        build()
     }
 
     @Suppress("NewApi")

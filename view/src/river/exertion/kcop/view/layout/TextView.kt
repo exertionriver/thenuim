@@ -12,9 +12,7 @@ object TextView : ViewBase {
     override var viewType = ViewType.TEXT
     override var viewTable = Table()
 
-    const val NoImmersionLoaded = "No Immersion Loaded"
-
-    var currentText : String = NoImmersionLoaded
+    var currentText : String = ""
     var currentPrompts : List<String>? = null
 
     private lateinit var scrollPane : ScrollPane
@@ -96,6 +94,12 @@ object TextView : ViewBase {
             })
         }).size(this.tableWidth(), this.tableHeight())
         viewTable.clip()
+    }
+
+    fun clearContent() {
+        currentText = ""
+        currentPrompts = null
+        build()
     }
 
 }

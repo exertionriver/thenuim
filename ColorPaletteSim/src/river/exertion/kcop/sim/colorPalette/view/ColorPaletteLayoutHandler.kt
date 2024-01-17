@@ -6,6 +6,7 @@ import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.klop.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.ViewType
+import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 
 object ColorPaletteLayoutHandler : IDisplayViewLayoutHandler {
 
@@ -108,7 +109,7 @@ object ColorPaletteLayoutHandler : IDisplayViewLayoutHandler {
             this.add(Table()).colspan(5).grow()
         }
 
-        DisplayView.build()
+        DVLayoutHandler.build()
     }
 
     override fun clearContent() {
@@ -120,7 +121,7 @@ object ColorPaletteLayoutHandler : IDisplayViewLayoutHandler {
 
         DisplayView.displayViewTable.clearChildren()
 
-        DisplayView.build()
+        DVLayoutHandler.clearContent()
     }
 
     fun setBaseColor(baseColorName: String?, baseColorPalette: ColorPalette?) {
