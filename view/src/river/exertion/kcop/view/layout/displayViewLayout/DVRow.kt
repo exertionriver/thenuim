@@ -4,7 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class DVRow(
-    override var cellType: DVLCellTypes = DVLCellTypes.ROW
+    override var cellType: DVLCellTypes = DVLCellTypes.ROW,
+    //not used
+    override var width : String? = null,
+    override var height : String? = null,
     ) : DVLayoutCell()
 
 

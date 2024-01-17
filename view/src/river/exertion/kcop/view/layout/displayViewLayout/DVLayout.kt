@@ -202,8 +202,11 @@ data class DVLayout(
     }
 
     companion object {
-        const val DvLayoutTag = "emptyLayout"
-        fun dvLayout() = DVLayout(name= DvLayoutTag)
+        const val DvLayoutEmptyTag = "emptyLayout"
+        const val DvLayoutRootTableTag = "dvLayout" //main displayView (to the left)
+        const val DavLayoutRootTableTag = "davLayout" //aux displayView (to the right)
+
+        fun dvLayout() = DVLayout(name= DvLayoutEmptyTag)
     }
 }
 

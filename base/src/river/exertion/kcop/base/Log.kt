@@ -31,3 +31,4 @@ object Log {
 }
 
 fun List<String>.str(delim : String) = this.reduceOrNull { acc, s -> acc + "$delim$s"} ?: ""
+fun List<String>.str() = this.reduceOrNull { acc, s -> acc + s } ?: ""

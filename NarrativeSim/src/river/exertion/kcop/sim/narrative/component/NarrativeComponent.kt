@@ -28,7 +28,6 @@ import river.exertion.kcop.sim.narrative.structure.NarrativeState
 import river.exertion.kcop.view.layout.displayViewLayout.DVLayout
 import river.exertion.kcop.view.layout.displayViewLayout.DVLayoutHandler
 import river.exertion.kcop.view.KcopFont
-import river.exertion.kcop.view.layout.DisplayView
 import river.exertion.kcop.view.layout.StatusView
 import river.exertion.kcop.view.layout.ViewLayout
 
@@ -79,7 +78,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun currentPrompts() = if (isInitialized) narrative.currentPrompts() else listOf()
 
-    fun layoutTag() = if (isInitialized) narrative.layoutTag else DVLayout.DvLayoutTag
+    fun layoutTag() = if (isInitialized) narrative.layoutTag else DVLayout.DvLayoutEmptyTag
 
     fun currentDisplayText() = if (isInitialized) narrative.currentDisplayText() else "<no display text>"
 

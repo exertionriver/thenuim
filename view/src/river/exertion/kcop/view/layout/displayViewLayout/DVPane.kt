@@ -13,8 +13,6 @@ sealed class DVPane : DVLayoutCell() {
 
     override var tag : String? = null
     override var cellType: DVLCellTypes = DVLCellTypes.PANE
-    abstract var width : String?
-    abstract var height : String?
     abstract var refineX : String?
     abstract var refineY : String?
     abstract var padLeft : String?
@@ -29,10 +27,8 @@ sealed class DVPane : DVLayoutCell() {
     fun refineX() = refineX?.toInt() ?: 0
     fun refineY() = refineY?.toInt() ?: 0
 
-    fun dvpType() = DVPaneType.byTags(width, height)
-
     open fun layoutPane(screenWidth : Float, screenHeight : Float, randomColorImage : Image, randomColorLabelStyle : LabelStyle, paneLabel : String? = "") : Stack {
-        val label = tag + paneLabel
+        val label = (tag?.substring(0, 2) ?: "") + paneLabel
 
         val innerTableBg = Table()
         innerTableBg.add(randomColorImage).apply {

@@ -13,6 +13,8 @@ import river.exertion.kcop.view.klop.IDisplayViewLayoutHandler
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.SdcHandler
 import river.exertion.kcop.view.KcopFont
+import river.exertion.kcop.view.KcopSkin.screenHeight
+import river.exertion.kcop.view.KcopSkin.screenWidth
 import river.exertion.kcop.view.layout.AudioView
 import river.exertion.kcop.view.layout.DisplayAuxView
 import river.exertion.kcop.view.layout.DisplayView
@@ -95,6 +97,8 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
                 dvLayout.layoutTables().firstOrNull { it.tableTag == dvLayoutCell.tableTag }?.panes?.forEach {
                         dvPane -> this.paneCell(dvLayout, paneContent, dvPane)
                 }
+                if (dvLayoutCell.width != null) this.width = dvLayoutCell.dvpType().width(screenWidth)
+                if (dvLayoutCell.height != null) this.height = dvLayoutCell.dvpType().height(screenHeight)
             }).colspan(dvLayoutCell.colspan())
             }
         }
@@ -107,7 +111,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
         //for display view
         DisplayView.displayViewTable.clearChildren()
 
-        currentDvLayout.layout.firstOrNull{ it.tableTag == "dvLayout" }?.panes?.forEach { dvPane ->
+        currentDvLayout.layout.firstOrNull{ it.tableTag == DVLayout.DvLayoutRootTableTag }?.panes?.forEach { dvPane ->
             DisplayView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
         }
 
@@ -118,7 +122,7 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
         //for display aux view
         DisplayAuxView.displayViewTable.clearChildren()
 
-        currentDvLayout.layout.firstOrNull{ it.tableTag == "davLayout" }?.panes?.forEach { dvPane ->
+        currentDvLayout.layout.firstOrNull{ it.tableTag == DVLayout.DavLayoutRootTableTag }?.panes?.forEach { dvPane ->
             DisplayAuxView.displayViewTable.paneCell(currentDvLayout, paneContent, dvPane)
         }
 

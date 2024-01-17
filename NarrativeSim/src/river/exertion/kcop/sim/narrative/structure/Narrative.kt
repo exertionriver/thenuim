@@ -15,7 +15,7 @@ data class Narrative(
     var id: String = Id.randomId(),
     val name : String = "",
     val description : String = "",
-    val layoutTag : String = DVLayout.DvLayoutTag,
+    val layoutTag : String = DVLayout.DvLayoutEmptyTag,
     val narrativeBlocks : MutableList<NarrativeBlock> = mutableListOf(),
     val promptBlocks : MutableList<PromptBlock> = mutableListOf(),
     val eventBlocks : MutableList<EventBlock> = mutableListOf(),

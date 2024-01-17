@@ -23,6 +23,11 @@ enum class MultiKeys {
     EQUALS { override fun keysDown() = keysDown.contains(Input.Keys.EQUALS) && !shiftDown() },
     PLUS { override fun keysDown() = keysDown.contains(Input.Keys.EQUALS) && shiftDown() ; override fun keyDown() = singleKeyException() },
 
+    PERIOD { override fun keysDown() = keysDown.contains(Input.Keys.PERIOD) && !shiftDown() },
+    COMMA { override fun keysDown() = keysDown.contains(Input.Keys.COMMA) && !shiftDown() },
+
+    QMARK { override fun keysDown() = keysDown.contains(Input.Keys.SLASH) && shiftDown() },
+
     MINUS { override fun keysDown() = keysDown.contains(Input.Keys.MINUS) && !shiftDown() },
     USCORE { override fun keysDown() = keysDown.contains(Input.Keys.MINUS) && shiftDown() ; override fun keyDown() = singleKeyException() },
 
