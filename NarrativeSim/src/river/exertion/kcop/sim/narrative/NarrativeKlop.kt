@@ -6,6 +6,7 @@ import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
 import river.exertion.kcop.base.Id
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannel
@@ -44,12 +45,12 @@ import river.exertion.kcop.view.menu.MenuActionParam
 
 object NarrativeKlop : IDisplayViewKlop, IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
-    override var id = Id.randomId()
-    override var tag = "narrative"
+    override val id = Id.randomId()
+    override val tag = "narrative"
+    override val name = KcopBase.appName
+    override val version = KcopBase.appVersion
 
     override fun load() {
-        ProfileKlop.load()
-
         loadChannels()
         loadAssets()
         loadSystems()

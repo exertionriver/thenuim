@@ -24,10 +24,10 @@ object KcopBase {
     val initViewportWidth = 1280F
     val initViewportHeight = 720F
 
-    private val appTitle = "koboldCave Operating Platform (kcop)"
-    private val appVersion = "v0.12"
+    var appName = "koboldCave Operating Platform (kcop)"
+    var appVersion = "v0.12"
 
-    fun appTitleFull() = "$appTitle $appVersion"
+    fun appTitle() = "$appName $appVersion"
 
     fun create(isTesting : Boolean? = false) {
 

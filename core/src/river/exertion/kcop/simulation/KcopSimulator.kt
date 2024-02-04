@@ -4,20 +4,26 @@ import GdxDesktopTestBehavior
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
 import ktx.app.KtxScreen
-import river.exertion.kcop.asset.*
+import river.exertion.kcop.AppArgHandler
+import river.exertion.kcop.asset.IAsset
 import river.exertion.kcop.automation.AutomationKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.klop.IECSKlop
 import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.kcop.messaging.TitleUpdaterMessage
+import river.exertion.kcop.messaging.TitleUpdaterMessage.Companion.TitleUpdaterBridge
+import river.exertion.kcop.profile.ProfileKlop
 import river.exertion.kcop.sim.colorPalette.ColorPaletteDisplayKlop
 import river.exertion.kcop.sim.narrative.NarrativeKlop
 import river.exertion.kcop.view.KcopSkin
+import river.exertion.kcop.view.ViewKlop
 import river.exertion.kcop.view.ViewKlop.KcopBridge
-import river.exertion.kcop.view.asset.FreeTypeFontAssets
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.layout.*
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
+import river.exertion.kcop.view.plugin.DisplayViewPluginAsset
+import river.exertion.kcop.view.plugin.DisplayViewPluginAssets
 
 
 class KcopSimulator : Telegraph, KtxScreen {
@@ -29,26 +35,22 @@ class KcopSimulator : Telegraph, KtxScreen {
 
     init {
         coreDisplayViewPackages.forEach {
-            PluginAssets.values.add(PluginAsset(it::javaClass.get()))
+            DisplayViewPluginAssets.values.add(DisplayViewPluginAsset(it::javaClass.get()))
         }
 
-        FreeTypeFontAssets.reload()
-
-        AssetManagerHandler.assets.setLoader(PluginAsset::class.java, PluginAssetLoader(AssetManagerHandler.lfhr))
-        PluginAssets.reload()
-        PluginAssets.values.filter {it.assetStatus == null}.forEach { (it.assetData() as IDisplayViewKlop).load() }
-        PluginAssets.values.removeIf { it.assetStatus != null }
-
+        ViewKlop.load()
+        ProfileKlop.load()
         AutomationKlop.load()
 
+        DisplayViewPluginAssets.reload() // for external assets
         MessageChannelHandler.enableReceive(KcopBridge, this)
     }
 
     private var currentIDisplayViewKlopIdx = 0
-    private fun currentIDisplayViewKlop() = PluginAssets.get()[currentIDisplayViewKlopIdx].assetDataTyped()
+    private fun currentIDisplayViewKlop() = DisplayViewPluginAssets.get()[currentIDisplayViewKlopIdx].assetDataTyped()
     private fun nextIDisplayViewKlopIdx() {
         currentIDisplayViewKlopIdx++
-        if (currentIDisplayViewKlopIdx >= PluginAssets.get().size)
+        if (currentIDisplayViewKlopIdx >= DisplayViewPluginAssets.get().size)
             currentIDisplayViewKlopIdx = 0
     }
 
@@ -65,9 +67,9 @@ class KcopSimulator : Telegraph, KtxScreen {
     override fun show() {
         val pluginArgIdx = AppArgHandler.appArgs.keys.toList().indexOf("-plugin")
         val pluginArgValue = if (pluginArgIdx >= 0) AppArgHandler.appArgs.values.toList()[pluginArgIdx] else null
-        val loadPlugin = PluginAssets.byName(pluginArgValue)
+        val loadPlugin = DisplayViewPluginAssets.byName(pluginArgValue)
 
-        currentIDisplayViewKlopIdx = if (loadPlugin != null) PluginAssets.values.indexOf(loadPlugin as IAsset) else 0
+        currentIDisplayViewKlopIdx = if (loadPlugin != null) DisplayViewPluginAssets.values.indexOf(loadPlugin as IAsset) else 0
 
         if (AppArgHandler.appArgs.keys.contains("-displayCenter")) {
             DisplayViewMode.currentDVMode = DisplayViewMode.DisplayViewCenter
@@ -118,7 +120,7 @@ class KcopSimulator : Telegraph, KtxScreen {
                             currentIDisplayViewKlop().hideView()
                             nextIDisplayViewKlopIdx()
 
-                            PluginAssets.get().filter { it.assetDataTyped() != currentIDisplayViewKlop() }.forEach {
+                            DisplayViewPluginAssets.get().filter { it.assetDataTyped() != currentIDisplayViewKlop() }.forEach {
                                 if (it.assetDataTyped()::class.java.interfaces.contains(IECSKlop::class.java))
                                     (it.assetDataTyped() as IECSKlop).unloadSystems()
                             }

@@ -15,17 +15,22 @@ import river.exertion.kcop.messaging.MessageChannel
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.klop.IMessagingKlop
 import river.exertion.kcop.view.asset.*
+import river.exertion.kcop.view.klop.IDisplayViewKlop
 import river.exertion.kcop.view.klop.IMenuKlop
 import river.exertion.kcop.view.menu.DisplayViewMenuHandler
 import river.exertion.kcop.view.menu.MainMenu
 import river.exertion.kcop.view.messaging.KcopSimulationMessage
+import river.exertion.kcop.view.plugin.DisplayViewPluginAsset
+import river.exertion.kcop.view.plugin.DisplayViewPluginAssetLoader
+import river.exertion.kcop.view.plugin.DisplayViewPluginAssets
 import river.exertion.kcop.view.system.TimeLogSystem
 
 object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
-    override var id = Id.randomId()
-
-    override var tag = this::class.simpleName.toString()
+    override val id = Id.randomId()
+    override val tag = this::class.simpleName.toString()
+    override val name = KcopBase.appName
+    override val version = KcopBase.appVersion
 
     override fun load() {
         loadChannels()
@@ -47,8 +52,8 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         //internal fonts
         AssetManagerHandler.assets.setLoader(FreeTypeFontGenerator::class.java, FreeTypeFontGeneratorLoader(AssetManagerHandler.ifhr))
         AssetManagerHandler.assets.setLoader(BitmapFont::class.java, ".ttf", FreetypeFontLoader(AssetManagerHandler.ifhr))
-
-        FreeTypeFontAssetStore.loadAll()
+        FreeTypeFontAssetStore.loadAll() //for internal assets
+        FreeTypeFontAssets.reload() // for external assets
 
         KcopFont.TEXT.font = FreeTypeFontAssetStore.NotoSansSymbolsSemiBoldText.get()
         KcopFont.SMALL.font = FreeTypeFontAssetStore.ImmortalSmall.get()
@@ -64,6 +69,9 @@ object ViewKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
         KcopSkin.uiSounds[KcopSkin.UiSounds.Click] = SoundAssetStore.Click.get()
         KcopSkin.uiSounds[KcopSkin.UiSounds.Enter] = SoundAssetStore.Enter.get()
         KcopSkin.uiSounds[KcopSkin.UiSounds.Swoosh] = SoundAssetStore.Swoosh.get()
+
+        //display view plugins
+        AssetManagerHandler.assets.setLoader(DisplayViewPluginAsset::class.java, DisplayViewPluginAssetLoader(AssetManagerHandler.lfhr) )
     }
 
     override fun loadSystems() {

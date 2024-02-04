@@ -1,11 +1,15 @@
 package river.exertion.kcop.base
 
 interface IKlop {
-    var id : String
-    var tag : String
+    val id : String
+    val tag : String
+    val name : String
+    val version : String
 
     fun load()
     fun unload()
+
+    fun title() = "$name $version"
 
     fun dispose() {}
 }

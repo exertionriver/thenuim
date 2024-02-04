@@ -27,8 +27,8 @@ enum class FreeTypeFontAssetStore(val path: String) : IAssetStore {
     override fun get() = AssetManagerHandler.getAsset<BitmapFont>(path).apply { this.data.setScale(baseFontSize().fontScale) }
 
     companion object : IAssetStoreCompanion {
-        override fun loadAll() = AssetManagerHandler.loadAssetsByPath<BitmapFont>(values().map { it.path }, values().map { it.ftflp() } )
-        override fun getAll() = AssetManagerHandler.getAssets<BitmapFont>(values().map { it.path })
+        override fun loadAll() = AssetManagerHandler.loadAssetsByPath<BitmapFont>(entries.map { it.path }, entries.map { it.ftflp() } )
+        override fun getAll() = AssetManagerHandler.getAssets<BitmapFont>(entries.map { it.path })
 
         fun ftflp() = FreetypeFontLoader.FreeTypeFontLoaderParameter().apply {
             this.fontParameters.genMipMaps = true

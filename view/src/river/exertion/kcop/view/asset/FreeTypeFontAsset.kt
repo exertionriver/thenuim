@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.asset.IAsset
 
-class FreeTypeFontAsset(var bitmapFont : BitmapFont? = null) : IAsset {
+class FreeTypeFontAsset(var bitmapFont : BitmapFont = BitmapFont()) : IAsset {
 
-    override fun assetData() : Any? = bitmapFont
+    override fun assetData() : Any = bitmapFont
 
     override fun assetId() : String = "bitmapFont"
     override fun assetName() : String = "bitmapFont"

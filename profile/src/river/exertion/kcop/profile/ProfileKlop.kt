@@ -6,6 +6,7 @@ import river.exertion.kcop.asset.AssetManagerHandler.lfhr
 import river.exertion.kcop.base.Id
 import river.exertion.kcop.asset.klop.IAssetKlop
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.ecs.EngineHandler
 import river.exertion.kcop.ecs.component.IComponent
 import river.exertion.kcop.ecs.component.IrlTimeComponent
@@ -30,12 +31,13 @@ import river.exertion.kcop.view.menu.MenuActionParam
 
 object ProfileKlop : IMessagingKlop, IAssetKlop, IECSKlop, IMenuKlop {
 
-    override var id = Id.randomId()
-    override var tag = this::class.simpleName.toString()
+    override val id = Id.randomId()
+    override val tag = this::class.simpleName.toString()
+    override val name = KcopBase.appName
+    override val version = KcopBase.appVersion
+
 
     override fun load() {
-        ViewKlop.load()
-
         loadChannels()
         loadAssets()
         loadSystems()

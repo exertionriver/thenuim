@@ -1,4 +1,4 @@
-package river.exertion.kcop.asset
+package river.exertion.kcop.view.plugin
 
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetLoaderParameters
@@ -6,30 +6,38 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
-import kotlinx.serialization.descriptors.StructureKind
-import kotlinx.serialization.json.decodeFromJsonElement
-import river.exertion.kcop.asset.AssetManagerHandler.json
-import river.exertion.kcop.sim.narrative.structure.Narrative
-import river.exertion.kcop.sim.narrative.structure.events.IImageEvent
-import river.exertion.kcop.sim.narrative.structure.events.ISoundEvent
-import river.exertion.kcop.sim.narrative.structure.events.IMusicEvent
+import river.exertion.kcop.asset.AssetStatus
 import river.exertion.kcop.view.klop.IDisplayViewKlop
 import java.net.URL
 import java.net.URLClassLoader
 import java.util.jar.JarFile
 
-class PluginAssetLoader(resolver: FileHandleResolver?) :
-    AsynchronousAssetLoader<PluginAsset?, PluginAssetLoader.NarrativeSequenceParameter?>(resolver) {
+class DisplayViewPluginAssetLoader(resolver: FileHandleResolver?) :
+    AsynchronousAssetLoader<DisplayViewPluginAsset?, AssetLoaderParameters<DisplayViewPluginAsset?>>(resolver) {
 
-    override fun getDependencies(fileName: String?, file: FileHandle?, parameter: NarrativeSequenceParameter?): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
+    override fun getDependencies(
+        fileName: String?,
+        file: FileHandle?,
+        parameter: AssetLoaderParameters<DisplayViewPluginAsset?>?
+    ): com.badlogic.gdx.utils.Array<AssetDescriptor<Any>>? {
         return null
     }
 
-    override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?) {
+    override fun loadAsync(
+        manager: AssetManager,
+        fileName: String,
+        file: FileHandle,
+        parameter: AssetLoaderParameters<DisplayViewPluginAsset?>?
+    ) {
     }
 
-    override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: NarrativeSequenceParameter?): PluginAsset {
-        var returnPluginAsset = PluginAsset().apply {
+    override fun loadSync(
+        manager: AssetManager,
+        fileName: String,
+        file: FileHandle,
+        parameter: AssetLoaderParameters<DisplayViewPluginAsset?>?
+    ): DisplayViewPluginAsset {
+        var returnPluginAsset = DisplayViewPluginAsset().apply {
             this.assetStatus = AssetStatus(this.assetPath(), "asset not loaded", "no plugin found:$fileName")
         }
 
@@ -48,9 +56,12 @@ class PluginAssetLoader(resolver: FileHandleResolver?) :
 
                 val loadedClass = classLoader.loadClass(className)
 
-                if (jarEntry.name.endsWith("Klop.class") &&
-                    loadedClass.interfaces.contains(IDisplayViewKlop::class.java)) {
-                    returnPluginAsset = PluginAsset((classLoader.loadClass(className) as Class<IDisplayViewKlop>))
+                //TODO: general plugin registry
+                if ( jarEntry.name.endsWith("Klop.class") ) {
+                    if ( loadedClass.interfaces.contains(IDisplayViewKlop::class.java) && DisplayViewPluginAssets.byId(className) == null) {
+                        @Suppress("UNCHECKED_CAST")
+                        returnPluginAsset = DisplayViewPluginAsset((classLoader.loadClass(className) as Class<IDisplayViewKlop>))
+                    }
                 }
             }
 
@@ -58,12 +69,10 @@ class PluginAssetLoader(resolver: FileHandleResolver?) :
 
             return returnPluginAsset
 
-        } catch (ex : Exception) {
+        } catch (ex: Exception) {
             return returnPluginAsset.apply {
                 this.assetStatus = AssetStatus(this.assetPath(), "exception:asset not loaded", ex.message)
             }
         }
     }
-
-    class NarrativeSequenceParameter : AssetLoaderParameters<PluginAsset?>()
-    }
+}

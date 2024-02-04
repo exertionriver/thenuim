@@ -68,7 +68,6 @@ class ProfileComponent : IComponent, Telegraph {
         }
     }
 
-    @Suppress("NewApi")
     override fun handleMessage(msg: Telegram?): Boolean {
 
         if (msg != null) {
