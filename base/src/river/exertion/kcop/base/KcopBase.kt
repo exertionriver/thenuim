@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -26,6 +27,8 @@ object KcopBase {
 
     var appName = "koboldCave Operating Platform (kcop)"
     var appVersion = "v0.12"
+
+    var keyboardFocus : Actor? = null
 
     fun appTitle() = "$appName $appVersion"
 
@@ -50,6 +53,11 @@ object KcopBase {
 
     fun render(delta : Float, pooledEngine : PooledEngine? = null) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+
+        if (keyboardFocus != null) {
+            stage.setKeyboardFocus(keyboardFocus)
+            keyboardFocus = null
+        }
 
         stage.act(delta)
         stage.draw()

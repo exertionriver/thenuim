@@ -5,6 +5,7 @@ import river.exertion.kcop.base.IKlop
 import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.messaging.MessageChannelHandler
 import river.exertion.kcop.messaging.TitleUpdaterMessage
+import river.exertion.kcop.view.KcopInputProcessor
 import river.exertion.kcop.view.layout.StatusView
 import river.exertion.kcop.view.layout.TextView
 import river.exertion.kcop.view.layout.ViewLayout
@@ -24,6 +25,7 @@ interface IDisplayViewKlop : IKlop {
         displayViewLayoutHandler().clearContent()
         StatusView.clearStatuses()
         TextView.clearContent()
+
         KcopBase.inputMultiplexer.removeProcessor(inputProcessor())
     }
 

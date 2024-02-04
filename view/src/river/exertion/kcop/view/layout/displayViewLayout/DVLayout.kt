@@ -82,7 +82,9 @@ data class DVLayout(
             this.mode = mode
             this.writeCallback = writeCallback
             if (editRegex != null) this.editRegex = editRegex
-            if (mode == DVTextPane.DVTextPaneMode.WRITE) KcopBase.stage.setKeyboardFocus(this.paneTextField)
+            if (mode == DVTextPane.DVTextPaneMode.WRITE) {
+                KcopBase.keyboardFocus = this.paneTextField
+            }
         }
     }
 

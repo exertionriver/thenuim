@@ -1,15 +1,12 @@
 package river.exertion.kcop.view.layout.displayViewLayout
 
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import ktx.actors.onClick
-import ktx.actors.onClickEvent
 import river.exertion.kcop.asset.view.ColorPalette
+import river.exertion.kcop.base.KcopBase
 import river.exertion.kcop.view.KcopSkin
 import river.exertion.kcop.view.layout.ViewType
 import river.exertion.kcop.view.layout.displayViewLayout.asset.DVAlign
@@ -65,9 +62,7 @@ class DVTextPane : DVPane() {
     var paneTextField = TextField(paneText, KcopSkin.textFieldStyle(
         DVLayoutHandler.currentFontSize,
         DVLayoutHandler.currentFontColor
-    )).apply {
-        this.defaultInputListener
-    }
+    ))
 
     @Transient
     var paneTextLabel = Label(paneText, KcopSkin.labelStyle(
@@ -87,6 +82,7 @@ class DVTextPane : DVPane() {
     if (c == '\n') {
         if (editRegex.toRegex().matches(textField.text)) {
             this@DVTextPane.paneText = paneTextEdit
+            this@DVTextPane.mode = DVTextPaneMode.READ
             paneTextEdit?.let { callCallback(it) }
         } else {
             this@DVTextPane.paneTextEdit = paneText
