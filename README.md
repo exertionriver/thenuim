@@ -3,7 +3,7 @@ koboldCave Operating Platform
 
 <b>v0.12 - Loading external plugins, demonstrating sac-kcop v0.5 as an external plugin, external font and extended character loading. Actual fullscreen. Auto testing framework.
 
-https://github.com/exertionriver/kcop/assets/13192685/8a3a7814-9835-48a0-9916-45d27506803f
+https://github.com/exertionriver/kcop/assets/13192685/bae9f21a-b917-4beb-975a-7f1c3fe9520b
 
 ---
 
