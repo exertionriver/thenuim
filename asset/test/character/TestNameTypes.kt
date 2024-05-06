@@ -1,9 +1,9 @@
 package character
 
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.character.NameTypes
-import river.exertion.kcop.base.TestBase
-import river.exertion.kcop.base.Log
+import river.exertion.thenuim.asset.character.NameTypes
+import river.exertion.thenuim.base.TestBase
+import river.exertion.thenuim.base.Log
 
 class TestNameTypes : TestBase() {
 

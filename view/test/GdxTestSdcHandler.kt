@@ -2,11 +2,11 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.view.KcopSkin
-import river.exertion.kcop.view.SdcHandler
+import river.exertion.thenuim.asset.view.ColorPalette
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.SdcHandler
 
 class GdxTestSdcHandler : GdxTestBase() {
 

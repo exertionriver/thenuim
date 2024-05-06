@@ -1,20 +1,16 @@
 package component
 
 import TestEntity
-import com.badlogic.gdx.Gdx
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
-import river.exertion.kcop.asset.immersionTimer.ImmersionTimerPair
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.KcopBase
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.ecs.component.IComponent
-import river.exertion.kcop.ecs.component.ImmersionTimerComponent
+import river.exertion.thenuim.asset.immersionTimer.ImmersionTimerPair
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.ecs.EngineHandler
+import river.exertion.thenuim.ecs.component.IComponent
+import river.exertion.thenuim.ecs.component.ImmersionTimerComponent
 
 class GdxTestComponentInit : GdxTestBase()  {
 

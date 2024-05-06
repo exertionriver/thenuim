@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.base.str
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.base.str
 
 class TestLog {
 

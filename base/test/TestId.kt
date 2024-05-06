@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.base.Id
+import river.exertion.thenuim.base.Id
 
 class TestId {
 

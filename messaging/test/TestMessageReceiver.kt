@@ -1,8 +1,8 @@
 import com.badlogic.gdx.ai.msg.Telegram
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.thenuim.messaging.MessageChannelHandler
 import org.junit.jupiter.api.Assertions.assertEquals
-import river.exertion.kcop.base.Log
+import river.exertion.thenuim.base.Log
 
 object TestMessageReceiver : Telegraph {
 

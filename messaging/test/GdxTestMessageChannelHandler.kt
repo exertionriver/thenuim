@@ -1,16 +1,19 @@
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Id
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.messaging.MessageChannel
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.messaging.klop.IMessagingKlop
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.base.Id
+import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.messaging.MessageChannel
+import river.exertion.thenuim.messaging.MessageChannelHandler
+import river.exertion.thenuim.messaging.klop.IMessagingKlop
 
 class GdxTestMessageChannelHandler : IMessagingKlop, GdxTestBase() {
 
     override var id = Id.randomId()
     override var tag = this::class.simpleName.toString()
+    override val name = KcopBase.appName
+    override val version = KcopBase.appVersion
 
     var channelIdx = -1
 

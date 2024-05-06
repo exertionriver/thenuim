@@ -4,9 +4,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.immersionTimer.ImmersionTimer
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.base.TestBase
+import river.exertion.thenuim.asset.immersionTimer.ImmersionTimer
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.base.TestBase
 
 class TestImmersionTimer : TestBase() {
 

@@ -1,4 +1,4 @@
-rootProject.name = 'kcop'
+rootProject.name = 'thenuim'
 
 include 'desktop', 'core'
 include 'ColorPaletteSim'

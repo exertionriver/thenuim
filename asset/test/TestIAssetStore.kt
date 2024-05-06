@@ -1,6 +1,6 @@
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.asset.IAssetStore
-import river.exertion.kcop.asset.IAssetStoreCompanion
+import river.exertion.thenuim.asset.AssetManagerHandler
+import river.exertion.thenuim.asset.IAssetStore
+import river.exertion.thenuim.asset.IAssetStoreCompanion
 
 enum class TestIAssetStore(val path: String) : IAssetStore {
     TestIAsset0("testIAsset0.json"),

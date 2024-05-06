@@ -3,8 +3,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import ktx.ashley.allOf
 import org.junit.jupiter.api.Assertions.assertEquals
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.ecs.EngineHandler
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.ecs.EngineHandler
 
 class TestSystem : IntervalIteratingSystem(allOf(TestComponent::class).get(), 1/10f) {
     override fun processEntity(entity: Entity?) {

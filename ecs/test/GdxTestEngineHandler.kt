@@ -2,16 +2,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Id
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.ecs.klop.IECSKlop
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.base.Id
+import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.ecs.EngineHandler
+import river.exertion.thenuim.ecs.klop.IECSKlop
 
 class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
 
     override var id = Id.randomId()
     override var tag = this::class.simpleName.toString()
+    override val name = KcopBase.appName
+    override val version = KcopBase.appVersion
 
     var testSystem = TestSystem()
 

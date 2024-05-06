@@ -1,11 +1,11 @@
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.asset.IAssets
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.base.TestBase
+import river.exertion.thenuim.asset.IAsset
+import river.exertion.thenuim.asset.IAssets
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.base.TestBase
 
 class TestIAssets : IAssets, TestBase() {
 
@@ -14,7 +14,7 @@ class TestIAssets : IAssets, TestBase() {
     override fun byId(assetId: String?): TestIAsset? = super.byIdTyped(assetId)
     override fun byName(assetName: String?): TestIAsset? = super.byNameTyped(assetName)
     override fun byTitle(assetTitle: String?): TestIAsset? = super.byTitleTyped(assetTitle)
-    override fun <T:IAsset>reloadTyped() : MutableList<T> {
+    override fun <T: IAsset>reloadTyped() : MutableList<T> {
         values = mutableListOf(TestIAsset(), TestIAsset(), TestIAsset())
         return getTyped()
     }

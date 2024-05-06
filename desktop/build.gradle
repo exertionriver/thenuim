@@ -1,7 +1,7 @@
 sourceCompatibility = 16
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-project.ext.mainClassName = "river.exertion.kcop.DesktopLauncher"
+project.ext.mainClassName = "river.exertion.thenuim.DesktopLauncher"
 project.ext.assetsDir = new File("../asset/src")
 
 import org.gradle.internal.os.OperatingSystem
@@ -50,11 +50,11 @@ tasks.register('dist', Jar) {
 
 dist.dependsOn classes
 
-tasks.register('kcopFatJar', Jar) {
+tasks.register('theFatJar', Jar) {
     manifest {
-        attributes 'Main-Class': 'river.exertion.kcop.DesktopLauncher'
+        attributes 'Main-Class': 'river.exertion.thenuim.DesktopLauncher'
     }
-    archiveBaseName = 'kcop'
+    archiveBaseName = 'thenuim'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar

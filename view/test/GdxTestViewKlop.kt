@@ -1,19 +1,17 @@
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.KcopBase
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.ecs.EngineHandler
-import river.exertion.kcop.messaging.MessageChannelHandler
-import river.exertion.kcop.view.ViewKlop
-import river.exertion.kcop.view.asset.*
-import river.exertion.kcop.view.layout.DisplayView
-import river.exertion.kcop.view.layout.ViewLayout
-import river.exertion.kcop.view.menu.DisplayViewMenuHandler
+import river.exertion.thenuim.asset.AssetManagerHandler
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.ecs.EngineHandler
+import river.exertion.thenuim.messaging.MessageChannelHandler
+import river.exertion.thenuim.view.ViewKlop
+import river.exertion.thenuim.view.asset.*
+import river.exertion.thenuim.view.layout.ViewLayout
+import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
 
 class GdxTestViewKlop : GdxTestBase() {
 

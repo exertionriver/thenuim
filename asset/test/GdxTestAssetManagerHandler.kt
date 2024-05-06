@@ -1,20 +1,17 @@
 import com.badlogic.gdx.utils.GdxRuntimeException
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.asset.AssetManagerHandler.getAsset
-import river.exertion.kcop.asset.AssetManagerHandler.getAssets
-import river.exertion.kcop.asset.AssetManagerHandler.lfhr
-import river.exertion.kcop.asset.AssetManagerHandler.loadAssetByPath
-import river.exertion.kcop.asset.AssetManagerHandler.loadAssetsByLocation
-import river.exertion.kcop.asset.AssetManagerHandler.loadAssetsByPath
-import river.exertion.kcop.asset.AssetManagerHandler.logAssets
-import river.exertion.kcop.asset.AssetStatus
-import river.exertion.kcop.asset.klop.IAssetKlop
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Id
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.base.str
+import river.exertion.thenuim.asset.AssetManagerHandler
+import river.exertion.thenuim.asset.AssetManagerHandler.getAsset
+import river.exertion.thenuim.asset.AssetManagerHandler.getAssets
+import river.exertion.thenuim.asset.AssetManagerHandler.lfhr
+import river.exertion.thenuim.asset.AssetManagerHandler.loadAssetByPath
+import river.exertion.thenuim.asset.AssetManagerHandler.loadAssetsByLocation
+import river.exertion.thenuim.asset.AssetManagerHandler.loadAssetsByPath
+import river.exertion.thenuim.asset.AssetManagerHandler.logAssets
+import river.exertion.thenuim.asset.AssetStatus
+import river.exertion.thenuim.asset.klop.IAssetKlop
+import river.exertion.thenuim.base.*
 import kotlin.io.path.Path
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.extension
@@ -26,6 +23,8 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
 
     override var id = Id.randomId()
     override var tag = this::class.simpleName.toString()
+    override val name = KcopBase.appName
+    override val version = KcopBase.appVersion
 
     //used for IAssetKlop overload, does not actually load assets
     @BeforeEach

@@ -1,6 +1,6 @@
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import river.exertion.kcop.ecs.entity.IEntity
+import river.exertion.thenuim.ecs.entity.IEntity
 
 class TestEntity : IEntity {
 

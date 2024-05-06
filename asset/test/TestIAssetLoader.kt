@@ -5,8 +5,8 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import kotlinx.serialization.json.decodeFromJsonElement
-import river.exertion.kcop.asset.AssetManagerHandler.json
-import river.exertion.kcop.asset.AssetStatus
+import river.exertion.thenuim.asset.AssetManagerHandler.json
+import river.exertion.thenuim.asset.AssetStatus
 
 class TestIAssetLoader(resolver: FileHandleResolver?) :
     AsynchronousAssetLoader<TestIAsset, TestIAssetLoader.TestIAssetLoaderParameter>(resolver) {

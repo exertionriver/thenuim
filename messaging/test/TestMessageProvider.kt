@@ -1,6 +1,6 @@
 import com.badlogic.gdx.ai.msg.TelegramProvider
 import com.badlogic.gdx.ai.msg.Telegraph
-import river.exertion.kcop.messaging.MessageChannelHandler
+import river.exertion.thenuim.messaging.MessageChannelHandler
 
 object TestMessageProvider : TelegramProvider {
 

@@ -21,11 +21,11 @@ compileKotlin {
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_9)
 }
 /*
-tasks.register('kcopCoreFatJar', Jar) {
+tasks.register('theCoreFatJar', Jar) {
     manifest {
-        attributes 'Main-Class': 'river.exertion.kcop'
+        attributes 'Main-Class': 'river.exertion.thenuim'
     }
-    archiveBaseName = 'kcop-core'
+    archiveBaseName = 'thenuim-core'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar

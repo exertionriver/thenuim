@@ -1,5 +1,5 @@
-import river.exertion.kcop.base.Id
-import river.exertion.kcop.ecs.component.IComponent
+import river.exertion.thenuim.base.Id
+import river.exertion.thenuim.ecs.component.IComponent
 
 class TestComponent : IComponent {
 

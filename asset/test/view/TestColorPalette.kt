@@ -3,10 +3,10 @@ package view
 import com.badlogic.gdx.graphics.Color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.view.ColorPalette
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.base.TestBase
-import river.exertion.kcop.base.str
+import river.exertion.thenuim.asset.view.ColorPalette
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.base.TestBase
+import river.exertion.thenuim.base.str
 import kotlin.math.pow
 
 class TestColorPalette : TestBase() {

@@ -1,13 +1,13 @@
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import river.exertion.kcop.asset.AssetManagerHandler
-import river.exertion.kcop.asset.AssetStatus
-import river.exertion.kcop.asset.IAsset
-import river.exertion.kcop.base.GdxTestBase
-import river.exertion.kcop.base.Id
-import river.exertion.kcop.base.Log
-import river.exertion.kcop.base.TestBase
+import river.exertion.thenuim.asset.AssetManagerHandler
+import river.exertion.thenuim.asset.AssetStatus
+import river.exertion.thenuim.asset.IAsset
+import river.exertion.thenuim.base.GdxTestBase
+import river.exertion.thenuim.base.Id
+import river.exertion.thenuim.base.Log
+import river.exertion.thenuim.base.TestBase
 import kotlin.random.Random
 
 class TestIAsset(val assetPathOverride : String? = null) : IAsset, TestBase() {
