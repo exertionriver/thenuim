@@ -1,15 +1,15 @@
 package river.exertion.thenuim.view.layout.displayViewLayout
 
 import kotlinx.serialization.Serializable
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 @Serializable
 class DVLTARFontRow(
-    var fontSize : String? = KcopFont.SMALL.fontTag(),
+    var fontSize : String? = TnmFont.SMALL.fontTag(),
     var allowRows : String? = 0.toString()
 ) {
 
-    fun fontSize() = KcopFont.byTag(fontSize)
+    fun fontSize() = TnmFont.byTag(fontSize)
     fun allowRows() = allowRows?.toIntOrNull() ?: 0
 
 }

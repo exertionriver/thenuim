@@ -8,7 +8,7 @@ import river.exertion.thenuim.ecs.component.IComponent
 import river.exertion.thenuim.ecs.component.ImmersionTimerComponent
 import river.exertion.thenuim.messaging.MessageChannelHandler
 import river.exertion.thenuim.profile.Profile
-import river.exertion.thenuim.profile.ProfileKlop.ProfileBridge
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileBridge
 import river.exertion.thenuim.profile.asset.ProfileAsset
 import river.exertion.thenuim.profile.messaging.ProfileComponentMessage
 import river.exertion.thenuim.profile.settings.ProfileSettingEntry

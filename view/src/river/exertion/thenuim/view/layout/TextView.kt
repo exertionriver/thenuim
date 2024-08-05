@@ -4,8 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 
 object TextView : ViewBase {
 
@@ -21,30 +21,30 @@ object TextView : ViewBase {
 
     fun textScrollPane() : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(KcopSkin.screenWidth)).padRight(ViewType.padWidth(KcopSkin.screenWidth)).padTop(
+        val innerTable = Table().padLeft(ViewType.padWidth(TnmSkin.screenWidth)).padRight(ViewType.padWidth(TnmSkin.screenWidth)).padTop(
             ViewType.padHeight(
-                KcopSkin.screenHeight
+                TnmSkin.screenHeight
             )
         ).padBottom(
-            ViewType.padHeight(KcopSkin.screenHeight)
+            ViewType.padHeight(TnmSkin.screenHeight)
         )
 
-        val textLabel = Label(currentText, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
+        val textLabel = Label(currentText, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label()))
 
         textLabel.wrap = true
         innerTable.add(textLabel).growX()
 
         if (AiView.isChecked && AiView.hintText().isNotBlank()) {
-            val hintLabel = Label(AiView.hintText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label().decr(4)))
+            val hintLabel = Label(AiView.hintText(), TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label().decr(4)))
 
             innerTable.row()
             innerTable.add(hintLabel).growX()
         }
 
         innerTable.top()
-        if (KcopSkin.displayMode) innerTable.debug()
+        if (TnmSkin.displayMode) innerTable.debug()
 
-        val scrollPane = ScrollPane(innerTable, KcopSkin.skin).apply {
+        val scrollPane = ScrollPane(innerTable, TnmSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -60,17 +60,17 @@ object TextView : ViewBase {
 
     fun promptPane() : Table {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(KcopSkin.screenWidth)).padRight(ViewType.padWidth(KcopSkin.screenWidth)).padTop(
+        val innerTable = Table().padLeft(ViewType.padWidth(TnmSkin.screenWidth)).padRight(ViewType.padWidth(TnmSkin.screenWidth)).padTop(
             ViewType.padHeight(
-                    KcopSkin.screenHeight
+                    TnmSkin.screenHeight
             )
         ).padBottom(
-            ViewType.padHeight(KcopSkin.screenHeight)
+            ViewType.padHeight(TnmSkin.screenHeight)
         )
 
         if (isPrompts()) {
             currentPrompts!!.forEach { entry ->
-                val logLabel = Label(entry, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
+                val logLabel = Label(entry, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).grow()
                 innerTable.row()
@@ -78,7 +78,7 @@ object TextView : ViewBase {
         }
 
         innerTable.top()
-        if (KcopSkin.displayMode) innerTable.debug()
+        if (TnmSkin.displayMode) innerTable.debug()
 
         return innerTable
     }

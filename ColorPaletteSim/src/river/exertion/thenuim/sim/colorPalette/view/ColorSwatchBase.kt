@@ -7,9 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.thenuim.asset.view.ColorPalette
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.SdcHandler
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidth: Float = 50f, var swatchHeight: Float = 50f) : Table() {
 
@@ -62,7 +62,7 @@ class ColorSwatchBase(var topX: Float = 0f, var topY: Float = 0f, var swatchWidt
             }
         }
 
-        val swatchLabel = Label(colorPaletteEntry.key, KcopSkin.labelStyle(KcopFont.TEXT, colorPaletteEntry.value.label()))
+        val swatchLabel = Label(colorPaletteEntry.key, TnmSkin.labelStyle(TnmFont.TEXT, colorPaletteEntry.value.label()))
         swatchLabel.setAlignment(Align.center)
 
         stack.add(swatchImg)

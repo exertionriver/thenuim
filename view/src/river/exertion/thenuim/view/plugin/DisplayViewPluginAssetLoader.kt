@@ -7,7 +7,7 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
 import com.badlogic.gdx.files.FileHandle
 import river.exertion.thenuim.asset.AssetStatus
-import river.exertion.thenuim.view.klop.IDisplayViewKlop
+import river.exertion.thenuim.view.IDisplayViewLoPa
 import java.net.URL
 import java.net.URLClassLoader
 import java.util.jar.JarFile
@@ -57,10 +57,10 @@ class DisplayViewPluginAssetLoader(resolver: FileHandleResolver?) :
                 val loadedClass = classLoader.loadClass(className)
 
                 //TODO: general plugin registry
-                if ( jarEntry.name.endsWith("Klop.class") ) {
-                    if ( loadedClass.interfaces.contains(IDisplayViewKlop::class.java) && DisplayViewPluginAssets.byId(className) == null) {
+                if ( jarEntry.name.endsWith("LoPa.class") ) {
+                    if ( loadedClass.interfaces.contains(IDisplayViewLoPa::class.java) && DisplayViewPluginAssets.byId(className) == null) {
                         @Suppress("UNCHECKED_CAST")
-                        returnPluginAsset = DisplayViewPluginAsset((classLoader.loadClass(className) as Class<IDisplayViewKlop>))
+                        returnPluginAsset = DisplayViewPluginAsset((classLoader.loadClass(className) as Class<IDisplayViewLoPa>))
                     }
                 }
             }

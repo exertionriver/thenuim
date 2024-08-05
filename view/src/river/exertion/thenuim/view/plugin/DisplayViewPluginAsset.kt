@@ -2,15 +2,15 @@ package river.exertion.thenuim.view.plugin
 
 import river.exertion.thenuim.asset.AssetStatus
 import river.exertion.thenuim.asset.IAsset
-import river.exertion.thenuim.view.klop.IDisplayViewKlop
+import river.exertion.thenuim.view.IDisplayViewLoPa
 
-class DisplayViewPluginAsset(var packageClass : Class<IDisplayViewKlop>? = null) : IAsset {
+class DisplayViewPluginAsset(var packageClass : Class<IDisplayViewLoPa>? = null) : IAsset {
 
     override fun assetData() : Any? = packageClass?.kotlin?.objectInstance
-    fun assetDataTyped() : IDisplayViewKlop = assetData() as IDisplayViewKlop
+    fun assetDataTyped() : IDisplayViewLoPa = assetData() as IDisplayViewLoPa
 
     override fun assetId() : String = packageClass?.name ?: ""
-    override fun assetName() : String = (assetData() as IDisplayViewKlop?)?.tag ?: ""
+    override fun assetName() : String = (assetData() as IDisplayViewLoPa?)?.tag ?: ""
 
     override fun assetPath() : String = newAssetFilename()
     override fun assetTitle() = assetPath()

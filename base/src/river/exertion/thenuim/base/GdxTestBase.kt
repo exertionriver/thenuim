@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.GL30
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.TestInstance
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class GdxTestBase : ApplicationListener, TestBase() {
@@ -42,7 +40,7 @@ open class GdxTestBase : ApplicationListener, TestBase() {
     }
 
     override fun create() {
-        KcopBase.create(true)
+        TnmBase.create(true)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -53,7 +51,7 @@ open class GdxTestBase : ApplicationListener, TestBase() {
             if (gdxTestShowRender) {
                 Log.test("render() delta time", Gdx.graphics.deltaTime.toString())
             }
-            KcopBase.render(Gdx.graphics.deltaTime)
+            TnmBase.render(Gdx.graphics.deltaTime)
         }
     }
 

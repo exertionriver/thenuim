@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.thenuim.asset.view.ColorPalette
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.layout.ViewType
 import river.exertion.thenuim.view.layout.displayViewLayout.asset.DVAlign
 
@@ -58,13 +58,13 @@ class DVTextPane : DVPane() {
     var writeCallback : ((String) -> Unit)? = null
 
     @Transient
-    var paneTextField = TextField(paneText, KcopSkin.textFieldStyle(
+    var paneTextField = TextField(paneText, TnmSkin.textFieldStyle(
         DVLayoutHandler.currentFontSize,
         DVLayoutHandler.currentFontColor
     ))
 
     @Transient
-    var paneTextLabel = Label(paneText, KcopSkin.labelStyle(
+    var paneTextLabel = Label(paneText, TnmSkin.labelStyle(
         DVLayoutHandler.currentFontSize,
         DVLayoutHandler.currentFontColor
     ))
@@ -90,17 +90,17 @@ class DVTextPane : DVPane() {
     else {
         this@DVTextPane.paneTextEdit = textField.text
         if (editRegex.toRegex().matches(textField.text)) {
-            this.textFieldStyle = KcopSkin.textFieldStyle(DVLayoutHandler.currentFontSize, ColorPalette.of("green"))
+            this.textFieldStyle = TnmSkin.textFieldStyle(DVLayoutHandler.currentFontSize, ColorPalette.of("green"))
         } else {
-            this.textFieldStyle = KcopSkin.textFieldStyle(DVLayoutHandler.currentFontSize, ColorPalette.of("red"))
+            this.textFieldStyle = TnmSkin.textFieldStyle(DVLayoutHandler.currentFontSize, ColorPalette.of("red"))
         }
         paneTextField.style = this.textFieldStyle
     }}
 
     override fun contentPane(screenWidth : Float, screenHeight : Float) : Stack {
         if (colorOverride != null) {
-            this.textLabelStyle = KcopSkin.labelStyle(DVLayoutHandler.currentFontSize, colorOverride)
-            this.textFieldStyle = KcopSkin.textFieldStyle(DVLayoutHandler.currentFontSize, colorOverride)
+            this.textLabelStyle = TnmSkin.labelStyle(DVLayoutHandler.currentFontSize, colorOverride)
+            this.textFieldStyle = TnmSkin.textFieldStyle(DVLayoutHandler.currentFontSize, colorOverride)
         }
 
         paneTextField.setTextFieldListener(this@DVTextPane.tfListener)

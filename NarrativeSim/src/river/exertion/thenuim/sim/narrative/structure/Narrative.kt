@@ -8,7 +8,7 @@ import kotlinx.serialization.Transient
 import river.exertion.thenuim.base.Id
 import river.exertion.thenuim.sim.narrative.structure.events.Event
 import river.exertion.thenuim.view.layout.displayViewLayout.DVLayout
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 @Serializable
 data class Narrative(
@@ -63,7 +63,7 @@ data class Narrative(
 
     fun currentDisplayText() = currentBlock()?.toDisplayString() ?: ""
 
-    fun currentFontSize() = KcopFont.byTag(currentBlock()?.fontSize)
+    fun currentFontSize() = TnmFont.byTag(currentBlock()?.fontSize)
 
     fun currentPrompts() : List<String> =
         if (isSequential()) {

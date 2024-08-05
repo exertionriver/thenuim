@@ -5,9 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
 import river.exertion.thenuim.asset.view.ColorPalette
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.SdcHandler
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.LogView
 import river.exertion.thenuim.view.layout.ViewType
 
@@ -48,7 +48,7 @@ interface DisplayViewMenu {
     }
 
     fun menuActionButton(menuActionParam: MenuActionParam) : TextButton {
-        return TextButton(menuActionParam.label, KcopSkin.skin).apply {
+        return TextButton(menuActionParam.label, TnmSkin.skin).apply {
             if (menuActionParam.enabled) {
                 this.onClick {
                     if (menuActionParam.log != null) LogView.addLog(menuActionParam.log!!)
@@ -62,8 +62,8 @@ interface DisplayViewMenu {
     fun navButtonPane() : Table = Table().apply {
         this@DisplayViewMenu.assignableNavs.forEach { navEntry ->
             this.add( menuActionButton(navEntry) )
-                .padTop(ViewType.padHeight(KcopSkin.screenHeight))
-                .padRight(ViewType.padWidth(KcopSkin.screenWidth))
+                .padTop(ViewType.padHeight(TnmSkin.screenHeight))
+                .padRight(ViewType.padWidth(TnmSkin.screenWidth))
                 .right()
             if (navEntry != this@DisplayViewMenu.assignableNavs.last()) this.row()
         }
@@ -72,14 +72,14 @@ interface DisplayViewMenu {
     fun actionButtonPane() : Table = Table().apply {
         this@DisplayViewMenu.assignableActions.forEach { actionEntry ->
             this.add( menuActionButton(actionEntry) )
-                .padBottom(ViewType.padHeight(KcopSkin.screenHeight))
-                .padRight(ViewType.padWidth(KcopSkin.screenWidth))
+                .padBottom(ViewType.padHeight(TnmSkin.screenHeight))
+                .padRight(ViewType.padWidth(TnmSkin.screenWidth))
                 .right()
         }
     }
 
     fun breadcrumbLabel(menuTag : String, menuLabel: String) : Label {
-        return Label("$menuLabel > ", KcopSkin.labelStyle(KcopFont.SMALL, backgroundColor.label()))
+        return Label("$menuLabel > ", TnmSkin.labelStyle(TnmFont.SMALL, backgroundColor.label()))
             .apply {
                 this.onClick {
                     DisplayViewMenuHandler.currentMenuTag = menuTag
@@ -98,12 +98,12 @@ interface DisplayViewMenu {
 
     fun menuColorTexture() : TextureRegion {
         return SdcHandler.updorad("menu_$tag", backgroundColor).textureRegion().apply {
-            this.setRegion(0, 0, ViewType.secondWidth(KcopSkin.screenWidth).toInt() - 1, ViewType.secondHeight(KcopSkin.screenHeight).toInt() - 1)
+            this.setRegion(0, 0, ViewType.secondWidth(TnmSkin.screenWidth).toInt() - 1, ViewType.secondHeight(TnmSkin.screenHeight).toInt() - 1)
         }
     }
 
     fun menuScrollPane() : ScrollPane {
-        return ScrollPane(menuPane(), KcopSkin.skin).apply {
+        return ScrollPane(menuPane(), TnmSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
@@ -114,7 +114,7 @@ interface DisplayViewMenu {
     }
 
     fun menuLabel() : Label {
-        return Label(this@DisplayViewMenu.label, KcopSkin.labelStyle(KcopFont.MEDIUM, backgroundColor.label()))
+        return Label(this@DisplayViewMenu.label, TnmSkin.labelStyle(TnmFont.MEDIUM, backgroundColor.label()))
             .apply {
                 this.setAlignment(Align.center)
             }
@@ -126,23 +126,23 @@ interface DisplayViewMenu {
                 .growX()
                 .right()
             this.add(menuLabel())
-                .padRight(ViewType.padWidth(KcopSkin.screenWidth))
+                .padRight(ViewType.padWidth(TnmSkin.screenWidth))
                 .right()
             this.row()
             //scrollPane / nav superpane
             if ( (assignableNavs.isEmpty()) && (assignableActions.isEmpty()) ) {
                 this.add(menuScrollPane())
-                    .padLeft(ViewType.padWidth(KcopSkin.screenWidth))
-                    .padBottom(ViewType.padHeight(KcopSkin.screenHeight))
+                    .padLeft(ViewType.padWidth(TnmSkin.screenWidth))
+                    .padBottom(ViewType.padHeight(TnmSkin.screenHeight))
                     .grow().left().top().colspan(2)
             } else if (assignableNavs.isEmpty()) {
                 this.add(menuScrollPane())
-                    .padLeft(ViewType.padWidth(KcopSkin.screenWidth))
+                    .padLeft(ViewType.padWidth(TnmSkin.screenWidth))
                     .grow().left().top().colspan(2)
             } else { //if (assignableActions.isEmpty())
                 this.add(menuScrollPane())
-                    .padLeft(ViewType.padWidth(KcopSkin.screenWidth))
-                    .padBottom(ViewType.padHeight(KcopSkin.screenHeight))
+                    .padLeft(ViewType.padWidth(TnmSkin.screenWidth))
+                    .padBottom(ViewType.padHeight(TnmSkin.screenHeight))
                     .grow().left().top()
             }
             if (assignableNavs.isNotEmpty()) {
@@ -160,8 +160,8 @@ interface DisplayViewMenu {
             this.add(Stack().apply {
                 this.add(Image(menuColorTexture()))
                 this.add(menuContent())
-            }).height(ViewType.secondHeight(KcopSkin.screenHeight) + ViewType.seventhHeight(KcopSkin.screenHeight))
-                .width(ViewType.secondWidth(KcopSkin.screenWidth) + ViewType.seventhWidth(KcopSkin.screenWidth))
+            }).height(ViewType.secondHeight(TnmSkin.screenHeight) + ViewType.seventhHeight(TnmSkin.screenHeight))
+                .width(ViewType.secondWidth(TnmSkin.screenWidth) + ViewType.seventhWidth(TnmSkin.screenWidth))
                 .growY()
         }
     }

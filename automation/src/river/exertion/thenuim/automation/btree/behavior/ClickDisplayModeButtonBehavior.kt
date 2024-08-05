@@ -4,7 +4,7 @@ import ktx.ai.*
 import river.exertion.thenuim.automation.btree.AutoUserBehavior
 import river.exertion.thenuim.automation.btree.task.control.BehaviorCompleteControlTask
 import river.exertion.thenuim.automation.btree.task.view.ButtonViewClickTask
-import river.exertion.thenuim.automation.btree.task.view.KcopButtonClickTask
+import river.exertion.thenuim.automation.btree.task.view.TnmButtonClickTask
 import river.exertion.thenuim.automation.btree.task.core.WaitTask
 import java.util.*
 
@@ -19,7 +19,7 @@ class ClickDisplayModeButtonBehavior : AutoUserBehavior() {
                     add(ButtonViewClickTask(it))
                     add(WaitTask(.75f))
                     if (it == 3) {
-                        add(KcopButtonClickTask())
+                        add(TnmButtonClickTask())
                     }
                     else {
                         add(ButtonViewClickTask(it))

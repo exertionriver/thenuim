@@ -1,7 +1,7 @@
 package river.exertion.thenuim.profile.settings
 
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.profile.ProfileKlop.ProfileBridge
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileBridge
 import river.exertion.thenuim.profile.messaging.ProfileComponentMessage
 
 object PSShowTimer : ProfileSetting {

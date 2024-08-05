@@ -4,15 +4,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.thenuim.ecs.component.IComponent
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.profile.ProfileKlop
-import river.exertion.thenuim.profile.ProfileKlop.NoProfileInfoFound
-import river.exertion.thenuim.profile.ProfileKlop.ProfileMenuBackgroundColor
-import river.exertion.thenuim.profile.ProfileKlop.ProfileMenuText
+import river.exertion.thenuim.profile.ProfileLoPa
+import river.exertion.thenuim.profile.ProfileLoPa.NoProfileInfoFound
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileMenuBackgroundColor
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileMenuText
 import river.exertion.thenuim.profile.asset.ProfileAsset
 import river.exertion.thenuim.profile.component.ProfileComponent
 import river.exertion.thenuim.profile.messaging.ProfileComponentMessage
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.ButtonView
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
@@ -31,7 +31,7 @@ object LoadProfileMenu : DisplayViewMenu {
 
             if (ProfileAsset.selectedProfileAsset.assetInfo().isNotEmpty()) {
                 ProfileAsset.selectedProfileAsset.assetInfo().forEach { profileEntry ->
-                    this.add(Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, ProfileMenuText))
+                    this.add(Label(profileEntry, TnmSkin.labelStyle(TnmFont.SMALL, ProfileMenuText))
                         .apply {
                             this.wrap = true
                         }).growX().left()
@@ -41,7 +41,7 @@ object LoadProfileMenu : DisplayViewMenu {
                     ?.apply { this.log = "Profile Loaded : ${ProfileAsset.selectedProfileAsset.assetName()}" }
             } else {
                 this.add(
-                    Label(NoProfileInfoFound, KcopSkin.labelStyle(KcopFont.SMALL, ProfileMenuText))
+                    Label(NoProfileInfoFound, TnmSkin.labelStyle(TnmFont.SMALL, ProfileMenuText))
                 ).growX().left()
                 this@LoadProfileMenu.assignableActions.firstOrNull { it.label == "Yes" }
                     ?.apply { this.label = "Error"; this.action = {} }
@@ -59,7 +59,7 @@ object LoadProfileMenu : DisplayViewMenu {
     override val assignableActions = mutableListOf(
         MenuActionParam("Yes", {
             ButtonView.closeMenu()
-            MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
+            MessageChannelHandler.send(ProfileLoPa.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.selectedProfileAsset
             IComponent.ecsInit<ProfileComponent>()
         }, "Profile Loaded!"),

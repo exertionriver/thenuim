@@ -2,8 +2,8 @@ package river.exertion.thenuim.sim.colorPalette.view
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.thenuim.asset.view.ColorPalette
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.klop.IDisplayViewLayoutHandler
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.IDisplayViewLayoutHandler
 import river.exertion.thenuim.view.layout.DisplayView
 import river.exertion.thenuim.view.layout.ViewType
 import river.exertion.thenuim.view.layout.displayViewLayout.DVLayoutHandler
@@ -23,17 +23,17 @@ object ColorPaletteLayoutHandler : IDisplayViewLayoutHandler {
     var triadFirstSwatchesCtrl = ColorSwatchBase(fourthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
     var triadSecondSwatchesCtrl = ColorSwatchBase(fifthColorColumn(), firstColorRow(), colorSwatchWidth(), colorSwatchHeight())
 
-    fun colorColumnWidth() = ViewType.fifthWidth(KcopSkin.screenWidth) + 2 * ViewType.padWidth(KcopSkin.screenWidth)
+    fun colorColumnWidth() = ViewType.fifthWidth(TnmSkin.screenWidth) + 2 * ViewType.padWidth(TnmSkin.screenWidth)
 
-    fun firstColorColumn() = ViewType.seventhWidth(KcopSkin.screenWidth)
+    fun firstColorColumn() = ViewType.seventhWidth(TnmSkin.screenWidth)
     fun secondColorColumn() = firstColorColumn() + colorColumnWidth()
     fun thirdColorColumn() = secondColorColumn() + colorColumnWidth()
     fun fourthColorColumn() = thirdColorColumn() + colorColumnWidth()
     fun fifthColorColumn() = fourthColorColumn() + colorColumnWidth()
 
-    fun colorRowHeight() = ViewType.seventhHeight(KcopSkin.screenHeight)
+    fun colorRowHeight() = ViewType.seventhHeight(TnmSkin.screenHeight)
 
-    fun firstColorRow() = ViewType.firstHeight(KcopSkin.screenHeight) - colorRowHeight()
+    fun firstColorRow() = ViewType.firstHeight(TnmSkin.screenHeight) - colorRowHeight()
 
     fun colorSwatchHeight() = colorRowHeight()
     fun colorSwatchWidth() = colorColumnWidth()

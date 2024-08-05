@@ -1,8 +1,8 @@
 package river.exertion.thenuim.view.layout
 
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 
 object StatusView : ViewBase {
 
@@ -15,21 +15,21 @@ object StatusView : ViewBase {
 
     fun textScrollPane() : ScrollPane {
 
-        val innerTable = Table().padLeft(ViewType.padWidth(KcopSkin.screenWidth)).padRight(ViewType.padWidth(KcopSkin.screenWidth)).padTop(
+        val innerTable = Table().padLeft(ViewType.padWidth(TnmSkin.screenWidth)).padRight(ViewType.padWidth(TnmSkin.screenWidth)).padTop(
             ViewType.padHeight(
-                KcopSkin.screenHeight
+                TnmSkin.screenHeight
             )
         ).padBottom(
-            ViewType.padHeight(KcopSkin.screenHeight)
+            ViewType.padHeight(TnmSkin.screenHeight)
         )
 
         displayStatuses.filter { it.display }.forEach {
             val barStack = Stack()
 
             barStack.add(
-                ProgressBar(0f, 1f, .01f, false, KcopSkin.skin).apply { this.value = it.value } )
+                ProgressBar(0f, 1f, .01f, false, TnmSkin.skin).apply { this.value = it.value } )
             barStack.add(
-                Label(it.label, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label().incr(2)))
+                Label(it.label, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label().incr(2)))
             )
 
             innerTable.add(barStack)
@@ -37,9 +37,9 @@ object StatusView : ViewBase {
         }
 
         innerTable.top()
-        if (KcopSkin.displayMode) innerTable.debug()
+        if (TnmSkin.displayMode) innerTable.debug()
 
-            val scrollPane = ScrollPane(innerTable, KcopSkin.skin).apply {
+            val scrollPane = ScrollPane(innerTable, TnmSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)

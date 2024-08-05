@@ -6,18 +6,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import ktx.actors.onClick
-import river.exertion.thenuim.base.KcopBase
-import river.exertion.thenuim.ecs.klop.IECSKlop
+import river.exertion.thenuim.base.TnmBase
+import river.exertion.thenuim.ecs.IECSLoPa
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.ViewKlop.KcopBridge
-import river.exertion.thenuim.view.klop.IDisplayViewKlop
-import river.exertion.thenuim.view.klop.IDisplayViewLayoutHandler
-import river.exertion.thenuim.view.messaging.KcopSimulationMessage
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.ViewLoPa.TnmBridge
+import river.exertion.thenuim.view.IDisplayViewLoPa
+import river.exertion.thenuim.view.IDisplayViewLayoutHandler
+import river.exertion.thenuim.view.messaging.TnmSimMessage
 
 object ViewLayout {
 
-    lateinit var kcopButton : Button
+    lateinit var tnmButton : Button
     var currentDisplayViewLayoutHandler : IDisplayViewLayoutHandler? = null
 
     fun build(stage: Stage) {
@@ -31,16 +31,16 @@ object ViewLayout {
         stage.addActor(AiView.apply { this.build() }.viewTable)
         stage.addActor(PauseView.apply { this.build() }.viewTable)
 
-        kcopButton = Button(KcopSkin.skin).apply { this.onClick {
-            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.KcopScreen))
+        tnmButton = Button(TnmSkin.skin).apply { this.onClick {
+            MessageChannelHandler.send(TnmBridge, TnmSimMessage(TnmSimMessage.TnmSimMessageType.DebugScreen))
         }}
 
-        stage.addActor(kcopButton)
+        stage.addActor(tnmButton)
 
-        if (DisplayViewMode.currentDVMode != DisplayViewMode.DisplayViewKcop)
+        if (DisplayViewMode.currentDVMode != DisplayViewMode.DisplayViewWork)
             screenTransition(transitionTo = DisplayViewMode.currentDVMode, immediate = true)
         else
-            kcopButton.addAction(Actions.sequence(Actions.hide()))
+            tnmButton.addAction(Actions.sequence(Actions.hide()))
     }
 
     fun rebuild() {
@@ -64,10 +64,10 @@ object ViewLayout {
     val defaultFadeInDuration = defaultFadeOutDuration * 4
     val defaultMoveDuration = defaultFadeOutDuration * 2
 
-    fun screenTransition(currentDisplayViewKlop : IDisplayViewKlop? = null, transitionTo : DisplayViewMode, immediate : Boolean = false) {
+    fun screenTransition(currentDisplayViewLoPa : IDisplayViewLoPa? = null, transitionTo : DisplayViewMode, immediate : Boolean = false) {
         //turn off ECS systems temporarily
-        if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
-            (currentDisplayViewKlop as IECSKlop).unloadSystems()
+        if (currentDisplayViewLoPa != null && currentDisplayViewLoPa::class.java.interfaces.contains(IECSLoPa::class.java))
+            (currentDisplayViewLoPa as IECSLoPa).unloadSystems()
 
         val fadeOutDuration = -immediate.compareTo(true) * defaultFadeOutDuration
         val fadeInDuration = -immediate.compareTo(true) * defaultFadeInDuration
@@ -75,11 +75,12 @@ object ViewLayout {
 
         when {
             (transitionTo == DisplayViewMode.DisplayViewFull) -> {
-                val pos : Vector2 = ViewType.DISPLAY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
+                val pos : Vector2 = ViewType.DISPLAY.viewPosition(TnmBase.stage.width, TnmBase.stage.height)
 
                 DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
-                    if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
-                        (currentDisplayViewKlop as IECSKlop).loadSystems()
+                    if (currentDisplayViewLoPa != null && currentDisplayViewLoPa::class.java.interfaces.contains(
+                            IECSLoPa::class.java))
+                        (currentDisplayViewLoPa as IECSLoPa).loadSystems()
                 }))
 
                 DisplayView.viewType = ViewType.DISPLAY
@@ -94,14 +95,15 @@ object ViewLayout {
 
                 DisplayAuxView.viewTable.addAction(Actions.sequence(Actions.show(), Actions.fadeIn(fadeOutDuration, Interpolation.fade)))
 
-                kcopButton.addAction(Actions.sequence(Actions.show()))
+                tnmButton.addAction(Actions.sequence(Actions.show()))
             }
             (transitionTo == DisplayViewMode.DisplayViewCenter) -> {
-                val pos : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
+                val pos : Vector2 = ViewType.DISPLAY_ONLY.viewPosition(TnmBase.stage.width, TnmBase.stage.height)
 
                 DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
-                    if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
-                        (currentDisplayViewKlop as IECSKlop).loadSystems()
+                    if (currentDisplayViewLoPa != null && currentDisplayViewLoPa::class.java.interfaces.contains(
+                            IECSLoPa::class.java))
+                        (currentDisplayViewLoPa as IECSLoPa).loadSystems()
                 }))
 
                 DisplayView.viewType = ViewType.DISPLAY_ONLY
@@ -116,15 +118,16 @@ object ViewLayout {
 
                 DisplayAuxView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
 
-                kcopButton.addAction(Actions.sequence(Actions.show()))
+                tnmButton.addAction(Actions.sequence(Actions.show()))
 
             }
-            else -> { //to KcopScreen
-                val pos : Vector2 = ViewType.DISPLAY.viewPosition(KcopBase.stage.width, KcopBase.stage.height)
+            else -> { //to TnmScreen
+                val pos : Vector2 = ViewType.DISPLAY.viewPosition(TnmBase.stage.width, TnmBase.stage.height)
 
                 DisplayView.viewTable.addAction(Actions.sequence(Actions.moveTo(pos.x, pos.y, moveDuration, Interpolation.linear), Actions.run {
-                    if (currentDisplayViewKlop != null && currentDisplayViewKlop::class.java.interfaces.contains(IECSKlop::class.java))
-                        (currentDisplayViewKlop as IECSKlop).loadSystems()
+                    if (currentDisplayViewLoPa != null && currentDisplayViewLoPa::class.java.interfaces.contains(
+                            IECSLoPa::class.java))
+                        (currentDisplayViewLoPa as IECSLoPa).loadSystems()
                 }))
 
                 DisplayView.viewType = ViewType.DISPLAY
@@ -139,7 +142,7 @@ object ViewLayout {
 
                 DisplayAuxView.viewTable.addAction(Actions.sequence(Actions.fadeOut(fadeOutDuration, Interpolation.fade), Actions.hide()))
 
-                kcopButton.addAction(Actions.sequence(Actions.hide()))
+                tnmButton.addAction(Actions.sequence(Actions.hide()))
             }
         }
     }

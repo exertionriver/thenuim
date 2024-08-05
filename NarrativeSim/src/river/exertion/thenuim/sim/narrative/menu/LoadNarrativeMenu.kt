@@ -4,17 +4,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import river.exertion.thenuim.messaging.MessageChannelHandler
 import river.exertion.thenuim.profile.asset.ProfileAsset
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeBridge
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeMenuBackgroundColor
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeMenuText
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeBridge
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeMenuBackgroundColor
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeMenuText
 import river.exertion.thenuim.sim.narrative.asset.NarrativeAsset
 import river.exertion.thenuim.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.thenuim.sim.narrative.asset.NarrativeStateAssets
 import river.exertion.thenuim.sim.narrative.component.NarrativeComponent
 import river.exertion.thenuim.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.thenuim.sim.narrative.structure.NarrativeState
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.ButtonView
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
@@ -33,7 +33,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
 
         if (NarrativeAsset.selectedNarrativeAsset.assetInfo().isNotEmpty()) {
             NarrativeAsset.selectedNarrativeAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, NarrativeMenuText))
+                this.add(Label(profileEntry, TnmSkin.labelStyle(TnmFont.SMALL, NarrativeMenuText))
                         .apply {
                     this.wrap = true
                 }).growX().left()
@@ -41,7 +41,7 @@ object LoadNarrativeMenu : DisplayViewMenu {
             }
             this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.log = "Narrative Loaded : ${NarrativeAsset.selectedNarrativeAsset.assetName()}" }
         } else {
-            this.add(Label("no narrative info found", KcopSkin.skin)
+            this.add(Label("no narrative info found", TnmSkin.skin)
                     //LabelStyle(bitmapFont, backgroundColor.label().color()))
             ).growX().left()
             this@LoadNarrativeMenu.assignableActions.firstOrNull { it.label == "Yes" }?.apply { this.label = "Error"; this.action = {} }

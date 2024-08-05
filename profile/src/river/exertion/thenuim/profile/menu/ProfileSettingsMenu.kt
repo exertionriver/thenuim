@@ -6,14 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.thenuim.profile.Profile
-import river.exertion.thenuim.profile.ProfileKlop
-import river.exertion.thenuim.profile.ProfileKlop.ProfileMenuBackgroundColor
+import river.exertion.thenuim.profile.ProfileLoPa
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileMenuBackgroundColor
 import river.exertion.thenuim.profile.asset.ProfileAsset
 import river.exertion.thenuim.profile.settings.ProfileSettingEntry
 import river.exertion.thenuim.profile.settings.ProfileSettingEntry.Companion.optionBySelectionKey
 import river.exertion.thenuim.profile.settings.ProfileSettingEntry.Companion.updateSetting
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.ButtonView
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
@@ -32,15 +32,15 @@ object ProfileSettingsMenu : DisplayViewMenu {
     override var menuPane = {
         Table().apply {
             Profile.availableSettings.forEach { setting ->
-                this.add(Label(setting.selectionLabel, KcopSkin.labelStyle(
-                    KcopFont.SMALL,
-                    ProfileKlop.ProfileMenuText
+                this.add(Label(setting.selectionLabel, TnmSkin.labelStyle(
+                    TnmFont.SMALL,
+                    ProfileLoPa.ProfileMenuText
                 )).apply {
                     this.wrap
                 } ).left()
 
                 this.add(
-                    SelectBox<String>(KcopSkin.skin
+                    SelectBox<String>(TnmSkin.skin
                 ).apply {
                     this.items = setting.options.map { it.optionValue }.toGdxArray()
                     this.selected = settings.optionBySelectionKey(setting.selectionKey)

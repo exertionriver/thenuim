@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 
 object InputView : ViewBase {
 
@@ -54,14 +54,14 @@ object InputView : ViewBase {
 
         val innerTable = Table()
 
-        innerTable.add(Label(keyText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())))
+        innerTable.add(Label(keyText(), TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label())))
         .expandY()
 
         innerTable.row()
 
-        if (isTouchEvent()) innerTable.add(Label(touchText(), KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())))
+        if (isTouchEvent()) innerTable.add(Label(touchText(), TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label())))
 
-        if (KcopSkin.displayMode) innerTable.debug()
+        if (TnmSkin.displayMode) innerTable.debug()
 
         return innerTable
     }

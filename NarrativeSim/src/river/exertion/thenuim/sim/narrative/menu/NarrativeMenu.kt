@@ -3,10 +3,10 @@ package river.exertion.thenuim.sim.narrative.menu
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeMenuBackgroundColor
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeMenuBackgroundColor
 import river.exertion.thenuim.sim.narrative.asset.NarrativeAsset
 import river.exertion.thenuim.sim.narrative.asset.NarrativeAssets
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
 import river.exertion.thenuim.view.menu.MainMenu
@@ -21,7 +21,7 @@ object NarrativeMenu : DisplayViewMenu {
 
     override var menuPane = {
 
-        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
+        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(TnmSkin.skin)
         val narrativeAssetsMap = NarrativeAssets.reload().associateBy { it.assetTitle() }
 
         if (narrativeAssetsMap.isNotEmpty()) {

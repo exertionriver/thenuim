@@ -3,7 +3,7 @@ package river.exertion.thenuim.view.plugin
 import river.exertion.thenuim.asset.AssetManagerHandler
 import river.exertion.thenuim.asset.IAsset
 import river.exertion.thenuim.asset.IAssets
-import river.exertion.thenuim.view.klop.IDisplayViewKlop
+import river.exertion.thenuim.view.IDisplayViewLoPa
 
 object DisplayViewPluginAssets : IAssets {
 
@@ -26,13 +26,13 @@ object DisplayViewPluginAssets : IAssets {
         values.clear()
 
         //exclude duplicates, older versions
-        plugins.filter { it.assetStatus == null }.sortedByDescending { (it.assetData() as IDisplayViewKlop).version }.sortedBy { (it.assetData() as IDisplayViewKlop).tag }.forEach { candidatePlugin ->
-            if (!values.map { plugin -> (plugin.assetData() as IDisplayViewKlop).tag}.contains((candidatePlugin.assetData() as IDisplayViewKlop).tag)) {
+        plugins.filter { it.assetStatus == null }.sortedByDescending { (it.assetData() as IDisplayViewLoPa).version }.sortedBy { (it.assetData() as IDisplayViewLoPa).tag }.forEach { candidatePlugin ->
+            if (!values.map { plugin -> (plugin.assetData() as IDisplayViewLoPa).tag}.contains((candidatePlugin.assetData() as IDisplayViewLoPa).tag)) {
                 values.add(candidatePlugin)
             }
         }
 
-        values.forEach { (it.assetData() as IDisplayViewKlop).load() }
+        values.forEach { (it.assetData() as IDisplayViewLoPa).load() }
 
         return getTyped()
     }

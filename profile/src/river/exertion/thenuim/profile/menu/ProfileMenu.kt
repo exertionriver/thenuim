@@ -5,11 +5,11 @@ import com.badlogic.gdx.utils.Align
 import ktx.actors.onChange
 import ktx.collections.toGdxArray
 import river.exertion.thenuim.profile.Profile
-import river.exertion.thenuim.profile.ProfileKlop.NoProfileInfoFound
-import river.exertion.thenuim.profile.ProfileKlop.ProfileMenuBackgroundColor
+import river.exertion.thenuim.profile.ProfileLoPa.NoProfileInfoFound
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileMenuBackgroundColor
 import river.exertion.thenuim.profile.asset.ProfileAsset
 import river.exertion.thenuim.profile.asset.ProfileAssets
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
 import river.exertion.thenuim.view.menu.MainMenu
@@ -24,7 +24,7 @@ object ProfileMenu : DisplayViewMenu {
 
     override var menuPane = {
 
-        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(KcopSkin.skin)
+        val listCtrl = com.badlogic.gdx.scenes.scene2d.ui.List<String>(TnmSkin.skin)
         val profileAssetsMap = ProfileAssets.reload().associateBy { it.assetTitle() }
 
         if (profileAssetsMap.isNotEmpty()) {

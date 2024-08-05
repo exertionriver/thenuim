@@ -8,23 +8,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.SdcHandler
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 interface ViewBase {
 
     var viewType : ViewType
     var viewTable : Table
 
-    fun viewRect() = viewType.viewRect(KcopSkin.screenWidth, KcopSkin.screenHeight)
+    fun viewRect() = viewType.viewRect(TnmSkin.screenWidth, TnmSkin.screenHeight)
 
     fun tableWidth() = viewRect().width
     fun tableHeight() = viewRect().height
     fun tablePosX() = viewRect().x
     fun tablePosY() = viewRect().y
 
-    fun backgroundColor() = if (KcopSkin.displayMode) viewType.defaultColor() else KcopSkin.BackgroundColor
+    fun backgroundColor() = if (TnmSkin.displayMode) viewType.defaultColor() else TnmSkin.BackgroundColor
 
     fun backgroundColorTexture() : TextureRegion {
         return SdcHandler.updorad("background_${viewType}", backgroundColor()).textureRegion().apply {
@@ -43,7 +43,7 @@ interface ViewBase {
     }
 
     fun layoutLabel() : Label {
-        return Label(viewType.name, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label())).apply {
+        return Label(viewType.name, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label())).apply {
             this.setAlignment(Align.center)
         }
     }

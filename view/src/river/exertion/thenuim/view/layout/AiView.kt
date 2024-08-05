@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 
 object AiView : ViewBase {
 
@@ -20,9 +20,9 @@ object AiView : ViewBase {
 
     fun clickButton() : Button {
 
-        val innerButton = Button(KcopSkin.skin)
+        val innerButton = Button(TnmSkin.skin)
 
-        KcopSkin.addOnClick(innerButton)
+        TnmSkin.addOnClick(innerButton)
 
         //override from ctrl
         innerButton.isChecked = this@AiView.isChecked

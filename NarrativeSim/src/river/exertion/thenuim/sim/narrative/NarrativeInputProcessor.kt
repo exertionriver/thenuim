@@ -3,7 +3,7 @@ package river.exertion.thenuim.sim.narrative
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeBridge
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeBridge
 import river.exertion.thenuim.sim.narrative.messaging.NarrativeComponentMessage
 import river.exertion.thenuim.view.layout.PauseView
 

@@ -2,7 +2,7 @@ package river.exertion.thenuim.automation.btree.task.core
 
 import com.badlogic.gdx.math.Vector2
 import river.exertion.thenuim.automation.btree.AutoUserTask
-import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.TnmBase
 import river.exertion.thenuim.base.Log
 import java.util.*
 
@@ -15,7 +15,7 @@ open class ClickTask(open val screenX : Int, open val screenY : Int, open val po
     override fun executeTask() {
         Log.debug("click at ($screenX, $screenY) with input-button $button")
 
-        KcopBase.inputMultiplexer.touchDown(screenX, screenY, pointer!!, button!!)
-        KcopBase.inputMultiplexer.touchUp(screenX, screenY, pointer!!, button!!)
+        TnmBase.inputMultiplexer.touchDown(screenX, screenY, pointer!!, button!!)
+        TnmBase.inputMultiplexer.touchUp(screenX, screenY, pointer!!, button!!)
     }
 }

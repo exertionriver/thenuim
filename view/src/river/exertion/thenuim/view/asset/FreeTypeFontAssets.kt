@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader
 import river.exertion.thenuim.asset.AssetManagerHandler
 import river.exertion.thenuim.asset.IAsset
 import river.exertion.thenuim.asset.IAssets
-import kotlin.io.path.Path
-import kotlin.io.path.extension
-import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.pathString
+import kotlin.io.path.*
 
 object FreeTypeFontAssets : IAssets {
 
@@ -31,22 +28,25 @@ object FreeTypeFontAssets : IAssets {
 
         values.clear()
 
-        Path(iAssetsLocation).listDirectoryEntries().filter { iAssetsExtension == it.extension }.forEach {
-            val charExtensionFilename = it.pathString.substring(0, it.pathString.length - 4) + "_ext.txt"
+        if (Path(iAssetsLocation).exists()) {
+            Path(iAssetsLocation).listDirectoryEntries().filter { iAssetsExtension == it.extension }.forEach {
+                val charExtensionFilename = it.pathString.substring(0, it.pathString.length - 4) + "_ext.txt"
 
-            AssetManagerHandler.loadAssetByPath<String>(charExtensionFilename)
+                AssetManagerHandler.loadAssetByPath<String>(charExtensionFilename)
 
-            val charExtensions = AssetManagerHandler.getAsset<String>(charExtensionFilename)
+                val charExtensions = AssetManagerHandler.getAsset<String>(charExtensionFilename)
 
-            AssetManagerHandler.loadAssetByPath(it.pathString, FreeTypeFontAssetStore.ftflp().apply {
-                this.fontFileName = it.pathString
-                this.fontParameters.characters += charExtensions
-            })
+                AssetManagerHandler.loadAssetByPath(it.pathString, FreeTypeFontAssetStore.ftflp().apply {
+                    this.fontFileName = it.pathString
+                    this.fontParameters.characters += charExtensions
+                })
+            }
+
+            val bitmapFonts = AssetManagerHandler.getAssets<BitmapFont>()
+
+            bitmapFonts.forEach { values.add(FreeTypeFontAsset(it)) }
         }
 
-        val bitmapFonts = AssetManagerHandler.getAssets<BitmapFont>()
-
-        bitmapFonts.forEach { values.add(FreeTypeFontAsset(it)) }
 
         return getTyped()
     }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import river.exertion.thenuim.asset.view.ColorPalette
 import river.exertion.thenuim.base.GdxTestBase
 import river.exertion.thenuim.base.Log
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.SdcHandler
 
 class GdxTestSdcHandler : GdxTestBase() {
@@ -29,7 +29,7 @@ class GdxTestSdcHandler : GdxTestBase() {
 
         //no params resets to default
         val resetBga = SdcHandler.updoradBackgroundAlpha("bg_alpha1")
-        assertEquals(KcopSkin.BackgroundColor.color(), resetBga.baseColor)
+        assertEquals(TnmSkin.BackgroundColor.color(), resetBga.baseColor)
         assertEquals(1f, resetBga.alpha)
 
         Log.test("updoradBackgroundAlpha", "update")
@@ -38,7 +38,7 @@ class GdxTestSdcHandler : GdxTestBase() {
 
         //params update alpha value only
         val updBga = SdcHandler.updoradBackgroundAlpha("bg_alpha2", updoradBgaUpdate)
-        assertEquals(KcopSkin.BackgroundColor.color(), updBga.baseColor)
+        assertEquals(TnmSkin.BackgroundColor.color(), updBga.baseColor)
         assertEquals(updoradBgaUpdate, updBga.alpha)
     }
 
@@ -54,7 +54,7 @@ class GdxTestSdcHandler : GdxTestBase() {
 
         //no params resets to default
         val resetUpd = SdcHandler.updorad("updorad_1")
-        assertEquals(KcopSkin.BackgroundColor.color(), resetUpd.baseColor)
+        assertEquals(TnmSkin.BackgroundColor.color(), resetUpd.baseColor)
         assertEquals(1f, resetUpd.alpha)
 
         Log.test("updorad", "update")
@@ -76,7 +76,7 @@ class GdxTestSdcHandler : GdxTestBase() {
 
         //no params sets to default
         val gDefault = SdcHandler.updoradBackgroundAlpha("getorad_1")
-        assertEquals(KcopSkin.BackgroundColor.color(), gDefault.baseColor)
+        assertEquals(TnmSkin.BackgroundColor.color(), gDefault.baseColor)
         assertEquals(1f, gDefault.alpha)
 
         Log.test("getorad", "set")

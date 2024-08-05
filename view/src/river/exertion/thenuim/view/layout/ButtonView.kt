@@ -5,13 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.TnmBase
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.ViewKlop.KcopBridge
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.ViewLoPa.TnmBridge
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
 import river.exertion.thenuim.view.menu.MainMenu
-import river.exertion.thenuim.view.messaging.KcopSimulationMessage
+import river.exertion.thenuim.view.messaging.TnmSimMessage
 
 object ButtonView : ViewBase {
 
@@ -33,19 +33,19 @@ object ButtonView : ViewBase {
                 closeMenu()
         },
         displayMode to {
-            KcopSkin.displayMode = isChecked[displayMode]!!
-            KcopBase.stage.isDebugAll = KcopSkin.displayMode
+            TnmSkin.displayMode = isChecked[displayMode]!!
+            TnmBase.stage.isDebugAll = TnmSkin.displayMode
             ViewLayout.rebuild()
        },
         2 to {
             LogView.addLog("Cycle Plugin")
-            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.NextPlugin))
+            MessageChannelHandler.send(TnmBridge, TnmSimMessage(TnmSimMessage.TnmSimMessageType.NextPlugin))
         },
         displayFullScreen to {
-            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.DisplayFullScreen))
+            MessageChannelHandler.send(TnmBridge, TnmSimMessage(TnmSimMessage.TnmSimMessageType.DisplayFullScreen))
         },
         displayViewScreen to {
-            MessageChannelHandler.send(KcopBridge, KcopSimulationMessage(KcopSimulationMessage.KcopMessageType.DisplayViewScreen))
+            MessageChannelHandler.send(TnmBridge, TnmSimMessage(TnmSimMessage.TnmSimMessageType.DisplayViewScreen))
         },
         5 to {
 //            KcopSkin.displayMode = isChecked[5]!!
@@ -61,7 +61,7 @@ object ButtonView : ViewBase {
 
         (0..5).forEach { idx ->
 
-            val innerButton = Button(KcopSkin.skin).apply { KcopSkin.addOnClick(this) }
+            val innerButton = Button(TnmSkin.skin).apply { TnmSkin.addOnClick(this) }
 
             //override from ctrl
             innerButton.isChecked = this@ButtonView.isChecked[idx] == true
@@ -76,17 +76,17 @@ object ButtonView : ViewBase {
         }
 
         val buttonSubLayout1 = Table()
-        buttonSubLayout1.add(buttonList[1]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight))
-        buttonSubLayout1.add(buttonList[2]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight))
+        buttonSubLayout1.add(buttonList[1]).size(ViewType.seventhWidth(TnmSkin.screenWidth), ViewType.seventhHeight(TnmSkin.screenHeight))
+        buttonSubLayout1.add(buttonList[2]).size(ViewType.seventhWidth(TnmSkin.screenWidth), ViewType.seventhHeight(TnmSkin.screenHeight))
         buttonSubLayout1.row()
-        buttonSubLayout1.add(buttonList[0]).align(Align.center).colspan(2).size(ViewType.sixthWidth(KcopSkin.screenWidth) - 3, ViewType.sixthHeight(KcopSkin.screenHeight) - 3)
+        buttonSubLayout1.add(buttonList[0]).align(Align.center).colspan(2).size(ViewType.sixthWidth(TnmSkin.screenWidth) - 3, ViewType.sixthHeight(TnmSkin.screenHeight) - 3)
 
         val buttonSubLayout2 = Table()
-        buttonSubLayout2.add(buttonList[3]).align(Align.center).size(ViewType.seventhWidth(KcopSkin.screenWidth) - 5, ViewType.seventhHeight(KcopSkin.screenHeight) - 5)
+        buttonSubLayout2.add(buttonList[3]).align(Align.center).size(ViewType.seventhWidth(TnmSkin.screenWidth) - 5, ViewType.seventhHeight(TnmSkin.screenHeight) - 5)
         buttonSubLayout2.row()
-        buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight)).padTop(1f)
+        buttonSubLayout2.add(buttonList[4]).size(ViewType.seventhWidth(TnmSkin.screenWidth), ViewType.seventhHeight(TnmSkin.screenHeight)).padTop(1f)
         buttonSubLayout2.row()
-        buttonSubLayout2.add(buttonList[5]).size(ViewType.seventhWidth(KcopSkin.screenWidth), ViewType.seventhHeight(KcopSkin.screenHeight))
+        buttonSubLayout2.add(buttonList[5]).size(ViewType.seventhWidth(TnmSkin.screenWidth), ViewType.seventhHeight(TnmSkin.screenHeight))
 
         val buttonLayout = Table()
         buttonLayout.add(buttonSubLayout1).padTop(2f).padLeft(2f).padBottom(2f)

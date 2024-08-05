@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import ktx.actors.onClick
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 
 object PauseView : ViewBase {
 
@@ -20,11 +20,11 @@ object PauseView : ViewBase {
 
     fun clickButton() : Button {
 
-        val innerButton = Button(KcopSkin.skin)
+        val innerButton = Button(TnmSkin.skin)
         //override from ctrl
         innerButton.isChecked = this@PauseView.isChecked
 
-        KcopSkin.addOnClick(innerButton)
+        TnmSkin.addOnClick(innerButton)
 
         innerButton.onClick {
             this@PauseView.isChecked = !this@PauseView.isChecked

@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 buildscript {
-    ext.kotlinVersion = '1.9.23'
+    ext.kotlinVersion = '2.0.0'
 
     repositories {
         mavenLocal()
@@ -13,7 +13,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.4.0'
+        classpath 'com.android.tools.build:gradle:8.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
     }
@@ -34,7 +34,7 @@ allprojects {
         kotlinxCoroutineVersion = '1.8.0'
         kotlinxSerializationVersion = '1.6.3'
         kotlinxDatetimeVersion = '0.5.0'
-        gltfVersion = '2.0.0-rc.1'
+        gltfVersion = '2.2.1'
         shapedrawerVersion = '2.6.0' //https://github.com/earlygrey/shapedrawer
         junitVersion = '5.9.3'
     }

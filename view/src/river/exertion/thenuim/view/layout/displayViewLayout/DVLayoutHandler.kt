@@ -7,12 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import river.exertion.thenuim.asset.view.ColorPalette
-import river.exertion.thenuim.view.klop.IDisplayViewLayoutHandler
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.IDisplayViewLayoutHandler
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.SdcHandler
-import river.exertion.thenuim.view.KcopFont
-import river.exertion.thenuim.view.KcopSkin.screenHeight
-import river.exertion.thenuim.view.KcopSkin.screenWidth
+import river.exertion.thenuim.view.TnmFont
+import river.exertion.thenuim.view.TnmSkin.screenHeight
+import river.exertion.thenuim.view.TnmSkin.screenWidth
 import river.exertion.thenuim.view.layout.AudioView
 import river.exertion.thenuim.view.layout.DisplayAuxView
 import river.exertion.thenuim.view.layout.DisplayView
@@ -20,19 +20,19 @@ import river.exertion.thenuim.view.layout.DisplayView
 object DVLayoutHandler : IDisplayViewLayoutHandler {
 
     var currentText = ""
-    var currentFontSize = KcopFont.SMALL
+    var currentFontSize = TnmFont.SMALL
     var currentFontColor = ColorPalette.randomW3cBasic()
     var currentDvLayout : DVLayout = DVLayout.dvLayout()
 
     fun paneColorTexture(dvPane: DVPane, overrideColor : ColorPalette?) : TextureRegion {
-        return SdcHandler.updorad("pane_${dvPane.tag}", overrideColor ?: KcopSkin.BackgroundColor).textureRegion().apply {
-            this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
+        return SdcHandler.updorad("pane_${dvPane.tag}", overrideColor ?: TnmSkin.BackgroundColor).textureRegion().apply {
+            this.setRegion(0, 0, dvPane.dvpType().width(screenWidth).toInt() - 1, dvPane.dvpType().height(screenHeight).toInt() - 1)
         }
     }
 
     fun paneBATexture(dvPane: DVPane) : TextureRegion {
         return SdcHandler.updoradBackgroundAlpha("bapane_${dvPane.tag}", dvPane.alphaMask).textureRegion().apply {
-            this.setRegion(0, 0, dvPane.dvpType().width(KcopSkin.screenWidth).toInt() - 1, dvPane.dvpType().height(KcopSkin.screenHeight).toInt() - 1)
+            this.setRegion(0, 0, dvPane.dvpType().width(screenWidth).toInt() - 1, dvPane.dvpType().height(screenHeight).toInt() - 1)
         }
     }
 
@@ -49,22 +49,22 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
         val paneContent = DVPaneContent()
         currentDvLayout.setAdjacencies(currentFontSize)
 
-        if (KcopSkin.displayMode) {
+        if (TnmSkin.displayMode) {
 
             currentDvLayout.layoutPanes().forEach { dvPane ->
                 val randomColor = ColorPalette.randomW3cBasic()
                 val randomColorImage = Image(TextureRegionDrawable(paneColorTexture(dvPane, randomColor).texture))
-                val randomColorLabelStyle = KcopSkin.labelStyle(KcopFont.TEXT, randomColor.label())
+                val randomColorLabelStyle = TnmSkin.labelStyle(TnmFont.TEXT, randomColor.label())
 
                 when (dvPane) {
-                    is DVImagePane -> paneContent.data[dvPane.tag!!] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)
-                    is DVTextPane -> paneContent.data[dvPane.tag!!] = dvPane.layoutPane(KcopSkin.screenWidth, KcopSkin.screenHeight, randomColorImage, randomColorLabelStyle)
+                    is DVImagePane -> paneContent.data[dvPane.tag!!] = dvPane.layoutPane(screenWidth, screenHeight, randomColorImage, randomColorLabelStyle)
+                    is DVTextPane -> paneContent.data[dvPane.tag!!] = dvPane.layoutPane(screenWidth, screenHeight, randomColorImage, randomColorLabelStyle)
                 }
             }
 
         } else {
-            val textLabelStyle = KcopSkin.labelStyle(currentFontSize, currentFontColor)
-            val textFieldStyle = KcopSkin.textFieldStyle(currentFontSize, currentFontColor)
+            val textLabelStyle = TnmSkin.labelStyle(currentFontSize, currentFontColor)
+            val textFieldStyle = TnmSkin.textFieldStyle(currentFontSize, currentFontColor)
 
             currentDvLayout.setTextLabelStyle(textLabelStyle)
             currentDvLayout.setTextFieldStyle(textFieldStyle)
@@ -74,8 +74,8 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
 
             currentDvLayout.layoutPanes().forEach { dvPane ->
                 paneContent.data[dvPane.tag!!] = Stack().apply {
-                    this.add(dvPane.emptyPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
-                    this.add(dvPane.contentPane(KcopSkin.screenWidth, KcopSkin.screenHeight))
+                    this.add(dvPane.emptyPane(screenWidth, screenHeight))
+                    this.add(dvPane.contentPane(screenWidth, screenHeight))
                     //this.add(dvPane.alphaPane(KcopSkin.screenWidth, KcopSkin.screenHeight, Image(TextureRegionDrawable(
                     //    paneBATexture(dvPane)
                    // ))))
@@ -120,8 +120,8 @@ object DVLayoutHandler : IDisplayViewLayoutHandler {
             }
         }
 
-        if (KcopSkin.displayMode) DisplayView.displayViewTable.debug()
-        if (KcopSkin.displayMode) DisplayAuxView.displayViewTable.debug()
+        if (TnmSkin.displayMode) DisplayView.displayViewTable.debug()
+        if (TnmSkin.displayMode) DisplayAuxView.displayViewTable.debug()
 
         DisplayView.build()
         DisplayAuxView.build()

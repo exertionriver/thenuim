@@ -2,11 +2,11 @@ package river.exertion.thenuim.profile.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.thenuim.profile.ProfileKlop
-import river.exertion.thenuim.profile.ProfileKlop.ProfileMenuBackgroundColor
+import river.exertion.thenuim.profile.ProfileLoPa
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileMenuBackgroundColor
 import river.exertion.thenuim.profile.asset.ProfileAsset
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.ButtonView
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
@@ -25,7 +25,7 @@ object SaveProgressMenu : DisplayViewMenu {
         Table().apply {
 
             ProfileAsset.currentProfileAsset.assetInfo().forEach { profileEntry ->
-                this.add(Label(profileEntry, KcopSkin.labelStyle(KcopFont.SMALL, ProfileKlop.ProfileMenuText)
+                this.add(Label(profileEntry, TnmSkin.labelStyle(TnmFont.SMALL, ProfileLoPa.ProfileMenuText)
                 ).apply {
                     this.wrap = true
                 }).colspan(2).growX()

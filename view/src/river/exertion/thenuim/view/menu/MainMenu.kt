@@ -2,7 +2,7 @@ package river.exertion.thenuim.view.menu
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import river.exertion.thenuim.view.ViewKlop.MainMenuBackgroundColor
+import river.exertion.thenuim.view.ViewLoPa.MainMenuBackgroundColor
 import river.exertion.thenuim.view.layout.ButtonView
 import kotlin.system.exitProcess
 
@@ -20,7 +20,7 @@ object MainMenu : DisplayViewMenu {
     override val assignableNavs = mutableListOf<MenuActionParam>()
 
     override val assignableActions = mutableListOf(
-        MenuActionParam("Exit kcop", {
+        MenuActionParam("Exit Thenuim", {
             Gdx.app.exit()
             exitProcess(0)
         }, "Peace Out"),

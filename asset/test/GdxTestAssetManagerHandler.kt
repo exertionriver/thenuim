@@ -10,29 +10,29 @@ import river.exertion.thenuim.asset.AssetManagerHandler.loadAssetsByLocation
 import river.exertion.thenuim.asset.AssetManagerHandler.loadAssetsByPath
 import river.exertion.thenuim.asset.AssetManagerHandler.logAssets
 import river.exertion.thenuim.asset.AssetStatus
-import river.exertion.thenuim.asset.klop.IAssetKlop
+import river.exertion.thenuim.asset.IAssetLoPa
 import river.exertion.thenuim.base.*
 import kotlin.io.path.Path
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.extension
 import kotlin.io.path.listDirectoryEntries
 
-class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
+class GdxTestAssetManagerHandler : IAssetLoPa, GdxTestBase() {
 
     private var testData : MutableList<TestIAsset> = mutableListOf()
 
     override var id = Id.randomId()
     override var tag = this::class.simpleName.toString()
-    override val name = KcopBase.appName
-    override val version = KcopBase.appVersion
+    override val name = TnmBase.appName
+    override val version = TnmBase.appVersion
 
-    //used for IAssetKlop overload, does not actually load assets
+    //used for IAssetLoPa overload, does not actually load assets
     @BeforeEach
     override fun loadAssets() {
         AssetManagerHandler.assets.setLoader(TestIAsset::class.java, TestIAssetLoader(lfhr))
     }
 
-    //used for IAssetKlop overload
+    //used for IAssetLoPa overload
     @BeforeEach
     override fun load() {
         testData = mutableListOf(TestIAsset(), TestIAsset(), TestIAsset())
@@ -43,7 +43,7 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
         }
     }
 
-    //used for IAssetKlop overload
+    //used for IAssetLoPa overload
     @AfterEach
     override fun unload() {
         testData.forEach {
@@ -56,7 +56,7 @@ class GdxTestAssetManagerHandler : IAssetKlop, GdxTestBase() {
 
     @AfterAll
     override fun dispose() {
-        super<IAssetKlop>.dispose()
+        super<IAssetLoPa>.dispose()
     }
 
     @Test

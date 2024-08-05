@@ -4,8 +4,8 @@ import river.exertion.thenuim.ecs.component.ImmersionTimerComponent
 import river.exertion.thenuim.messaging.MessageChannelHandler
 import river.exertion.thenuim.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.thenuim.ecs.component.IComponent
-import river.exertion.thenuim.sim.narrative.NarrativeKlop
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeBridge
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeBridge
 import river.exertion.thenuim.view.layout.AiView
 
 object NarrativeComponentNavStatusHandler {
@@ -52,7 +52,7 @@ object NarrativeComponentNavStatusHandler {
 
             pause()
 
-            NarrativeKlop.displayViewLayoutHandler().clearContent()
+            NarrativeLoPa.displayViewLayoutHandler().clearContent()
 
             MessageChannelHandler.disableReceive(NarrativeBridge, this)
 

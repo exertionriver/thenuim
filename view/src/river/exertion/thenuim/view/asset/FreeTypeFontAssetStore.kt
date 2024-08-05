@@ -7,20 +7,20 @@ import river.exertion.thenuim.asset.view.CharacterSetExtension
 import river.exertion.thenuim.asset.AssetManagerHandler
 import river.exertion.thenuim.asset.IAssetStore
 import river.exertion.thenuim.asset.IAssetStoreCompanion
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 //Used for kcop-internal ttf font files
 enum class FreeTypeFontAssetStore(val path: String) : IAssetStore {
     //https://fonts.google.com/noto/specimen/Noto+Sans+Symbols
     NotoSansSymbolsSemiBoldText("fonts/notoSansSymbols/static/NotoSansSymbols-SemiBold.ttf") { override fun baseFontSize() =
-        KcopFont.TEXT
+        TnmFont.TEXT
     },
     //https://www.1001freefonts.com/fantasy-fonts.php
-    ImmortalLarge("fonts/immortal/IMMORTAL_large.ttf") { override fun baseFontSize() = KcopFont.LARGE },
-    ImmortalMedium("fonts/immortal/IMMORTAL_medium.ttf") { override fun baseFontSize() = KcopFont.MEDIUM },
-    ImmortalSmall("fonts/immortal/IMMORTAL_small.ttf") { override fun baseFontSize() = KcopFont.SMALL }
+    ImmortalLarge("fonts/immortal/IMMORTAL_large.ttf") { override fun baseFontSize() = TnmFont.LARGE },
+    ImmortalMedium("fonts/immortal/IMMORTAL_medium.ttf") { override fun baseFontSize() = TnmFont.MEDIUM },
+    ImmortalSmall("fonts/immortal/IMMORTAL_small.ttf") { override fun baseFontSize() = TnmFont.SMALL }
     ;
-    abstract fun baseFontSize() : KcopFont
+    abstract fun baseFontSize() : TnmFont
     open fun ftflp() = Companion.ftflp().apply { this.fontFileName = path }
 
     override fun load() = AssetManagerHandler.loadAssetByPath(path, ftflp())
@@ -35,7 +35,7 @@ enum class FreeTypeFontAssetStore(val path: String) : IAssetStore {
             this.fontParameters.minFilter = Texture.TextureFilter.MipMapLinearLinear
             this.fontParameters.magFilter = Texture.TextureFilter.Linear
             this.fontParameters.characters += CharacterSetExtension.characters()
-            this.fontParameters.size = KcopFont.baseFontSize
+            this.fontParameters.size = TnmFont.baseFontSize
         }
     }
 }

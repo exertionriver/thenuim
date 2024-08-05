@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import river.exertion.thenuim.asset.AssetManagerHandler
 import river.exertion.thenuim.asset.IAssetStore
 import river.exertion.thenuim.asset.IAssetStoreCompanion
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 //Used for kcop-internal bitmap fonts in a known location
 enum class BitmapFontAssetStore(val path: String) : IAssetStore {
@@ -14,7 +14,7 @@ enum class BitmapFontAssetStore(val path: String) : IAssetStore {
     ;
 
     override fun load() = AssetManagerHandler.loadAssetByPath(path, bfp)
-    override fun get() = AssetManagerHandler.getAsset<BitmapFont>(path).apply { this.data.setScale(KcopFont.TEXT.fontScale)}
+    override fun get() = AssetManagerHandler.getAsset<BitmapFont>(path).apply { this.data.setScale(TnmFont.TEXT.fontScale)}
 
     open fun bfp() = bfp
 

@@ -4,25 +4,25 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import river.exertion.thenuim.base.GdxTestBase
 import river.exertion.thenuim.base.Id
-import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.TnmBase
 import river.exertion.thenuim.base.Log
 import river.exertion.thenuim.ecs.EngineHandler
-import river.exertion.thenuim.ecs.klop.IECSKlop
+import river.exertion.thenuim.ecs.IECSLoPa
 
-class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
+class GdxTestEngineHandler : IECSLoPa, GdxTestBase() {
 
     override var id = Id.randomId()
     override var tag = this::class.simpleName.toString()
-    override val name = KcopBase.appName
-    override val version = KcopBase.appVersion
+    override val name = TnmBase.appName
+    override val version = TnmBase.appVersion
 
     var testSystem = TestSystem()
 
-    //used for IECSKlop overload
+    //used for IECSLoPa overload
     @BeforeAll
     override fun load() {}
 
-    //used for IECSKlop overload
+    //used for IECSLoPa overload
     @BeforeEach
     override fun loadSystems() {
         EngineHandler.addSystem(testSystem)
@@ -32,14 +32,14 @@ class GdxTestEngineHandler : IECSKlop, GdxTestBase() {
         EngineHandler.removeSystem<TestSystem>()
     }
 
-    //used for IECSKlop overload
+    //used for IECSLoPa overload
     @AfterEach
     override fun unload() {
     }
 
     @AfterAll
     override fun dispose() {
-        super<IECSKlop>.dispose()
+        super<IECSLoPa>.dispose()
     }
 
     @Test

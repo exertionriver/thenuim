@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import river.exertion.thenuim.asset.view.ColorPalette
 import river.exertion.thenuim.base.Id
-import river.exertion.thenuim.base.KcopBase
-import river.exertion.thenuim.view.KcopFont
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.base.TnmBase
+import river.exertion.thenuim.view.TnmFont
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.layout.ViewType
 
 @Serializable
@@ -55,7 +55,7 @@ data class DVLayout(
     @Suppress("UNCHECKED_CAST")
     fun textPanes() = layoutPanes().filter { it.paneType == DVPane.DVPaneTypes.TEXT.tag() } as List<DVTextPane>
 
-    fun setAdjacencies(fontSize: KcopFont) {
+    fun setAdjacencies(fontSize: TnmFont) {
         textPanes().forEach { dvTextPane ->
             dvTextPane.adjacencyTopPadOffset = textAdjacencyTopPads.firstOrNull { it.tag == dvTextPane.tag }?.fontPads?.firstOrNull { it.fontSize() == fontSize }?.yOffset()
             dvTextPane.adjacencyAllowedRows = textAdjacencyRows.firstOrNull { it.tag == dvTextPane.tag }?.fontRows?.firstOrNull { it.fontSize() == fontSize }?.allowRows()
@@ -71,7 +71,7 @@ data class DVLayout(
             if (text != null) this.paneText = text
             if (colorOverride != null) {
                 this.colorOverride = colorOverride
-                this.textFieldStyle = KcopSkin.textFieldStyle(DVLayoutHandler.currentFontSize, colorOverride)
+                this.textFieldStyle = TnmSkin.textFieldStyle(DVLayoutHandler.currentFontSize, colorOverride)
                 paneTextField.style = this.textFieldStyle
             }
         }
@@ -83,7 +83,7 @@ data class DVLayout(
             this.writeCallback = writeCallback
             if (editRegex != null) this.editRegex = editRegex
             if (mode == DVTextPane.DVTextPaneMode.WRITE) {
-                KcopBase.keyboardFocus = this.paneTextField
+                TnmBase.keyboardFocus = this.paneTextField
             }
         }
     }

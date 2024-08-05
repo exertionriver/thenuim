@@ -5,13 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import river.exertion.thenuim.ecs.component.IComponent
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.profile.ProfileKlop
-import river.exertion.thenuim.profile.ProfileKlop.ProfileMenuBackgroundColor
+import river.exertion.thenuim.profile.ProfileLoPa
+import river.exertion.thenuim.profile.ProfileLoPa.ProfileMenuBackgroundColor
 import river.exertion.thenuim.profile.asset.ProfileAsset
 import river.exertion.thenuim.profile.component.ProfileComponent
 import river.exertion.thenuim.profile.messaging.ProfileComponentMessage
-import river.exertion.thenuim.view.KcopSkin
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmSkin
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.ButtonView
 import river.exertion.thenuim.view.menu.DisplayViewMenu
 import river.exertion.thenuim.view.menu.DisplayViewMenuHandler
@@ -29,7 +29,7 @@ object NewProfileMenu : DisplayViewMenu {
 
     override var menuPane = {
 
-        val nameTextField = TextField(newName, KcopSkin.skin)
+        val nameTextField = TextField(newName, TnmSkin.skin)
 
         updateNameFromTextField()
 
@@ -39,7 +39,7 @@ object NewProfileMenu : DisplayViewMenu {
         }
 
         Table().apply {
-            this.add(Label("profile name: ", KcopSkin.labelStyle(KcopFont.SMALL, ProfileKlop.ProfileMenuText)))
+            this.add(Label("profile name: ", TnmSkin.labelStyle(TnmFont.SMALL, ProfileLoPa.ProfileMenuText)))
             this.add(nameTextField).growX().top()
             this.row()
             this.top()
@@ -60,7 +60,7 @@ object NewProfileMenu : DisplayViewMenu {
     override val assignableActions = mutableListOf(
         MenuActionParam("Create", {
             ButtonView.closeMenu()
-            MessageChannelHandler.send(ProfileKlop.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
+            MessageChannelHandler.send(ProfileLoPa.ProfileBridge, ProfileComponentMessage(ProfileComponentMessage.ProfileMessageType.Inactivate))
             ProfileAsset.currentProfileAsset = ProfileAsset.new(newName)
             ProfileAsset.currentProfileAsset.save()
             IComponent.ecsInit<ProfileComponent>()

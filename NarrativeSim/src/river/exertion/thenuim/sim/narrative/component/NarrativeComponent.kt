@@ -11,8 +11,8 @@ import river.exertion.thenuim.asset.immersionTimer.ImmersionTimer
 import river.exertion.thenuim.asset.immersionTimer.ImmersionTimerPair
 import river.exertion.thenuim.profile.asset.ProfileAsset
 import river.exertion.thenuim.profile.settings.PSCompStatus
-import river.exertion.thenuim.sim.narrative.NarrativeKlop
-import river.exertion.thenuim.sim.narrative.NarrativeKlop.NarrativeBridge
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa
+import river.exertion.thenuim.sim.narrative.NarrativeLoPa.NarrativeBridge
 import river.exertion.thenuim.sim.narrative.asset.NarrativeAsset
 import river.exertion.thenuim.sim.narrative.asset.NarrativeStateAsset
 import river.exertion.thenuim.sim.narrative.component.NarrativeComponentNavStatusHandler.activate
@@ -27,7 +27,7 @@ import river.exertion.thenuim.sim.narrative.structure.Narrative
 import river.exertion.thenuim.sim.narrative.structure.NarrativeState
 import river.exertion.thenuim.view.layout.displayViewLayout.DVLayout
 import river.exertion.thenuim.view.layout.displayViewLayout.DVLayoutHandler
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 import river.exertion.thenuim.view.layout.StatusView
 import river.exertion.thenuim.view.layout.ViewLayout
 
@@ -82,7 +82,7 @@ class NarrativeComponent : IComponent, Telegraph {
 
     fun currentDisplayText() = if (isInitialized) narrative.currentDisplayText() else "<no display text>"
 
-    fun currentFontSize() = if (isInitialized) narrative.currentFontSize() else KcopFont.TEXT
+    fun currentFontSize() = if (isInitialized) narrative.currentFontSize() else TnmFont.TEXT
 
     fun shortNarrativeName() = narrativeName().subSequence(0, 3)
 
@@ -109,8 +109,8 @@ class NarrativeComponent : IComponent, Telegraph {
             }
         }
 
-        ViewLayout.currentDisplayViewLayoutHandler = NarrativeKlop.displayViewLayoutHandler()
-        DVLayoutHandler.currentDvLayout = NarrativeKlop.dvLayoutByTag(layoutTag())
+        ViewLayout.currentDisplayViewLayoutHandler = NarrativeLoPa.displayViewLayoutHandler()
+        DVLayoutHandler.currentDvLayout = NarrativeLoPa.dvLayoutByTag(layoutTag())
 
         narrativeState.blockFlags.clear()
 

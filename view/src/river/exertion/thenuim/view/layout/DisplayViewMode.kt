@@ -2,11 +2,11 @@ package river.exertion.thenuim.view.layout
 
 enum class DisplayViewMode {
 
-    DisplayViewKcop,
+    DisplayViewWork,
     DisplayViewFull,
     DisplayViewCenter
     ;
     companion object {
-        var currentDVMode : DisplayViewMode = DisplayViewKcop
+        var currentDVMode : DisplayViewMode = DisplayViewWork
     }
 }

@@ -2,13 +2,13 @@ package river.exertion.thenuim
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
-import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.TnmBase
 
 object DesktopLauncher {
 
     val config = Lwjgl3ApplicationConfiguration().apply {
-        this.setTitle(KcopBase.appTitle())
-        this.setWindowedMode(KcopBase.initViewportWidth.toInt(), KcopBase.initViewportHeight.toInt())
+        this.setTitle(TnmBase.appTitle())
+        this.setWindowedMode(TnmBase.initViewportWidth.toInt(), TnmBase.initViewportHeight.toInt())
         this.setForegroundFPS(60)
         setBackBufferConfig(8, 8, 8, 8, 24, 0, 8)
     }
@@ -17,6 +17,6 @@ object DesktopLauncher {
     fun main(args: Array<String>) {
         AppArgHandler.setAppArgs(args)
 
-        Lwjgl3Application(Kcop(), config)
+        Lwjgl3Application(Thenuim(), config)
     }
 }

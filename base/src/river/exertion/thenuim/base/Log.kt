@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx
 
 object Log {
 
-    val debugPrefix = "kcop_debug"
-    val testPrefix = "kcop_test"
+    val debugPrefix = "tnm_debug"
+    val testPrefix = "tnm_test"
 
     fun debug(tag : String, message : String? = null) : String {
         val returnLog = if (message != null) "[$debugPrefix $tag] $message" else "[$debugPrefix $tag]"

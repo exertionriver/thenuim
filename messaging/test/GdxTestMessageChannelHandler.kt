@@ -2,33 +2,33 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import river.exertion.thenuim.base.GdxTestBase
 import river.exertion.thenuim.base.Id
-import river.exertion.thenuim.base.KcopBase
+import river.exertion.thenuim.base.TnmBase
 import river.exertion.thenuim.base.Log
 import river.exertion.thenuim.messaging.MessageChannel
 import river.exertion.thenuim.messaging.MessageChannelHandler
-import river.exertion.thenuim.messaging.klop.IMessagingKlop
+import river.exertion.thenuim.messaging.IMessagingLoPa
 
-class GdxTestMessageChannelHandler : IMessagingKlop, GdxTestBase() {
+class GdxTestMessageChannelHandler : IMessagingLoPa, GdxTestBase() {
 
     override var id = Id.randomId()
     override var tag = this::class.simpleName.toString()
-    override val name = KcopBase.appName
-    override val version = KcopBase.appVersion
+    override val name = TnmBase.appName
+    override val version = TnmBase.appVersion
 
     var channelIdx = -1
 
-    //used for IMessagingKlop overload
+    //used for IMessagingLoPa overload
     @BeforeAll
     override fun load() {
     }
 
-    //used for IMessagingKlop overload
+    //used for IMessagingLoPa overload
     @BeforeEach
     override fun loadChannels() {
         channelIdx = MessageChannelHandler.addChannel(MessageChannel(TestMessageBridge, TestMessage::class))
     }
 
-    //used for IMessagingKlop overload
+    //used for IMessagingLoPa overload
     @AfterEach
     override fun unload() {
         if (MessageChannelHandler.checkByTag(TestMessageBridge) != null)
@@ -37,7 +37,7 @@ class GdxTestMessageChannelHandler : IMessagingKlop, GdxTestBase() {
 
     @AfterAll
     override fun dispose() {
-        super<IMessagingKlop>.dispose()
+        super<IMessagingLoPa>.dispose()
     }
 
     @Test

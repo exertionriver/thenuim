@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import river.exertion.thenuim.asset.immersionTimer.ImmersionTimer
-import river.exertion.thenuim.view.KcopSkin
+import river.exertion.thenuim.view.TnmSkin
 import river.exertion.thenuim.view.SdcHandler
-import river.exertion.thenuim.view.KcopFont
+import river.exertion.thenuim.view.TnmFont
 
 object LogView : ViewBase {
 
@@ -68,7 +68,7 @@ object LogView : ViewBase {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(instImmersionTimeStr, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
+                    this.add(Label(instImmersionTimeStr, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -80,7 +80,7 @@ object LogView : ViewBase {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(cumlImmersionTimeStr, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
+                    this.add(Label(cumlImmersionTimeStr, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -93,7 +93,7 @@ object LogView : ViewBase {
             Stack().apply {
                 this.add(Image(textTimeBackgroundColorTexture()))
                 this.add(Table().apply {
-                    this.add(Label(localTimeStr, KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
+                    this.add(Label(localTimeStr, TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label()))
                     .apply {
                         this.setAlignment(Align.center)
                     })
@@ -101,7 +101,7 @@ object LogView : ViewBase {
                 })
             }).size(this.textTimePaneDimensions.x, this.textTimePaneDimensions.y)
 
-        if (KcopSkin.displayMode) innerTable.debug()
+        if (TnmSkin.displayMode) innerTable.debug()
 
         return innerTable
     }
@@ -134,7 +134,7 @@ object LogView : ViewBase {
 
         if (isLog()) {
             (currentLog!!.size - 1 downTo 0).forEach { revEntryIdx ->
-                val logLabel = Label(currentLog!![revEntryIdx], KcopSkin.labelStyle(KcopFont.TEXT, backgroundColor().label()))
+                val logLabel = Label(currentLog!![revEntryIdx], TnmSkin.labelStyle(TnmFont.TEXT, backgroundColor().label()))
                 logLabel.wrap = true
                 innerTable.add(logLabel).growX()
                 innerTable.row()
@@ -142,9 +142,9 @@ object LogView : ViewBase {
         }
 
         innerTable.top()
-        if (KcopSkin.displayMode) innerTable.debug()
+        if (TnmSkin.displayMode) innerTable.debug()
 
-        val scrollPane = ScrollPane(innerTable, KcopSkin.skin).apply {
+        val scrollPane = ScrollPane(innerTable, TnmSkin.skin).apply {
             // https://github.com/raeleus/skin-composer/wiki/ScrollPane
             this.fadeScrollBars = false
             this.setFlickScroll(false)
